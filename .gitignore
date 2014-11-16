@@ -1,0 +1,13 @@
+.hgignore
+*.o
+*~
+.*swp
+build
+mingw32-build
+*kdev4*
+.build
+.hg
+hge-unix.creator*
+hge-unix.config
+hge-unix.files
+hge-unix.includes
