@@ -10,3 +10,6 @@ HGE2.creator*
 HGE2.config
 HGE2.files
 HGE2.includes
+
+bin/*
+linklib/*

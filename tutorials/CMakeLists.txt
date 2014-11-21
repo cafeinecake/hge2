@@ -7,7 +7,7 @@ set(TUTORIAL01_SRCS
 )
 
 add_executable(hge_tut01 ${TUTORIAL01_SRCS})
-target_link_libraries(hge_tut01 ${HGE_LIBRARY})
+target_link_libraries(hge_tut01 ${HGE2_EXECLIBS})
 
 #---------------------------------------------
 
@@ -16,7 +16,7 @@ set(TUTORIAL02_SRCS
 )
 
 add_executable(hge_tut02 ${TUTORIAL02_SRCS})
-target_link_libraries(hge_tut02 ${HGE_LIBRARY})
+target_link_libraries(hge_tut02 ${HGE2_EXECLIBS})
 
 #---------------------------------------------
 
@@ -25,7 +25,7 @@ set(TUTORIAL03_SRCS
 )
 
 add_executable(hge_tut03 ${TUTORIAL03_SRCS})
-target_link_libraries(hge_tut03 hge ${HGE_HELPER_LIBRARY})
+target_link_libraries(hge_tut03 ${HGE2_EXECLIBS})
 
 #---------------------------------------------
 
@@ -34,7 +34,7 @@ set(TUTORIAL04_SRCS
 )
 
 add_executable(hge_tut04 ${TUTORIAL04_SRCS})
-target_link_libraries(hge_tut04 ${HGE_HELPER_LIBRARY})
+target_link_libraries(hge_tut04 ${HGE2_EXECLIBS})
 
 #---------------------------------------------
 
@@ -43,7 +43,7 @@ set(TUTORIAL05_SRCS
 )
 
 add_executable(hge_tut05 ${TUTORIAL05_SRCS})
-target_link_libraries(hge_tut05 ${HGE_HELPER_LIBRARY})
+target_link_libraries(hge_tut05 ${HGE2_EXECLIBS})
 
 #---------------------------------------------
 
@@ -53,7 +53,7 @@ set(TUTORIAL06_SRCS
 )
 
 add_executable(hge_tut06 ${TUTORIAL06_SRCS})
-target_link_libraries(hge_tut06 ${HGE_HELPER_LIBRARY})
+target_link_libraries(hge_tut06 ${HGE2_EXECLIBS})
 
 #---------------------------------------------
 
@@ -62,7 +62,7 @@ set(TUTORIAL07_SRCS
 )
 
 add_executable(hge_tut07 ${TUTORIAL07_SRCS})
-target_link_libraries(hge_tut07 ${HGE_HELPER_LIBRARY})
+target_link_libraries(hge_tut07 ${HGE2_EXECLIBS})
 
 #---------------------------------------------
 
@@ -71,4 +71,4 @@ set(TUTORIAL08_SRCS
 )
 
 add_executable(hge_tut08 ${TUTORIAL08_SRCS})
-target_link_libraries(hge_tut08 ${HGE_HELPER_LIBRARY})
+target_link_libraries(hge_tut08 ${HGE2_EXECLIBS})

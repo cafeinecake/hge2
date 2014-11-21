@@ -1,6 +1,6 @@
 
 #include "fonted.h"
-#include "libPNG/png.h"
+#include <libpng/png.h>
 
 class PNGError {};
 

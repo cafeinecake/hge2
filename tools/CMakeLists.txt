@@ -9,7 +9,7 @@ set(FONTCONV_SRCS
 )
 
 add_executable(fontconv ${FONTCONV_SRCS})
-target_link_libraries(fontconv ${HGE_LIBRARY})
+target_link_libraries(fontconv ${HGE2_EXECLIBS})
 
 set(FONTED_SRCS
 	${D}/fonted/commands.cpp
@@ -21,7 +21,7 @@ set(FONTED_SRCS
 )
 
 add_executable(fonted ${FONTED_SRCS})
-target_link_libraries(fonted ${HGE_HELPER_LIBRARY})
+target_link_libraries(fonted ${HGE2_EXECLIBS})
 
 set(PARTICLEED_SRCS
 	${D}/particleed/commands.cpp
@@ -29,7 +29,7 @@ set(PARTICLEED_SRCS
 )
 
 add_executable(particleed ${PARTICLEED_SRCS})
-target_link_libraries(particleed ${HGE_HELPER_LIBRARY})
+target_link_libraries(particleed ${HGE2_EXECLIBS})
 
 set(PNGOPT_SRCS
 	${D}/pngopt/pngopt.cpp
@@ -37,7 +37,7 @@ set(PNGOPT_SRCS
 )
 
 add_executable(pngopt ${PNGOPT_SRCS})
-target_link_libraries(pngopt ${HGE_LIBRARY})
+target_link_libraries(pngopt ${HGE2_EXECLIBS})
 
 set(TEXASM_SRCS
 	${D}/texasm/RectPlacement.cpp
@@ -49,4 +49,4 @@ set(TEXASM_SRCS
 )
 
 add_executable(texasm ${TEXASM_SRCS})
-target_link_libraries(texasm ${HGE_HELPER_LIBRARY})
+target_link_libraries(texasm ${HGE2_EXECLIBS})

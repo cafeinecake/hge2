@@ -68,11 +68,11 @@ set(HGE_HELPER_SRCS
 
 if(WIN32)
 	add_library(hge2core ${USE_SHARED} ${HGE_SRCS} ${HGE_HELPER_SRCS})
-	target_link_libraries(hge2core ${HGE_LIBRARIES})
+	target_link_libraries(hge2core ${HGE2_LIBRARIES})
 else()
 	add_library(hge2core ${USE_SHARED} ${HGE_SRCS})
-	target_link_libraries(hge2core ${HGE_LIBRARIES})
+	target_link_libraries(hge2core ${HGE2_LIBRARIES})
 
 	add_library(hge2helpers ${USE_SHARED} ${HGE_HELPER_SRCS})
-	target_link_libraries(hge2helpers hge2core ${HGE_LIBRARIES})
+	target_link_libraries(hge2helpers hge2core ${HGE2_LIBRARIES})
 endif()

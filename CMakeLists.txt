@@ -1,11 +1,19 @@
 project(hge2)
 cmake_minimum_required(VERSION 2.8)
 
-option(BUILD_TUTORIALS "Build the tutorial samples" OFF)
-option(BUILD_TOOLS "Build the library tools" OFF)
-option(USE_INTERNAL_ZLIB "Use the internal ZLib" OFF)
+option(BUILD_TUTORIALS   "Build the tutorial samples" ON)
+option(BUILD_TOOLS       "Build the library tools"    ON)
+option(USE_INTERNAL_ZLIB "Use the internal ZLib"      ON)
+
+SET( CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin       CACHE PATH "Single Directory for all executables." )
+SET( CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG ${CMAKE_SOURCE_DIR}/bin CACHE PATH "Single Directory for all executables." )
+SET( CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin       CACHE PATH "Single Directory for all libs." )
+SET( CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/linklib   CACHE PATH "Single Directory for all static libraries." )
 
 if(UNIX OR APPLE)
+	# These libs are linked to every tool or demo executable
+	set(HGE2_EXECLIBS hge2core hge2helpers hgezlib hgecximage )
+
 	add_definitions(-D_LINUX)
 	# Needed for FindVorbis
 	set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
@@ -42,7 +50,7 @@ if(UNIX OR APPLE)
 		${OPENAL_INCLUDE_DIR}
 		${VORBIS_INCLUDE_DIR}
 		${IL_INCLUDE_DIR}
-		${ZLIB_INCLUDE_DIR}
+		${HGEZLIB_INCLUDE_DIR}
 		${JPEG_INCLUDE_DIR}
 		${PNG_INCLUDE_DIR}
 		${CMAKE_SOURCE_DIR}/include
@@ -51,13 +59,13 @@ if(UNIX OR APPLE)
 
 
 	# The libraries to link against for HGE, and also for applications using it
-	set(HGE_LIBRARIES
+	set(HGE2_LIBRARIES
 		${SDL_LIBRARY}
 		${OPENAL_LIBRARY}
 		${VORBISFILE_LIBRARY}
 		${IL_LIBRARIES}
 		${ILU_LIBRARIES}
-		${ZLIB_LIBRARY}
+		${HGEZLIB_LIBRARY}
 		${JPEG_LIBRARY}
 		${PNG_LIBRARY}
 	)
@@ -67,6 +75,7 @@ elseif(WIN32)
 	# Windows
 	add_definitions(-D_WINDOWS -D_WIN32)
 	set(USE_INTERNAL_ZLIB ON)
+	add_subdirectory( deps/zlib )
 
 	set(HGE_LIBRARIES
 		d3d8
@@ -91,13 +100,13 @@ else()
 endif(UNIX OR APPLE)
 
 if(WIN32)
-	set(HGE_LIBRARY hge ${HGE_LIBRARIES})
-	set(HGE_HELPER_LIBRARY hge ${HGE_LIBRARIES})
+	set(HGE_LIBRARY hge2core ${HGE_LIBRARIES})
+	set(HGE_HELPER_LIBRARY hge2helpers ${HGE_LIBRARIES})
 else()
 	# This is the HGE library and required libraries to link against
-	set(HGE_LIBRARY hge ${HGE_LIBRARIES})
+	set(HGE_LIBRARY hge2core ${HGE_LIBRARIES})
 	# And this is the HGE & Helper library and required libraries to link against
-	set(HGE_HELPER_LIBRARY hge_helpers ${HGE_LIBRARY})
+	set(HGE_HELPER_LIBRARY hge2helpers ${HGE_LIBRARY})
 endif()
 
 # Where HGE is located, this also builds the helper library
