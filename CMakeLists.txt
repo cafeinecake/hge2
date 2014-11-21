@@ -1,4 +1,4 @@
-project(hge_unix)
+project(hge2)
 cmake_minimum_required(VERSION 2.8)
 
 option(BUILD_TUTORIALS "Build the tutorial samples" OFF)
@@ -6,6 +6,7 @@ option(BUILD_TOOLS "Build the library tools" OFF)
 option(USE_INTERNAL_ZLIB "Use the internal ZLib" OFF)
 
 if(UNIX OR APPLE)
+	add_definitions(-D_LINUX)
 	# Needed for FindVorbis
 	set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
@@ -22,7 +23,7 @@ if(UNIX OR APPLE)
 	if(NOT USE_INTERNAL_ZLIB)
 		find_package(ZLIB REQUIRED)
 	else()
-		add_subdirectory( deps/zlib-1.2.5 )
+		add_subdirectory( deps/zlib )
 	endif(NOT USE_INTERNAL_ZLIB)
 
 	if(USE_CXIMAGE)
@@ -48,7 +49,6 @@ if(UNIX OR APPLE)
 		${CMAKE_SOURCE_DIR}/core
 	)
 
-	add_definitions(-D_LINUX)
 
 	# The libraries to link against for HGE, and also for applications using it
 	set(HGE_LIBRARIES

@@ -1,4 +1,3 @@
-.hgignore
 *.o
 *~
 .*swp
@@ -7,7 +6,7 @@ mingw32-build
 *kdev4*
 .build
 .hg
-hge-unix.creator*
-hge-unix.config
-hge-unix.files
-hge-unix.includes
+HGE2.creator*
+HGE2.config
+HGE2.files
+HGE2.includes

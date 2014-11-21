@@ -1,4 +1,4 @@
-project(hge)
+project(hgecore)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
@@ -9,6 +9,7 @@ set(HGE_SRCS
 	common/timer.cpp
 )
 
+include_directories( ${CMAKE_SOURCE_DIR}/deps )
 
 # Platform specific files
 if(UNIX OR APPLE)
@@ -66,12 +67,12 @@ set(HGE_HELPER_SRCS
 )
 
 if(WIN32)
-	add_library(hge ${USE_SHARED} ${HGE_SRCS} ${HGE_HELPER_SRCS})
-	target_link_libraries(hge ${HGE_LIBRARIES})
+	add_library(hge2core ${USE_SHARED} ${HGE_SRCS} ${HGE_HELPER_SRCS})
+	target_link_libraries(hge2core ${HGE_LIBRARIES})
 else()
-	add_library(hge ${USE_SHARED} ${HGE_SRCS})
-	target_link_libraries(hge ${HGE_LIBRARIES})
+	add_library(hge2core ${USE_SHARED} ${HGE_SRCS})
+	target_link_libraries(hge2core ${HGE_LIBRARIES})
 
-	add_library(hge_helpers ${USE_SHARED} ${HGE_HELPER_SRCS})
-	target_link_libraries(hge_helpers hge ${HGE_LIBRARIES})
+	add_library(hge2helpers ${USE_SHARED} ${HGE_HELPER_SRCS})
+	target_link_libraries(hge2helpers hge2core ${HGE_LIBRARIES})
 endif()
