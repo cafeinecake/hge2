@@ -21,11 +21,14 @@ if(UNIX OR APPLE)
 	# If we're using the external library, we must find it
 	if(NOT USE_INTERNAL_ZLIB)
 		find_package(ZLIB REQUIRED)
+	else()
+		add_subdirectory( deps/zlib-1.2.5 )
 	endif(NOT USE_INTERNAL_ZLIB)
 
 	if(USE_CXIMAGE)
 		# CxImage required defines
 		add_definitions(-DSUPPORT_CXIMAGE)
+		add_subdirectory( deps/cximage )
 	else(USE_CXIMAGE)
 		# If we're not using CxImage, we'll use this, more common external library
 		find_package(DevIL REQUIRED)
