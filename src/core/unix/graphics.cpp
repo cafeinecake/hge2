@@ -83,7 +83,8 @@ struct gltexture {
   GLint lock_height;
 };
 
-static uint32_t *_DecodeImage(uint8_t *data, const char *fname, uint32_t size, int &width, int &height)
+static uint32_t *_DecodeImage(uint8_t *data, const char *fname, uint32_t size, int &width,
+                              int &height)
 {
   width = height = 0;
 
@@ -349,7 +350,7 @@ void CALL HGE_Impl::Gfx_EndScene()
                                    GL_RGBA, GL_UNSIGNED_BYTE, pixels);
     pOpenGLDevice->glBindTexture(pOpenGLDevice->TextureTarget,
                                  CurTexture ?
-                                   ((reinterpret_cast<gltexture *>(CurTexture))->name) : 0);
+                                 ((reinterpret_cast<gltexture *>(CurTexture))->name) : 0);
     delete[] pixels;
   }
 
@@ -942,7 +943,7 @@ bool CALL HGE_Impl::HGEEXT_Texture_PushYUV422(HTEXTURE tex, const uint8_t *yuv)
 }
 
 uint32_t * CALL HGE_Impl::Texture_Lock(HTEXTURE tex, bool bReadOnly, int left, int top, int width,
-                                    int height)
+                                       int height)
 {
   gltexture *pTex=(gltexture*)tex;
 

@@ -38,6 +38,7 @@ class CxImagePCX: public CxImage {
 
 public:
   CxImagePCX(): CxImage(CXIMAGE_FORMAT_PCX) {}
+  virtual ~CxImagePCX();
 
 //  bool Load(const TCHAR * imageFileName){ return CxImage::Load(imageFileName,CXIMAGE_FORMAT_PCX);}
 //  bool Save(const TCHAR * imageFileName){ return CxImage::Save(imageFileName,CXIMAGE_FORMAT_PCX);}

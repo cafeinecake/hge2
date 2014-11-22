@@ -564,7 +564,7 @@ int CALL HGE_Impl::Texture_GetHeight(HTEXTURE tex, bool bOriginal)
 
 
 uint32_t * CALL HGE_Impl::Texture_Lock(HTEXTURE tex, bool bReadOnly, int left, int top, int width,
-                                    int height)
+                                       int height)
 {
   LPDIRECT3DTEXTURE8 pTex=(LPDIRECT3DTEXTURE8)tex;
   D3DSURFACE_DESC TDesc;

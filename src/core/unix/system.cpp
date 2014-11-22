@@ -15,8 +15,8 @@
 #include <sys/sysctl.h>
 #endif
 
-#define LOWORDINT(n) ((int)((signed short)(LOWORD(n))))
-#define HIWORDINT(n) ((int)((signed short)(HIWORD(n))))
+//#define LOWORDINT(n) ((int)((signed short)(LOWORD(n))))
+//#define HIWORDINT(n) ((int)((signed short)(HIWORD(n))))
 
 static int nRef=0;
 HGE_Impl* pHGE=0;
@@ -495,7 +495,9 @@ void CALL HGE_Impl::System_SetStateBool(hgeBoolState state, bool value)
     bDMO=value;
 #endif
     break;
-  case HGEBOOLSTATE_FORCE_DWORD: ;
+
+  case HGEBOOLSTATE_FORCE_DWORD:
+    ;
   }
 }
 
@@ -526,7 +528,8 @@ void CALL HGE_Impl::System_SetStateFunc(hgeFuncState state, hgeCallback value)
     procExitFunc=value;
     break;
 
-  case HGEFUNCSTATE_FORCE_DWORD: ;
+  case HGEFUNCSTATE_FORCE_DWORD:
+    ;
   }
 }
 
@@ -544,8 +547,12 @@ void CALL HGE_Impl::System_SetStateHwnd(hgeHwndState state, HWND value)
     }
 
     break;
-  case HGE_HWND: break;
-  case HGEHWNDSTATE_FORCE_DWORD: ;
+
+  case HGE_HWND:
+    break;
+
+  case HGEHWNDSTATE_FORCE_DWORD:
+    ;
   }
 }
 
@@ -611,6 +618,18 @@ void CALL HGE_Impl::System_SetStateInt(hgeIntState state, int value)
     }
 
     break;
+
+  case HGE_POWERSTATUS:
+    break;
+
+  case HGE_ORIGSCREENHEIGHT:
+    break;
+
+  case HGE_ORIGSCREENWIDTH:
+    break;
+
+  case HGEINTSTATE_FORCE_DWORD:
+    break;
   }
 }
 
@@ -659,6 +678,9 @@ void CALL HGE_Impl::System_SetStateString(hgeStringState state, const char *valu
     }
 
     break;
+
+  case HGESTRINGSTATE_FORCE_DWORD:
+    break;
   }
 }
 
@@ -683,11 +705,15 @@ bool CALL HGE_Impl::System_GetStateBool(hgeBoolState state)
   case HGE_HIDEMOUSE:
     return bHideMouse;
 
-#ifdef DEMO
-
   case HGE_SHOWSPLASH:
+#ifdef DEMO
     return bDMO;
+#else
+    return false;
 #endif
+
+  case HGEBOOLSTATE_FORCE_DWORD:
+    return false;
   }
 
   return false;
@@ -710,6 +736,12 @@ hgeCallback CALL HGE_Impl::System_GetStateFunc(hgeFuncState state)
 
   case HGE_EXITFUNC:
     return procExitFunc;
+
+  case HGE_GFXRESTOREFUNC:
+    return nullptr;
+
+  case HGEFUNCSTATE_FORCE_DWORD:
+    return nullptr;
   }
 
   return NULL;
@@ -723,6 +755,9 @@ HWND CALL HGE_Impl::System_GetStateHwnd(hgeHwndState state)
 
   case HGE_HWNDPARENT:
     return hwndParent;
+
+  case HGEHWNDSTATE_FORCE_DWORD:
+    return 0;
   }
 
   return 0;
@@ -763,6 +798,9 @@ int CALL HGE_Impl::System_GetStateInt(hgeIntState state)
 
   case HGE_POWERSTATUS:
     return nPowerStatus;
+
+  case HGEINTSTATE_FORCE_DWORD:
+    return 0;
   }
 
   return 0;
@@ -790,6 +828,9 @@ const char* CALL HGE_Impl::System_GetStateString(hgeStringState state)
     } else {
       return 0;
     }
+
+  case HGESTRINGSTATE_FORCE_DWORD:
+    break;
   }
 
   return NULL;
@@ -824,19 +865,22 @@ void CALL HGE_Impl::System_Log(const char *szFormat, ...)
   fclose(hf);
 }
 
-bool CALL HGE_Impl::System_Launch(const char *url)
-{
 #if PLATFORM_MACOSX
+bool CALL HGE_Impl::System_Launch(const char * url)
+{
   CFURLRef cfurl = CFURLCreateWithBytes(NULL, (const UInt8 *) url,
                                         strlen(url), kCFStringEncodingUTF8, NULL);
   const OSStatus err = LSOpenCFURLRef(cfurl, NULL);
   CFRelease(cfurl);
   return (err == noErr);
+}
 #else
+bool CALL HGE_Impl::System_Launch(const char *)
+{
   STUBBED("launch URL");
   return false;
-#endif
 }
+#endif
 
 void CALL HGE_Impl::System_Snapshot(const char *filename)
 {
@@ -962,7 +1006,8 @@ HGE_Impl::HGE_Impl()
   szAppPath[0] = '\0';
   int i;
 
-  for(i=strlen(szAppPath)-1; i>0; i--) if(szAppPath[i]=='/') {
+  for(i = static_cast<int>(strlen(szAppPath)-1); i > 0; i -- )
+    if(szAppPath[i]=='/') {
       break;
     }
 

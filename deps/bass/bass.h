@@ -421,7 +421,8 @@ mode is not available then BASS_3DALG_OFF will be used instead. */
 mode. Requires Windows 98 2nd Edition or Windows 2000 that uses WDM drivers, if
 this mode is not available then BASS_3DALG_OFF will be used instead. */
 
-typedef uint32_t (CALLBACK STREAMPROC)(HSTREAM handle, void *buffer, uint32_t length, uint32_t user);
+typedef uint32_t (CALLBACK STREAMPROC)(HSTREAM handle, void *buffer, uint32_t length,
+                                       uint32_t user);
 /* User stream callback function. NOTE: A stream function should obviously be as quick
 as possible, other streams (and MOD musics) can't be mixed until it's finished.
 handle : The stream that needs writing
@@ -446,7 +447,8 @@ RETURN : Number of bytes written. Set the BASS_STREAMPROC_END flag to end
 #define BASS_FILE_LEN   3
 #define BASS_FILE_SEEK    4
 
-typedef uint32_t (CALLBACK STREAMFILEPROC)(uint32_t action, uint32_t param1, uint32_t param2, uint32_t user);
+typedef uint32_t (CALLBACK STREAMFILEPROC)(uint32_t action, uint32_t param1, uint32_t param2,
+    uint32_t user);
 /* User file stream callback function.
 action : The action to perform, one of BASS_FILE_xxx values.
 param1 : Depends on "action"
@@ -520,7 +522,8 @@ channel: Channel that the sync occured in
 data   : Additional data associated with the sync's occurance
 user   : The 'user' parameter given when calling BASS_ChannelSetSync */
 
-typedef void (CALLBACK DSPPROC)(HDSP handle, uint32_t channel, void *buffer, uint32_t length, uint32_t user);
+typedef void (CALLBACK DSPPROC)(HDSP handle, uint32_t channel, void *buffer, uint32_t length,
+                                uint32_t user);
 /* DSP callback function. NOTE: A DSP function should obviously be as quick as
 possible... other DSP functions, streams and MOD musics can not be processed
 until it's finished.
@@ -530,7 +533,8 @@ buffer : Buffer to apply the DSP to
 length : Number of bytes in the buffer
 user   : The 'user' parameter given when calling BASS_ChannelSetDSP */
 
-typedef bool (CALLBACK RECORDPROC)(HRECORD handle, const void *buffer, uint32_t length, uint32_t user);
+typedef bool (CALLBACK RECORDPROC)(HRECORD handle, const void *buffer, uint32_t length,
+                                   uint32_t user);
 /* Recording callback function.
 handle : The recording handle
 buffer : Buffer containing the recorded sample data
@@ -762,7 +766,8 @@ BOOL BASSDEF(BASS_SetEAXParameters)(int env, float vol, float decay, float damp)
 BOOL BASSDEF(BASS_GetEAXParameters)(DWORD *env, float *vol, float *decay, float *damp);
 #endif
 
-HMUSIC BASSDEF(BASS_MusicLoad)(bool mem, const void *file, uint32_t offset, uint32_t length, uint32_t flags,
+HMUSIC BASSDEF(BASS_MusicLoad)(bool mem, const void *file, uint32_t offset, uint32_t length,
+                               uint32_t flags,
                                uint32_t freq);
 bool BASSDEF(BASS_MusicFree)(HMUSIC handle);
 uint32_t BASSDEF(BASS_MusicSetAttribute)(HMUSIC handle, uint32_t attrib, uint32_t value);
@@ -770,9 +775,11 @@ uint32_t BASSDEF(BASS_MusicGetAttribute)(HMUSIC handle, uint32_t attrib);
 uint32_t BASSDEF(BASS_MusicGetOrders)(HMUSIC handle);
 uint32_t BASSDEF(BASS_MusicGetOrderPosition)(HMUSIC handle);
 
-HSAMPLE BASSDEF(BASS_SampleLoad)(bool mem, const void *file, uint32_t offset, uint32_t length, uint32_t max,
+HSAMPLE BASSDEF(BASS_SampleLoad)(bool mem, const void *file, uint32_t offset, uint32_t length,
+                                 uint32_t max,
                                  uint32_t flags);
-void* BASSDEF(BASS_SampleCreate)(uint32_t length, uint32_t freq, uint32_t chans, uint32_t max, uint32_t flags);
+void* BASSDEF(BASS_SampleCreate)(uint32_t length, uint32_t freq, uint32_t chans, uint32_t max,
+                                 uint32_t flags);
 HSAMPLE BASSDEF(BASS_SampleCreateDone)();
 bool BASSDEF(BASS_SampleFree)(HSAMPLE handle);
 bool BASSDEF(BASS_SampleGetInfo)(HSAMPLE handle, BASS_SAMPLE *info);
@@ -817,10 +824,13 @@ bool BASSDEF(BASS_ChannelPlay)(uint32_t handle, bool restart);
 bool BASSDEF(BASS_ChannelStop)(uint32_t handle);
 bool BASSDEF(BASS_ChannelPause)(uint32_t handle);
 bool BASSDEF(BASS_ChannelSetAttributes)(uint32_t handle, int freq, int volume, int pan);
-bool BASSDEF(BASS_ChannelGetAttributes)(uint32_t handle, uint32_t *freq, uint32_t *volume, int *pan);
-bool BASSDEF(BASS_ChannelSlideAttributes)(uint32_t handle, int freq, int volume, int pan, uint32_t time);
+bool BASSDEF(BASS_ChannelGetAttributes)(uint32_t handle, uint32_t *freq, uint32_t *volume,
+                                        int *pan);
+bool BASSDEF(BASS_ChannelSlideAttributes)(uint32_t handle, int freq, int volume, int pan,
+    uint32_t time);
 uint32_t BASSDEF(BASS_ChannelIsSliding)(uint32_t handle);
-bool BASSDEF(BASS_ChannelSet3DAttributes)(uint32_t handle, int mode, float min, float max, int iangle,
+bool BASSDEF(BASS_ChannelSet3DAttributes)(uint32_t handle, int mode, float min, float max,
+    int iangle,
     int oangle, int outvol);
 bool BASSDEF(BASS_ChannelGet3DAttributes)(uint32_t handle, uint32_t *mode, float *min, float *max,
     uint32_t *iangle, uint32_t *oangle, uint32_t *outvol);

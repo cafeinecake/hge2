@@ -118,7 +118,8 @@ public:
   }
   uint32_t     GetHWColor() const
   {
-    return (uint32_t(a*255.0f)<<24) + (uint32_t(r*255.0f)<<16) + (uint32_t(g*255.0f)<<8) + uint32_t(b*255.0f);
+    return (uint32_t(a*255.0f)<<24) + (uint32_t(r*255.0f)<<16) + (uint32_t(g*255.0f)<<8) + uint32_t(
+             b*255.0f);
   }
 };
 

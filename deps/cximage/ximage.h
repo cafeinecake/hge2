@@ -271,11 +271,7 @@ public:
   CxImage(CxFile * stream, uint32_t imagetype);
   CxImage(uint8_t * buffer, uint32_t size, uint32_t imagetype);
 #endif
-  virtual ~CxImage()
-  {
-    DestroyFrames();
-    Destroy();
-  }
+  virtual ~CxImage();
   CxImage& operator = (const CxImage&);
 //@}
 

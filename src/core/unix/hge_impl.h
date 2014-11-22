@@ -203,7 +203,8 @@ public:
   virtual bool    CALL  Gfx_BeginScene(HTARGET target=0);
   virtual void    CALL  Gfx_EndScene();
   virtual void    CALL  Gfx_Clear(uint32_t color);
-  virtual void    CALL  Gfx_RenderLine(float x1, float y1, float x2, float y2, uint32_t color=0xFFFFFFFF,
+  virtual void    CALL  Gfx_RenderLine(float x1, float y1, float x2, float y2,
+                                       uint32_t color=0xFFFFFFFF,
                                        float z=0.5f);
   virtual void    CALL  Gfx_RenderTriple(const hgeTriple *triple);
   virtual void    CALL  Gfx_RenderQuad(const hgeQuad *quad);
@@ -223,7 +224,7 @@ public:
   virtual int     CALL  Texture_GetWidth(HTEXTURE tex, bool bOriginal=false);
   virtual int     CALL  Texture_GetHeight(HTEXTURE tex, bool bOriginal=false);
   virtual uint32_t*    CALL  Texture_Lock(HTEXTURE tex, bool bReadOnly=true, int left=0, int top=0,
-                                       int width=0, int height=0);
+                                          int width=0, int height=0);
   virtual void    CALL  Texture_Unlock(HTEXTURE tex);
 
   bool CALL HGEEXT_Texture_PushYUV422(HTEXTURE tex, const uint8_t *yuv);

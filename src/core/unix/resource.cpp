@@ -164,7 +164,7 @@ void* CALL HGE_Impl::Resource_Load(const char *filename, uint32_t *size)
         }
 
         if(unzReadCurrentFile(
-             zip, ptr, static_cast<uint32_t>(file_info.uncompressed_size)) < 0) {
+              zip, ptr, static_cast<uint32_t>(file_info.uncompressed_size)) < 0) {
           unzCloseCurrentFile(zip);
           unzClose(zip);
           free(ptr);

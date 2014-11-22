@@ -59,7 +59,7 @@ bool Write32BitPNG(FILE* fp, void* pBits, bool bNeedAlpha, int nWidth, int nHeig
     png_write_info(png_ptr, info_ptr);
 
     if ( !bNeedAlpha ) {
-      png_set_filler(png_ptr, 0, PNG_FILLER_AFTER);  //	strip alpha
+      png_set_filler(png_ptr, 0, PNG_FILLER_AFTER);  // strip alpha
     }
 
     png_set_bgr(png_ptr); //  switch to little-endian notation

@@ -1059,7 +1059,7 @@ bool CxImage::Decode(CxFile *hFile, uint32_t imagetype)
       return true;
     } else {
       strcpy(info.szLastError,newima->GetLastError());
-      hFile->Seek(pos,SEEK_SET);
+      hFile->Seek(static_cast<int32_t>(pos), SEEK_SET);
       delete newima;
 
       if (CXIMAGE_FORMAT_UNKNOWN!=imagetype) {
@@ -1169,7 +1169,7 @@ bool CxImage::Decode(CxFile *hFile, uint32_t imagetype)
       return true;
     } else {
       strcpy(info.szLastError,newima->GetLastError());
-      hFile->Seek(pos,SEEK_SET);
+      hFile->Seek(static_cast<int32_t>(pos), SEEK_SET);
       delete newima;
 
       if (CXIMAGE_FORMAT_UNKNOWN!=imagetype) {
@@ -1419,7 +1419,7 @@ bool CxImage::CheckFormat(CxFile * hFile, uint32_t imagetype)
 ////////////////////////////////////////////////////////////////////////////////
 bool CxImage::CheckFormat(uint8_t * buffer, uint32_t size, uint32_t imagetype)
 {
-  if (buffer==NULL || size==NULL) {
+  if (buffer==NULL || ! size) {
     strcpy(info.szLastError,"invalid or empty buffer");
     return false;
   }

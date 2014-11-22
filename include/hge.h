@@ -96,31 +96,40 @@ typedef size_t HCHANNEL;
 /*
 ** Hardware color macros
 */
-inline uint32_t ARGB(uint8_t a, uint8_t r, uint8_t g, uint8_t b) {
+inline uint32_t ARGB(uint8_t a, uint8_t r, uint8_t g, uint8_t b)
+{
   return (uint32_t(a)<<24) + (uint32_t(r)<<16) + (uint32_t(g)<<8) + uint32_t(b);
 }
-inline uint8_t GETA(uint32_t col) {
+inline uint8_t GETA(uint32_t col)
+{
   return col>>24;
 }
-inline uint8_t GETR(uint32_t col) {
+inline uint8_t GETR(uint32_t col)
+{
   return (col>>16) & 0xFF;
 }
-inline uint8_t GETG(uint32_t col) {
+inline uint8_t GETG(uint32_t col)
+{
   return (col>>8) & 0xFF;
 }
-inline uint8_t GETB(uint32_t col) {
+inline uint8_t GETB(uint32_t col)
+{
   return col & 0xFF;
 }
-inline uint32_t SETA(uint32_t col, uint8_t a) {
+inline uint32_t SETA(uint32_t col, uint8_t a)
+{
   return (col & 0x00FFFFFF) + (uint32_t(a)<<24);
 }
-inline uint32_t SETR(uint32_t col, uint8_t r) {
+inline uint32_t SETR(uint32_t col, uint8_t r)
+{
   return (col & 0xFF00FFFF) + (uint32_t(r)<<16);
 }
-inline uint32_t SETG(uint32_t col, uint8_t g) {
+inline uint32_t SETG(uint32_t col, uint8_t g)
+{
   return (col & 0xFFFF00FF) + (uint32_t(g)<<8);
 }
-inline uint32_t SETB(uint32_t col, uint8_t b) {
+inline uint32_t SETB(uint32_t col, uint8_t b)
+{
   return (col & 0xFFFFFF00) + uint32_t(b);
 }
 
@@ -453,7 +462,8 @@ public:
   virtual bool    CALL  Gfx_BeginScene(HTARGET target=0) = 0;
   virtual void    CALL  Gfx_EndScene() = 0;
   virtual void    CALL  Gfx_Clear(uint32_t color) = 0;
-  virtual void    CALL  Gfx_RenderLine(float x1, float y1, float x2, float y2, uint32_t color=0xFFFFFFFF,
+  virtual void    CALL  Gfx_RenderLine(float x1, float y1, float x2, float y2,
+                                       uint32_t color=0xFFFFFFFF,
                                        float z=0.5f) = 0;
   virtual void    CALL  Gfx_RenderTriple(const hgeTriple *triple) = 0;
   virtual void    CALL  Gfx_RenderQuad(const hgeQuad *quad) = 0;
@@ -473,7 +483,7 @@ public:
   virtual int     CALL  Texture_GetWidth(HTEXTURE tex, bool bOriginal=false) = 0;
   virtual int     CALL  Texture_GetHeight(HTEXTURE tex, bool bOriginal=false) = 0;
   virtual uint32_t*    CALL  Texture_Lock(HTEXTURE tex, bool bReadOnly=true, int left=0, int top=0,
-                                       int width=0, int height=0) = 0;
+                                          int width=0, int height=0) = 0;
   virtual void    CALL  Texture_Unlock(HTEXTURE tex) = 0;
 };
 

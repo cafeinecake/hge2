@@ -36,6 +36,8 @@ void CxImagePNG::expand2to4bpp(uint8_t* prow)
   }
 }
 ////////////////////////////////////////////////////////////////////////////////
+CxImagePNG::~CxImagePNG() {}
+
 bool CxImagePNG::Decode(CxFile *hFile)
 {
   png_struct *png_ptr;

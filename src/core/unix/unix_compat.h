@@ -160,4 +160,6 @@ SWAPPER8(BYTE)
 #define BYTESWAP(x)
 #endif
 
+#define HGE_NORETURN __attribute__((__noreturn__))
+
 #endif  // PLATFORM_UNIX

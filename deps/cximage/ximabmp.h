@@ -36,6 +36,7 @@ const int32_t RLE_DELTA       = 2;
 class CxImageBMP: public CxImage {
 public:
   CxImageBMP(): CxImage(CXIMAGE_FORMAT_BMP) {}
+  virtual ~CxImageBMP();
 
   bool Decode(CxFile * hFile);
   bool Decode(FILE *hFile)

@@ -4,9 +4,13 @@
  */
 
 #include "ximage.h"
+#include <algorithm>
 
 CxFile::~CxFile() {}
-CxIOFile::~CxIOFile() { Close(); }
+CxIOFile::~CxIOFile()
+{
+  Close();
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 // CxImage
@@ -131,6 +135,12 @@ CxImage::CxImage(const CxImage &src, bool copypixels, bool copyselection, bool c
   Startup(src.GetType());
   Copy(src,copypixels,copyselection,copyalpha);
 }
+
+CxImage::~CxImage()
+{
+  DestroyFrames();
+  Destroy();
+}
 ////////////////////////////////////////////////////////////////////////////////
 /**
  * Copies the image from an exsisting source
@@ -243,6 +253,7 @@ void* CxImage::Create(uint32_t dwWidth, uint32_t dwHeight, uint32_t wBpp, uint32
   float sz = (static_cast<float>(dwWidth)
               * static_cast<float>(dwHeight)
               * static_cast<float>(wBpp)) / 8.0f;
+
   if (sz > static_cast<float>(CXIMAGE_MAX_MEMORY)) {
     strcpy(info.szLastError,"CXIMAGE_MAX_MEMORY exceeded");
     return NULL;
@@ -483,10 +494,10 @@ void CxImage::Bitfield2RGB(uint8_t *src, uint32_t redmask, uint32_t greenmask, u
       for (int32_t x=head.biWidth-1; x>=0; x--) {
         x2 = 2*x+y2;
         x3 = 3*x+y3;
-        w = (uint16_t)(src[x2]+256*src[1+x2]);
-        p[  x3]=(uint8_t)((w & bluemask)<<ns[0]);
-        p[1+x3]=(uint8_t)((w & greenmask)>>ns[1]);
-        p[2+x3]=(uint8_t)((w & redmask)>>ns[2]);
+        w = static_cast<uint16_t>(src[x2]+256*src[1+x2]);
+        p[  x3]=static_cast<uint8_t>((w & bluemask)<<ns[0]);
+        p[1+x3]=static_cast<uint8_t>((w & greenmask)>>ns[1]);
+        p[2+x3]=static_cast<uint8_t>((w & redmask)>>ns[2]);
       }
     }
 
@@ -519,14 +530,14 @@ void CxImage::Bitfield2RGB(uint8_t *src, uint32_t redmask, uint32_t greenmask, u
     // scan the buffer in reverse direction to avoid reallocations
     for (int32_t y=head.biHeight-1; y>=0; y--) {
       y4=effwidth4*y;
-      y3=info.dwEffWidth*y;
+      y3 = static_cast<int32_t>(info.dwEffWidth * static_cast<uint32_t>(y));
 
       for (int32_t x=head.biWidth-1; x>=0; x--) {
         x4 = 4*x+y4;
         x3 = 3*x+y3;
-        p[  x3]=src[ns[2]+x4];
-        p[1+x3]=src[ns[1]+x4];
-        p[2+x3]=src[ns[0]+x4];
+        p[  x3]= src[ns[2] + static_cast<uint32_t>(x4)];
+        p[1+x3]= src[ns[1] + static_cast<uint32_t>(x4)];
+        p[2+x3]= src[ns[0] + static_cast<uint32_t>(x4)];
       }
     }
   }
@@ -586,12 +597,14 @@ bool CxImage::CreateFromArray(uint8_t* pArray,uint32_t dwWidth,uint32_t dwHeight
         *dst++=src[1];
         *dst++=src[2];
 #if CXIMAGE_SUPPORT_ALPHA
-        AlphaSet(x,(bFlipImage?(dwHeight-1-y):y),src[3]);
+        AlphaSet(static_cast<int32_t>(x),
+                 static_cast<int32_t>(bFlipImage?(dwHeight-1u-y):y),
+                 src[3]);
 #endif //CXIMAGE_SUPPORT_ALPHA
         src+=4;
       }
     } else {
-      memcpy(dst,src,min(info.dwEffWidth,dwBytesperline));
+      memcpy(dst,src, std::min(info.dwEffWidth,dwBytesperline));
     }
   }
 

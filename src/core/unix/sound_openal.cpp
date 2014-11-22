@@ -224,12 +224,15 @@ HEFFECT CALL HGE_Impl::Effect_Load(const char *filename, uint32_t size)
     ALenum fmt = AL_FORMAT_STEREO16;
 
     if (isOgg) {
-      if (alIsExtensionPresent((const ALchar *) "AL_EXT_vorbis")) {
-        fmt = alGetEnumValue((const ALchar *) "AL_FORMAT_VORBIS_EXT");
+      if (alIsExtensionPresent(static_cast<const ALchar *>("AL_EXT_vorbis"))) {
+        fmt = alGetEnumValue(static_cast<const ALchar *>("AL_FORMAT_VORBIS_EXT"));
         decompressed = data;
-        decompressed_size = _size;
+        decompressed_size = static_cast<ALsizei>(_size);
       } else {
-        allocation_decompressed = decompress_vorbis((const uint8_t *) data, _size, &decompressed_size, &fmt,
+        allocation_decompressed = decompress_vorbis(static_cast<const uint8_t *>(data),
+                                  _size,
+                                  &decompressed_size,
+                                  &fmt,
                                   &freq);
         decompressed = allocation_decompressed;
       }
@@ -244,7 +247,7 @@ HEFFECT CALL HGE_Impl::Effect_Load(const char *filename, uint32_t size)
       Resource_Free(data);
     }
 
-    return (HEFFECT) bid;
+    return static_cast<HEFFECT>(bid);
   } else {
     return 0;
   }
@@ -274,10 +277,10 @@ HCHANNEL CALL HGE_Impl::Effect_PlayEx(HEFFECT eff, int volume, int pan, float pi
       }
 
       alSourceStop(sid);
-      alSourcei(sid, AL_BUFFER, (ALint) eff);
-      alSourcef(sid, AL_GAIN, ((ALfloat) volume) / 100.0f);
+      alSourcei(sid, AL_BUFFER, static_cast<ALint>(eff));
+      alSourcef(sid, AL_GAIN, (static_cast<ALfloat>(volume)) / 100.0f);
       alSourcef(sid, AL_PITCH, pitch);
-      alSource3f(sid, AL_POSITION, ((ALfloat) pan) / 100.0f, 0.0f, 0.0f);
+      alSource3f(sid, AL_POSITION, (static_cast<ALfloat>(pan)) / 100.0f, 0.0f, 0.0f);
       alSourcei(sid, AL_LOOPING, loop ? AL_TRUE : AL_FALSE);
       alSourcePlay(sid);
     }
@@ -292,91 +295,95 @@ HCHANNEL CALL HGE_Impl::Effect_PlayEx(HEFFECT eff, int volume, int pan, float pi
 void CALL HGE_Impl::Effect_Free(HEFFECT eff)
 {
   if(hOpenAL) {
-    ALuint bid = (ALuint) eff;
+    ALuint bid = static_cast<ALuint>(eff);
     alDeleteBuffers(1, &bid);
   }
 }
 
 
-HMUSIC CALL HGE_Impl::Music_Load(const char *filename, uint32_t size)
+HMUSIC CALL HGE_Impl::Music_Load(const char * /*filename*/, uint32_t /*size*/)
 {
   assert(false && "write me");
   return 0;  // !!! FIXME: MOD (etc) music unsupported at the moment.
 }
 
-HCHANNEL CALL HGE_Impl::Music_Play(HMUSIC mus, bool loop, int volume, int order, int row)
+HCHANNEL CALL HGE_Impl::Music_Play(HMUSIC /*mus*/, bool /*loop*/,
+                                   int /*volume*/, int /*order*/, int /*row*/)
 {
   assert(false && "write me");
   return 0;  // !!! FIXME: MOD (etc) music unsupported at the moment.
 }
 
-void CALL HGE_Impl::Music_Free(HMUSIC mus)
+void CALL HGE_Impl::Music_Free(HMUSIC /*mus*/)
 {
   assert(false && "write me"); // !!! FIXME: MOD (etc) music unsupported at the moment.
 }
 
-void CALL HGE_Impl::Music_SetAmplification(HMUSIC music, int ampl)
+void CALL HGE_Impl::Music_SetAmplification(HMUSIC /*music*/, int /*ampl*/)
 {
   assert(false && "write me"); // !!! FIXME: MOD (etc) music unsupported at the moment.
 }
 
-int CALL HGE_Impl::Music_GetAmplification(HMUSIC music)
+int CALL HGE_Impl::Music_GetAmplification(HMUSIC /*music*/)
 {
   assert(false && "write me");
   return -1;  // !!! FIXME: MOD (etc) music unsupported at the moment.
 }
 
-int CALL HGE_Impl::Music_GetLength(HMUSIC music)
+int CALL HGE_Impl::Music_GetLength(HMUSIC /*music*/)
 {
   assert(false && "write me");
   return -1;  // !!! FIXME: MOD (etc) music unsupported at the moment.
 }
 
-void CALL HGE_Impl::Music_SetPos(HMUSIC music, int order, int row)
+void CALL HGE_Impl::Music_SetPos(HMUSIC /*music*/, int /*order*/, int /*row*/)
 {
   assert(false && "write me"); // !!! FIXME: MOD (etc) music unsupported at the moment.
 }
 
-bool CALL HGE_Impl::Music_GetPos(HMUSIC music, int *order, int *row)
+bool CALL HGE_Impl::Music_GetPos(HMUSIC /*music*/, int */*order*/, int */*row*/)
 {
   assert(false && "write me");
   return false;  // !!! FIXME: MOD (etc) music unsupported at the moment.
 }
 
-void CALL HGE_Impl::Music_SetInstrVolume(HMUSIC music, int instr, int volume)
+void CALL HGE_Impl::Music_SetInstrVolume(HMUSIC /*music*/, int /*instr*/,
+    int /*volume*/)
 {
   assert(false && "write me"); // !!! FIXME: MOD (etc) music unsupported at the moment.
 }
 
-int CALL HGE_Impl::Music_GetInstrVolume(HMUSIC music, int instr)
+int CALL HGE_Impl::Music_GetInstrVolume(HMUSIC /*music*/, int /*instr*/)
 {
   assert(false && "write me");
   return -1;  // !!! FIXME: MOD (etc) music unsupported at the moment.
 }
 
-void CALL HGE_Impl::Music_SetChannelVolume(HMUSIC music, int channel, int volume)
+void CALL HGE_Impl::Music_SetChannelVolume(HMUSIC /*music*/, int /*channel*/,
+    int /*volume*/)
 {
   assert(false && "write me"); // !!! FIXME: MOD (etc) music unsupported at the moment.
 }
 
-int CALL HGE_Impl::Music_GetChannelVolume(HMUSIC music, int channel)
+int CALL HGE_Impl::Music_GetChannelVolume(HMUSIC /*music*/, int /*channel*/)
 {
   assert(false && "write me");
   return -1;  // !!! FIXME: MOD (etc) music unsupported at the moment.
 }
 
-HSTREAM CALL HGE_Impl::Stream_Load(const char *filename, uint32_t size)
+HSTREAM CALL HGE_Impl::Stream_Load(const char * /*filename*/, uint32_t /*size*/)
 {
   assert(false && "write me");
   return 0; // !!! FIXME: streaming unsupported at the moment.
 }
 
-void CALL HGE_Impl::Stream_Free(HSTREAM stream)
+void CALL HGE_Impl::Stream_Free(HSTREAM /*stream*/)
 {
   assert(false && "write me");  // !!! FIXME: streaming unsupported at the moment.
 }
 
-HCHANNEL CALL HGE_Impl::Stream_Play(HSTREAM stream, bool loop, int volume)
+HCHANNEL CALL HGE_Impl::Stream_Play(HSTREAM /*stream*/, bool /*loop*/,
+                                    int /*volume*/)
 {
   assert(false && "write me");
   return 0; // !!! FIXME: streaming unsupported at the moment.
@@ -388,7 +395,11 @@ void CALL HGE_Impl::Channel_SetPanning(HCHANNEL chn, int pan)
   assert(pan <= 100);
 
   if(hOpenAL) {
-    alSource3f((ALuint) chn, AL_POSITION, ((ALfloat) pan) / 100.0f, 0.0f, 0.0f);
+    alSource3f(static_cast<ALuint>(chn),
+               AL_POSITION,
+               (static_cast<ALfloat>(pan)) / 100.0f,
+               0.0f,
+               0.0f);
   }
 }
 
@@ -401,35 +412,37 @@ void CALL HGE_Impl::Channel_SetVolume(HCHANNEL chn, int volume)
       volume = 100;
     }
 
-    alSourcef((ALuint) chn, AL_GAIN, ((ALfloat) volume) / 100.0f);
+    alSourcef(static_cast<ALuint>(chn),
+              AL_GAIN,
+              (static_cast<ALfloat>(volume)) / 100.0f);
   }
 }
 
 void CALL HGE_Impl::Channel_SetPitch(HCHANNEL chn, float pitch)
 {
   if(hOpenAL) {
-    alSourcef((ALuint) chn, AL_PITCH, pitch);
+    alSourcef(static_cast<ALuint>(chn), AL_PITCH, pitch);
   }
 }
 
 void CALL HGE_Impl::Channel_Pause(HCHANNEL chn)
 {
   if(hOpenAL) {
-    alSourcePause((ALuint) chn);
+    alSourcePause(static_cast<ALuint>(chn));
   }
 }
 
 void CALL HGE_Impl::Channel_Resume(HCHANNEL chn)
 {
   if(hOpenAL) {
-    alSourcePlay((ALuint) chn);
+    alSourcePlay(static_cast<ALuint>(chn));
   }
 }
 
 void CALL HGE_Impl::Channel_Stop(HCHANNEL chn)
 {
   if(hOpenAL) {
-    alSourceStop((ALuint) chn);
+    alSourceStop(static_cast<ALuint>(chn));
   }
 }
 
@@ -462,36 +475,37 @@ bool CALL HGE_Impl::Channel_IsPlaying(HCHANNEL chn)
 {
   if(hOpenAL) {
     ALint state = AL_STOPPED;
-    alGetSourceiv((ALuint) chn, AL_SOURCE_STATE, &state);
+    alGetSourceiv(static_cast<ALuint>(chn), AL_SOURCE_STATE, &state);
     return state == AL_PLAYING;
   } else {
     return false;
   }
 }
 
-float CALL HGE_Impl::Channel_GetLength(HCHANNEL chn)
+float CALL HGE_Impl::Channel_GetLength(HCHANNEL /*chn*/)
 {
   assert(false && "write me");
   return -1.0f;
 }
 
-float CALL HGE_Impl::Channel_GetPos(HCHANNEL chn)
+float CALL HGE_Impl::Channel_GetPos(HCHANNEL /*chn*/)
 {
   assert(false && "write me");
   return -1.0f;
 }
 
-void CALL HGE_Impl::Channel_SetPos(HCHANNEL chn, float fSeconds)
+void CALL HGE_Impl::Channel_SetPos(HCHANNEL /*chn*/, float /*fSeconds*/)
 {
   assert(false && "write me");
 }
 
-void CALL HGE_Impl::Channel_SlideTo(HCHANNEL channel, float time, int volume, int pan, float pitch)
+void CALL HGE_Impl::Channel_SlideTo(HCHANNEL /*channel*/, float /*time*/,
+                                    int /*volume*/, int /*pan*/, float /*pitch*/)
 {
   assert(false && "write me");
 }
 
-bool CALL HGE_Impl::Channel_IsSliding(HCHANNEL channel)
+bool CALL HGE_Impl::Channel_IsSliding(HCHANNEL /*channel*/)
 {
   assert(false && "write me");
   return false;
@@ -536,13 +550,13 @@ bool HGE_Impl::_SoundInit()
   alcProcessContext(ctx);
 
   System_Log("OpenAL initialized");
-  System_Log("AL_VENDOR: %s", (char *) alGetString(AL_VENDOR));
-  System_Log("AL_RENDERER: %s", (char *) alGetString(AL_RENDERER));
-  System_Log("AL_VERSION: %s", (char *) alGetString(AL_VERSION));
-  System_Log("AL_EXTENSIONS: %s", (char *) alGetString(AL_EXTENSIONS));
+  System_Log("AL_VENDOR: %s", const_cast<char *>(alGetString(AL_VENDOR)));
+  System_Log("AL_RENDERER: %s", const_cast<char *>(alGetString(AL_RENDERER)));
+  System_Log("AL_VERSION: %s", const_cast<char *>(alGetString(AL_VERSION)));
+  System_Log("AL_EXTENSIONS: %s", const_cast<char *>(alGetString(AL_EXTENSIONS)));
 
-  hOpenAL = (void *)
-            0x1;   // something non-NULL (!!! FIXME: this should eventually be a library handle).
+  // something non-NULL (!!! FIXME: this should eventually be a library handle).
+  hOpenAL = reinterpret_cast<void *>(0x1);
 
   _SetFXVolume(nFXVolume);
   //_SetMusVolume(nMusVolume);
@@ -584,12 +598,12 @@ void HGE_Impl::_SoundDone()
   }
 }
 
-void HGE_Impl::_SetMusVolume(int vol)
+void HGE_NORETURN HGE_Impl::_SetMusVolume(int /*vol*/)
 {
   assert(false && "write me");
 }
 
-void HGE_Impl::_SetStreamVolume(int vol)
+void HGE_NORETURN HGE_Impl::_SetStreamVolume(int /*vol*/)
 {
   assert(false && "write me");
 }
@@ -597,6 +611,6 @@ void HGE_Impl::_SetStreamVolume(int vol)
 void HGE_Impl::_SetFXVolume(int vol)
 {
   if(hOpenAL) {
-    alListenerf(AL_GAIN, ((ALfloat) vol) / 100.0f);
+    alListenerf(AL_GAIN, (static_cast<ALfloat>(vol)) / 100.0f);
   }
 }
