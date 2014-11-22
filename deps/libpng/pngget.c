@@ -179,7 +179,7 @@ png_get_pixel_aspect_ratio(png_structp png_ptr, png_infop info_ptr)
       if (info_ptr->x_pixels_per_unit == 0)
          return ((float)0.0);
       else
-         return ((float)((float)info_ptr->y_pixels_per_unit
+         return (static_cast<float>((float)info_ptr->y_pixels_per_unit
             /(float)info_ptr->x_pixels_per_unit));
    }
 #else

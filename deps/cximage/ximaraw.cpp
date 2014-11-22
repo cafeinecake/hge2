@@ -368,7 +368,7 @@ bool CxImageRAW::GetExifThumbnail(const TCHAR *filename, const TCHAR *outname, i
         // Resizing.
         if (image.GetWidth() > 256 || image.GetHeight() > 256) {
           float amount = 256.0f / max(image.GetWidth(), image.GetHeight());
-          image.Resample((int32_t)(image.GetWidth() * amount), (int32_t)(image.GetHeight() * amount), 0);
+          image.Resample(static_cast<int32_t>(image.GetWidth() * amount), static_cast<int32_t>(image.GetHeight() * amount), 0);
         }
 
         // Rotation.

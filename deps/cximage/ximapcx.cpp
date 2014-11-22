@@ -17,10 +17,10 @@
 
 #define PCX_MAGIC 0X0A  // PCX magic number
 #define PCX_256_COLORS 0X0C  // magic number for 256 colors
-#define PCX_HDR_SIZE 128  // size of PCX header
+//#define PCX_HDR_SIZE 128  // size of PCX header
 #define PCX_MAXCOLORS 256
-#define PCX_MAXPLANES 4
-#define PCX_MAXVAL 255
+//#define PCX_MAXPLANES 4
+//#define PCX_MAXVAL 255
 
 ////////////////////////////////////////////////////////////////////////////////
 #if CXIMAGE_SUPPORT_DECODE
@@ -80,7 +80,9 @@ bool CxImagePCX::Decode(CxFile *hFile)
     // Create the image
     if (pcxHeader.ColorPlanes >= 3 && pcxHeader.BitsPerPixel == 8)
     {
-      Create (Width, Height, 24, CXIMAGE_FORMAT_PCX);
+      Create (static_cast<uint32_t>(Width),
+              static_cast<uint32_t>(Height),
+              24, CXIMAGE_FORMAT_PCX);
 #if CXIMAGE_SUPPORT_ALPHA
 
       if (pcxHeader.ColorPlanes==4) {
@@ -90,9 +92,14 @@ bool CxImagePCX::Decode(CxFile *hFile)
 #endif //CXIMAGE_SUPPORT_ALPHA
     } else if (pcxHeader.ColorPlanes == 4 && pcxHeader.BitsPerPixel == 1)
     {
-      Create (Width, Height, 4, CXIMAGE_FORMAT_PCX);
+      Create (static_cast<uint32_t>(Width),
+              static_cast<uint32_t>(Height),
+              4, CXIMAGE_FORMAT_PCX);
     } else
-    { Create (Width, Height, pcxHeader.BitsPerPixel, CXIMAGE_FORMAT_PCX); }
+    { Create (static_cast<uint32_t>(Width),
+              static_cast<uint32_t>(Height),
+              static_cast<uint32_t>(pcxHeader.BitsPerPixel),
+              CXIMAGE_FORMAT_PCX); }
 
     if (info.nEscape)
     {
@@ -101,7 +108,7 @@ bool CxImagePCX::Decode(CxFile *hFile)
 
     //Read the image and check if it's ok
     nbytes = pcxHeader.BytesPerLine * pcxHeader.ColorPlanes * Height;
-    lpHead1 = pcximage = (uint8_t*)malloc(nbytes);
+    lpHead1 = pcximage = new uint8_t [nbytes];
 
     while (nbytes > 0)
     {
@@ -164,10 +171,11 @@ bool CxImagePCX::Decode(CxFile *hFile)
 
     for (uint32_t idx=0; idx<head.biClrUsed; idx++)
     {
-      SetPaletteColor((uint8_t)idx,ColorMap[idx][0],ColorMap[idx][1],ColorMap[idx][2]);
+      SetPaletteColor(static_cast<uint8_t>(idx),
+                      ColorMap[idx][0],ColorMap[idx][1],ColorMap[idx][2]);
     }
 
-    lpHead2 = pcxpixels = (uint8_t *)malloc(Width + pcxHeader.BytesPerLine * 8);
+    lpHead2 = pcxpixels = new uint8_t [Width + pcxHeader.BytesPerLine * 8];
     // Convert the image
     for (y = 0; y < Height; y++)
     {
@@ -199,12 +207,16 @@ bool CxImagePCX::Decode(CxFile *hFile)
         continue;
 #endif //CXIMAGE_SUPPORT_ALPHA
       } else if (pcxHeader.ColorPlanes == 1) {
-        if (!PCX_UnpackPixels(pcxpixels, pcxplanes, pcxHeader.BytesPerLine, pcxHeader.ColorPlanes,
+        if (!PCX_UnpackPixels(pcxpixels, pcxplanes,
+                              static_cast<int16_t>(pcxHeader.BytesPerLine),
+                              pcxHeader.ColorPlanes,
                               pcxHeader.BitsPerPixel)) {
           cx_throw("PCX_UnpackPixels: Can't handle packed pixels with more than 1 plane");
         }
       } else {
-        if (!PCX_PlanesToPixels(pcxpixels, pcxplanes, pcxHeader.BytesPerLine, pcxHeader.ColorPlanes,
+        if (!PCX_PlanesToPixels(pcxpixels, pcxplanes,
+                                static_cast<int16_t>(pcxHeader.BytesPerLine),
+                                pcxHeader.ColorPlanes,
                                 pcxHeader.BitsPerPixel)) {
           cx_throw("PCX_PlanesToPixels: more than 4 planes or more than 1 bit per pixel");
         }
@@ -493,7 +505,7 @@ bool CxImagePCX::PCX_PlanesToPixels(uint8_t * pixels, uint8_t * bitplanes, int16
 bool CxImagePCX::PCX_UnpackPixels(uint8_t * pixels, uint8_t * bitplanes, int16_t bytesperline,
                                   int16_t planes, int16_t bitsperpixel)
 {
-  register int32_t bits;
+  int32_t bits;
 
   if (planes != 1) {
     return false;
@@ -506,16 +518,16 @@ bool CxImagePCX::PCX_UnpackPixels(uint8_t * pixels, uint8_t * bitplanes, int16_t
   } else if (bitsperpixel == 4) { // 4 bits/pixel, two pixels per byte
     while (bytesperline-- > 0) {
       bits = *bitplanes++;
-      *pixels++ = (uint8_t)((bits >> 4) & 0X0F);
-      *pixels++ = (uint8_t)((bits) & 0X0F);
+      *pixels++ = static_cast<uint8_t>((bits >> 4) & 0X0F);
+      *pixels++ = static_cast<uint8_t>((bits) & 0X0F);
     }
   } else if (bitsperpixel == 2) { // 2 bits/pixel, four pixels per byte
     while (bytesperline-- > 0) {
       bits = *bitplanes++;
-      *pixels++ = (uint8_t)((bits >> 6) & 0X03);
-      *pixels++ = (uint8_t)((bits >> 4) & 0X03);
-      *pixels++ = (uint8_t)((bits >> 2) & 0X03);
-      *pixels++ = (uint8_t)((bits) & 0X03);
+      *pixels++ = static_cast<uint8_t>((bits >> 6) & 0X03);
+      *pixels++ = static_cast<uint8_t>((bits >> 4) & 0X03);
+      *pixels++ = static_cast<uint8_t>((bits >> 2) & 0X03);
+      *pixels++ = static_cast<uint8_t>((bits) & 0X03);
     }
   } else if (bitsperpixel == 1) { // 1 bits/pixel, 8 pixels per byte
     while (bytesperline-- > 0) {
@@ -562,7 +574,7 @@ void CxImagePCX::PCX_PackPixels(const int32_t p,uint8_t &c, uint8_t &n, CxFile &
     f.PutC(0);
   }
 
-  c=(uint8_t)p;
+  c = static_cast<uint8_t>(p);
   n++;
 }
 ////////////////////////////////////////////////////////////////////////////////

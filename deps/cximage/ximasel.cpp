@@ -222,7 +222,7 @@ bool CxImage::SelectionAddEllipse(RECT r, uint8_t level)
 
   for (y=ymin; y<min(ycenter,ymax); y++) {
     for (int32_t x=xmin; x<xmax; x++) {
-      yo = (int32_t)(ycenter - yradius * sqrt(1-pow((float)(x - xcenter)/(float)xradius,2)));
+      yo = static_cast<int32_t>(ycenter - yradius * sqrt(1-pow(static_cast<float>(x - xcenter)/(float)xradius,2)));
 
       if (yo<y) {
         pSelection[x + y * head.biWidth] = level;
@@ -232,7 +232,7 @@ bool CxImage::SelectionAddEllipse(RECT r, uint8_t level)
 
   for (y=ycenter; y<ymax; y++) {
     for (int32_t x=xmin; x<xmax; x++) {
-      yo = (int32_t)(ycenter + yradius * sqrt(1-pow((float)(x - xcenter)/(float)xradius,2)));
+      yo = static_cast<int32_t>(ycenter + yradius * sqrt(1-pow(static_cast<float>(x - xcenter)/(float)xradius,2)));
 
       if (yo>y) {
         pSelection[x + y * head.biWidth] = level;
@@ -334,11 +334,11 @@ bool CxImage::SelectionAddPolygon(POINT *points, int32_t npoints, uint8_t level)
       float beta;
 
       if (current->x != next->x) {
-        beta = (float)(next->y - current->y)/(float)(next->x - current->x);
+        beta = static_cast<float>(next->y - current->y)/static_cast<float>(next->x - current->x);
 
         if (current->x < next->x) {
           for (x=current->x; x<=next->x; x++) {
-            y = (int32_t)(current->y + (x - current->x) * beta);
+            y = static_cast<int32_t>(current->y + (x - current->x) * beta);
 
             if (IsInside(x,y)) {
               plocal[x + y * head.biWidth] = 255;
@@ -346,7 +346,7 @@ bool CxImage::SelectionAddPolygon(POINT *points, int32_t npoints, uint8_t level)
           }
         } else {
           for (x=current->x; x>=next->x; x--) {
-            y = (int32_t)(current->y + (x - current->x) * beta);
+            y = static_cast<int32_t>(current->y + (x - current->x) * beta);
 
             if (IsInside(x,y)) {
               plocal[x + y * head.biWidth] = 255;
@@ -356,11 +356,11 @@ bool CxImage::SelectionAddPolygon(POINT *points, int32_t npoints, uint8_t level)
       }
 
       if (current->y != next->y) {
-        beta = (float)(next->x - current->x)/(float)(next->y - current->y);
+        beta = static_cast<float>(next->x - current->x)/static_cast<float>(next->y - current->y);
 
         if (current->y < next->y) {
           for (y=current->y; y<=next->y; y++) {
-            x = (int32_t)(current->x + (y - current->y) * beta);
+            x = static_cast<int32_t>(current->x + (y - current->y) * beta);
 
             if (IsInside(x,y)) {
               plocal[x + y * head.biWidth] = 255;
@@ -368,7 +368,7 @@ bool CxImage::SelectionAddPolygon(POINT *points, int32_t npoints, uint8_t level)
           }
         } else {
           for (y=current->y; y>=next->y; y--) {
-            x = (int32_t)(current->x + (y - current->y) * beta);
+            x = static_cast<int32_t>(current->x + (y - current->y) * beta);
 
             if (IsInside(x,y)) {
               plocal[x + y * head.biWidth] = 255;

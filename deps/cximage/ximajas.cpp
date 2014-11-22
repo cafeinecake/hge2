@@ -183,9 +183,9 @@ bool CxImageJAS::Decode(CxFile *hFile, uint32_t imagetype)
         }
 
         for (x=0; x<w; x++) {
-          c.rgbRed   = (uint8_t)((jas_matrix_getv(bufs[0], x)>>nshift));
-          c.rgbGreen = (uint8_t)((jas_matrix_getv(bufs[1], x)>>nshift));
-          c.rgbBlue  = (uint8_t)((jas_matrix_getv(bufs[2], x)>>nshift));
+          c.rgbRed   = static_cast<uint8_t>((jas_matrix_getv(bufs[0], x)>>nshift));
+          c.rgbGreen = static_cast<uint8_t>((jas_matrix_getv(bufs[1], x)>>nshift));
+          c.rgbBlue  = static_cast<uint8_t>((jas_matrix_getv(bufs[2], x)>>nshift));
           SetPixelColor(x,h-1-y,c);
         }
       }
@@ -217,7 +217,7 @@ bool CxImageJAS::Decode(CxFile *hFile, uint32_t imagetype)
           jas_image_readcmpt(image, cmptno, 0, y, w, 1, bufs[0]);
 
           for (x=0; x<w; x++) {
-            SetPixelIndex(x,h-1-y,(uint8_t)((jas_matrix_getv(bufs[0], x)>>nshift)));
+            SetPixelIndex(x,h-1-y,static_cast<uint8_t>((jas_matrix_getv(bufs[0], x)>>nshift)));
           }
         }
       }

@@ -62,26 +62,43 @@ protected:
 #define BFT_BITMAP 0x4d42   /* 'BM' */
 #define BFT_CURSOR 0x5450   /* 'PT' */
 
-#ifndef WIDTHBYTES
-#define WIDTHBYTES(i)           ((unsigned)((i+31)&(~31))/8)  /* ULONG aligned ! */
-#endif
+//#ifndef WIDTHBYTES
+inline uint32_t WIDTHBYTES(uint32_t i) {
+  return (static_cast<uint32_t>((i+31) & static_cast<uint32_t>(~31))/8);  /* ULONG aligned ! */
+}
+//#endif
 
 #endif
 
-#define DibWidthBytesN(lpbi, n) (uint32_t)WIDTHBYTES((uint32_t)(lpbi)->biWidth * (uint32_t)(n))
-#define DibWidthBytes(lpbi)     DibWidthBytesN(lpbi, (lpbi)->biBitCount)
+inline uint32_t DibWidthBytesN(BITMAPINFOHEADER *lpbi, uint32_t n) {
+  return static_cast<uint32_t>(
+        WIDTHBYTES(static_cast<uint32_t>(lpbi->biWidth) * n)
+        );
+}
+inline uint32_t DibWidthBytes(BITMAPINFOHEADER *lpbi) {
+  return DibWidthBytesN(lpbi, (lpbi)->biBitCount);
+}
 
-#define DibSizeImage(lpbi)      ((lpbi)->biSizeImage == 0 \
-                                    ? ((uint32_t)(uint32_t)DibWidthBytes(lpbi) * (uint32_t)(uint32_t)(lpbi)->biHeight) \
-                                    : (lpbi)->biSizeImage)
+inline uint32_t DibSizeImage(BITMAPINFOHEADER *lpbi) {
+  return (lpbi->biSizeImage == 0
+    ? (static_cast<uint32_t>(DibWidthBytes(lpbi))
+       * static_cast<uint32_t>(lpbi->biHeight))
+    : lpbi->biSizeImage);
+}
 
-#define DibNumColors(lpbi)      ((lpbi)->biClrUsed == 0 && (lpbi)->biBitCount <= 8 \
-                                    ? (int32_t)(1 << (int32_t)(lpbi)->biBitCount)          \
-                                    : (int32_t)(lpbi)->biClrUsed)
+inline uint32_t DibNumColors(BITMAPINFOHEADER *lpbi) {
+  return (lpbi->biClrUsed == 0 && lpbi->biBitCount <= 8
+          ? static_cast<uint32_t>(1 << static_cast<uint32_t>(lpbi->biBitCount))
+          : static_cast<uint32_t>(lpbi->biClrUsed));
+}
 
-#define FixBitmapInfo(lpbi)     if ((lpbi)->biSizeImage == 0)                 \
-                        (lpbi)->biSizeImage = DibSizeImage(lpbi); \
-                                if ((lpbi)->biClrUsed == 0)                   \
-                                    (lpbi)->biClrUsed = DibNumColors(lpbi);   \
+inline void FixBitmapInfo(BITMAPINFOHEADER *lpbi) {
+  if (lpbi->biSizeImage == 0) {
+    lpbi->biSizeImage = DibSizeImage(lpbi);
+  }
+  if (lpbi->biClrUsed == 0) {
+    lpbi->biClrUsed = DibNumColors(lpbi);
+  }
+}
  
 #endif

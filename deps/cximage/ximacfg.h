@@ -1,5 +1,5 @@
-#if !defined(__ximaCFG_h)
-#define __ximaCFG_h
+#pragma once
+#include <algorithm>
 
 /////////////////////////////////////////////////////////////////////////////
 // CxImage supported features
@@ -54,6 +54,11 @@
 /////////////////////////////////////////////////////////////////////////////
 //color to grey mapping <H. Muelner> <jurgene>
 //#define RGB2GRAY(r,g,b) (((b)*114 + (g)*587 + (r)*299)/1000)
-#define RGB2GRAY(r,g,b) (((b)*117 + (g)*601 + (r)*306) >> 10)
+inline uint8_t RGB2GRAY(uint8_t r, uint8_t g, uint8_t b) {
+  return static_cast<uint8_t>(
+          (static_cast<uint32_t>(b)*117 +
+          static_cast<uint32_t>(g)*601 +
+          static_cast<uint32_t>(r)*306) >> 10
+        );
+}
 
-#endif

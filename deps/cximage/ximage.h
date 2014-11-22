@@ -826,8 +826,12 @@ protected:
   void Bitfield2RGB(uint8_t *src, uint32_t redmask, uint32_t greenmask, uint32_t bluemask,
                     uint8_t bpp);
   static int32_t CompareColors(const void *elem1, const void *elem2);
-  int16_t m_ntohs(const int16_t word);
-  int32_t m_ntohl(const int32_t dword);
+
+  uint16_t m_ntohs(const uint16_t word);
+  int16_t m_ntohs_i(const int16_t word);
+  uint32_t m_ntohl(const uint32_t dword);
+  int32_t m_ntohl_i(const int32_t dword);
+
   void bihtoh(BITMAPINFOHEADER* bih);
 
   void*       pDib; //contains the header, the palette, the pixels

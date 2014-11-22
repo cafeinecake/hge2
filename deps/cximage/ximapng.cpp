@@ -12,7 +12,8 @@
 #include "ximaiter.h"
 
 ////////////////////////////////////////////////////////////////////////////////
-void CxImagePNG::ima_png_error(png_struct *png_ptr, char *message)
+void __attribute__((__noreturn__))
+CxImagePNG::ima_png_error(png_struct *png_ptr, char *message)
 {
   strcpy(info.szLastError,message);
   longjmp(png_ptr->jmpbuf, 1);
@@ -28,9 +29,9 @@ void CxImagePNG::expand2to4bpp(uint8_t* prow)
   for(int32_t x=head.biWidth-1; x>=0; x--) {
     psrc = prow + ((2*x)>>3);
     pdst = prow + ((4*x)>>3);
-    pos = (uint8_t)(2*(3-x%4));
-    idx = (uint8_t)((*psrc & (0x03<<pos))>>pos);
-    pos = (uint8_t)(4*(1-x%2));
+    pos = static_cast<uint8_t>(2*(3-x%4));
+    idx = static_cast<uint8_t>((*psrc & (0x03<<pos))>>pos);
+    pos = static_cast<uint8_t>(4*(1-x%2));
     *pdst &= ~(0x0F<<pos);
     *pdst |= (idx & 0x0F)<<pos;
   }
@@ -51,7 +52,7 @@ bool CxImagePNG::Decode(CxFile *hFile)
     * you can supply NULL for the last three parameters.  We also supply the
     * the compiler header file version, so that we know if the application
     * was compiled with a compatible version of the library.  REQUIRED    */
-    png_ptr = png_create_read_struct(PNG_LIBPNG_VER_STRING,(void *)NULL,NULL,NULL);
+    png_ptr = png_create_read_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
 
     if (png_ptr == NULL)
     {
@@ -63,7 +64,7 @@ bool CxImagePNG::Decode(CxFile *hFile)
 
     if (info_ptr == NULL)
     {
-      png_destroy_read_struct(&png_ptr, (png_infopp)NULL, (png_infopp)NULL);
+      png_destroy_read_struct(&png_ptr, NULL, NULL);
       cx_throw("Failed to initialize PNG info structure");
     }
 
@@ -74,7 +75,7 @@ bool CxImagePNG::Decode(CxFile *hFile)
     {
       /* Free all of the memory associated with the png_ptr and info_ptr */
       delete [] row_pointers;
-      png_destroy_read_struct(&png_ptr, &info_ptr, (png_infopp)NULL);
+      png_destroy_read_struct(&png_ptr, &info_ptr, NULL);
       cx_throw("");
     }
 
@@ -87,8 +88,8 @@ bool CxImagePNG::Decode(CxFile *hFile)
 
     if (info.nEscape == -1)
     {
-      head.biWidth = info_ptr->width;
-      head.biHeight= info_ptr->height;
+      head.biWidth = static_cast<int32_t>(info_ptr->width);
+      head.biHeight= static_cast<int32_t>(info_ptr->height);
       info.dwType = CXIMAGE_FORMAT_PNG;
       longjmp(png_ptr->jmpbuf, 1);
     }
@@ -138,7 +139,10 @@ bool CxImagePNG::Decode(CxFile *hFile)
       pixel_depth=24;
     }
 
-    if (!Create(info_ptr->width, info_ptr->height, pixel_depth, CXIMAGE_FORMAT_PNG))
+    if (!Create(static_cast<uint32_t>(info_ptr->width),
+                static_cast<uint32_t>(info_ptr->height),
+                static_cast<uint32_t>(pixel_depth),
+                CXIMAGE_FORMAT_PNG))
     {
       longjmp(png_ptr->jmpbuf, 1);
     }
@@ -147,19 +151,20 @@ bool CxImagePNG::Decode(CxFile *hFile)
     switch (info_ptr->phys_unit_type)
     {
     case PNG_RESOLUTION_UNKNOWN:
-      SetXDPI(info_ptr->x_pixels_per_unit);
-      SetYDPI(info_ptr->y_pixels_per_unit);
+      SetXDPI(static_cast<int32_t>(info_ptr->x_pixels_per_unit));
+      SetYDPI(static_cast<int32_t>(info_ptr->y_pixels_per_unit));
       break;
 
     case PNG_RESOLUTION_METER:
-      SetXDPI((int32_t)floor(info_ptr->x_pixels_per_unit * 254.0 / 10000.0 + 0.5));
-      SetYDPI((int32_t)floor(info_ptr->y_pixels_per_unit * 254.0 / 10000.0 + 0.5));
+      SetXDPI(static_cast<int32_t>(floor(info_ptr->x_pixels_per_unit * 254.0 / 10000.0 + 0.5)));
+      SetYDPI(static_cast<int32_t>(floor(info_ptr->y_pixels_per_unit * 254.0 / 10000.0 + 0.5)));
       break;
     }
 
     if (info_ptr->num_palette>0)
     {
-      SetPalette((rgb_color*)info_ptr->palette,info_ptr->num_palette);
+      SetPalette(reinterpret_cast<rgb_color*>(info_ptr->palette),
+                 info_ptr->num_palette);
       SetClrImportant(info_ptr->num_palette);
     } else if (info_ptr->bit_depth ==2)   //<DP> needed for 2 bpp grayscale PNGs
     {
@@ -169,7 +174,7 @@ bool CxImagePNG::Decode(CxFile *hFile)
       SetPaletteColor(3,255,255,255);
     } else { SetGrayPalette(); } //<DP> needed for grayscale PNGs
 
-    int32_t nshift = max(0,(info_ptr->bit_depth>>3)-1)<<3;
+    int32_t nshift = std::max<int32_t>(0,(info_ptr->bit_depth>>3)-1)<<3;
 
     if (info_ptr->num_trans!=0)  //palette transparency
     {
@@ -187,7 +192,9 @@ bool CxImagePNG::Decode(CxFile *hFile)
         if (pal) {
           uint32_t ip;
 
-          for (ip=0; ip<min(head.biClrUsed,(uint32_t)info_ptr->num_trans); ip++) {
+          for (ip=0;
+               ip < std::min(head.biClrUsed, static_cast<uint32_t>(info_ptr->num_trans));
+               ip++) {
             pal[ip].rgbReserved=info_ptr->trans[ip];
           }
 
@@ -207,9 +214,9 @@ bool CxImagePNG::Decode(CxFile *hFile)
       png_color_16 *image_background;
 
       if (png_get_tRNS(png_ptr, info_ptr, &trans, &num_trans, &image_background)) {
-        info.nBkgndColor.rgbRed   = (uint8_t)(info_ptr->trans_values.red>>nshift);
-        info.nBkgndColor.rgbGreen = (uint8_t)(info_ptr->trans_values.green>>nshift);
-        info.nBkgndColor.rgbBlue  = (uint8_t)(info_ptr->trans_values.blue>>nshift);
+        info.nBkgndColor.rgbRed   = static_cast<uint8_t>(info_ptr->trans_values.red>>nshift);
+        info.nBkgndColor.rgbGreen = static_cast<uint8_t>(info_ptr->trans_values.green>>nshift);
+        info.nBkgndColor.rgbBlue  = static_cast<uint8_t>(info_ptr->trans_values.blue>>nshift);
         info.nBkgndColor.rgbReserved = 0;
         info.nBkgndIndex = 0;
       }
@@ -248,7 +255,8 @@ bool CxImagePNG::Decode(CxFile *hFile)
     {
       SetCodecOption( (ENCODE_INTERLACE) | GetCodecOption(CXIMAGE_FORMAT_PNG));
     } else {
-      SetCodecOption(~(ENCODE_INTERLACE) & GetCodecOption(CXIMAGE_FORMAT_PNG));
+      SetCodecOption(static_cast<uint32_t>(~(ENCODE_INTERLACE))
+                     & GetCodecOption(CXIMAGE_FORMAT_PNG));
     }
 
     int32_t chan_offset = info_ptr->bit_depth >> 3;
@@ -316,7 +324,7 @@ bool CxImagePNG::Decode(CxFile *hFile)
         {
           //recover data from previous scan
           if (info_ptr->interlace_type && pass>0) {
-            iter.GetRow(row_pointers, info_ptr->rowbytes);
+            iter.GetRow(row_pointers, static_cast<int32_t>(info_ptr->rowbytes));
 
             //re-expand buffer for images with bit depth > 8
             if (info_ptr->bit_depth > 8) {
@@ -337,7 +345,7 @@ bool CxImagePNG::Decode(CxFile *hFile)
           }
 
           //copy the pixels
-          iter.SetRow(row_pointers, info_ptr->rowbytes);
+          iter.SetRow(row_pointers, static_cast<int32_t>(info_ptr->rowbytes));
 
           //<DP> expand 2 bpp images only in the last pass
           if (info_ptr->bit_depth==2 && pass==(number_passes-1)) {
@@ -359,7 +367,7 @@ bool CxImagePNG::Decode(CxFile *hFile)
     png_read_end(png_ptr, info_ptr);
 
     /* clean up after the read, and free any memory allocated - REQUIRED */
-    png_destroy_read_struct(&png_ptr, &info_ptr, (png_infopp)NULL);
+    png_destroy_read_struct(&png_ptr, &info_ptr, NULL);
 
   } cx_catch {
     if (strcmp(message,""))
@@ -441,7 +449,7 @@ bool CxImagePNG::Encode(CxFile *hFile)
     info_ptr->height = GetHeight();
     info_ptr->pixel_depth = (uint8_t)GetBpp();
     info_ptr->channels = (GetBpp()>8) ? (uint8_t)3: (uint8_t)1;
-    info_ptr->bit_depth = (uint8_t)(GetBpp()/info_ptr->channels);
+    info_ptr->bit_depth = static_cast<uint8_t>(GetBpp()/info_ptr->channels);
     info_ptr->compression_type = info_ptr->filter_type = 0;
     info_ptr->valid = 0;
 

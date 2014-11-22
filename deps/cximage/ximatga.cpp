@@ -283,9 +283,9 @@ uint8_t CxImageTGA::ExpandCompressedLine(uint8_t* pDest,TGAHEADER* ptgaHead,CxFi
       rle -= 127; // Calculate real repeat count.
 
       if ((x+rle)>width) {
-        rleLeftover = (uint8_t)(128 + (rle - (width - x) - 1));
+        rleLeftover = static_cast<uint8_t>(128 + (rle - (width - x) - 1));
         filePos = hFile->Tell();
-        rle = (uint8_t)(width - x);
+        rle = static_cast<uint8_t>(width - x);
       }
 
       switch (ptgaHead->PixelDepth) {
@@ -319,9 +319,9 @@ uint8_t CxImageTGA::ExpandCompressedLine(uint8_t* pDest,TGAHEADER* ptgaHead,CxFi
         uint16_t pixel;
         hFile->Read(&pixel,2,1);
         rgb_color triple;
-        triple.r = (uint8_t)(( pixel & 0x1F ) * 8);     // red
-        triple.g = (uint8_t)(( pixel >> 2 ) & 0x0F8);   // green
-        triple.b = (uint8_t)(( pixel >> 7 ) & 0x0F8);   // blue
+        triple.r = static_cast<uint8_t>(( pixel & 0x1F ) * 8);     // red
+        triple.g = static_cast<uint8_t>(( pixel >> 2 ) & 0x0F8);   // green
+        triple.b = static_cast<uint8_t>(( pixel >> 7 ) & 0x0F8);   // blue
 
         for (int32_t ix = 0; ix < rle; ix++) {
           memcpy(&pDest[3*ix],&triple,3);
@@ -347,8 +347,8 @@ uint8_t CxImageTGA::ExpandCompressedLine(uint8_t* pDest,TGAHEADER* ptgaHead,CxFi
       rle += 1; // Calculate real repeat count.
 
       if ((x+rle)>width) {
-        rleLeftover = (uint8_t)(rle - (width - x) - 1);
-        rle = (uint8_t)(width - x);
+        rleLeftover = static_cast<uint8_t>(rle - (width - x) - 1);
+        rle = static_cast<uint8_t>(width - x);
       }
 
       ExpandUncompressedLine(pDest,ptgaHead,hFile,rle,y,x);
@@ -381,9 +381,9 @@ void CxImageTGA::ExpandUncompressedLine(uint8_t* pDest,TGAHEADER* ptgaHead,CxFil
 
     for (int32_t x=0; x<width; x++) {
       hFile->Read(&pixel,2,1);
-      *dst++ = (uint8_t)(( pixel & 0x1F ) * 8);     // blue
-      *dst++ = (uint8_t)(( pixel >> 2 ) & 0x0F8);   // green
-      *dst++ = (uint8_t)(( pixel >> 7 ) & 0x0F8);   // red
+      *dst++ = static_cast<uint8_t>(( pixel & 0x1F ) * 8);     // blue
+      *dst++ = static_cast<uint8_t>(( pixel >> 2 ) & 0x0F8);   // green
+      *dst++ = static_cast<uint8_t>(( pixel >> 7 ) & 0x0F8);   // red
     }
 
     break;

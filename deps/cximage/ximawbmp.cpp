@@ -153,14 +153,14 @@ bool CxImageWBMP::WriteOctet(CxFile * hFile, const uint32_t data)
   }
 
   while (ns>0) {
-    if (!hFile->PutC(0x80 | (uint8_t)(data>>ns))) {
+    if (!hFile->PutC(0x80 | static_cast<uint8_t>(data>>ns))) {
       return false;
     }
 
     ns-=7;
   }
 
-  if (!(hFile->PutC((uint8_t)(0x7F & data)))) {
+  if (!(hFile->PutC(static_cast<uint8_t>(0x7F & data)))) {
     return false;
   }
 

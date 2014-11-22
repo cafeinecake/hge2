@@ -189,7 +189,11 @@ inline void CImageIterator::SetRow(uint8_t *buf, int32_t n)
 inline void CImageIterator::GetRow(uint8_t *buf, int32_t n)
 {
   if ((IterImage!=NULL)&&(buf!=NULL)&&(n>0)) {
-    memcpy(buf,IterImage,std::min(n,(int32_t)ima->GetEffWidth()));
+    memcpy(buf,
+           IterImage,
+           std::min(static_cast<uint32_t>(n),
+                    static_cast<uint32_t>(ima->GetEffWidth()))
+           );
   }
 }
 /////////////////////////////////////////////////////////////////////
@@ -206,9 +210,9 @@ inline uint8_t* CImageIterator::GetRow(int32_t n)
 /////////////////////////////////////////////////////////////////////
 inline BOOL CImageIterator::NextByte()
 {
-  if (++Itx < (int32_t)ima->GetEffWidth()) {
+  if (++Itx < static_cast<int32_t>(ima->GetEffWidth())) {
     return 1;
-  } else if (++Ity < (int32_t)ima->GetHeight()) {
+  } else if (++Ity < static_cast<int32_t>(ima->GetHeight())) {
     IterImage += ima->GetEffWidth();
     Itx = 0;
     return 1;
@@ -234,12 +238,12 @@ inline BOOL CImageIterator::NextStep()
 {
   Itx += Stepx;
 
-  if (Itx < (int32_t)ima->GetEffWidth()) {
+  if (Itx < static_cast<int32_t>(ima->GetEffWidth())) {
     return 1;
   } else {
     Ity += Stepy;
 
-    if (Ity < (int32_t)ima->GetHeight()) {
+    if (Ity < static_cast<int32_t>(ima->GetHeight())) {
       IterImage += ima->GetEffWidth();
       Itx = 0;
       return 1;
@@ -258,7 +262,7 @@ inline BOOL CImageIterator::PrevStep()
   } else {
     Ity -= Stepy;
 
-    if (Ity >= 0 && Ity < (int32_t)ima->GetHeight()) {
+    if (Ity >= 0 && Ity < static_cast<int32_t>(ima->GetHeight())) {
       IterImage -= ima->GetEffWidth();
       Itx = 0;
       return 1;
@@ -276,7 +280,7 @@ inline BOOL CImageIterator::GetCol(uint8_t* pCol, uint32_t x)
 
   uint32_t h = ima->GetHeight();
   //uint32_t line = ima->GetEffWidth();
-  uint8_t bytes = (uint8_t)(ima->GetBpp()>>3);
+  uint8_t bytes = static_cast<uint8_t>(ima->GetBpp()>>3);
   uint8_t* pSrc;
 
   for (uint32_t y=0; y<h; y++) {
@@ -298,7 +302,7 @@ inline BOOL CImageIterator::SetCol(uint8_t* pCol, uint32_t x)
 
   uint32_t h = ima->GetHeight();
   //uint32_t line = ima->GetEffWidth();
-  uint8_t bytes = (uint8_t)(ima->GetBpp()>>3);
+  uint8_t bytes = static_cast<uint8_t>(ima->GetBpp()>>3);
   uint8_t* pSrc;
 
   for (uint32_t y=0; y<h; y++) {

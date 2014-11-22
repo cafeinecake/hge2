@@ -448,10 +448,14 @@ void CALL HGE_Impl::Gfx_RenderTriple(const hgeTriple *triple)
       // check for overlap, despite triangle points being outside clipping...
       const int maxX = clipX + clipW;
       const int maxY = clipY + clipH;
-      const int leftmost = std::min(std::min(v[0].x, v[1].x), v[2].x);
-      const int rightmost = std::max(std::max(v[0].x, v[1].x), v[2].x);
-      const int topmost = std::min(std::min(v[0].y, v[1].y), v[2].y);
-      const int bottommost = std::max(std::max(v[0].y, v[1].y), v[2].y);
+      const int leftmost = static_cast<int>(std::min(std::min(v[0].x, v[1].x),
+                                                      v[2].x));
+      const int rightmost = static_cast<int>(std::max(std::max(v[0].x, v[1].x),
+                                                      v[2].x));
+      const int topmost = static_cast<int>(std::min(std::min(v[0].y, v[1].y),
+                                                      v[2].y));
+      const int bottommost = static_cast<int>(std::max(std::max(v[0].y, v[1].y),
+                                                      v[2].y));
 
       if ( ((clipX < leftmost) || (clipX > rightmost)) &&
            ((maxX < leftmost) || (maxX > rightmost)) &&
@@ -471,7 +475,7 @@ void CALL HGE_Impl::Gfx_RenderTriple(const hgeTriple *triple)
         _SetBlendMode(triple->blend);
       }
 
-      _BindTexture((gltexture *) triple->tex);
+      _BindTexture(reinterpret_cast<gltexture *>(triple->tex));
     }
 
     memcpy(&VertArray[nPrim*HGEPRIM_TRIPLES], triple->v, sizeof(hgeVertex)*HGEPRIM_TRIPLES);
@@ -488,10 +492,14 @@ void CALL HGE_Impl::Gfx_RenderQuad(const hgeQuad *quad)
       // check for overlap, despite quad points being outside clipping...
       const int maxX = clipX + clipW;
       const int maxY = clipY + clipH;
-      const int leftmost = Min(Min(Min(v[0].x, v[1].x), v[2].x), v[3].x);
-      const int rightmost = Max(Max(Max(v[0].x, v[1].x), v[2].x), v[3].x);
-      const int topmost = Min(Min(Min(v[0].y, v[1].y), v[2].y), v[3].y);
-      const int bottommost = Max(Max(Max(v[0].y, v[1].y), v[2].y), v[3].y);
+      const int leftmost = static_cast<int32_t>(
+            std::min(std::min(std::min(v[0].x, v[1].x), v[2].x), v[3].x));
+      const int rightmost = static_cast<int32_t>(
+            std::max(std::max(std::max(v[0].x, v[1].x), v[2].x), v[3].x));
+      const int topmost = static_cast<int32_t>(
+            std::min(std::min(std::min(v[0].y, v[1].y), v[2].y), v[3].y));
+      const int bottommost = static_cast<int32_t>(
+            std::max(std::max(std::max(v[0].y, v[1].y), v[2].y), v[3].y));
 
       if ( ((clipX < leftmost) || (clipX > rightmost)) &&
            ((maxX < leftmost) || (maxX > rightmost)) &&
@@ -511,7 +519,7 @@ void CALL HGE_Impl::Gfx_RenderQuad(const hgeQuad *quad)
         _SetBlendMode(quad->blend);
       }
 
-      _BindTexture((gltexture *) quad->tex);
+      _BindTexture(reinterpret_cast<gltexture *>(quad->tex));
     }
 
     memcpy(&VertArray[nPrim*HGEPRIM_QUADS], quad->v, sizeof(hgeVertex)*HGEPRIM_QUADS);
@@ -530,7 +538,7 @@ hgeVertex* CALL HGE_Impl::Gfx_StartBatch(int prim_type, HTEXTURE tex, int blend,
       _SetBlendMode(blend);
     }
 
-    _BindTexture((gltexture *) tex);
+    _BindTexture(reinterpret_cast<gltexture *>(tex));
     *max_prim=VERTEX_BUFFER_SIZE / prim_type;
     return VertArray;
   } else {
@@ -590,7 +598,7 @@ HTARGET CALL HGE_Impl::Target_Create(int width, int height, bool zbuffer)
   memset(pTarget, '\0', sizeof (CRenderTargetList));
 
   pTarget->tex = _BuildTexture(width, height, NULL);
-  gltexture *gltex = (gltexture *) pTarget->tex;
+  gltexture *gltex = reinterpret_cast<gltexture *>(pTarget->tex);
   gltex->is_render_target = true;
   gltex->lost = false;
   _ConfigureTexture(gltex, width, height, NULL);
@@ -610,7 +618,7 @@ HTARGET CALL HGE_Impl::Target_Create(int width, int height, bool zbuffer)
   pTarget->next=pTargets;
   pTargets=pTarget;
 
-  return (HTARGET)pTarget;
+  return reinterpret_cast<HTARGET>(pTarget);
 }
 
 void CALL HGE_Impl::Target_Free(HTARGET target)
@@ -618,7 +626,7 @@ void CALL HGE_Impl::Target_Free(HTARGET target)
   CRenderTargetList *pTarget=pTargets, *pPrevTarget=NULL;
 
   while(pTarget) {
-    if((CRenderTargetList *)target == pTarget) {
+    if(reinterpret_cast<CRenderTargetList *>(target) == pTarget) {
       if(pPrevTarget) {
         pPrevTarget->next = pTarget->next;
       } else {
@@ -626,7 +634,7 @@ void CALL HGE_Impl::Target_Free(HTARGET target)
       }
 
       if (pOpenGLDevice->have_GL_EXT_framebuffer_object) {
-        if (pCurTarget == (CRenderTargetList *)target) {
+        if (pCurTarget == reinterpret_cast<CRenderTargetList *>(target)) {
           pOpenGLDevice->glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
         }
 
@@ -637,7 +645,7 @@ void CALL HGE_Impl::Target_Free(HTARGET target)
         pOpenGLDevice->glDeleteFramebuffersEXT(1, &pTarget->frame);
       }
 
-      if (pCurTarget == (CRenderTargetList *)target) {
+      if (pCurTarget == reinterpret_cast<CRenderTargetList *>(target)) {
         pCurTarget = 0;
       }
 
@@ -653,7 +661,7 @@ void CALL HGE_Impl::Target_Free(HTARGET target)
 
 HTEXTURE CALL HGE_Impl::Target_GetTexture(HTARGET target)
 {
-  CRenderTargetList *targ=(CRenderTargetList *)target;
+  CRenderTargetList *targ= reinterpret_cast<CRenderTargetList *>(target);
 
   if(target) {
     return targ->tex;
@@ -671,7 +679,7 @@ static inline GLuint _NextPowerOfTwo(GLuint x)
 {
   x--;
 
-  for (int i = 1; i < (sizeof(GLuint) * 8); i *= 2) {
+  for (int i = 1; i < static_cast<int>(sizeof(GLuint) * 8); i *= 2) {
     x |= x >> i;
   }
 
@@ -685,8 +693,8 @@ void HGE_Impl::_ConfigureTexture(gltexture *t, int width, int height, uint32_t *
 
   t->lost = false;
   t->name = tex;
-  t->width = width;
-  t->height = height;
+  t->width = static_cast<uint32_t>(width);
+  t->height = static_cast<uint32_t>(height);
   t->pixels = pixels;
   t->potw = 0;
   t->poth = 0;
@@ -696,7 +704,8 @@ void HGE_Impl::_ConfigureTexture(gltexture *t, int width, int height, uint32_t *
 
   if (loadFromFile) {
     uint32_t size = 0;
-    uint8_t *data = (uint8_t *) pHGE->Resource_Load(t->filename, &size);
+    uint8_t *data = reinterpret_cast<uint8_t *>(
+          pHGE->Resource_Load(t->filename, &size));
 
     if (data != NULL) {
       int w, h;
@@ -724,14 +733,21 @@ void HGE_Impl::_ConfigureTexture(gltexture *t, int width, int height, uint32_t *
                         GL_COMPRESSED_RGBA_S3TC_DXT5_EXT : GL_RGBA;
 
   if ((pOpenGLDevice->have_GL_ARB_texture_rectangle)
-      || (pOpenGLDevice->have_GL_ARB_texture_non_power_of_two) || (_IsPowerOfTwo(width)
-          && _IsPowerOfTwo(height))) {
-    pOpenGLDevice->glTexImage2D(pOpenGLDevice->TextureTarget, 0, intfmt, width, height, 0, GL_RGBA,
+      || (pOpenGLDevice->have_GL_ARB_texture_non_power_of_two)
+      || (_IsPowerOfTwo(static_cast<uint32_t>(width))
+          && _IsPowerOfTwo(static_cast<uint32_t>(height)))) {
+    pOpenGLDevice->glTexImage2D(pOpenGLDevice->TextureTarget, 0,
+                                static_cast<int32_t>(intfmt),
+                                width, height, 0, GL_RGBA,
                                 GL_UNSIGNED_BYTE, pixels);
   } else {
-    t->potw = _NextPowerOfTwo(width);
-    t->poth = _NextPowerOfTwo(height);
-    pOpenGLDevice->glTexImage2D(pOpenGLDevice->TextureTarget, 0, intfmt, t->potw, t->poth, 0, GL_RGBA,
+    t->potw = _NextPowerOfTwo(static_cast<uint32_t>(width));
+    t->poth = _NextPowerOfTwo(static_cast<uint32_t>(height));
+    pOpenGLDevice->glTexImage2D(pOpenGLDevice->TextureTarget, 0,
+                                static_cast<int32_t>(intfmt),
+                                static_cast<GLsizei>(t->potw),
+                                static_cast<GLsizei>(t->poth),
+                                0, GL_RGBA,
                                 GL_UNSIGNED_BYTE, NULL);
     pOpenGLDevice->glTexSubImage2D(pOpenGLDevice->TextureTarget, 0, 0, 0, width, height, GL_RGBA,
                                    GL_UNSIGNED_BYTE, pixels);

@@ -183,10 +183,20 @@ typedef struct tagRGBTRIPLE {
 #define BI_RLE4       2L
 #define BI_BITFIELDS  3L
 
-#define GetRValue(rgb)      ((uint8_t)(rgb))
-#define GetGValue(rgb)      ((uint8_t)(((uint16_t)(rgb)) >> 8))
-#define GetBValue(rgb)      ((uint8_t)((rgb)>>16))
-#define RGB(r,g,b)          ((COLORREF)(((uint8_t)(r)|((uint16_t)((uint8_t)(g))<<8))|(((uint32_t)(uint8_t)(b))<<16)))
+inline uint8_t GetRValue(uint32_t rgb) {
+  return static_cast<uint8_t>(rgb);
+}
+inline uint8_t GetGValue(uint32_t rgb) {
+  return static_cast<uint8_t>((static_cast<uint16_t>(rgb)) >> 8);
+}
+inline uint8_t GetBValue(uint32_t rgb) {
+  return static_cast<uint8_t>(rgb>>16);
+}
+inline uint32_t RGB(uint8_t r, uint8_t g, uint8_t b) {
+  return static_cast<COLORREF>(
+        (r | (static_cast<uint16_t>(g<<8)) | (static_cast<uint32_t>(b)<<16))
+        );
+}
 
 #ifndef _COMPLEX_DEFINED
 

@@ -29,11 +29,11 @@ typedef jpg_error_mgr *jpg_error_ptr;
 ////////////////////////////////////////////////////////////////////////////////
 // Here's the routine that will replace the standard error_exit method:
 ////////////////////////////////////////////////////////////////////////////////
-static void
+static void __attribute__((__noreturn__))
 ima_jpeg_error_exit (j_common_ptr cinfo)
 {
   /* cinfo->err really points to a my_error_mgr struct, so coerce pointer */
-  jpg_error_ptr myerr = (jpg_error_ptr) cinfo->err;
+  jpg_error_ptr myerr = reinterpret_cast<jpg_error_ptr>(cinfo->err);
   /* Create the message */
   myerr->pub.format_message (cinfo, myerr->buffer);
   /* Send it to stderr, adding a newline */
@@ -95,7 +95,7 @@ bool CxImageJPG::GetExifThumbnail(const TCHAR *filename, const TCHAR *outname, i
       if (image.GetWidth() > 256 || image.GetHeight() > 256) {
         // resize the image
 //        float amount = 256.0f / max(image.GetWidth(), image.GetHeight());
-//        image.Resample((int32_t)(image.GetWidth() * amount), (int32_t)(image.GetHeight() * amount), 0);
+//        image.Resample(static_cast<int32_t>(image.GetWidth() * amount), static_cast<int32_t>(image.GetHeight() * amount), 0);
       }
 
       if (info.ExifInfo.Orientation != 1) {
@@ -214,8 +214,8 @@ bool CxImageJPG::Decode(CxFile * hFile)
   if (info.nEscape == -1) {
     // Return output dimensions only
     jpeg_calc_output_dimensions(&cinfo);
-    head.biWidth = cinfo.output_width;
-    head.biHeight = cinfo.output_height;
+    head.biWidth = static_cast<int32_t>(cinfo.output_width);
+    head.biHeight = static_cast<int32_t>(cinfo.output_height);
     info.dwType = CXIMAGE_FORMAT_JPG;
     jpeg_destroy_decompress(&cinfo);
     return true;
@@ -231,7 +231,9 @@ bool CxImageJPG::Decode(CxFile * hFile)
   */
   //Create the image using output dimensions <ignacio>
   //Create(cinfo.image_width, cinfo.image_height, 8*cinfo.output_components, CXIMAGE_FORMAT_JPG);
-  Create(cinfo.output_width, cinfo.output_height, 8*cinfo.output_components, CXIMAGE_FORMAT_JPG);
+  Create(cinfo.output_width, cinfo.output_height,
+         static_cast<uint32_t>(8*cinfo.output_components),
+         CXIMAGE_FORMAT_JPG);
 
   if (!pDib) {
     longjmp(jerr.setjmp_buffer, 1);  //<DP> check if the image has been created
@@ -241,11 +243,11 @@ bool CxImageJPG::Decode(CxFile * hFile)
 #if CXIMAGEJPG_SUPPORT_EXIF
 
     if ((info.ExifInfo.Xresolution != 0.0) && (info.ExifInfo.ResolutionUnit != 0)) {
-      SetXDPI((int32_t)(info.ExifInfo.Xresolution/info.ExifInfo.ResolutionUnit));
+      SetXDPI(static_cast<int32_t>(info.ExifInfo.Xresolution/info.ExifInfo.ResolutionUnit));
     }
 
     if ((info.ExifInfo.Yresolution != 0.0) && (info.ExifInfo.ResolutionUnit != 0)) {
-      SetYDPI((int32_t)(info.ExifInfo.Yresolution/info.ExifInfo.ResolutionUnit));
+      SetYDPI(static_cast<int32_t>(info.ExifInfo.Yresolution/info.ExifInfo.ResolutionUnit));
     }
 
 #endif
@@ -253,14 +255,14 @@ bool CxImageJPG::Decode(CxFile * hFile)
     switch (cinfo.density_unit) {
     case 0: // [andy] fix for aspect ratio...
       if((cinfo.Y_density > 0) && (cinfo.X_density > 0)) {
-        SetYDPI((int32_t)(GetXDPI()*(float(cinfo.Y_density)/float(cinfo.X_density))));
+        SetYDPI(static_cast<int32_t>(GetXDPI()*(float(cinfo.Y_density)/float(cinfo.X_density))));
       }
 
       break;
 
     case 2: // [andy] fix: cinfo.X/Y_density is pixels per centimeter
-      SetXDPI((int32_t)floor(cinfo.X_density * 2.54 + 0.5));
-      SetYDPI((int32_t)floor(cinfo.Y_density * 2.54 + 0.5));
+      SetXDPI(static_cast<int32_t>(floor(cinfo.X_density * 2.54 + 0.5)));
+      SetYDPI(static_cast<int32_t>(floor(cinfo.Y_density * 2.54 + 0.5)));
       break;
 
     default:
@@ -274,19 +276,24 @@ bool CxImageJPG::Decode(CxFile * hFile)
     head.biClrUsed =256;
   } else {
     if (cinfo.quantize_colors) {
-      SetPalette(cinfo.actual_number_of_colors, cinfo.colormap[0], cinfo.colormap[1], cinfo.colormap[2]);
-      head.biClrUsed=cinfo.actual_number_of_colors;
+      SetPalette(static_cast<uint32_t>(cinfo.actual_number_of_colors),
+                 cinfo.colormap[0], cinfo.colormap[1], cinfo.colormap[2]);
+      head.biClrUsed = static_cast<uint32_t>(cinfo.actual_number_of_colors);
     } else {
       head.biClrUsed=0;
     }
   }
 
   /* JSAMPLEs per row in output buffer */
-  row_stride = cinfo.output_width * cinfo.output_components;
+  row_stride = static_cast<int32_t>(cinfo.output_width
+                            * static_cast<uint32_t>(cinfo.output_components));
 
   /* Make a one-row-high sample array that will go away when done with image */
   buffer = (*cinfo.mem->alloc_sarray)
-           ((j_common_ptr) &cinfo, JPOOL_IMAGE, row_stride, 1);
+           (reinterpret_cast<j_common_ptr>(&cinfo),
+            JPOOL_IMAGE,
+            static_cast<uint32_t>(row_stride),
+            1);
 
   /* Step 6: while (scan lines remain to be read) */
   /*           jpeg_read_scanlines(...); */
@@ -303,18 +310,20 @@ bool CxImageJPG::Decode(CxFile * hFile)
 
     (void) jpeg_read_scanlines(&cinfo, buffer, 1);
 
-    // info.nProgress = (int32_t)(100*cinfo.output_scanline/cinfo.output_height);
+    // info.nProgress = static_cast<int32_t>(100*cinfo.output_scanline/cinfo.output_height);
     //<DP> Step 6a: CMYK->RGB */
     if ((cinfo.num_components==4)&&(cinfo.quantize_colors==FALSE)) {
-      uint8_t k,*dst,*src;
+      uint8_t k,*dst,*src1;
       dst=iter.GetRow();
-      src=buffer[0];
+      src1=buffer[0];
 
-      for(int32_t x3=0,x4=0; x3<(int32_t)info.dwEffWidth && x4<row_stride; x3+=3, x4+=4) {
-        k=src[x4+3];
-        dst[x3]  =(uint8_t)((k * src[x4+2])/255);
-        dst[x3+1]=(uint8_t)((k * src[x4+1])/255);
-        dst[x3+2]=(uint8_t)((k * src[x4+0])/255);
+      for(int32_t x3=0,x4=0;
+          x3 < static_cast<int32_t>(info.dwEffWidth) && x4<row_stride;
+          x3+=3, x4+=4) {
+        k=src1[x4+3];
+        dst[x3]  =static_cast<uint8_t>((k * src1[x4+2])/255);
+        dst[x3+1]=static_cast<uint8_t>((k * src1[x4+1])/255);
+        dst[x3+2]=static_cast<uint8_t>((k * src1[x4+0])/255);
       }
     } else {
       /* Assume put_scanline_someplace wants a pointer and sample count. */
@@ -556,7 +565,7 @@ bool CxImageJPG::Encode(CxFile * hFile)
   iter.Upset();
 
   while (cinfo.next_scanline < cinfo.image_height) {
-    // info.nProgress = (int32_t)(100*cinfo.next_scanline/cinfo.image_height);
+    // info.nProgress = static_cast<int32_t>(100*cinfo.next_scanline/cinfo.image_height);
     iter.GetRow(buffer[0], row_stride);
 
     // not necessary if swapped red and blue definition in jmorecfg.h;ln322 <W. Morrison>

@@ -285,7 +285,7 @@ bool CxImageJPG::CxExifInfo::process_EXIF(uint8_t * CharBuf, uint32_t length)
 
   /* Compute the CCD width, in milimeters. */
   if (m_exifinfo->FocalplaneXRes != 0) {
-    m_exifinfo->CCDWidth = (float)(ExifImageWidth * m_exifinfo->FocalplaneUnits /
+    m_exifinfo->CCDWidth = static_cast<float>(ExifImageWidth * m_exifinfo->FocalplaneUnits /
                                    m_exifinfo->FocalplaneXRes);
   }
 
@@ -936,7 +936,7 @@ bool CxImageJPG::CxExifInfo::EncodeExif(CxFile * hFile)
   // Write all the misc sections
   for (a=0; a<SectionsRead-1; a++) {
     hFile->PutC(0xff);
-    hFile->PutC((uint8_t)(Sections[a].Type));
+    hFile->PutC(static_cast<uint8_t>(Sections[a].Type));
     hFile->Write(Sections[a].Data, Sections[a].Size, 1);
   }
 

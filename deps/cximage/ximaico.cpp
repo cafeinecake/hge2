@@ -233,7 +233,7 @@ bool CxImageICO::Decode(CxFile *hFile)
 
               int32_t iTransIdx = -1;
 
-              for (x = (int32_t)(head.biClrUsed-1); x>=0 ; x--) {
+              for (x = static_cast<int32_t>(head.biClrUsed-1); x>=0 ; x--) {
                 if (colorsUsed[x] == 0) {
                   iTransIdx = x; // this one is not in use. we may use it as transparent color
                   break;

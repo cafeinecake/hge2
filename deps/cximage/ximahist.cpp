@@ -138,7 +138,7 @@ bool CxImage::HistogramStretch(int32_t method, double threshold)
     memset(p,  0, 256*sizeof(double));
 
     for (y=0; y<head.biHeight; y++) {
-      info.nProgress = (int32_t)(y*dbScaler);
+      info.nProgress = static_cast<int32_t>(y*dbScaler);
 
       if (info.nEscape) {
         break;
@@ -188,7 +188,7 @@ bool CxImage::HistogramStretch(int32_t method, double threshold)
         break;
       }
 
-      info.nProgress = (int32_t)(50.0+y*dbScaler);
+      info.nProgress = static_cast<int32_t>(50.0+y*dbScaler);
 
       for (x=0; x<head.biWidth; x++) {
         BlindSetPixelIndex(x, y, lut[BlindGetPixelIndex(x, y)]);
@@ -202,7 +202,7 @@ bool CxImage::HistogramStretch(int32_t method, double threshold)
       memset(p,  0, 256*sizeof(double));
 
       for (y=0; y<head.biHeight; y++) {
-        info.nProgress = (int32_t)(y*dbScaler);
+        info.nProgress = static_cast<int32_t>(y*dbScaler);
 
         if (info.nEscape) {
           break;
@@ -256,7 +256,7 @@ bool CxImage::HistogramStretch(int32_t method, double threshold)
           break;
         }
 
-        info.nProgress = (int32_t)(50.0+y*dbScaler);
+        info.nProgress = static_cast<int32_t>(50.0+y*dbScaler);
 
         for (x=0; x<head.biWidth; x++) {
           RGBQUAD color = BlindGetPixelColor(x, y);
@@ -281,7 +281,7 @@ bool CxImage::HistogramStretch(int32_t method, double threshold)
       memset(pB,  0, 256*sizeof(double));
 
       for (y=0; y<head.biHeight; y++) {
-        info.nProgress = (int32_t)(y*dbScaler);
+        info.nProgress = static_cast<int32_t>(y*dbScaler);
 
         if (info.nEscape) {
           break;
@@ -392,7 +392,7 @@ bool CxImage::HistogramStretch(int32_t method, double threshold)
 
       // normalize image
       for (y=0; y<head.biHeight; y++) {
-        info.nProgress = (int32_t)(50.0+y*dbScaler);
+        info.nProgress = static_cast<int32_t>(50.0+y*dbScaler);
 
         if (info.nEscape) {
           break;
@@ -417,7 +417,7 @@ bool CxImage::HistogramStretch(int32_t method, double threshold)
       memset(p,  0, 256*sizeof(double));
 
       for (y=0; y<head.biHeight; y++) {
-        info.nProgress = (int32_t)(y*dbScaler);
+        info.nProgress = static_cast<int32_t>(y*dbScaler);
 
         if (info.nEscape) {
           break;
@@ -464,7 +464,7 @@ bool CxImage::HistogramStretch(int32_t method, double threshold)
       }
 
       for(y=0; y<head.biHeight; y++) {
-        info.nProgress = (int32_t)(50.0+y*dbScaler);
+        info.nProgress = static_cast<int32_t>(50.0+y*dbScaler);
 
         if (info.nEscape) {
           break;
@@ -507,7 +507,7 @@ bool CxImage::HistogramEqualize()
 
   // form histogram
   for(y=0; y < head.biHeight; y++) {
-    info.nProgress = (int32_t)(50*y/head.biHeight);
+    info.nProgress = static_cast<int32_t>(50*y/head.biHeight);
 
     if (info.nEscape) {
       break;
@@ -537,13 +537,13 @@ bool CxImage::HistogramEqualize()
   }
 
   for( i = 0; i <= 255; i++ ) {
-    equalize_map[i] = (uint32_t)((((double)( map[i] - low ) ) * 255) / ( high - low ) );
+    equalize_map[i] = static_cast<uint32_t>((((double)( map[i] - low ) ) * 255) / ( high - low ) );
   }
 
   // stretch the histogram
   if(head.biClrUsed == 0) { // No Palette
     for( y = 0; y < head.biHeight; y++ ) {
-      info.nProgress = (int32_t)(50+50*y/head.biHeight);
+      info.nProgress = static_cast<int32_t>(50+50*y/head.biHeight);
 
       if (info.nEscape) {
         break;
@@ -597,7 +597,7 @@ bool CxImage::HistogramNormalize()
 
   // form histogram
   for(y=0; y < head.biHeight; y++) {
-    info.nProgress = (int32_t)(50*y/head.biHeight);
+    info.nProgress = static_cast<int32_t>(50*y/head.biHeight);
 
     if (info.nEscape) {
       break;
@@ -677,7 +677,7 @@ bool CxImage::HistogramNormalize()
   // Normalize
   if( head.biClrUsed == 0 ) {
     for( y = 0; y < head.biHeight; y++ ) {
-      info.nProgress = (int32_t)(50+50*y/head.biHeight);
+      info.nProgress = static_cast<int32_t>(50+50*y/head.biHeight);
 
       if (info.nEscape) {
         break;
@@ -727,7 +727,7 @@ bool CxImage::HistogramLog()
   // Find Highest Luminance Value in the Image
   if( head.biClrUsed == 0 ) { // No Palette
     for(y=0; y < head.biHeight; y++) {
-      info.nProgress = (int32_t)(50*y/head.biHeight);
+      info.nProgress = static_cast<int32_t>(50*y/head.biHeight);
 
       if (info.nEscape) {
         break;
@@ -758,7 +758,7 @@ bool CxImage::HistogramLog()
 
   if( head.biClrUsed == 0 ) {
     for( y = 0; y < head.biHeight; y++ ) {
-      info.nProgress = (int32_t)(50+50*y/head.biHeight);
+      info.nProgress = static_cast<int32_t>(50+50*y/head.biHeight);
 
       if (info.nEscape) {
         break;
@@ -769,7 +769,7 @@ bool CxImage::HistogramLog()
         color = BlindGetPixelColor( x, y );
         yuvClr = RGBtoYUV( color );
 
-        yuvClr.rgbRed = (uint8_t)(k * ::log( 1.0 + (double)yuvClr.rgbRed ) );
+        yuvClr.rgbRed = static_cast<uint8_t>(k * ::log( 1.0 + (double)yuvClr.rgbRed ) );
 
         color = YUVtoRGB( yuvClr );
         BlindSetPixelColor( x, y, color );
@@ -781,7 +781,7 @@ bool CxImage::HistogramLog()
       color = GetPaletteColor( (uint8_t)i );
       yuvClr = RGBtoYUV( color );
 
-      yuvClr.rgbRed = (uint8_t)(k * ::log( 1.0 + (double)yuvClr.rgbRed ) );
+      yuvClr.rgbRed = static_cast<uint8_t>(k * ::log( 1.0 + (double)yuvClr.rgbRed ) );
 
       color = YUVtoRGB( yuvClr );
       SetPaletteColor( (uint8_t)i, color );
@@ -810,7 +810,7 @@ bool CxImage::HistogramRoot()
   // Find Highest Luminance Value in the Image
   if( head.biClrUsed == 0 ) { // No Palette
     for(y=0; y < head.biHeight; y++) {
-      info.nProgress = (int32_t)(50*y/head.biHeight);
+      info.nProgress = static_cast<int32_t>(50*y/head.biHeight);
 
       if (info.nEscape) {
         break;
@@ -841,7 +841,7 @@ bool CxImage::HistogramRoot()
 
   if( head.biClrUsed == 0 ) {
     for( y = 0; y < head.biHeight; y++ ) {
-      info.nProgress = (int32_t)(50+50*y/head.biHeight);
+      info.nProgress = static_cast<int32_t>(50+50*y/head.biHeight);
 
       if (info.nEscape) {
         break;

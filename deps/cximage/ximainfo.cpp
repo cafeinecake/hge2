@@ -16,7 +16,7 @@
 RGBQUAD CxImage::GetTransColor()
 {
   if (head.biBitCount<24 && info.nBkgndIndex>=0) {
-    return GetPaletteColor((uint8_t)info.nBkgndIndex);
+    return GetPaletteColor(static_cast<uint8_t>(info.nBkgndIndex));
   }
 
   return info.nBkgndColor;
@@ -35,7 +35,7 @@ int32_t CxImage::GetTransIndex() const
  */
 void CxImage::SetTransIndex(int32_t idx)
 {
-  if (idx<(int32_t)head.biClrUsed) {
+  if (idx < static_cast<int32_t>(head.biClrUsed)) {
     info.nBkgndIndex = idx;
   } else {
     info.nBkgndIndex = 0;
@@ -70,7 +70,9 @@ bool CxImage::IsIndexed() const
  */
 uint8_t CxImage::GetColorType()
 {
-  uint8_t b = (uint8_t)((head.biBitCount>8) ? 2 /*COLORTYPE_COLOR*/ : 1 /*COLORTYPE_PALETTE*/);
+  uint8_t b = static_cast<uint8_t>((head.biBitCount>8) ?
+                                     2 /*COLORTYPE_COLOR*/
+                                   : 1 /*COLORTYPE_PALETTE*/);
 #if CXIMAGE_SUPPORT_ALPHA
 
   if (AlphaIsValid()) {
@@ -107,10 +109,10 @@ void CxImage::SetXDPI(int32_t dpi)
   }
 
   info.xDPI = dpi;
-  head.biXPelsPerMeter = (int32_t) floor(dpi * 10000.0 / 254.0 + 0.5);
+  head.biXPelsPerMeter = static_cast<int32_t>(floor(dpi * 10000.0 / 254.0 + 0.5));
 
   if (pDib) {
-    ((BITMAPINFOHEADER*)pDib)->biXPelsPerMeter = head.biXPelsPerMeter;
+    static_cast<BITMAPINFOHEADER*>(pDib)->biXPelsPerMeter = head.biXPelsPerMeter;
   }
 }
 ////////////////////////////////////////////////////////////////////////////////
@@ -124,10 +126,10 @@ void CxImage::SetYDPI(int32_t dpi)
   }
 
   info.yDPI = dpi;
-  head.biYPelsPerMeter = (int32_t) floor(dpi * 10000.0 / 254.0 + 0.5);
+  head.biYPelsPerMeter = static_cast<int32_t>(floor(dpi * 10000.0 / 254.0 + 0.5));
 
   if (pDib) {
-    ((BITMAPINFOHEADER*)pDib)->biYPelsPerMeter = head.biYPelsPerMeter;
+    static_cast<BITMAPINFOHEADER*>(pDib)->biYPelsPerMeter = head.biYPelsPerMeter;
   }
 }
 ////////////////////////////////////////////////////////////////////////////////
@@ -207,12 +209,12 @@ void* CxImage::GetDIB() const
 ////////////////////////////////////////////////////////////////////////////////
 uint32_t CxImage::GetHeight() const
 {
-  return head.biHeight;
+  return static_cast<uint32_t>(head.biHeight);
 }
 ////////////////////////////////////////////////////////////////////////////////
 uint32_t CxImage::GetWidth() const
 {
-  return head.biWidth;
+  return static_cast<uint32_t>(head.biWidth);
 }
 ////////////////////////////////////////////////////////////////////////////////
 /**
@@ -885,7 +887,7 @@ void CxImage::SetOffset(int32_t x,int32_t y)
  */
 uint8_t CxImage::GetJpegQuality() const
 {
-  return (uint8_t)(info.fQuality + 0.5f);
+  return static_cast<uint8_t>(info.fQuality + 0.5f);
 }
 ////////////////////////////////////////////////////////////////////////////////
 /**
@@ -904,7 +906,7 @@ float CxImage::GetJpegQualityF() const
  */
 void CxImage::SetJpegQuality(uint8_t q)
 {
-  info.fQuality = (float)q;
+  info.fQuality = static_cast<float>(q);
 }
 ////////////////////////////////////////////////////////////////////////////////
 /**
@@ -1087,16 +1089,16 @@ CxImage * CxImage::GetFrame(int32_t nFrame) const
   return ppFrames[nFrame];
 }
 ////////////////////////////////////////////////////////////////////////////////
-int16_t CxImage::m_ntohs(const int16_t word)
+uint16_t CxImage::m_ntohs(const uint16_t word)
 {
   if (info.bLittleEndianHost) {
     return word;
   }
 
-  return ( (word & 0xff) << 8 ) | ( (word >> 8) & 0xff );
+  return static_cast<uint16_t>( (word & 0xff) << 8 ) | ( (word >> 8) & 0xff );
 }
 ////////////////////////////////////////////////////////////////////////////////
-int32_t CxImage::m_ntohl(const int32_t dword)
+uint32_t CxImage::m_ntohl(const uint32_t dword)
 {
   if (info.bLittleEndianHost) {
     return dword;
@@ -1105,18 +1107,29 @@ int32_t CxImage::m_ntohl(const int32_t dword)
   return  ((dword & 0xff) << 24 ) | ((dword & 0xff00) << 8 ) |
           ((dword >> 8) & 0xff00) | ((dword >> 24) & 0xff);
 }
+
+int32_t CxImage::m_ntohl_i(const int32_t dword)
+{
+  if (info.bLittleEndianHost) {
+    return dword;
+  }
+
+  return  ((dword & 0xff) << 24 ) | ((dword & 0xff00) << 8 ) |
+          ((dword >> 8) & 0xff00) | ((dword >> 24) & 0xff);
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 void CxImage::bihtoh(BITMAPINFOHEADER* bih)
 {
   bih->biSize = m_ntohl(bih->biSize);
-  bih->biWidth = m_ntohl(bih->biWidth);
-  bih->biHeight = m_ntohl(bih->biHeight);
+  bih->biWidth = m_ntohl_i(bih->biWidth);
+  bih->biHeight = m_ntohl_i(bih->biHeight);
   bih->biPlanes = m_ntohs(bih->biPlanes);
   bih->biBitCount = m_ntohs(bih->biBitCount);
   bih->biCompression = m_ntohl(bih->biCompression);
   bih->biSizeImage = m_ntohl(bih->biSizeImage);
-  bih->biXPelsPerMeter = m_ntohl(bih->biXPelsPerMeter);
-  bih->biYPelsPerMeter = m_ntohl(bih->biYPelsPerMeter);
+  bih->biXPelsPerMeter = m_ntohl_i(bih->biXPelsPerMeter);
+  bih->biYPelsPerMeter = m_ntohl_i(bih->biYPelsPerMeter);
   bih->biClrUsed = m_ntohl(bih->biClrUsed);
   bih->biClrImportant = m_ntohl(bih->biClrImportant);
 }
@@ -1132,12 +1145,14 @@ const char* CxImage::GetLastError()
 uint32_t CxImage::DumpSize()
 {
   uint32_t n;
-  n = sizeof(BITMAPINFOHEADER) + sizeof(CXIMAGEINFO) + GetSize();
+  n = sizeof(BITMAPINFOHEADER)
+      + sizeof(CXIMAGEINFO)
+      + static_cast<uint32_t>(GetSize());
 
 #if CXIMAGE_SUPPORT_ALPHA
 
   if (pAlpha) {
-    n += 1 + head.biWidth * head.biHeight;
+    n += 1 + static_cast<uint32_t>(head.biWidth * head.biHeight);
   } else {
     n++;
   }
@@ -1193,14 +1208,14 @@ uint32_t CxImage::Dump(uint8_t * dst)
   memcpy(dst,&info,sizeof(CXIMAGEINFO));
   dst += sizeof(CXIMAGEINFO);
 
-  memcpy(dst,pDib,GetSize());
+  memcpy(dst, pDib, static_cast<size_t>(GetSize()));
   dst += GetSize();
 
 #if CXIMAGE_SUPPORT_ALPHA
 
   if (pAlpha) {
     memset(dst++, 1, 1);
-    memcpy(dst,pAlpha,head.biWidth * head.biHeight);
+    memcpy(dst, pAlpha, static_cast<size_t>(head.biWidth * head.biHeight));
     dst += head.biWidth * head.biHeight;
   } else {
     memset(dst++, 0, 1);
@@ -1273,21 +1288,23 @@ uint32_t CxImage::UnDump(const uint8_t * src)
   memcpy(&info,&src[n],sizeof(CXIMAGEINFO));
   n += sizeof(CXIMAGEINFO);
 
-  if (!Create(head.biWidth, head.biHeight, head.biBitCount, info.dwType)) {
+  if (!Create(static_cast<uint32_t>(head.biWidth),
+              static_cast<uint32_t>(head.biHeight),
+              head.biBitCount, info.dwType)) {
     return 0;
   }
 
-  memcpy(pDib,&src[n],GetSize());
-  n += GetSize();
+  memcpy(pDib, &src[n], static_cast<size_t>(GetSize()));
+  n += static_cast<uint32_t>(GetSize());
 
 #if CXIMAGE_SUPPORT_ALPHA
 
   if (src[n++]) {
     if (AlphaCreate()) {
-      memcpy(pAlpha, &src[n], head.biWidth * head.biHeight);
+      memcpy(pAlpha, &src[n], static_cast<size_t>(head.biWidth * head.biHeight));
     }
 
-    n += head.biWidth * head.biHeight;
+    n += static_cast<uint32_t>(head.biWidth * head.biHeight);
   }
 
 #endif
@@ -1339,7 +1356,7 @@ uint32_t CxImage::UnDump(const uint8_t * src)
  *  - CCC = minor revision (letter)
  *  - DDDD = experimental revision
  */
-const float CxImage::GetVersionNumber()
+float CxImage::GetVersionNumber()
 {
   return 7.000000000f;
 }

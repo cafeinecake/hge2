@@ -55,7 +55,9 @@ typedef int16_t    code_int;
 //LZW GIF Image compression
 #define MAXBITSCODES    12
 #define HSIZE  5003     /* 80% occupancy */
-#define MAXCODE(n_bits) (((code_int) 1 << (n_bits)) - 1)
+inline int16_t MAXCODE(uint16_t n_bits) {
+  return static_cast<int16_t>((static_cast<code_int>(1) << n_bits) - 1);
+}
 #define HashTabOf(i)    htab[i]
 #define CodeTabOf(i)    codetab[i]
 
@@ -171,7 +173,7 @@ protected:
   int32_t interlaced, iypos, istep, iheight, ipass;
   int32_t ibf;
   int32_t ibfmax;
-  uint8_t * buf;
+  uint8_t * m_buf;
 // Implementation
   int32_t GifNextPixel ();
   void Putword (int32_t w, CxFile* fp );

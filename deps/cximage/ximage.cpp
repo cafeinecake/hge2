@@ -655,12 +655,17 @@ bool CxImage::CreateFromMatrix(uint8_t** ppMatrix,uint32_t dwWidth,uint32_t dwHe
           *dst++=src[1];
           *dst++=src[2];
 #if CXIMAGE_SUPPORT_ALPHA
-          AlphaSet(x,(bFlipImage?(dwHeight-1-y):y),src[3]);
+          AlphaSet(static_cast<int32_t>(x),
+                   (bFlipImage ?
+                        static_cast<int32_t>(dwHeight-1-y)
+                      : static_cast<int32_t>(y)),
+                   src[3]);
 #endif //CXIMAGE_SUPPORT_ALPHA
           src+=4;
         }
       } else {
-        memcpy(dst,src,min(info.dwEffWidth,dwBytesperline));
+        memcpy(dst, src,
+               std::min(info.dwEffWidth,dwBytesperline));
       }
     }
   }
@@ -673,11 +678,11 @@ bool CxImage::CreateFromMatrix(uint8_t** ppMatrix,uint32_t dwWidth,uint32_t dwHe
  */
 int32_t CxImage::CompareColors(const void *elem1, const void *elem2)
 {
-  RGBQUAD* c1 = (RGBQUAD*)elem1;
-  RGBQUAD* c2 = (RGBQUAD*)elem2;
+  const RGBQUAD* c1 = reinterpret_cast<const RGBQUAD*>(elem1);
+  const RGBQUAD* c2 = reinterpret_cast<const RGBQUAD*>(elem2);
 
-  int32_t g1 = (int32_t)RGB2GRAY(c1->rgbRed,c1->rgbGreen,c1->rgbBlue);
-  int32_t g2 = (int32_t)RGB2GRAY(c2->rgbRed,c2->rgbGreen,c2->rgbBlue);
+  int32_t g1 = static_cast<int32_t>(RGB2GRAY(c1->rgbRed,c1->rgbGreen,c1->rgbBlue));
+  int32_t g2 = static_cast<int32_t>(RGB2GRAY(c2->rgbRed,c2->rgbGreen,c2->rgbBlue));
 
   return (g1-g2);
 }

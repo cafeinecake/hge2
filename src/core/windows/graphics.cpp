@@ -82,7 +82,7 @@ void CALL HGE_Impl::Gfx_SetClipping(int x, int y, int w, int h)
   D3DXMatrixScaling(&matProj, 1.0f, -1.0f, 1.0f);
   D3DXMatrixTranslation(&tmp, -0.5f, +0.5f, 0.0f);
   D3DXMatrixMultiply(&matProj, &matProj, &tmp);
-  D3DXMatrixOrthoOffCenterLH(&tmp, (float)vp.X, (float)(vp.X+vp.Width), -((float)(vp.Y+vp.Height)),
+  D3DXMatrixOrthoOffCenterLH(&tmp, (float)vp.X, static_cast<float>(vp.X+vp.Width), -(static_cast<float>(vp.Y+vp.Height)),
                              -((float)vp.Y), vp.MinZ, vp.MaxZ);
   D3DXMatrixMultiply(&matProj, &matProj, &tmp);
   pD3DDevice->SetTransform(D3DTS_PROJECTION, &matProj);

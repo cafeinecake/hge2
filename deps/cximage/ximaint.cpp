@@ -6,6 +6,9 @@
 #include "ximage.h"
 #include "ximath.h"
 
+#include <cfloat>
+#include <algorithm>
+
 #if CXIMAGE_SUPPORT_INTERPOLATION
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -29,10 +32,10 @@ void CxImage::OverflowCoordinates(int32_t &x, int32_t &y, OverflowMethod const o
   switch (ofMethod) {
   case OM_REPEAT:
     //clip coordinates
-    x=max(x,0);
-    x=min(x, head.biWidth-1);
-    y=max(y,0);
-    y=min(y, head.biHeight-1);
+    x = std::max(x,0);
+    x = std::min(x, head.biWidth-1);
+    y = std::max(y,0);
+    y = std::min(y, head.biHeight-1);
     break;
 
   case OM_WRAP:
@@ -67,8 +70,9 @@ void CxImage::OverflowCoordinates(int32_t &x, int32_t &y, OverflowMethod const o
 
     break;
 
-  default:
-    return;
+  case OM_COLOR: break;
+  case OM_BACKGROUND: break;
+  case OM_TRANSPARENT: break;
   }//switch
 }
 
@@ -86,16 +90,16 @@ void CxImage::OverflowCoordinates(float &x, float &y, OverflowMethod const ofMet
   switch (ofMethod) {
   case OM_REPEAT:
     //clip coordinates
-    x=max(x,0);
-    x=min(x, head.biWidth-1);
-    y=max(y,0);
-    y=min(y, head.biHeight-1);
+    x = std::max(x,0.0f);
+    x = std::min(x, static_cast<float>(head.biWidth-1));
+    y = std::max(y,0.0f);
+    y = std::min(y, static_cast<float>(head.biHeight-1));
     break;
 
   case OM_WRAP:
     //wrap coordinates
-    x = (float)fmod(x, (float) head.biWidth);
-    y = (float)fmod(y, (float) head.biHeight);
+    x = static_cast<float>(fmod(x, static_cast<float>(head.biWidth)));
+    y = static_cast<float>(fmod(y, static_cast<float>(head.biHeight)));
 
     if (x<0) {
       x = head.biWidth + x;
@@ -111,21 +115,24 @@ void CxImage::OverflowCoordinates(float &x, float &y, OverflowMethod const ofMet
 
     //mirror pixels near border
     if (x<0) {
-      x=(float)fmod(-x, (float) head.biWidth);
+      x = static_cast<float>(fmod(-x, static_cast<float>(head.biWidth)));
     } else if (x>=head.biWidth) {
-      x=head.biWidth-((float)fmod(x, (float) head.biWidth) + 1);
+      x = head.biWidth-(static_cast<float>(
+                          fmod(x, static_cast<float>(head.biWidth))) + 1);
     }
 
     if (y<0) {
-      y=(float)fmod(-y, (float) head.biHeight);
+      y = static_cast<float>(fmod(-y, static_cast<float>(head.biHeight)));
     } else if (y>=head.biHeight) {
-      y=head.biHeight-((float)fmod(y, (float) head.biHeight) + 1);
+      y = head.biHeight-(static_cast<float>(
+                          fmod(y, static_cast<float>(head.biHeight))) + 1);
     }
 
     break;
 
-  default:
-    return;
+  case OM_COLOR: break;
+  case OM_BACKGROUND: break;
+  case OM_TRANSPARENT: break;
   }//switch
 }
 
@@ -191,7 +198,7 @@ RGBQUAD CxImage::GetPixelColorWithOverflow(int32_t x, int32_t y, OverflowMethod 
       //return background color (if it exists, otherwise input value)
       if (info.nBkgndIndex >= 0) {
         if (head.biBitCount<24) {
-          color = GetPaletteColor((uint8_t)info.nBkgndIndex);
+          color = GetPaletteColor(static_cast<uint8_t>(info.nBkgndIndex));
         } else {
           color = info.nBkgndColor;
         }
@@ -205,7 +212,7 @@ RGBQUAD CxImage::GetPixelColorWithOverflow(int32_t x, int32_t y, OverflowMethod 
       OverflowCoordinates(x,y,ofMethod);
       break;
 
-    default:
+    case OM_COLOR:
       //simply return replacement color (OM_COLOR and others)
       return color;
     }//switch
@@ -257,13 +264,13 @@ RGBQUAD CxImage::GetPixelColorInterpolated(
   RGBQUAD* const rplColor)
 {
   //calculate nearest pixel
-  int32_t xi=(int32_t)(x);
+  int32_t xi = static_cast<int32_t>(x);
 
   if (x<0) {
     xi--;  //these replace (incredibly slow) floor (Visual c++ 2003, AMD Athlon)
   }
 
-  int32_t yi=(int32_t)(y);
+  int32_t yi = static_cast<int32_t>(y);
 
   if (y<0) {
     yi--;
@@ -273,9 +280,11 @@ RGBQUAD CxImage::GetPixelColorInterpolated(
 
   switch (inMethod) {
   case IM_NEAREST_NEIGHBOUR:
-    return GetPixelColorWithOverflow((int32_t)(x+0.5f), (int32_t)(y+0.5f), ofMethod, rplColor);
+    return GetPixelColorWithOverflow(static_cast<int32_t>(x+0.5f),
+                                     static_cast<int32_t>(y+0.5f),
+                                     ofMethod, rplColor);
 
-  default: {
+  case IM_BILINEAR: {
     //IM_BILINEAR: bilinear interpolation
     if (xi<-1 || xi>=head.biWidth || yi<-1 || yi>=head.biHeight) {  //all 4 points are outside bounds?:
       switch (ofMethod) {
@@ -285,16 +294,18 @@ RGBQUAD CxImage::GetPixelColorInterpolated(
         //we don't need to interpolate anything with all points outside in this case
         return GetPixelColorWithOverflow(-999, -999, ofMethod, rplColor);
 
-      default:
+      case OM_WRAP:
+      case OM_REPEAT:
+      case OM_MIRROR:
         //recalculate coordinates and use faster method later on
         OverflowCoordinates(x,y,ofMethod);
-        xi=(int32_t)(x);
+        xi = static_cast<int32_t>(x);
 
         if (x<0) {
           xi--;  //x and/or y have changed ... recalculate xi and yi
         }
 
-        yi=(int32_t)(y);
+        yi = static_cast<int32_t>(y);
 
         if (y<0) {
           yi--;
@@ -305,13 +316,17 @@ RGBQUAD CxImage::GetPixelColorInterpolated(
     //get four neighbouring pixels
     if ((xi+1)<head.biWidth && xi>=0 && (yi+1)<head.biHeight && yi>=0 && head.biClrUsed==0) {
       //all pixels are inside RGB24 image... optimize reading (and use fixed point arithmetic)
-      uint16_t wt1=(uint16_t)((x-xi)*256.0f), wt2=(uint16_t)((y-yi)*256.0f);
+      uint16_t wt1 = static_cast<uint16_t>((x-xi)*256.0f),
+               wt2 = static_cast<uint16_t>((y-yi)*256.0f);
       uint16_t wd=wt1*wt2>>8;
       uint16_t wb=wt1-wd;
       uint16_t wc=wt2-wd;
       uint16_t wa=256-wt1-wc;
       uint16_t wrr,wgg,wbb;
-      uint8_t *pxptr=(uint8_t*)info.pImage+yi*info.dwEffWidth+xi*3;
+      uint8_t *pxptr = static_cast<uint8_t*>(
+            info.pImage
+            + static_cast<uint32_t>(yi) * info.dwEffWidth
+            + static_cast<uint32_t>(xi) * 3);
       wbb=wa*(*pxptr++);
       wgg=wa*(*pxptr++);
       wrr=wa*(*pxptr++);
@@ -325,9 +340,9 @@ RGBQUAD CxImage::GetPixelColorInterpolated(
       wbb+=wd*(*pxptr++);
       wgg+=wd*(*pxptr++);
       wrr+=wd*(*pxptr);
-      color.rgbRed=(uint8_t) (wrr>>8);
-      color.rgbGreen=(uint8_t) (wgg>>8);
-      color.rgbBlue=(uint8_t) (wbb>>8);
+      color.rgbRed = static_cast<uint8_t>(wrr>>8);
+      color.rgbGreen = static_cast<uint8_t>(wgg>>8);
+      color.rgbBlue = static_cast<uint8_t>(wbb>>8);
 #if CXIMAGE_SUPPORT_ALPHA
 
       if (pAlpha) {
@@ -339,7 +354,7 @@ RGBQUAD CxImage::GetPixelColorInterpolated(
         pxptr+=(head.biWidth-1);                                //move to next row
         waa+=wc*(*pxptr++);
         waa+=wd*(*pxptr);   //and second row pixels
-        color.rgbReserved=(uint8_t) (waa>>8);
+        color.rgbReserved = static_cast<uint8_t>(waa>>8);
       } else
 #endif
       {
@@ -361,12 +376,17 @@ RGBQUAD CxImage::GetPixelColorInterpolated(
       rgb12=GetPixelColorWithOverflow(xi, yi+1, ofMethod, rplColor);
       rgb22=GetPixelColorWithOverflow(xi+1, yi+1, ofMethod, rplColor);
       //calculate linear interpolation
-      color.rgbRed=(uint8_t) (a*rgb11.rgbRed+b*rgb21.rgbRed+c*rgb12.rgbRed+d*rgb22.rgbRed);
-      color.rgbGreen=(uint8_t) (a*rgb11.rgbGreen+b*rgb21.rgbGreen+c*rgb12.rgbGreen+d*rgb22.rgbGreen);
-      color.rgbBlue=(uint8_t) (a*rgb11.rgbBlue+b*rgb21.rgbBlue+c*rgb12.rgbBlue+d*rgb22.rgbBlue);
+      color.rgbRed = static_cast<uint8_t>(a*rgb11.rgbRed+b*rgb21.rgbRed
+                                          +c*rgb12.rgbRed+d*rgb22.rgbRed);
+      color.rgbGreen = static_cast<uint8_t>(a*rgb11.rgbGreen+b*rgb21.rgbGreen
+                                            +c*rgb12.rgbGreen+d*rgb22.rgbGreen);
+      color.rgbBlue = static_cast<uint8_t>(a*rgb11.rgbBlue+b*rgb21.rgbBlue
+                                           +c*rgb12.rgbBlue+d*rgb22.rgbBlue);
 #if CXIMAGE_SUPPORT_ALPHA
-      color.rgbReserved=(uint8_t) (a*rgb11.rgbReserved+b*rgb21.rgbReserved+c*rgb12.rgbReserved
-                                   +d*rgb22.rgbReserved);
+      color.rgbReserved = static_cast<uint8_t>(a*rgb11.rgbReserved
+                                               +b*rgb21.rgbReserved
+                                               +c*rgb12.rgbReserved
+                                               +d*rgb22.rgbReserved);
 #else
       color.rgbReserved = 0;
 #endif
@@ -399,18 +419,19 @@ RGBQUAD CxImage::GetPixelColorInterpolated(
       case OM_BACKGROUND:
         //we don't need to interpolate anything with all points outside in this case
         return GetPixelColorWithOverflow(-999, -999, ofMethod, rplColor);
-        break;
 
-      default:
+      case OM_WRAP:
+      case OM_REPEAT:
+      case OM_MIRROR:
         //recalculate coordinates and use faster method later on
         OverflowCoordinates(x,y,ofMethod);
-        xi=(int32_t)(x);
+        xi = static_cast<int32_t>(x);
 
         if (x<0) {
           xi--;  //x and/or y have changed ... recalculate xi and yi
         }
 
-        yi=(int32_t)(y);
+        yi = static_cast<int32_t>(y);
 
         if (y<0) {
           yi--;
@@ -429,123 +450,127 @@ RGBQUAD CxImage::GetPixelColorInterpolated(
     switch (inMethod) {
     case IM_BICUBIC:
       for (i=0; i<4; i++) {
-        kernelx[i]=KernelCubic((float)(xi+i-1-x));
-        kernely[i]=KernelCubic((float)(yi+i-1-y));
+        kernelx[i]=KernelCubic(static_cast<float>(xi+i-1-x));
+        kernely[i]=KernelCubic(static_cast<float>(yi+i-1-y));
       }//for i
 
       break;
 
     case IM_BICUBIC2:
       for (i=0; i<4; i++) {
-        kernelx[i]=KernelGeneralizedCubic((float)(xi+i-1-x), -0.5);
-        kernely[i]=KernelGeneralizedCubic((float)(yi+i-1-y), -0.5);
+        kernelx[i]=KernelGeneralizedCubic(static_cast<float>(xi+i-1-x), -0.5);
+        kernely[i]=KernelGeneralizedCubic(static_cast<float>(yi+i-1-y), -0.5);
       }//for i
 
       break;
 
     case IM_BSPLINE:
       for (i=0; i<4; i++) {
-        kernelx[i]=KernelBSpline((float)(xi+i-1-x));
-        kernely[i]=KernelBSpline((float)(yi+i-1-y));
+        kernelx[i]=KernelBSpline(static_cast<float>(xi+i-1-x));
+        kernely[i]=KernelBSpline(static_cast<float>(yi+i-1-y));
       }//for i
 
       break;
 
     case IM_BOX:
       for (i=0; i<4; i++) {
-        kernelx[i]=KernelBox((float)(xi+i-1-x));
-        kernely[i]=KernelBox((float)(yi+i-1-y));
+        kernelx[i]=KernelBox(static_cast<float>(xi+i-1-x));
+        kernely[i]=KernelBox(static_cast<float>(yi+i-1-y));
       }//for i
 
       break;
 
     case IM_HERMITE:
       for (i=0; i<4; i++) {
-        kernelx[i]=KernelHermite((float)(xi+i-1-x));
-        kernely[i]=KernelHermite((float)(yi+i-1-y));
+        kernelx[i]=KernelHermite(static_cast<float>(xi+i-1-x));
+        kernely[i]=KernelHermite(static_cast<float>(yi+i-1-y));
       }//for i
 
       break;
 
     case IM_HAMMING:
       for (i=0; i<4; i++) {
-        kernelx[i]=KernelHamming((float)(xi+i-1-x));
-        kernely[i]=KernelHamming((float)(yi+i-1-y));
+        kernelx[i]=KernelHamming(static_cast<float>(xi+i-1-x));
+        kernely[i]=KernelHamming(static_cast<float>(yi+i-1-y));
       }//for i
 
       break;
 
     case IM_SINC:
       for (i=0; i<4; i++) {
-        kernelx[i]=KernelSinc((float)(xi+i-1-x));
-        kernely[i]=KernelSinc((float)(yi+i-1-y));
+        kernelx[i]=KernelSinc(static_cast<float>(xi+i-1-x));
+        kernely[i]=KernelSinc(static_cast<float>(yi+i-1-y));
       }//for i
 
       break;
 
     case IM_BLACKMAN:
       for (i=0; i<4; i++) {
-        kernelx[i]=KernelBlackman((float)(xi+i-1-x));
-        kernely[i]=KernelBlackman((float)(yi+i-1-y));
+        kernelx[i]=KernelBlackman(static_cast<float>(xi+i-1-x));
+        kernely[i]=KernelBlackman(static_cast<float>(yi+i-1-y));
       }//for i
 
       break;
 
     case IM_BESSEL:
       for (i=0; i<4; i++) {
-        kernelx[i]=KernelBessel((float)(xi+i-1-x));
-        kernely[i]=KernelBessel((float)(yi+i-1-y));
+        kernelx[i]=KernelBessel(static_cast<float>(xi+i-1-x));
+        kernely[i]=KernelBessel(static_cast<float>(yi+i-1-y));
       }//for i
 
       break;
 
     case IM_GAUSSIAN:
       for (i=0; i<4; i++) {
-        kernelx[i]=KernelGaussian((float)(xi+i-1-x));
-        kernely[i]=KernelGaussian((float)(yi+i-1-y));
+        kernelx[i]=KernelGaussian(static_cast<float>(xi+i-1-x));
+        kernely[i]=KernelGaussian(static_cast<float>(yi+i-1-y));
       }//for i
 
       break;
 
     case IM_QUADRATIC:
       for (i=0; i<4; i++) {
-        kernelx[i]=KernelQuadratic((float)(xi+i-1-x));
-        kernely[i]=KernelQuadratic((float)(yi+i-1-y));
+        kernelx[i]=KernelQuadratic(static_cast<float>(xi+i-1-x));
+        kernely[i]=KernelQuadratic(static_cast<float>(yi+i-1-y));
       }//for i
 
       break;
 
     case IM_MITCHELL:
       for (i=0; i<4; i++) {
-        kernelx[i]=KernelMitchell((float)(xi+i-1-x));
-        kernely[i]=KernelMitchell((float)(yi+i-1-y));
+        kernelx[i]=KernelMitchell(static_cast<float>(xi+i-1-x));
+        kernely[i]=KernelMitchell(static_cast<float>(yi+i-1-y));
       }//for i
 
       break;
 
     case IM_CATROM:
       for (i=0; i<4; i++) {
-        kernelx[i]=KernelCatrom((float)(xi+i-1-x));
-        kernely[i]=KernelCatrom((float)(yi+i-1-y));
+        kernelx[i]=KernelCatrom(static_cast<float>(xi+i-1-x));
+        kernely[i]=KernelCatrom(static_cast<float>(yi+i-1-y));
       }//for i
 
       break;
 
     case IM_HANNING:
       for (i=0; i<4; i++) {
-        kernelx[i]=KernelHanning((float)(xi+i-1-x));
-        kernely[i]=KernelHanning((float)(yi+i-1-y));
+        kernelx[i]=KernelHanning(static_cast<float>(xi+i-1-x));
+        kernely[i]=KernelHanning(static_cast<float>(yi+i-1-y));
       }//for i
 
       break;
 
     case IM_POWER:
       for (i=0; i<4; i++) {
-        kernelx[i]=KernelPower((float)(xi+i-1-x));
-        kernely[i]=KernelPower((float)(yi+i-1-y));
+        kernelx[i]=KernelPower(static_cast<float>(xi+i-1-x));
+        kernely[i]=KernelPower(static_cast<float>(yi+i-1-y));
       }//for i
 
       break;
+
+    case IM_NEAREST_NEIGHBOUR: break;
+    case IM_BILINEAR: break;
+    case IM_LANCZOS: break;
     }//switch
 
     rr=gg=bb=aa=0;
@@ -553,8 +578,8 @@ RGBQUAD CxImage::GetPixelColorInterpolated(
     if (((xi+2)<head.biWidth) && xi>=1 && ((yi+2)<head.biHeight) && (yi>=1) && !IsIndexed()) {
       //optimized interpolation (faster pixel reads) for RGB24 images with all pixels inside bounds
       for (yii=yi-1; yii<yi+3; yii++) {
-        uint8_t *pxptr=(uint8_t *)BlindGetPixelPointer(xi-1,
-                       yii);    //calculate pointer to first byte in row
+        //calculate pointer to first byte in row
+        uint8_t *pxptr = reinterpret_cast<uint8_t *>(BlindGetPixelPointer(xi-1, yii));
         kernelyc=kernely[yii-(yi-1)];
 #if CXIMAGE_SUPPORT_ALPHA
 
@@ -632,7 +657,7 @@ RGBQUAD CxImage::GetPixelColorInterpolated(
       rr=0;
     }
 
-    color.rgbRed=(uint8_t) rr;
+    color.rgbRed= static_cast<uint8_t>(rr);
 
     if (gg>255) {
       gg=255;
@@ -642,7 +667,7 @@ RGBQUAD CxImage::GetPixelColorInterpolated(
       gg=0;
     }
 
-    color.rgbGreen=(uint8_t) gg;
+    color.rgbGreen= static_cast<uint8_t>(gg);
 
     if (bb>255) {
       bb=255;
@@ -652,7 +677,7 @@ RGBQUAD CxImage::GetPixelColorInterpolated(
       bb=0;
     }
 
-    color.rgbBlue=(uint8_t) bb;
+    color.rgbBlue= static_cast<uint8_t>(bb);
 #if CXIMAGE_SUPPORT_ALPHA
 
     if (aa>255) {
@@ -663,7 +688,7 @@ RGBQUAD CxImage::GetPixelColorInterpolated(
       aa=0;
     }
 
-    color.rgbReserved=(uint8_t) aa;
+    color.rgbReserved= static_cast<uint8_t>(aa);
 #else
     color.rgbReserved = 0;
 #endif
@@ -680,18 +705,19 @@ RGBQUAD CxImage::GetPixelColorInterpolated(
       case OM_BACKGROUND:
         //we don't need to interpolate anything with all points outside in this case
         return GetPixelColorWithOverflow(-999, -999, ofMethod, rplColor);
-        break;
 
-      default:
+      case OM_WRAP:
+      case OM_REPEAT:
+      case OM_MIRROR:
         //recalculate coordinates and use faster method later on
         OverflowCoordinates(x,y,ofMethod);
-        xi=(int32_t)(x);
+        xi=static_cast<int32_t>(x);
 
         if (x<0) {
           xi--;  //x and/or y have changed ... recalculate xi and yi
         }
 
-        yi=(int32_t)(y);
+        yi=static_cast<int32_t>(y);
 
         if (y<0) {
           yi--;
@@ -700,7 +726,7 @@ RGBQUAD CxImage::GetPixelColorInterpolated(
     }//if
 
     for (xii=xi-5; xii<xi+7; xii++) {
-      kernelx[xii-(xi-5)]=KernelLanczosSinc((float)(xii-x), 6.0f);
+      kernelx[xii-(xi-5)]=KernelLanczosSinc(static_cast<float>(xii-x), 6.0f);
     }
 
     rr=gg=bb=aa=0;
@@ -708,9 +734,9 @@ RGBQUAD CxImage::GetPixelColorInterpolated(
     if (((xi+6)<head.biWidth) && ((xi-5)>=0) && ((yi+6)<head.biHeight) && ((yi-5)>=0) && !IsIndexed()) {
       //optimized interpolation (faster pixel reads) for RGB24 images with all pixels inside bounds
       for (yii=yi-5; yii<yi+7; yii++) {
-        uint8_t *pxptr=(uint8_t *)BlindGetPixelPointer(xi-5,
-                       yii);    //calculate pointer to first byte in row
-        kernelyc=KernelLanczosSinc((float)(yii-y),6.0f);
+        //calculate pointer to first byte in row
+        uint8_t *pxptr = reinterpret_cast<uint8_t *>(BlindGetPixelPointer(xi-5, yii));
+        kernelyc=KernelLanczosSinc(static_cast<float>(yii-y),6.0f);
 #if CXIMAGE_SUPPORT_ALPHA
 
         if (AlphaIsValid()) {
@@ -741,7 +767,7 @@ RGBQUAD CxImage::GetPixelColorInterpolated(
       RGBQUAD rgbs;
 
       for (yii=yi-5; yii<yi+7; yii++) {
-        kernelyc=KernelLanczosSinc((float)(yii-y),6.0f);
+        kernelyc=KernelLanczosSinc(static_cast<float>(yii-y),6.0f);
 
         for (xii=xi-5; xii<xi+7; xii++) {
           kernel=kernelyc*kernelx[xii-(xi-5)];
@@ -765,7 +791,7 @@ RGBQUAD CxImage::GetPixelColorInterpolated(
       rr=0;
     }
 
-    color.rgbRed=(uint8_t) rr;
+    color.rgbRed= static_cast<uint8_t>(rr);
 
     if (gg>255) {
       gg=255;
@@ -775,7 +801,7 @@ RGBQUAD CxImage::GetPixelColorInterpolated(
       gg=0;
     }
 
-    color.rgbGreen=(uint8_t) gg;
+    color.rgbGreen= static_cast<uint8_t>(gg);
 
     if (bb>255) {
       bb=255;
@@ -785,7 +811,7 @@ RGBQUAD CxImage::GetPixelColorInterpolated(
       bb=0;
     }
 
-    color.rgbBlue=(uint8_t) bb;
+    color.rgbBlue= static_cast<uint8_t>(bb);
 #if CXIMAGE_SUPPORT_ALPHA
 
     if (aa>255) {
@@ -796,7 +822,7 @@ RGBQUAD CxImage::GetPixelColorInterpolated(
       aa=0;
     }
 
-    color.rgbReserved=(uint8_t) aa;
+    color.rgbReserved= static_cast<uint8_t>(aa);
 #else
     color.rgbReserved = 0;
 #endif
@@ -857,12 +883,12 @@ RGBQUAD CxImage::GetAreaColorInterpolated(
   } else {
     //area is wider and/or taller than one pixel:
     CxRect2 area(xc-w/2.0f, yc-h/2.0f, xc+w/2.0f, yc+h/2.0f);   //area
-    int32_t xi1=(int32_t)(area.botLeft.x+0.49999999f);                //low x
-    int32_t yi1=(int32_t)(area.botLeft.y+0.49999999f);                //low y
+    int32_t xi1=static_cast<int32_t>(area.botLeft.x+0.49999999f);                //low x
+    int32_t yi1=static_cast<int32_t>(area.botLeft.y+0.49999999f);                //low y
 
 
-    int32_t xi2=(int32_t)(area.topRight.x+0.5f);                      //top x
-    int32_t yi2=(int32_t)(area.topRight.y+0.5f);                      //top y (for loops)
+    int32_t xi2=static_cast<int32_t>(area.topRight.x+0.5f);                      //top x
+    int32_t yi2=static_cast<int32_t>(area.topRight.y+0.5f);                      //top y (for loops)
 
     float rr,gg,bb,aa;                                        //red, green, blue and alpha components
     rr=gg=bb=aa=0;
@@ -873,10 +899,14 @@ RGBQUAD CxImage::GetAreaColorInterpolated(
     if (h>1 && w>1) {
       //width and height of area are greater than one pixel, so we can employ "ordinary" averaging
       CxRect2 intBL, intTR;     //bottom left and top right intersection
-      intBL=area.CrossSection(CxRect2(((float)xi1)-0.5f, ((float)yi1)-0.5f, ((float)xi1)+0.5f,
-                                      ((float)yi1)+0.5f));
-      intTR=area.CrossSection(CxRect2(((float)xi2)-0.5f, ((float)yi2)-0.5f, ((float)xi2)+0.5f,
-                                      ((float)yi2)+0.5f));
+      intBL=area.CrossSection(CxRect2(static_cast<float>(xi1)-0.5f,
+                                      static_cast<float>(yi1)-0.5f,
+                                      static_cast<float>(xi1)+0.5f,
+                                      static_cast<float>(yi1)+0.5f));
+      intTR=area.CrossSection(CxRect2(static_cast<float>(xi2)-0.5f,
+                                      static_cast<float>(yi2)-0.5f,
+                                      static_cast<float>(xi2)+0.5f,
+                                      static_cast<float>(yi2)+0.5f));
       float wBL, wTR, hBL, hTR;
       wBL=intBL.Width();            //width of bottom left pixel-area intersection
       hBL=intBL.Height();           //height of bottom left...
@@ -926,8 +956,10 @@ RGBQUAD CxImage::GetAreaColorInterpolated(
 
       for (y=yi1; y<=yi2; y++) {
         for (x=xi1; x<=xi2; x++) {
-          intersect=area.CrossSection(CxRect2(((float)x)-0.5f, ((float)y)-0.5f, ((float)x)+0.5f,
-                                              ((float)y)+0.5f));
+          intersect=area.CrossSection(CxRect2(static_cast<float>(x)-0.5f,
+                                              static_cast<float>(y)-0.5f,
+                                              static_cast<float>(x)+0.5f,
+                                              static_cast<float>(y)+0.5f));
           center=intersect.Center();
           color=GetPixelColorInterpolated(center.x, center.y, inMethod, ofMethod, rplColor);
           cps=intersect.Surface();
@@ -955,7 +987,7 @@ RGBQUAD CxImage::GetAreaColorInterpolated(
       rr=0;
     }
 
-    color.rgbRed=(uint8_t) rr;
+    color.rgbRed= static_cast<uint8_t>(rr);
 
     if (gg>255) {
       gg=255;
@@ -965,7 +997,7 @@ RGBQUAD CxImage::GetAreaColorInterpolated(
       gg=0;
     }
 
-    color.rgbGreen=(uint8_t) gg;
+    color.rgbGreen= static_cast<uint8_t>(gg);
 
     if (bb>255) {
       bb=255;
@@ -975,7 +1007,7 @@ RGBQUAD CxImage::GetAreaColorInterpolated(
       bb=0;
     }
 
-    color.rgbBlue=(uint8_t) bb;
+    color.rgbBlue= static_cast<uint8_t>(bb);
 #if CXIMAGE_SUPPORT_ALPHA
 
     if (aa>255) {
@@ -986,7 +1018,7 @@ RGBQUAD CxImage::GetAreaColorInterpolated(
       aa=0;
     }
 
-    color.rgbReserved=(uint8_t) aa;
+    color.rgbReserved= static_cast<uint8_t>(aa);
 #else
     color.rgbReserved = 0;
 #endif
@@ -1034,7 +1066,7 @@ float CxImage::KernelBSpline(const float x)
 
   return (0.16666666666666666667f * (a - (4.0f * b) + (6.0f * c) - (4.0f * d)));
 
-  /* equivalent <Vladimír Kloucek>
+  /* equivalent <VladimÐ½r Kloucek>
   if (x < -2.0)
     return(0.0f);
   if (x < -1.0)
@@ -1067,7 +1099,7 @@ float CxImage::KernelLinear(const float t)
 //  if (-1<=t && t<0) return 1+t;
 //  return 0;
 
-  //<Vladimír Kloucek>
+  //<VladimÐ½r Kloucek>
   if (t < -1.0f) {
     return 0.0f;
   }
@@ -1097,7 +1129,7 @@ float CxImage::KernelLinear(const float t)
  */
 float CxImage::KernelCubic(const float t)
 {
-  float abs_t = (float)fabs(t);
+  float abs_t = static_cast<float>(fabs(t));
   float abs_t_sq = abs_t * abs_t;
 
   if (abs_t<1) {
@@ -1125,7 +1157,7 @@ float CxImage::KernelCubic(const float t)
  */
 float CxImage::KernelGeneralizedCubic(const float t, const float a)
 {
-  float abs_t = (float)fabs(t);
+  float abs_t = static_cast<float>(fabs(t));
   float abs_t_sq = abs_t * abs_t;
 
   if (abs_t<1) {
@@ -1156,13 +1188,13 @@ float CxImage::KernelLanczosSinc(const float t, const float r)
     return 0;
   }
 
-  if (t==0) {
+  if (fabs(t) <= FLT_EPSILON) {
     return 1;
   }
 
   float pit=PI*t;
   float pitd=pit/r;
-  return (float)((sin(pit)/pit) * (sin(pitd)/pitd));
+  return static_cast<float>((sin(pit)/pit) * (sin(pitd)/pitd));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1204,7 +1236,9 @@ float CxImage::KernelHanning(const float x)
     return 0.0f;
   }
 
-  return (0.5f+0.5f*(float)cos(PI*x))*((float)sin(PI*x)/(PI*x));
+  return (0.5f
+          + 0.5f * static_cast<float>(cos(PI*x)))
+      * (static_cast<float>(sin(PI*x))/(PI*x));
 }
 ////////////////////////////////////////////////////////////////////////////////
 float CxImage::KernelHamming(const float x)
@@ -1232,20 +1266,20 @@ float CxImage::KernelSinc(const float x)
     return(1.0);
   }
 
-  return((float)sin(PI*x)/(PI*x));
+  return(static_cast<float>(sin(PI*x))/(PI*x));
 }
 ////////////////////////////////////////////////////////////////////////////////
 float CxImage::KernelBlackman(const float x)
 {
   //if (fabs(x)>1) return 0.0f;
-  return (0.42f+0.5f*(float)cos(PI*x)+0.08f*(float)cos(2.0f*PI*x));
+  return (0.42f+0.5f*static_cast<float>(cos(PI*x))+0.08f*static_cast<float>(cos(2.0f*PI*x)));
 }
 ////////////////////////////////////////////////////////////////////////////////
 float CxImage::KernelBessel_J1(const float x)
 {
   double p, q;
 
-  register int32_t i;
+  int32_t i;
 
   static const double
   Pone[] = {
@@ -1279,14 +1313,14 @@ float CxImage::KernelBessel_J1(const float x)
     q = q*x*x+Qone[i];
   }
 
-  return (float)(p/q);
+  return static_cast<float>(p/q);
 }
 ////////////////////////////////////////////////////////////////////////////////
 float CxImage::KernelBessel_P1(const float x)
 {
   double p, q;
 
-  register int32_t i;
+  int32_t i;
 
   static const double
   Pone[] = {
@@ -1314,14 +1348,14 @@ float CxImage::KernelBessel_P1(const float x)
     q = q*(8.0/x)*(8.0/x)+Qone[i];
   }
 
-  return (float)(p/q);
+  return static_cast<float>(p/q);
 }
 ////////////////////////////////////////////////////////////////////////////////
 float CxImage::KernelBessel_Q1(const float x)
 {
   double p, q;
 
-  register int32_t i;
+  int32_t i;
 
   static const double
   Pone[] = {
@@ -1349,7 +1383,7 @@ float CxImage::KernelBessel_Q1(const float x)
     q = q*(8.0/x)*(8.0/x)+Qone[i];
   }
 
-  return (float)(p/q);
+  return static_cast<float>(p/q);
 }
 ////////////////////////////////////////////////////////////////////////////////
 float CxImage::KernelBessel_Order1(float x)
@@ -1370,9 +1404,12 @@ float CxImage::KernelBessel_Order1(float x)
     return(p*KernelBessel_J1(x));
   }
 
-  q = (float)sqrt(2.0f/(PI*x))*(float)(KernelBessel_P1(x)*(1.0f/sqrt(2.0f)*(sin(x)-cos(
-                                         x)))-8.0f/x*KernelBessel_Q1(x)*
-                                       (-1.0f/sqrt(2.0f)*(sin(x)+cos(x))));
+  q = static_cast<float>(sqrt(2.0f/(PI*x)))
+      * static_cast<float>(KernelBessel_P1(x)
+                           *(1.0f/sqrt(2.0f)
+                             *(sin(x)-cos(x)))
+                           -8.0f/x*KernelBessel_Q1(x)
+                           * (-1.0f/sqrt(2.0f)*(sin(x)+cos(x))));
 
   if (p < 0.0f) {
     q = (-q);
@@ -1392,7 +1429,7 @@ float CxImage::KernelBessel(const float x)
 ////////////////////////////////////////////////////////////////////////////////
 float CxImage::KernelGaussian(const float x)
 {
-  return (float)(exp(-2.0f*x*x)*0.79788456080287f/*sqrt(2.0f/PI)*/);
+  return static_cast<float>(exp(-2.0f*x*x)*0.79788456080287f/*sqrt(2.0f/PI)*/);
 }
 ////////////////////////////////////////////////////////////////////////////////
 float CxImage::KernelQuadratic(const float x)
@@ -1482,7 +1519,7 @@ float CxImage::KernelPower(const float x, const float a)
     return 0.0f;
   }
 
-  return (1.0f - (float)fabs(pow(x,a)));
+  return (1.0f - static_cast<float>(fabs(pow(x,a))));
 }
 ////////////////////////////////////////////////////////////////////////////////
 

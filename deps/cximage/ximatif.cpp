@@ -94,7 +94,7 @@ bool CxImageTIF::Decode(CxFile * hFile)
     if (TIFFGetField(m_tif, TIFFTAG_XRESOLUTION, &resolution))
     {
       if (res_unit == RESUNIT_CENTIMETER) {
-        resolution = (float)(resolution*2.54f + 0.5f);
+        resolution = static_cast<float>(resolution*2.54f + 0.5f);
       }
 
       SetXDPI((int32_t)resolution);
@@ -103,7 +103,7 @@ bool CxImageTIF::Decode(CxFile * hFile)
     if (TIFFGetField(m_tif, TIFFTAG_YRESOLUTION, &resolution))
     {
       if (res_unit == RESUNIT_CENTIMETER) {
-        resolution = (float)(resolution*2.54f + 0.5f);
+        resolution = static_cast<float>(resolution*2.54f + 0.5f);
       }
 
       SetYDPI((int32_t)resolution);
@@ -281,11 +281,11 @@ bool CxImageTIF::Decode(CxFile * hFile)
         } else {    // need to build the scale for greyscale images
           if (photometric == PHOTOMETRIC_MINISBLACK) {
             for (int32_t i=0; i<(1<<bpp); i++) {
-              pal[i].rgbRed = pal[i].rgbGreen = pal[i].rgbBlue = (uint8_t)(i*(255/((1<<bpp)-1)));
+              pal[i].rgbRed = pal[i].rgbGreen = pal[i].rgbBlue = static_cast<uint8_t>(i*(255/((1<<bpp)-1)));
             }
           } else {
             for (int32_t i=0; i<(1<<bpp); i++) {
-              pal[i].rgbRed = pal[i].rgbGreen = pal[i].rgbBlue = (uint8_t)(255-i*(255/((1<<bpp)-1)));
+              pal[i].rgbRed = pal[i].rgbGreen = pal[i].rgbBlue = static_cast<uint8_t>(255-i*(255/((1<<bpp)-1)));
             }
           }
         }
@@ -342,12 +342,12 @@ bool CxImageTIF::Decode(CxFile * hFile)
 
       int32_t bitsize = TIFFStripSize(m_tif);
       //verify bitsize: could be wrong if StripByteCounts is missing.
-      if (bitsize>(int32_t)(head.biSizeImage*samplesperpixel))
+      if (bitsize>static_cast<int32_t>(head.biSizeImage*samplesperpixel))
       {
         bitsize = head.biSizeImage*samplesperpixel;
       }
 
-      if (bitsize<(int32_t)(info.dwEffWidth*rowsperstrip))
+      if (bitsize<static_cast<int32_t>(info.dwEffWidth*rowsperstrip))
       {
         bitsize = info.dwEffWidth*rowsperstrip;
       }
@@ -366,7 +366,7 @@ bool CxImageTIF::Decode(CxFile * hFile)
         TIFFGetField(m_tif, TIFFTAG_TILEWIDTH, &tw);
         TIFFGetField(m_tif, TIFFTAG_TILELENGTH, &tl);
         rowsperstrip = tl;
-        bitsize = TIFFTileSize(m_tif) * (int32_t)(1+width/tw);
+        bitsize = TIFFTileSize(m_tif) * static_cast<int32_t>(1+width/tw);
         tilebuf = (uint8_t*)malloc(TIFFTileSize(m_tif));
       }
 
@@ -618,9 +618,9 @@ bool CxImageTIF::Decode(CxFile * hFile)
                 cb = 12.92 * cb;
               }
 
-              c.rgbRed  =(uint8_t)max(0,min(255,(int32_t)(cr*255)));
-              c.rgbGreen=(uint8_t)max(0,min(255,(int32_t)(cg*255)));
-              c.rgbBlue =(uint8_t)max(0,min(255,(int32_t)(cb*255)));
+              c.rgbRed  =(uint8_t)max(0,min(255,static_cast<int32_t>(cr*255)));
+              c.rgbGreen=(uint8_t)max(0,min(255,static_cast<int32_t>(cg*255)));
+              c.rgbBlue =(uint8_t)max(0,min(255,static_cast<int32_t>(cb*255)));
 
               SetPixelColor(xi,yi,c);
 #if CXIMAGE_SUPPORT_ALPHA
