@@ -33,13 +33,10 @@ public:
     hge=hgeCreate(HGE_VERSION);
     color=0xFFFFFFFF;
   }
-  virtual     ~hgeGUIObject()
-  {
-    hge->Release();
-  }
+  virtual ~hgeGUIObject();
 
   virtual void  Render() = 0;
-  virtual void  Update(float dt) {}
+  virtual void  Update(float /*dt*/) {}
 
   virtual void  Enter() {}
   virtual void  Leave() {}
@@ -48,26 +45,26 @@ public:
   {
     return true;
   }
-  virtual void  Focus(bool bFocused) {}
-  virtual void  MouseOver(bool bOver) {}
+  virtual void  Focus(bool /*bFocused*/) {}
+  virtual void  MouseOver(bool /*bOver*/) {}
 
-  virtual bool  MouseMove(float x, float y)
+  virtual bool  MouseMove(float /*x*/, float /*y*/)
   {
     return false;
   }
-  virtual bool  MouseLButton(bool bDown)
+  virtual bool  MouseLButton(bool /*bDown*/)
   {
     return false;
   }
-  virtual bool  MouseRButton(bool bDown)
+  virtual bool  MouseRButton(bool /*bDown*/)
   {
     return false;
   }
-  virtual bool  MouseWheel(int nNotches)
+  virtual bool  MouseWheel(int /*nNotches*/)
   {
     return false;
   }
-  virtual bool  KeyClick(int key, int chr)
+  virtual bool  KeyClick(int /*key*/, int /*chr*/)
   {
     return false;
   }

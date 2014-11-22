@@ -68,7 +68,7 @@ CGfxObject *CTextureAssembler::FindObj(GfxObjList objlist, char *name)
 void CTextureAssembler::AccumulateRMResources(hgeResourceManager *rm, int resgroup, char *mask_set,
     bool bMaskInclusive)
 {
-  ResDesc *resdesc;
+  IResource *resdesc;
 
   // RES_SPRITE
   resdesc = rm->res[7];

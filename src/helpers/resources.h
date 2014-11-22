@@ -30,79 +30,92 @@
 #define RES_STRTABLE  12
 
 
-void    AddRes(hgeResourceManager *rm, int type, ResDesc *resource);
-ResDesc*  FindRes(hgeResourceManager *rm, int type, const char *name);
+void    AddRes(hgeResourceManager *rm, int type, IResource *resource);
+IResource*  FindRes(hgeResourceManager *rm, int type, const char *name);
 
 
-struct RScript : public ResDesc {
+struct RScript : public IResource {
   static  void  Parse(hgeResourceManager *rm, RScriptParser *sp, const char *name,
                       const char *basename);
-  virtual uint32_t Get(hgeResourceManager *rm)
+  virtual hgeResHandle Get(hgeResourceManager * /*rm*/)
   {
     return 0;
   }
-  virtual void  Free() {}
+  virtual void  Free();
+  virtual void copy_from(IResource * r);
 };
 
-struct RResource : public ResDesc {
+struct RResource : public IResource {
   char      filename[MAXRESCHARS];
 
   static  void  Parse(hgeResourceManager *rm, RScriptParser *sp, const char *name,
                       const char *basename);
-  virtual uint32_t Get(hgeResourceManager *rm);
+  virtual hgeResHandle Get(hgeResourceManager *rm);
   virtual void  Free();
+  virtual void copy_from(IResource * r);
 };
 
-struct RTexture : public ResDesc {
+struct RTexture : public IResource {
   char      filename[MAXRESCHARS];
   bool      mipmap;
 
   static  void  Parse(hgeResourceManager *rm, RScriptParser *sp, const char *name,
                       const char *basename);
-  virtual uint32_t Get(hgeResourceManager *rm);
+  virtual hgeResHandle Get(hgeResourceManager *rm);
   virtual void  Free();
+
+  virtual void copy_from(IResource * r);
 };
 
-struct REffect : public ResDesc {
+struct REffect : public IResource {
   char      filename[MAXRESCHARS];
 
   static  void  Parse(hgeResourceManager *rm, RScriptParser *sp, const char *name,
                       const char *basename);
-  virtual uint32_t Get(hgeResourceManager *rm);
+  virtual hgeResHandle Get(hgeResourceManager *rm);
   virtual void  Free();
+
+  virtual void copy_from(IResource * r);
 };
 
-struct RMusic : public ResDesc {
+struct RMusic : public IResource {
   char      filename[MAXRESCHARS];
   int       amplify;
 
   static  void  Parse(hgeResourceManager *rm, RScriptParser *sp, const char *name,
                       const char *basename);
-  virtual uint32_t Get(hgeResourceManager *rm);
+  virtual hgeResHandle Get(hgeResourceManager *rm);
   virtual void  Free();
+
+  virtual void copy_from(IResource * r);
 };
 
-struct RStream : public ResDesc {
+struct RStream : public IResource {
   char      filename[MAXRESCHARS];
 
   static  void  Parse(hgeResourceManager *rm, RScriptParser *sp, const char *name,
                       const char *basename);
-  virtual uint32_t Get(hgeResourceManager *rm);
+  virtual hgeResHandle Get(hgeResourceManager *rm);
   virtual void  Free();
+
+  virtual void copy_from(IResource * r);
 };
 
-struct RTarget : public ResDesc {
+struct RTarget : public IResource {
   int     width;
   int     height;
   bool    zbuffer;
 
   static  void  Parse(hgeResourceManager *rm, RScriptParser *sp, const char *name,
                       const char *basename);
-  virtual uint32_t Get(hgeResourceManager *rm);
+  virtual hgeResHandle Get(hgeResourceManager *rm);
   virtual void  Free();
+
+  virtual void copy_from(IResource * r);
+
 };
 
-struct RSprite : public ResDesc {
+struct RSprite : public IResource {
   char    texname[MAXRESCHARS];
   float   tx, ty, w, h;
   float   hotx, hoty;
@@ -117,8 +130,11 @@ struct RSprite : public ResDesc {
 
   static  void  Parse(hgeResourceManager *rm, RScriptParser *sp, const char *name,
                       const char *basename);
-  virtual uint32_t Get(hgeResourceManager *rm);
+  virtual hgeResHandle Get(hgeResourceManager *rm);
   virtual void  Free();
+
+  virtual void copy_from(IResource * r);
+
 };
 
 struct RAnimation : public RSprite {
@@ -128,11 +144,13 @@ struct RAnimation : public RSprite {
 
   static  void  Parse(hgeResourceManager *rm, RScriptParser *sp, const char *name,
                       const char *basename);
-  virtual uint32_t Get(hgeResourceManager *rm);
+  virtual hgeResHandle Get(hgeResourceManager *rm);
   virtual void  Free();
+
+  virtual void copy_from(IResource * r);
 };
 
-struct RFont : public ResDesc {
+struct RFont : public IResource {
   char    filename[MAXRESCHARS];
   bool    mipmap;
   int     blend;
@@ -146,21 +164,30 @@ struct RFont : public ResDesc {
 
   static  void  Parse(hgeResourceManager *rm, RScriptParser *sp, const char *name,
                       const char *basename);
-  virtual uint32_t Get(hgeResourceManager *rm);
+  virtual hgeResHandle Get(hgeResourceManager *rm);
   virtual void  Free();
+
+  virtual void copy_from(IResource * r);
 };
 
-struct RParticle : public ResDesc {
+struct RParticle : public IResource {
   char    filename[MAXRESCHARS];
   char    spritename[MAXRESCHARS];
 
   static  void  Parse(hgeResourceManager *rm, RScriptParser *sp, const char *name,
                       const char *basename);
-  virtual uint32_t Get(hgeResourceManager *rm);
+  virtual hgeResHandle Get(hgeResourceManager *rm);
   virtual void  Free();
+
+  virtual void copy_from(IResource * r) {
+    auto src = dynamic_cast<RParticle *>(r);
+    memcpy(filename, src->filename, sizeof(filename));
+    memcpy(spritename, src->spritename, sizeof(spritename));
+    IResource::copy_from_base(r);
+  }
 };
 
-struct RDistort : public ResDesc {
+struct RDistort : public IResource {
   char    texname[MAXRESCHARS];
   float   tx, ty, w, h;
   int     cols, rows;
@@ -170,18 +197,22 @@ struct RDistort : public ResDesc {
 
   static  void  Parse(hgeResourceManager *rm, RScriptParser *sp, const char *name,
                       const char *basename);
-  virtual uint32_t Get(hgeResourceManager *rm);
+  virtual hgeResHandle Get(hgeResourceManager *rm);
   virtual void  Free();
+
+  virtual void copy_from(IResource * r);
 };
 
 
-struct RStringTable : public ResDesc {
+struct RStringTable : public IResource {
   char      filename[MAXRESCHARS];
 
   static  void  Parse(hgeResourceManager *rm, RScriptParser *sp, const char *name,
                       const char *basename);
-  virtual uint32_t Get(hgeResourceManager *rm);
+  virtual hgeResHandle Get(hgeResourceManager *rm);
   virtual void  Free();
+
+  virtual void copy_from(IResource * r);
 };
 
 #endif

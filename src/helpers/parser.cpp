@@ -17,7 +17,7 @@ struct keyword {
   int   code;
 };
 
-keyword keytable[]= {
+static keyword keytable[]= {
   { "=",      TTEQUALS    },
   { ":",      TTBASED     },
   { ",",      TTSEPARATOR   },
@@ -194,7 +194,8 @@ int RScriptParser::get_token()
 
 bool RScriptParser::strtkcmp(const char* str, const char* mem)
 {
-  int i,len=strlen(str);
+  int i;
+  int len = static_cast<int32_t>(strlen(str));
 
   for(i=0; i<len; i++) {
     if(!mem[i]) {
@@ -232,7 +233,7 @@ uint32_t RScriptParser::tkn_hex()
       chr=0xF;
     }
 
-    dw=(dw << 4) | chr;
+    dw = (dw << 4) | static_cast<uint32_t>(chr);
   }
 
   return dw;

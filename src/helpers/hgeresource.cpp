@@ -34,7 +34,7 @@ hgeResourceManager::~hgeResourceManager()
 
 void hgeResourceManager::_parse_script(const char *scriptname)
 {
-  ResDesc *rc, *rcnext;
+  IResource *rc, *rcnext;
 
   if(scriptname) {
     RScript::Parse(this, NULL, scriptname, NULL);
@@ -55,7 +55,7 @@ void hgeResourceManager::_parse_script(const char *scriptname)
 void hgeResourceManager::_remove_all()
 {
   int i;
-  ResDesc *rc, *rcnext;
+  IResource *rc, *rcnext;
 
   for(i=0; i<RESTYPES; i++) {
     rc=res[i];
@@ -80,7 +80,7 @@ void hgeResourceManager::ChangeScript(const char *scriptname)
 bool hgeResourceManager::Precache(int groupid)
 {
   int i;
-  ResDesc *rc;
+  IResource *rc;
   bool bResult=true;
 
   for(i=0; i<RESTYPES; i++) {
@@ -101,7 +101,7 @@ bool hgeResourceManager::Precache(int groupid)
 void hgeResourceManager::Purge(int groupid)
 {
   int i;
-  ResDesc *rc;
+  IResource *rc;
 
   for(i=0; i<RESTYPES; i++) {
     rc=res[i];
@@ -120,16 +120,16 @@ void* hgeResourceManager::GetResource(const char *name, int resgroup)
 {
   void *reshandle;
   RResource *resource;
-  ResDesc *Res=FindRes(this, RES_RESOURCE, name);
+  IResource *Res=FindRes(this, RES_RESOURCE, name);
 
   if(Res) {
-    return (void *)Res->Get(this);
+    return reinterpret_cast<void *>(Res->Get(this));
   } else {
     reshandle=hge->Resource_Load(name);
 
     if(reshandle) {
       resource=new RResource();
-      resource->handle=(size_t)reshandle;
+      resource->handle = reinterpret_cast<size_t>(reshandle);
       resource->resgroup=resgroup;
       strcpy(resource->name, name);
       strcpy(resource->filename, name);
@@ -146,10 +146,10 @@ HTEXTURE hgeResourceManager::GetTexture(const char *name, int resgroup)
 {
   HTEXTURE reshandle;
   RTexture *resource;
-  ResDesc *Res=FindRes(this, RES_TEXTURE, name);
+  IResource *Res=FindRes(this, RES_TEXTURE, name);
 
   if(Res) {
-    return (HTEXTURE)Res->Get(this);
+    return reinterpret_cast<HTEXTURE>(Res->Get(this));
   } else {
     reshandle=hge->Texture_Load(name);
 
@@ -173,10 +173,10 @@ HEFFECT hgeResourceManager::GetEffect(const char *name, int resgroup)
 {
   HEFFECT reshandle;
   REffect *resource;
-  ResDesc *Res=FindRes(this, RES_EFFECT, name);
+  IResource *Res=FindRes(this, RES_EFFECT, name);
 
   if(Res) {
-    return (HEFFECT)Res->Get(this);
+    return reinterpret_cast<HEFFECT>(Res->Get(this));
   } else {
     reshandle=hge->Effect_Load(name);
 
@@ -199,10 +199,10 @@ HMUSIC hgeResourceManager::GetMusic(const char *name, int resgroup)
 {
   HMUSIC reshandle;
   RMusic *resource;
-  ResDesc *Res=FindRes(this, RES_MUSIC, name);
+  IResource *Res=FindRes(this, RES_MUSIC, name);
 
   if(Res) {
-    return (HMUSIC)Res->Get(this);
+    return reinterpret_cast<HMUSIC>(Res->Get(this));
   } else {
     reshandle=hge->Music_Load(name);
 
@@ -225,10 +225,10 @@ HSTREAM hgeResourceManager::GetStream(const char *name, int resgroup)
 {
   HSTREAM reshandle;
   RStream *resource;
-  ResDesc *Res=FindRes(this, RES_STREAM, name);
+  IResource *Res=FindRes(this, RES_STREAM, name);
 
   if(Res) {
-    return (HSTREAM)Res->Get(this);
+    return reinterpret_cast<HSTREAM>(Res->Get(this));
   } else {
     reshandle=hge->Stream_Load(name);
 
@@ -249,10 +249,10 @@ HSTREAM hgeResourceManager::GetStream(const char *name, int resgroup)
 
 HTARGET hgeResourceManager::GetTarget(const char *name)
 {
-  ResDesc *Res=FindRes(this, RES_TARGET, name);
+  IResource *Res=FindRes(this, RES_TARGET, name);
 
   if(Res) {
-    return (HTARGET)Res->Get(this);
+    return reinterpret_cast<HTARGET>(Res->Get(this));
   } else {
     return 0;
   }
@@ -260,10 +260,10 @@ HTARGET hgeResourceManager::GetTarget(const char *name)
 
 hgeSprite* hgeResourceManager::GetSprite(const char *name)
 {
-  ResDesc *Res=FindRes(this, RES_SPRITE, name);
+  IResource *Res=FindRes(this, RES_SPRITE, name);
 
   if(Res) {
-    return (hgeSprite *)Res->Get(this);
+    return reinterpret_cast<hgeSprite *>(Res->Get(this));
   } else {
     return 0;
   }
@@ -271,10 +271,10 @@ hgeSprite* hgeResourceManager::GetSprite(const char *name)
 
 hgeAnimation* hgeResourceManager::GetAnimation(const char *name)
 {
-  ResDesc *Res=FindRes(this, RES_ANIMATION, name);
+  IResource *Res=FindRes(this, RES_ANIMATION, name);
 
   if(Res) {
-    return (hgeAnimation *)Res->Get(this);
+    return reinterpret_cast<hgeAnimation *>(Res->Get(this));
   } else {
     return 0;
   }
@@ -282,10 +282,10 @@ hgeAnimation* hgeResourceManager::GetAnimation(const char *name)
 
 hgeFont* hgeResourceManager::GetFont(const char *name)
 {
-  ResDesc *Res=FindRes(this, RES_FONT, name);
+  IResource *Res=FindRes(this, RES_FONT, name);
 
   if(Res) {
-    return (hgeFont *)Res->Get(this);
+    return reinterpret_cast<hgeFont *>(Res->Get(this));
   } else {
     return 0;
   }
@@ -293,10 +293,10 @@ hgeFont* hgeResourceManager::GetFont(const char *name)
 
 hgeParticleSystem* hgeResourceManager::GetParticleSystem(const char *name)
 {
-  ResDesc *Res=FindRes(this, RES_PARTICLE, name);
+  IResource *Res=FindRes(this, RES_PARTICLE, name);
 
   if(Res) {
-    return (hgeParticleSystem *)Res->Get(this);
+    return reinterpret_cast<hgeParticleSystem *>(Res->Get(this));
   } else {
     return 0;
   }
@@ -304,10 +304,10 @@ hgeParticleSystem* hgeResourceManager::GetParticleSystem(const char *name)
 
 hgeDistortionMesh* hgeResourceManager::GetDistortionMesh(const char *name)
 {
-  ResDesc *Res=FindRes(this, RES_DISTORT, name);
+  IResource *Res=FindRes(this, RES_DISTORT, name);
 
   if(Res) {
-    return (hgeDistortionMesh *)Res->Get(this);
+    return reinterpret_cast<hgeDistortionMesh *>(Res->Get(this));
   } else {
     return 0;
   }
@@ -317,16 +317,16 @@ hgeStringTable* hgeResourceManager::GetStringTable(const char *name, int resgrou
 {
   hgeStringTable *strtable;
   RStringTable *resource;
-  ResDesc *Res=FindRes(this, RES_STRTABLE, name);
+  IResource *Res=FindRes(this, RES_STRTABLE, name);
 
   if(Res) {
-    return (hgeStringTable*)Res->Get(this);
+    return reinterpret_cast<hgeStringTable*>(Res->Get(this));
   } else {
     strtable=new hgeStringTable(name);
 
     if(strtable) {
       resource=new RStringTable();
-      resource->handle=(size_t)strtable;
+      resource->handle= reinterpret_cast<size_t>(strtable);
       resource->resgroup=resgroup;
       strcpy(resource->name, name);
       strcpy(resource->filename, name);
@@ -337,4 +337,9 @@ hgeStringTable* hgeResourceManager::GetStringTable(const char *name, int resgrou
   }
 
   return 0;
+}
+
+IResource::~IResource()
+{
+  hge->Release();
 }

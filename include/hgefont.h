@@ -94,23 +94,23 @@ public:
     return fSpacing;
   }
 
-  hgeSprite*  GetSprite(char chr) const
+  hgeSprite* GetSprite(char chr) const
   {
-    return letters[(unsigned char)chr];
+    return letters[static_cast<uint8_t>(chr)];
   }
-  float   GetPreWidth(char chr) const
+  float GetPreWidth(char chr) const
   {
-    return pre[(unsigned char)chr];
+    return pre[static_cast<uint8_t>(chr)];
   }
-  float   GetPostWidth(char chr) const
+  float GetPostWidth(char chr) const
   {
-    return post[(unsigned char)chr];
+    return post[static_cast<uint8_t>(chr)];
   }
-  float   GetHeight() const
+  float GetHeight() const
   {
     return fHeight;
   }
-  float   GetStringWidth(const char *string, bool bMultiline=true) const;
+  float GetStringWidth(const char *string, bool bMultiline=true) const;
 
 private:
   hgeFont();

@@ -6,13 +6,9 @@
 ** hgeColor*** helper classes
 */
 
-
-#ifndef HGECOLOR_H
-#define HGECOLOR_H
-
+#pragma once
 
 #include "hge.h"
-
 
 #define hgeColor hgeColorRGB
 
@@ -76,16 +72,10 @@ public:
     a+=c.a;
     return *this;
   }
-  bool      operator== (const hgeColorRGB &c) const
-  {
-    return (r==c.r && g==c.g && b==c.b && a==c.a);
-  }
-  bool      operator!= (const hgeColorRGB &c) const
-  {
-    return (r!=c.r || g!=c.g || b!=c.b || a!=c.a);
-  }
+  bool operator== (const hgeColorRGB &c) const;
+  bool operator!= (const hgeColorRGB &c) const;
 
-  hgeColorRGB   operator/  (const float scalar) const
+  hgeColorRGB operator/  (const float scalar) const
   {
     return hgeColorRGB(r/scalar, g/scalar, b/scalar, a/scalar);
   }
@@ -177,14 +167,8 @@ public:
     a+=c.a;
     return *this;
   }
-  bool      operator== (const hgeColorHSV &c) const
-  {
-    return (h==c.h && s==c.s && v==c.v && a==c.a);
-  }
-  bool      operator!= (const hgeColorHSV &c) const
-  {
-    return (h!=c.h || s!=c.s || v!=c.v || a!=c.a);
-  }
+  bool operator== (const hgeColorHSV &c) const;
+  bool operator!= (const hgeColorHSV &c) const;
 
   hgeColorHSV   operator/  (const float scalar) const
   {
@@ -218,6 +202,3 @@ inline hgeColorHSV operator* (const float sc, const hgeColorHSV &c)
 {
   return c*sc;
 }
-
-
-#endif

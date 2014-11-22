@@ -73,7 +73,7 @@ public:
   }
   float tkn_float()
   {
-    return (float)atof(tokenvalue);
+    return static_cast<float>(atof(tokenvalue));
   }
   bool  tkn_bool()
   {

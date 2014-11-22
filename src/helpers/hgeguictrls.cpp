@@ -50,7 +50,7 @@ void hgeGUIText::SetText(const char *_text)
   strcpy(text, _text);
 }
 
-void hgeGUIText::printf(const char *format, ...)
+void hgeGUIText::printf(const char * /*format*/, ...)
 {
 //  vsprintf(text, format, (char *)&format+sizeof(format));
 }
@@ -164,7 +164,7 @@ void hgeGUISlider::SetValue(float _fVal)
 void hgeGUISlider::Render()
 {
   float xx, yy;
-  float x1,y1,x2,y2;
+  float x1 = 0.f,y1 = 0.f,x2 = 0.f, y2 = 0.f;
 
   xx=rect.x1+(rect.x2-rect.x1)*(fVal-fMin)/(fMax-fMin);
   yy=rect.y1+(rect.y2-rect.y1)*(fVal-fMin)/(fMax-fMin);
@@ -430,7 +430,7 @@ bool hgeGUIListbox::MouseWheel(int nNotches)
   return true;
 }
 
-bool hgeGUIListbox::KeyClick(int key, int chr)
+bool hgeGUIListbox::KeyClick(int key, int /*chr*/)
 {
   switch(key) {
   case HGEK_DOWN:

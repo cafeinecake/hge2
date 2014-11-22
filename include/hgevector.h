@@ -7,8 +7,7 @@
 */
 
 
-#ifndef HGEVECTOR_H
-#define HGEVECTOR_H
+#pragma once
 
 #include <math.h>
 
@@ -56,14 +55,8 @@ public:
     y+=v.y;
     return *this;
   }
-  bool    operator== (const hgeVector &v) const
-  {
-    return (x==v.x && y==v.y);
-  }
-  bool    operator!= (const hgeVector &v) const
-  {
-    return (x!=v.x || y!=v.y);
-  }
+  bool operator== (const hgeVector &v) const;
+  bool operator!= (const hgeVector &v) const;
 
   hgeVector operator/  (const float scalar) const
   {
@@ -120,6 +113,3 @@ inline float   operator% (const hgeVector &v, const hgeVector &u)
 {
   return v.Dot(&u);
 }
-
-
-#endif

@@ -9,6 +9,9 @@
 
 #include "../../include/hgevector.h"
 
+#include "../common/hge_utils.h"
+using namespace hgeut;
+
 float InvSqrt(float x)
 {
   union {
@@ -39,6 +42,16 @@ hgeVector *hgeVector::Normalize()
   return this;
 }
 */
+
+bool hgeVector::operator==(const hgeVector &v) const
+{
+  return (flt_equal(x, v.x) && flt_equal(y, v.y));
+}
+
+bool hgeVector::operator!=(const hgeVector &v) const
+{
+  return (flt_not_equal(x, v.x) || flt_not_equal(y, v.y));
+}
 
 float hgeVector::Angle(const hgeVector *v) const
 {

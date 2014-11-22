@@ -13,6 +13,8 @@
 
 #include "../../include/hgeparticle.h"
 
+#include "../common/hge_utils.h"
+using namespace hgeut;
 
 hgeParticleManager::hgeParticleManager(const float fps)
 {
@@ -37,7 +39,8 @@ void hgeParticleManager::Update(float dt)
   for(i=0; i<nPS; i++) {
     psList[i]->Update(dt);
 
-    if(psList[i]->GetAge()==-2.0f && psList[i]->GetParticlesAlive()==0) {
+    if(flt_equal(psList[i]->GetAge(), -2.0f)
+       && psList[i]->GetParticlesAlive()==0) {
       delete psList[i];
       psList[i]=psList[nPS-1];
       nPS--;

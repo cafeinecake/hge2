@@ -482,5 +482,7 @@ bool hgeGUI::ProcessCtrl(hgeGUIObject *ctrl)
   return bResult;
 }
 
-
-
+hgeGUIObject::~hgeGUIObject()
+{
+  hge->Release();
+}

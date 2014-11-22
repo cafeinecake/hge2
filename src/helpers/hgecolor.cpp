@@ -10,13 +10,34 @@
 #include "../../include/hgecolor.h"
 #include <math.h>
 
-#ifndef min
-#define min(x,y) ((x) < (y) ? (x) : (y))
-#endif
+#include "../common/hge_utils.h"
+using namespace hgeut;
 
-#ifndef max
-#define max(x,y) ((x) > (y) ? (x) : (y))
-#endif
+//#ifndef min
+//#define min(x,y) ((x) < (y) ? (x) : (y))
+//#endif
+
+//#ifndef max
+//#define max(x,y) ((x) > (y) ? (x) : (y))
+//#endif
+
+
+
+bool hgeColorHSV::operator==(const hgeColorHSV &c) const
+{
+  return (flt_equal(h, c.h)
+          && flt_equal(s, c.s)
+          && flt_equal(v, c.v)
+          && flt_equal(a, c.a));
+}
+
+bool hgeColorHSV::operator!=(const hgeColorHSV &c) const
+{
+  return (flt_not_equal(h, c.h)
+      || flt_not_equal(s, c.s)
+      || flt_not_equal(v, c.v)
+      || flt_not_equal(a, c.a));
+}
 
 void hgeColorHSV::SetHWColor(uint32_t col)
 {
@@ -35,7 +56,7 @@ void hgeColorHSV::SetHWColor(uint32_t col)
 
   v = maxv;
 
-  if (delta == 0) {
+  if (flt_equal(delta, 0.f)) {
     h = 0;
     s = 0;
   } else {
@@ -44,11 +65,11 @@ void hgeColorHSV::SetHWColor(uint32_t col)
     del_G = (((maxv - g) / 6) + (delta / 2)) / delta;
     del_B = (((maxv - b) / 6) + (delta / 2)) / delta;
 
-    if      (r == maxv) {
+    if (flt_equal(r, maxv)) {
       h = del_B - del_G;
-    } else if (g == maxv) {
+    } else if (flt_equal(g, maxv)) {
       h = (1.0f / 3.0f) + del_R - del_B;
-    } else if (b == maxv) {
+    } else if (flt_equal(b, maxv)) {
       h = (2.0f / 3.0f) + del_G - del_R;
     }
 
@@ -67,14 +88,14 @@ uint32_t hgeColorHSV::GetHWColor() const
   float r, g, b;
   float xh, i, p1, p2, p3;
 
-  if (s == 0) {
+  if (flt_equal(s, 0)) {
     r = v;
     g = v;
     b = v;
   } else {
     xh = h * 6;
 
-    if(xh == 6) {
+    if(flt_equal(xh, 6)) {
       xh=0;
     }
 
@@ -83,27 +104,27 @@ uint32_t hgeColorHSV::GetHWColor() const
     p2 = v * (1 - s * (xh - i));
     p3 = v * (1 - s * (1 - (xh - i)));
 
-    if      (i == 0) {
+    if (flt_equal(i, 0)) {
       r = v;
       g = p3;
       b = p1;
-    } else if (i == 1) {
+    } else if (flt_equal(i, 1)) {
       r = p2;
       g = v;
       b = p1;
-    } else if (i == 2) {
+    } else if (flt_equal(i, 2)) {
       r = p1;
       g = v;
       b = p3;
-    } else if (i == 3) {
+    } else if (flt_equal(i, 3)) {
       r = p1;
       g = p2;
       b = v;
-    } else if (i == 4) {
+    } else if (flt_equal(i, 4)) {
       r = p3;
       g = p1;
       b = v;
-    } else       {
+    } else {
       r = v;
       g = p1;
       b = p2;
@@ -114,3 +135,20 @@ uint32_t hgeColorHSV::GetHWColor() const
            b*255.0f);
 }
 
+
+
+bool hgeColorRGB::operator==(const hgeColorRGB &c) const
+{
+  return (fabs(r - c.r) <= FLT_EPSILON
+          && fabs(g - c.g) <= FLT_EPSILON
+          && fabs(b - c.b) <= FLT_EPSILON
+          && fabs(a - c.a) <= FLT_EPSILON);
+}
+
+bool hgeColorRGB::operator!=(const hgeColorRGB &c) const
+{
+  return (fabs(r - c.r) > FLT_EPSILON
+          || fabs(g - c.g) > FLT_EPSILON
+          || fabs(b - c.b) > FLT_EPSILON
+          || fabs(a - c.a) > FLT_EPSILON);
+}

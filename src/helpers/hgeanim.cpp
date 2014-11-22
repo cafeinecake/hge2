@@ -8,7 +8,8 @@
 
 
 #include "../../include/hgeanim.h"
-
+#include <cmath>
+#include <cfloat>
 
 hgeAnimation::hgeAnimation(HTEXTURE tex, int nframes, float FPS, float x, float y, float w, float h)
   : hgeSprite(tex, x, y, w, h)
@@ -74,7 +75,7 @@ void hgeAnimation::Update(float fDeltaTime)
     return;
   }
 
-  if(fSinceLastFrame == -1.0f) {
+  if(std::abs(fSinceLastFrame - (-1.0f)) <= FLT_EPSILON) {
     fSinceLastFrame=0.0f;
   } else {
     fSinceLastFrame += fDeltaTime;

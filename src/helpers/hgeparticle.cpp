@@ -12,6 +12,8 @@
 
 
 #include "../../include/hgeparticle.h"
+#include "../common/hge_utils.h"
+using namespace hgeut;
 
 HGE *hgeParticleSystem::hge=0;
 
@@ -27,13 +29,16 @@ hgeParticleSystem::hgeParticleSystem(const char *filename, hgeSprite *sprite, fl
     return;
   }
 
-  char *ptr = (char *) psi;
+  char *ptr = reinterpret_cast<char *>(psi);
   memset(&info, '\0', sizeof (info));
   info.sprite = sprite;
   ptr += 4;  // skip these bytes.
 
 #define SETMEMBER(typ, x) \
-   { info.x = *((const typ *) ptr); ptr += sizeof (typ); BYTESWAP(info.x); }
+   { info.x = *(const_cast<const typ *>(reinterpret_cast<typ *>(ptr))); \
+     ptr += sizeof (typ); \
+     BYTESWAP(info.x); }
+
   SETMEMBER(int, nEmission);
   SETMEMBER(float, fLifetime);
   SETMEMBER(float, fParticleLifeMin);
@@ -202,14 +207,14 @@ void hgeParticleSystem::_update(float fDeltaTime)
 
   // generate new particles
 
-  if(fAge != -2.0f) {
+  if (flt_not_equal(fAge, -2.0f)) {
     float fParticlesNeeded = info.nEmission*fDeltaTime + fEmissionResidue;
-    int nParticlesCreated = (unsigned int)fParticlesNeeded;
+    uint32_t nParticlesCreated = static_cast<uint32_t>(fParticlesNeeded);
     fEmissionResidue=fParticlesNeeded-nParticlesCreated;
 
     par=&particles[nParticlesAlive];
 
-    for(i=0; i<nParticlesCreated; i++) {
+    for(uint32_t i1=0; i1<nParticlesCreated; i1++) {
       if(nParticlesAlive>=MAX_PARTICLES) {
         break;
       }
@@ -221,7 +226,10 @@ void hgeParticleSystem::_update(float fDeltaTime)
       par->vecLocation.x += hge->Random_Float(-2.0f, 2.0f);
       par->vecLocation.y += hge->Random_Float(-2.0f, 2.0f);
 
-      ang=info.fDirection-M_PI_2+hge->Random_Float(0,info.fSpread)-info.fSpread/2.0f;
+      ang= info.fDirection
+          - static_cast<float>(M_PI_2)
+          + hge->Random_Float(0,info.fSpread)
+          - static_cast<float>(info.fSpread) / 2.0f;
 
       if(info.bRelative) {
         ang += (vecPrevLocation-vecLocation).Angle()+M_PI_2;
@@ -286,7 +294,7 @@ void hgeParticleSystem::MoveTo(float x, float y, bool bMoveParticles)
     vecPrevLocation.x=vecPrevLocation.x + dx;
     vecPrevLocation.y=vecPrevLocation.y + dy;
   } else {
-    if(fAge==-2.0) {
+    if(flt_equal(fAge, -2.0)) {
       vecPrevLocation.x=x;
       vecPrevLocation.y=y;
     } else {
@@ -308,7 +316,7 @@ void hgeParticleSystem::FireAt(float x, float y)
 
 void hgeParticleSystem::Fire()
 {
-  if(info.fLifetime==-1.0f) {
+  if (flt_equal(info.fLifetime, -1.0f)) {
     fAge=-1.0f;
   } else {
     fAge=0.0f;

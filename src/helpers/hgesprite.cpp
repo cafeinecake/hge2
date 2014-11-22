@@ -10,6 +10,8 @@
 #include "../../include/hgesprite.h"
 #include <math.h>
 
+#include "../common/hge_utils.h"
+using namespace hgeut;
 
 HGE *hgeSprite::hge=0;
 
@@ -26,8 +28,8 @@ hgeSprite::hgeSprite(HTEXTURE texture, float texx, float texy, float w, float h)
   height=h;
 
   if(texture) {
-    tex_width = (float)hge->Texture_GetWidth(texture);
-    tex_height = (float)hge->Texture_GetHeight(texture);
+    tex_width = static_cast<float>(hge->Texture_GetWidth(texture));
+    tex_height = static_cast<float>(hge->Texture_GetHeight(texture));
   } else {
     tex_width = 1.0f;
     tex_height = 1.0f;
@@ -100,7 +102,7 @@ void hgeSprite::RenderEx(float x, float y, float rot, float hscale, float vscale
   float tx1, ty1, tx2, ty2;
   float sint, cost;
 
-  if(vscale==0) {
+  if(flt_equal(vscale, 0)) {
     vscale=hscale;
   }
 
@@ -203,7 +205,7 @@ hgeRect* hgeSprite::GetBoundingBoxEx(float x, float y, float rot, float hscale, 
 
 void hgeSprite::SetFlip(bool bX, bool bY, bool bHotSpot)
 {
-  float tx, ty;
+  float tx1, ty1;
 
   if(bHSFlip && bXFlip) {
     hotX = width - hotX;
@@ -224,35 +226,35 @@ void hgeSprite::SetFlip(bool bX, bool bY, bool bHotSpot)
   }
 
   if(bX != bXFlip) {
-    tx=quad.v[0].tx;
+    tx1=quad.v[0].tx;
     quad.v[0].tx=quad.v[1].tx;
-    quad.v[1].tx=tx;
-    ty=quad.v[0].ty;
+    quad.v[1].tx=tx1;
+    ty1=quad.v[0].ty;
     quad.v[0].ty=quad.v[1].ty;
-    quad.v[1].ty=ty;
-    tx=quad.v[3].tx;
+    quad.v[1].ty=ty1;
+    tx1=quad.v[3].tx;
     quad.v[3].tx=quad.v[2].tx;
-    quad.v[2].tx=tx;
-    ty=quad.v[3].ty;
+    quad.v[2].tx=tx1;
+    ty1=quad.v[3].ty;
     quad.v[3].ty=quad.v[2].ty;
-    quad.v[2].ty=ty;
+    quad.v[2].ty=ty1;
 
     bXFlip=!bXFlip;
   }
 
   if(bY != bYFlip) {
-    tx=quad.v[0].tx;
+    tx1=quad.v[0].tx;
     quad.v[0].tx=quad.v[3].tx;
-    quad.v[3].tx=tx;
-    ty=quad.v[0].ty;
+    quad.v[3].tx=tx1;
+    ty1=quad.v[0].ty;
     quad.v[0].ty=quad.v[3].ty;
-    quad.v[3].ty=ty;
-    tx=quad.v[1].tx;
+    quad.v[3].ty=ty1;
+    tx1=quad.v[1].tx;
     quad.v[1].tx=quad.v[2].tx;
-    quad.v[2].tx=tx;
-    ty=quad.v[1].ty;
+    quad.v[2].tx=tx1;
+    ty1=quad.v[1].ty;
     quad.v[1].ty=quad.v[2].ty;
-    quad.v[2].ty=ty;
+    quad.v[2].ty=ty1;
 
     bYFlip=!bYFlip;
   }
@@ -267,14 +269,14 @@ void hgeSprite::SetTexture(HTEXTURE tex)
   quad.tex=tex;
 
   if(tex) {
-    tw = (float)hge->Texture_GetWidth(tex);
-    th = (float)hge->Texture_GetHeight(tex);
+    tw = static_cast<float>(hge->Texture_GetWidth(tex));
+    th = static_cast<float>(hge->Texture_GetHeight(tex));
   } else {
     tw = 1.0f;
     th = 1.0f;
   }
 
-  if(tw!=tex_width || th!=tex_height) {
+  if(flt_not_equal(tw, tex_width) || flt_not_equal(th, tex_height)) {
     tx1=quad.v[0].tx*tex_width;
     ty1=quad.v[0].ty*tex_height;
     tx2=quad.v[2].tx*tex_width;

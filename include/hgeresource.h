@@ -7,8 +7,7 @@
 */
 
 
-#ifndef HGERESOURCE_H
-#define HGERESOURCE_H
+#pragma once
 
 
 #include "hge.h"
@@ -25,27 +24,34 @@
 
 
 class hgeResourceManager;
+typedef size_t hgeResHandle;
 
-struct ResDesc {
-  char    name[MAXRESCHARS];
-  int     resgroup;
-  size_t    handle;
-  ResDesc*  next;
+class IResource {
+public:
+  char      name[MAXRESCHARS];
+  int       resgroup;
+  hgeResHandle handle;
+  IResource * next;
 
-  ResDesc()
+  IResource()
   {
     hge=hgeCreate(HGE_VERSION);
   }
-  ~ResDesc()
-  {
-    hge->Release();
-  }
+  virtual ~IResource();
+  virtual void copy_from(IResource * r) = 0;
 
-  virtual uint32_t Get(hgeResourceManager *rm) = 0;
-  virtual void  Free() = 0;
+  virtual hgeResHandle Get(hgeResourceManager *rm) = 0;
+  virtual void Free() = 0;
 
 protected:
   static HGE  *hge;
+
+  void copy_from_base(IResource * r){
+    memcpy(name, r->name, sizeof(name));
+    resgroup = r->resgroup;
+    handle = r->handle;
+    next = r->next;
+  }
 };
 
 /*
@@ -74,7 +80,7 @@ public:
   hgeDistortionMesh*  GetDistortionMesh(const char *name);
   hgeStringTable*   GetStringTable(const char *name, int resgroup=0);
 
-  ResDesc*      res[RESTYPES];
+  IResource*      res[RESTYPES];
 
 private:
   hgeResourceManager(const hgeResourceManager &);
@@ -84,6 +90,3 @@ private:
 
   static HGE      *hge;
 };
-
-
-#endif

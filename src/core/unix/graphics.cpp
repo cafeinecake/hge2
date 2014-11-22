@@ -62,7 +62,7 @@
 #define GL_UNSIGNED_SHORT_8_8_APPLE 0x85BA
 #endif
 #ifndef GL_UNSIGNED_SHORT_8_8_REV_APPLE
-#define GL_UNSIGNED_SHORT_8_8_REV_APPLE 0x85BB
+//#define GL_UNSIGNED_SHORT_8_8_REV_APPLE 0x85BB
 #endif
 
 struct gltexture {
@@ -754,7 +754,8 @@ void HGE_Impl::_ConfigureTexture(gltexture *t, int width, int height, uint32_t *
   }
 
   pOpenGLDevice->glBindTexture(pOpenGLDevice->TextureTarget,
-                               CurTexture ? (((gltexture *) CurTexture)->name) : 0);
+                               CurTexture ?
+                                 ((reinterpret_cast<gltexture *>(CurTexture))->name) : 0);
 
   if (loadFromFile) {
     delete[] pixels;
@@ -766,16 +767,16 @@ HTEXTURE HGE_Impl::_BuildTexture(int width, int height, uint32_t *pixels)
   gltexture *retval = new gltexture;
   memset(retval, '\0', sizeof (gltexture));
   retval->lost = true;  // we'll actually generate a texture and upload when forced.
-  retval->width = width;
-  retval->height = height;
+  retval->width = static_cast<uint32_t>(width);
+  retval->height = static_cast<uint32_t>(height);
   retval->pixels = pixels;
-  return (HTEXTURE)retval;
+  return reinterpret_cast<HTEXTURE>(retval);
 }
 
 HTEXTURE CALL HGE_Impl::Texture_Create(int width, int height)
 {
   uint32_t *pixels = new uint32_t[width * height];
-  memset(pixels, '\0', sizeof (uint32_t) * width * height);
+  memset(pixels, '\0', sizeof (uint32_t) * static_cast<uint32_t>(width * height));
   HTEXTURE retval = _BuildTexture(width, height, pixels);
 
   // the Direct3D renderer doesn't add these to the (textures) list, but we need them for when we "lose" the GL context.
@@ -791,7 +792,7 @@ HTEXTURE CALL HGE_Impl::Texture_Create(int width, int height)
   return retval;
 }
 
-HTEXTURE CALL HGE_Impl::Texture_Load(const char *filename, uint32_t size, bool bMipmap)
+HTEXTURE CALL HGE_Impl::Texture_Load(const char *filename, uint32_t size, bool /*bMipmap*/)
 {
   HTEXTURE retval = 0;
   int width = 0;
@@ -803,7 +804,7 @@ HTEXTURE CALL HGE_Impl::Texture_Load(const char *filename, uint32_t size, bool b
   const char *fname = NULL;
 
   if(size) {
-    data=(void *)filename;
+    data = reinterpret_cast<void *>(const_cast<char *>(filename));
     _size=size;
   } else {
     fname = filename;
@@ -814,7 +815,8 @@ HTEXTURE CALL HGE_Impl::Texture_Load(const char *filename, uint32_t size, bool b
     }
   }
 
-  uint32_t *pixels = _DecodeImage((uint8_t *) data, fname, _size, width, height);
+  uint32_t *pixels = _DecodeImage(reinterpret_cast<uint8_t *>(data),
+                                  fname, _size, width, height);
 
   if (pixels != NULL) {
     retval = _BuildTexture(width, height, pixels);
@@ -838,8 +840,9 @@ HTEXTURE CALL HGE_Impl::Texture_Load(const char *filename, uint32_t size, bool b
     // force an upload to the GL and lose our copy if it's backed by
     //  a file. We won't keep it here to conserve system RAM.
     if (!size) {
-      gltexture *t = (gltexture *) retval;
-      _ConfigureTexture(t, t->width, t->height, t->pixels);
+      gltexture *t = reinterpret_cast<gltexture *>(retval);
+      _ConfigureTexture(t, static_cast<int32_t>(t->width),
+                        static_cast<int32_t>(t->height), t->pixels);
       delete[] t->pixels;
       t->pixels = NULL;
       t->filename = strcpy(new char[strlen(filename) + 1], filename);
@@ -874,7 +877,7 @@ void CALL HGE_Impl::Texture_Free(HTEXTURE tex)
   }
 
   if(tex) {
-    gltexture *pTex = (gltexture *) tex;
+    gltexture *pTex = reinterpret_cast<gltexture *>(tex);
     delete[] pTex->filename;
     delete[] pTex->lock_pixels;
     delete[] pTex->pixels;
@@ -896,7 +899,7 @@ int CALL HGE_Impl::Texture_GetWidth(HTEXTURE tex, bool bOriginal)
       texItem=texItem->next;
     }
   } else {
-    return ((gltexture*)tex)->width;
+    return static_cast<int32_t>(reinterpret_cast<gltexture*>(tex)->width);
   }
 
   return 0;
@@ -916,7 +919,9 @@ int CALL HGE_Impl::Texture_GetHeight(HTEXTURE tex, bool bOriginal)
       texItem=texItem->next;
     }
   } else {
-    return ((gltexture*)tex)->height;
+    return static_cast<int32_t>(
+          reinterpret_cast<gltexture*>(tex)->height
+          );
   }
 
   return 0;
@@ -936,11 +941,12 @@ bool CALL HGE_Impl::HGEEXT_Texture_PushYUV422(HTEXTURE tex, const uint8_t *yuv)
     return false;
   }
 
-  gltexture *pTex=(gltexture*)tex;
+  gltexture *pTex= reinterpret_cast<gltexture*>(tex);
   assert(!pTex->lock_pixels);
 
   if (pTex->lost) { // just reupload the whole thing.
-    _ConfigureTexture(pTex, pTex->width, pTex->height, pTex->pixels);
+    _ConfigureTexture(pTex, static_cast<int32_t>(pTex->width),
+                      static_cast<int32_t>(pTex->height), pTex->pixels);
   }
 
   // Any existing pixels aren't valid anymore.
@@ -951,17 +957,19 @@ bool CALL HGE_Impl::HGEEXT_Texture_PushYUV422(HTEXTURE tex, const uint8_t *yuv)
 
   pOpenGLDevice->glBindTexture(pOpenGLDevice->TextureTarget, pTex->name);
   pOpenGLDevice->glTexSubImage2D(pOpenGLDevice->TextureTarget, 0, 0, 0,
-                                 pTex->width, pTex->height, GL_YCBCR_422_APPLE,
+                                 static_cast<int32_t>(pTex->width),
+                                 static_cast<int32_t>(pTex->height),
+                                 GL_YCBCR_422_APPLE,
                                  GL_UNSIGNED_SHORT_8_8_APPLE, yuv);
   pOpenGLDevice->glBindTexture(pOpenGLDevice->TextureTarget,
-                               CurTexture ? (((gltexture *) CurTexture)->name) : 0);
+                               CurTexture ? (reinterpret_cast<gltexture *>(CurTexture)->name) : 0);
   return true;
 }
 
 uint32_t * CALL HGE_Impl::Texture_Lock(HTEXTURE tex, bool bReadOnly, int left, int top, int width,
                                        int height)
 {
-  gltexture *pTex=(gltexture*)tex;
+  gltexture *pTex= reinterpret_cast<gltexture*>(tex);
 
   if (pTex->lock_pixels) {
     assert(false && "multiple lock of texture...");
@@ -973,13 +981,14 @@ uint32_t * CALL HGE_Impl::Texture_Lock(HTEXTURE tex, bool bReadOnly, int left, i
 
   if (loadFromFile) {
     uint32_t size = 0;
-    uint8_t *data = (uint8_t *) pHGE->Resource_Load(pTex->filename, &size);
+    uint8_t *data = reinterpret_cast<uint8_t *>(pHGE->Resource_Load(pTex->filename, &size));
 
     if (data != NULL) {
       int w, h;
       pTex->pixels = _DecodeImage(data, pTex->filename, size, w, h);
 
-      if ((w != pTex->width) || (h != pTex->height)) { // yikes, file changed?
+      if ((static_cast<uint32_t>(w) != pTex->width)
+          || (static_cast<uint32_t>(h) != pTex->height)) { // yikes, file changed?
         delete[] pTex->pixels;
         pTex->pixels = NULL;
       }
@@ -1002,15 +1011,15 @@ uint32_t * CALL HGE_Impl::Texture_Lock(HTEXTURE tex, bool bReadOnly, int left, i
 
   // !!! FIXME: is this right?
   if((width == 0) && (height == 0)) {
-    width = pTex->width;
-    height = pTex->height;
+    width = static_cast<int32_t>(pTex->width);
+    height = static_cast<int32_t>(pTex->height);
   }
 
   // !!! FIXME: do something with this?
   assert(width > 0);
-  assert(width <= pTex->width);
+  assert(width <= static_cast<int32_t>(pTex->width));
   assert(height > 0);
-  assert(height <= pTex->height);
+  assert(height <= static_cast<int32_t>(pTex->height));
   assert(left >= 0);
   assert(left <= width);
   assert(top >= 0);
@@ -1029,21 +1038,24 @@ uint32_t * CALL HGE_Impl::Texture_Lock(HTEXTURE tex, bool bReadOnly, int left, i
     assert(false && "need to bind fbo before glReadPixels...");
     uint32_t *upsideDown = new uint32_t[width * height];
     uint32_t *src = upsideDown + ((height-1) * width);
-    pOpenGLDevice->glReadPixels(left, (pTex->height-top)-height, width, height, GL_RGBA,
+    pOpenGLDevice->glReadPixels(left,
+                                (static_cast<int32_t>(pTex->height) - top) - height,
+                                width, height, GL_RGBA,
                                 GL_UNSIGNED_BYTE, upsideDown);
 
     for (int i = 0; i < height; i++) {
-      memcpy(dst, src, width * sizeof (uint32_t));
+      memcpy(dst, src, static_cast<uint32_t>(width) * sizeof (uint32_t));
       dst += width;
       src -= width;
     }
 
     delete[] upsideDown;
   } else {
-    uint32_t *src = pTex->pixels + ((top*pTex->width) + left);
+    uint32_t *src = pTex->pixels + ((static_cast<uint32_t>(top) * pTex->width)
+                                    + static_cast<uint32_t>(left));
 
     for (int i = 0; i < height; i++) {
-      memcpy(dst, src, width * sizeof (uint32_t));
+      memcpy(dst, src, static_cast<uint32_t>(width) * sizeof (uint32_t));
       dst += width;
       src += pTex->width;
     }
@@ -1055,7 +1067,7 @@ uint32_t * CALL HGE_Impl::Texture_Lock(HTEXTURE tex, bool bReadOnly, int left, i
 
 void CALL HGE_Impl::Texture_Unlock(HTEXTURE tex)
 {
-  gltexture *pTex=(gltexture*)tex;
+  gltexture *pTex= reinterpret_cast<gltexture*>(tex);
 
   if (pTex->lock_pixels == NULL) {
     return;  // not locked.
@@ -1064,24 +1076,27 @@ void CALL HGE_Impl::Texture_Unlock(HTEXTURE tex)
   if (!pTex->lock_readonly) { // have to reupload to the hardware.
     // need to update pTex->pixels ...
     const uint32_t *src = pTex->lock_pixels;
-    uint32_t *dst = pTex->pixels + ((pTex->lock_y*pTex->width) + pTex->lock_x);
+    uint32_t *dst = pTex->pixels + ((static_cast<uint32_t>(pTex->lock_y) * pTex->width)
+                                    + static_cast<uint32_t>(pTex->lock_x));
 
     for (int i = 0; i < pTex->lock_height; i++) {
-      memcpy(dst, src, pTex->lock_width * sizeof (uint32_t));
+      memcpy(dst, src, static_cast<uint32_t>(pTex->lock_width) * sizeof (uint32_t));
       dst += pTex->width;
       src += pTex->lock_width;
     }
 
     if (pTex->lost) { // just reupload the whole thing.
-      _ConfigureTexture(pTex, pTex->width, pTex->height, pTex->pixels);
+      _ConfigureTexture(pTex, static_cast<int32_t>(pTex->width),
+                        static_cast<int32_t>(pTex->height), pTex->pixels);
     } else {
       pOpenGLDevice->glBindTexture(pOpenGLDevice->TextureTarget, pTex->name);
       pOpenGLDevice->glTexSubImage2D(pOpenGLDevice->TextureTarget, 0, pTex->lock_x,
-                                     (pTex->height-pTex->lock_y)-pTex->lock_height,
+                                     ((static_cast<int32_t>(pTex->height) - pTex->lock_y)-pTex->lock_height),
                                      pTex->lock_width, pTex->lock_height, GL_RGBA,
                                      GL_UNSIGNED_BYTE, pTex->lock_pixels);
       pOpenGLDevice->glBindTexture(pOpenGLDevice->TextureTarget,
-                                   CurTexture ? (((gltexture *) CurTexture)->name) : 0);
+                                   CurTexture ?
+                                     (reinterpret_cast<gltexture *>(CurTexture)->name) : 0);
     }
   }
 
@@ -1114,7 +1129,7 @@ void HGE_Impl::_render_batch(bool bEndScene)
 {
   if(VertArray) {
     if(nPrim) {
-      const float h = (float) ((pCurTarget) ? pCurTarget->height : nScreenHeight);
+      const float h = static_cast<float>((pCurTarget) ? pCurTarget->height : nScreenHeight);
 
       // texture rectangles range from 0 to size, not 0 to 1.  :/
       float texwmult = 1.0f;
@@ -1122,14 +1137,14 @@ void HGE_Impl::_render_batch(bool bEndScene)
 
       if (CurTexture) {
         _SetTextureFilter();
-        const gltexture *pTex = ((gltexture *)CurTexture);
+        const gltexture *pTex = reinterpret_cast<gltexture *>(CurTexture);
 
         if (pOpenGLDevice->TextureTarget == GL_TEXTURE_RECTANGLE_ARB) {
           texwmult = pTex->width;
           texhmult = pTex->height;
         } else if ((pTex->potw != 0) && (pTex->poth != 0)) {
-          texwmult = ( ((float)pTex->width) / ((float)pTex->potw) );
-          texhmult = ( ((float)pTex->height) / ((float)pTex->poth) );
+          texwmult = ( static_cast<float>(pTex->width) / static_cast<float>(pTex->potw) );
+          texhmult = ( static_cast<float>(pTex->height) / static_cast<float>(pTex->poth) );
         }
       }
 
@@ -1147,7 +1162,7 @@ void HGE_Impl::_render_batch(bool bEndScene)
 
         // Colors are RGBA in OpenGL, ARGB in Direct3D.
         const uint32_t color = VertArray[i].col;
-        uint8_t *col = (uint8_t *) &VertArray[i].col;
+        uint8_t *col = reinterpret_cast<uint8_t *>(&VertArray[i].col);
         const uint8_t a = ((color >> 24) & 0xFF);
         const uint8_t r = ((color >> 16) & 0xFF);
         const uint8_t g = ((color >>  8) & 0xFF);
@@ -1227,7 +1242,9 @@ void HGE_Impl::_SetProjectionMatrix(int width, int height)
 {
   pOpenGLDevice->glMatrixMode(GL_PROJECTION);
   pOpenGLDevice->glLoadIdentity();
-  pOpenGLDevice->glOrtho(0, (float)width, 0, (float)height, 0.0f, 1.0f);
+  pOpenGLDevice->glOrtho(0, static_cast<float>(width),
+                         0, static_cast<float>(height),
+                         0.0f, 1.0f);
   bTransforming = false;
   clipX = 0;
   clipY = 0;
@@ -1274,7 +1291,7 @@ bool HGE_Impl::_LoadOpenGLEntryPoints()
 
 #define GL_PROC(ext,fn,call,ret,params) \
    if (pOpenGLDevice->have_##ext) { \
-     if ((pOpenGLDevice->fn = (_HGE_PFN_##fn) SDL_GL_GetProcAddress(#fn)) == NULL) { \
+     if ((pOpenGLDevice->fn = reinterpret_cast<_HGE_PFN_##fn>(SDL_GL_GetProcAddress(#fn))) == NULL) { \
        System_Log("Failed to load OpenGL entry point '" #fn "'"); \
        pOpenGLDevice->have_##ext = false; \
      } \
@@ -1287,11 +1304,12 @@ bool HGE_Impl::_LoadOpenGLEntryPoints()
     return false;
   }
 
-  System_Log("GL_RENDERER: %s", (const char *) pOpenGLDevice->glGetString(GL_RENDERER));
-  System_Log("GL_VENDOR: %s", (const char *) pOpenGLDevice->glGetString(GL_VENDOR));
-  System_Log("GL_VERSION: %s", (const char *) pOpenGLDevice->glGetString(GL_VERSION));
+  System_Log("GL_RENDERER: %s", pOpenGLDevice->glGetString(GL_RENDERER));
+  System_Log("GL_VENDOR: %s", pOpenGLDevice->glGetString(GL_VENDOR));
+  System_Log("GL_VERSION: %s", pOpenGLDevice->glGetString(GL_VERSION));
 
-  const char *verstr = (const char *) pOpenGLDevice->glGetString(GL_VERSION);
+  const char *verstr = reinterpret_cast<const char *>(
+        pOpenGLDevice->glGetString(GL_VERSION));
   int maj = 0;
   int min = 0;
   sscanf(verstr, "%d.%d", &maj, &min);
@@ -1302,7 +1320,8 @@ bool HGE_Impl::_LoadOpenGLEntryPoints()
     return false;
   }
 
-  const char *exts = (const char *) pOpenGLDevice->glGetString(GL_EXTENSIONS);
+  const char *exts = reinterpret_cast<const char *>(
+        pOpenGLDevice->glGetString(GL_EXTENSIONS));
 
   // NPOT texture support ...
 
@@ -1453,7 +1472,7 @@ void HGE_Impl::_AdjustWindow()
   // no-op.
 }
 
-void HGE_Impl::_Resize(int width, int height)
+void HGE_Impl::_Resize(int /*width*/, int /*height*/)
 {
   if(hwndParent) {
     //if(procFocusLostFunc) procFocusLostFunc();
@@ -1474,14 +1493,14 @@ void HGE_Impl::_Resize(int width, int height)
 
 void HGE_Impl::_GfxDone()
 {
-  CRenderTargetList *target=pTargets;
+  //CRenderTargetList *target=pTargets;
 
   while(textures) {
     Texture_Free(textures->tex);
   }
 
   while(pTargets) {
-    Target_Free((HTARGET) pTargets);
+    Target_Free(reinterpret_cast<HTARGET>(pTargets));
   }
 
   textures=0;
@@ -1543,7 +1562,7 @@ bool HGE_Impl::_init_lost()
   _BindTexture(NULL);  // make sure nothing is bound, so everything that we do bind regenerates.
 
   for (CTextureList *item = textures; item != NULL; item = item->next) {
-    gltexture *t = (gltexture *) item->tex;
+    gltexture *t = reinterpret_cast<gltexture *>(item->tex);
 
     if (t == NULL) {
       continue;
@@ -1556,7 +1575,7 @@ bool HGE_Impl::_init_lost()
   CRenderTargetList *target=pTargets;
 
   while(target) {
-    gltexture *tex = (gltexture *) target->tex;
+    gltexture *tex = reinterpret_cast<gltexture *>(target->tex);
     _BindTexture(tex);  // force texture recreation.
     _BindTexture(NULL);
     _BuildTarget(target, tex ? tex->name : 0, target->width, target->height, target->depth != 0);
@@ -1583,12 +1602,12 @@ bool HGE_Impl::_init_lost()
   int n = 0;
 
   for(int i=0; i<VERTEX_BUFFER_SIZE/4; i++) {
-    *pIndices++=n;
-    *pIndices++=n+1;
-    *pIndices++=n+2;
-    *pIndices++=n+2;
-    *pIndices++=n+3;
-    *pIndices++=n;
+    *pIndices++ = static_cast<GLushort>(n);
+    *pIndices++ = static_cast<GLushort>(n+1);
+    *pIndices++ = static_cast<GLushort>(n+2);
+    *pIndices++ = static_cast<GLushort>(n+2);
+    *pIndices++ = static_cast<GLushort>(n+3);
+    *pIndices++ = static_cast<GLushort>(n);
     n+=4;
   }
 

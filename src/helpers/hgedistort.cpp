@@ -51,7 +51,8 @@ hgeDistortionMesh::hgeDistortionMesh(const hgeDistortionMesh &dm)
   quad=dm.quad;
 
   disp_array=new hgeVertex[nRows*nCols];
-  memcpy(disp_array, dm.disp_array, sizeof(hgeVertex)*nRows*nCols);
+  memcpy(disp_array, dm.disp_array,
+         sizeof(hgeVertex) * static_cast<uint32_t>(nRows*nCols));
 }
 
 hgeDistortionMesh::~hgeDistortionMesh()
@@ -75,7 +76,8 @@ hgeDistortionMesh& hgeDistortionMesh::operator= (const hgeDistortionMesh &dm)
 
     delete[] disp_array;
     disp_array=new hgeVertex[nRows*nCols];
-    memcpy(disp_array, dm.disp_array, sizeof(hgeVertex)*nRows*nCols);
+    memcpy(disp_array, dm.disp_array,
+           sizeof(hgeVertex) * static_cast<uint32_t>(nRows*nCols));
   }
 
   return *this;
@@ -98,8 +100,8 @@ void hgeDistortionMesh::SetTextureRect(float x, float y, float w, float h)
   height=h;
 
   if (quad.tex) {
-    tw=(float)hge->Texture_GetWidth(quad.tex);
-    th=(float)hge->Texture_GetHeight(quad.tex);
+    tw = static_cast<float>(hge->Texture_GetWidth(quad.tex));
+    th = static_cast<float>(hge->Texture_GetHeight(quad.tex));
   } else {
     tw = w;
     th = h;
