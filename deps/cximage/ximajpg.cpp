@@ -286,7 +286,7 @@ bool CxImageJPG::Decode(CxFile * hFile)
 
   /* JSAMPLEs per row in output buffer */
   row_stride = static_cast<int32_t>(cinfo.output_width
-                            * static_cast<uint32_t>(cinfo.output_components));
+                                    * static_cast<uint32_t>(cinfo.output_components));
 
   /* Make a one-row-high sample array that will go away when done with image */
   buffer = (*cinfo.mem->alloc_sarray)

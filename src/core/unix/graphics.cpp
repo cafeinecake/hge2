@@ -449,13 +449,13 @@ void CALL HGE_Impl::Gfx_RenderTriple(const hgeTriple *triple)
       const int maxX = clipX + clipW;
       const int maxY = clipY + clipH;
       const int leftmost = static_cast<int>(std::min(std::min(v[0].x, v[1].x),
-                                                      v[2].x));
+                                            v[2].x));
       const int rightmost = static_cast<int>(std::max(std::max(v[0].x, v[1].x),
-                                                      v[2].x));
+                                             v[2].x));
       const int topmost = static_cast<int>(std::min(std::min(v[0].y, v[1].y),
-                                                      v[2].y));
+                                           v[2].y));
       const int bottommost = static_cast<int>(std::max(std::max(v[0].y, v[1].y),
-                                                      v[2].y));
+                                              v[2].y));
 
       if ( ((clipX < leftmost) || (clipX > rightmost)) &&
            ((maxX < leftmost) || (maxX > rightmost)) &&
@@ -493,13 +493,13 @@ void CALL HGE_Impl::Gfx_RenderQuad(const hgeQuad *quad)
       const int maxX = clipX + clipW;
       const int maxY = clipY + clipH;
       const int leftmost = static_cast<int32_t>(
-            std::min(std::min(std::min(v[0].x, v[1].x), v[2].x), v[3].x));
+                             std::min(std::min(std::min(v[0].x, v[1].x), v[2].x), v[3].x));
       const int rightmost = static_cast<int32_t>(
-            std::max(std::max(std::max(v[0].x, v[1].x), v[2].x), v[3].x));
+                              std::max(std::max(std::max(v[0].x, v[1].x), v[2].x), v[3].x));
       const int topmost = static_cast<int32_t>(
-            std::min(std::min(std::min(v[0].y, v[1].y), v[2].y), v[3].y));
+                            std::min(std::min(std::min(v[0].y, v[1].y), v[2].y), v[3].y));
       const int bottommost = static_cast<int32_t>(
-            std::max(std::max(std::max(v[0].y, v[1].y), v[2].y), v[3].y));
+                               std::max(std::max(std::max(v[0].y, v[1].y), v[2].y), v[3].y));
 
       if ( ((clipX < leftmost) || (clipX > rightmost)) &&
            ((maxX < leftmost) || (maxX > rightmost)) &&
@@ -705,7 +705,7 @@ void HGE_Impl::_ConfigureTexture(gltexture *t, int width, int height, uint32_t *
   if (loadFromFile) {
     uint32_t size = 0;
     uint8_t *data = reinterpret_cast<uint8_t *>(
-          pHGE->Resource_Load(t->filename, &size));
+                      pHGE->Resource_Load(t->filename, &size));
 
     if (data != NULL) {
       int w, h;
@@ -755,7 +755,7 @@ void HGE_Impl::_ConfigureTexture(gltexture *t, int width, int height, uint32_t *
 
   pOpenGLDevice->glBindTexture(pOpenGLDevice->TextureTarget,
                                CurTexture ?
-                                 ((reinterpret_cast<gltexture *>(CurTexture))->name) : 0);
+                               ((reinterpret_cast<gltexture *>(CurTexture))->name) : 0);
 
   if (loadFromFile) {
     delete[] pixels;
@@ -920,8 +920,8 @@ int CALL HGE_Impl::Texture_GetHeight(HTEXTURE tex, bool bOriginal)
     }
   } else {
     return static_cast<int32_t>(
-          reinterpret_cast<gltexture*>(tex)->height
-          );
+             reinterpret_cast<gltexture*>(tex)->height
+           );
   }
 
   return 0;
@@ -1096,7 +1096,7 @@ void CALL HGE_Impl::Texture_Unlock(HTEXTURE tex)
                                      GL_UNSIGNED_BYTE, pTex->lock_pixels);
       pOpenGLDevice->glBindTexture(pOpenGLDevice->TextureTarget,
                                    CurTexture ?
-                                     (reinterpret_cast<gltexture *>(CurTexture)->name) : 0);
+                                   (reinterpret_cast<gltexture *>(CurTexture)->name) : 0);
     }
   }
 
@@ -1309,7 +1309,7 @@ bool HGE_Impl::_LoadOpenGLEntryPoints()
   System_Log("GL_VERSION: %s", pOpenGLDevice->glGetString(GL_VERSION));
 
   const char *verstr = reinterpret_cast<const char *>(
-        pOpenGLDevice->glGetString(GL_VERSION));
+                         pOpenGLDevice->glGetString(GL_VERSION));
   int maj = 0;
   int min = 0;
   sscanf(verstr, "%d.%d", &maj, &min);
@@ -1321,7 +1321,7 @@ bool HGE_Impl::_LoadOpenGLEntryPoints()
   }
 
   const char *exts = reinterpret_cast<const char *>(
-        pOpenGLDevice->glGetString(GL_EXTENSIONS));
+                       pOpenGLDevice->glGetString(GL_EXTENSIONS));
 
   // NPOT texture support ...
 

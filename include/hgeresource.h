@@ -46,7 +46,8 @@ public:
 protected:
   static HGE  *hge;
 
-  void copy_from_base(IResource * r){
+  void copy_from_base(IResource * r)
+  {
     memcpy(name, r->name, sizeof(name));
     resgroup = r->resgroup;
     handle = r->handle;

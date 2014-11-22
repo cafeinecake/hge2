@@ -286,7 +286,7 @@ bool CxImageJPG::CxExifInfo::process_EXIF(uint8_t * CharBuf, uint32_t length)
   /* Compute the CCD width, in milimeters. */
   if (m_exifinfo->FocalplaneXRes != 0) {
     m_exifinfo->CCDWidth = static_cast<float>(ExifImageWidth * m_exifinfo->FocalplaneUnits /
-                                   m_exifinfo->FocalplaneXRes);
+                           m_exifinfo->FocalplaneXRes);
   }
 
   return true;

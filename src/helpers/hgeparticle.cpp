@@ -227,9 +227,9 @@ void hgeParticleSystem::_update(float fDeltaTime)
       par->vecLocation.y += hge->Random_Float(-2.0f, 2.0f);
 
       ang= info.fDirection
-          - static_cast<float>(M_PI_2)
-          + hge->Random_Float(0,info.fSpread)
-          - static_cast<float>(info.fSpread) / 2.0f;
+           - static_cast<float>(M_PI_2)
+           + hge->Random_Float(0,info.fSpread)
+           - static_cast<float>(info.fSpread) / 2.0f;
 
       if(info.bRelative) {
         ang += (vecPrevLocation-vecLocation).Angle()+M_PI_2;

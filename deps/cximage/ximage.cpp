@@ -657,8 +657,8 @@ bool CxImage::CreateFromMatrix(uint8_t** ppMatrix,uint32_t dwWidth,uint32_t dwHe
 #if CXIMAGE_SUPPORT_ALPHA
           AlphaSet(static_cast<int32_t>(x),
                    (bFlipImage ?
-                        static_cast<int32_t>(dwHeight-1-y)
-                      : static_cast<int32_t>(y)),
+                    static_cast<int32_t>(dwHeight-1-y)
+                    : static_cast<int32_t>(y)),
                    src[3]);
 #endif //CXIMAGE_SUPPORT_ALPHA
           src+=4;

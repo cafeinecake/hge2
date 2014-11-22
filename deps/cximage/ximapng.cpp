@@ -140,9 +140,9 @@ bool CxImagePNG::Decode(CxFile *hFile)
     }
 
     if (!Create(static_cast<uint32_t>(info_ptr->width),
-                static_cast<uint32_t>(info_ptr->height),
-                static_cast<uint32_t>(pixel_depth),
-                CXIMAGE_FORMAT_PNG))
+    static_cast<uint32_t>(info_ptr->height),
+    static_cast<uint32_t>(pixel_depth),
+    CXIMAGE_FORMAT_PNG))
     {
       longjmp(png_ptr->jmpbuf, 1);
     }
@@ -164,7 +164,7 @@ bool CxImagePNG::Decode(CxFile *hFile)
     if (info_ptr->num_palette>0)
     {
       SetPalette(reinterpret_cast<rgb_color*>(info_ptr->palette),
-                 info_ptr->num_palette);
+      info_ptr->num_palette);
       SetClrImportant(info_ptr->num_palette);
     } else if (info_ptr->bit_depth ==2)   //<DP> needed for 2 bpp grayscale PNGs
     {
@@ -256,7 +256,7 @@ bool CxImagePNG::Decode(CxFile *hFile)
       SetCodecOption( (ENCODE_INTERLACE) | GetCodecOption(CXIMAGE_FORMAT_PNG));
     } else {
       SetCodecOption(static_cast<uint32_t>(~(ENCODE_INTERLACE))
-                     & GetCodecOption(CXIMAGE_FORMAT_PNG));
+      & GetCodecOption(CXIMAGE_FORMAT_PNG));
     }
 
     int32_t chan_offset = info_ptr->bit_depth >> 3;

@@ -63,42 +63,49 @@ protected:
 #define BFT_CURSOR 0x5450   /* 'PT' */
 
 //#ifndef WIDTHBYTES
-inline uint32_t WIDTHBYTES(uint32_t i) {
+inline uint32_t WIDTHBYTES(uint32_t i)
+{
   return (static_cast<uint32_t>((i+31) & static_cast<uint32_t>(~31))/8);  /* ULONG aligned ! */
 }
 //#endif
 
 #endif
 
-inline uint32_t DibWidthBytesN(BITMAPINFOHEADER *lpbi, uint32_t n) {
+inline uint32_t DibWidthBytesN(BITMAPINFOHEADER *lpbi, uint32_t n)
+{
   return static_cast<uint32_t>(
-        WIDTHBYTES(static_cast<uint32_t>(lpbi->biWidth) * n)
-        );
+           WIDTHBYTES(static_cast<uint32_t>(lpbi->biWidth) * n)
+         );
 }
-inline uint32_t DibWidthBytes(BITMAPINFOHEADER *lpbi) {
+inline uint32_t DibWidthBytes(BITMAPINFOHEADER *lpbi)
+{
   return DibWidthBytesN(lpbi, (lpbi)->biBitCount);
 }
 
-inline uint32_t DibSizeImage(BITMAPINFOHEADER *lpbi) {
+inline uint32_t DibSizeImage(BITMAPINFOHEADER *lpbi)
+{
   return (lpbi->biSizeImage == 0
-    ? (static_cast<uint32_t>(DibWidthBytes(lpbi))
-       * static_cast<uint32_t>(lpbi->biHeight))
-    : lpbi->biSizeImage);
+          ? (static_cast<uint32_t>(DibWidthBytes(lpbi))
+             * static_cast<uint32_t>(lpbi->biHeight))
+          : lpbi->biSizeImage);
 }
 
-inline uint32_t DibNumColors(BITMAPINFOHEADER *lpbi) {
+inline uint32_t DibNumColors(BITMAPINFOHEADER *lpbi)
+{
   return (lpbi->biClrUsed == 0 && lpbi->biBitCount <= 8
           ? static_cast<uint32_t>(1 << static_cast<uint32_t>(lpbi->biBitCount))
           : static_cast<uint32_t>(lpbi->biClrUsed));
 }
 
-inline void FixBitmapInfo(BITMAPINFOHEADER *lpbi) {
+inline void FixBitmapInfo(BITMAPINFOHEADER *lpbi)
+{
   if (lpbi->biSizeImage == 0) {
     lpbi->biSizeImage = DibSizeImage(lpbi);
   }
+
   if (lpbi->biClrUsed == 0) {
     lpbi->biClrUsed = DibNumColors(lpbi);
   }
 }
- 
+
 #endif

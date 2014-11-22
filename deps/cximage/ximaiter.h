@@ -193,7 +193,7 @@ inline void CImageIterator::GetRow(uint8_t *buf, int32_t n)
            IterImage,
            std::min(static_cast<uint32_t>(n),
                     static_cast<uint32_t>(ima->GetEffWidth()))
-           );
+          );
   }
 }
 /////////////////////////////////////////////////////////////////////

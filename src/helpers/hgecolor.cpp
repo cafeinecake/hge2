@@ -34,9 +34,9 @@ bool hgeColorHSV::operator==(const hgeColorHSV &c) const
 bool hgeColorHSV::operator!=(const hgeColorHSV &c) const
 {
   return (flt_not_equal(h, c.h)
-      || flt_not_equal(s, c.s)
-      || flt_not_equal(v, c.v)
-      || flt_not_equal(a, c.a));
+          || flt_not_equal(s, c.s)
+          || flt_not_equal(v, c.v)
+          || flt_not_equal(a, c.a));
 }
 
 void hgeColorHSV::SetHWColor(uint32_t col)

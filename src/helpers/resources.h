@@ -179,7 +179,8 @@ struct RParticle : public IResource {
   virtual hgeResHandle Get(hgeResourceManager *rm);
   virtual void  Free();
 
-  virtual void copy_from(IResource * r) {
+  virtual void copy_from(IResource * r)
+  {
     auto src = dynamic_cast<RParticle *>(r);
     memcpy(filename, src->filename, sizeof(filename));
     memcpy(spritename, src->spritename, sizeof(spritename));

@@ -263,7 +263,7 @@ bool CxImageGIF::Decode(CxFile *fp)
           //}
 
           SetPalette((info.nBkgndIndex >= 0 ?
-                        256 : static_cast<uint32_t>(palcount)),
+                      256 : static_cast<uint32_t>(palcount)),
                      r, g, b);
         }
 
@@ -362,7 +362,7 @@ bool CxImageGIF::Decode(CxFile *fp)
   if (bTrueColor>=2 && imaRGB) {
     if (gifgce.flags & 0x1) {
       imaRGB->SetTransColor(GetPaletteColor(
-                             static_cast<uint8_t>(info.nBkgndIndex)));
+                              static_cast<uint8_t>(info.nBkgndIndex)));
       imaRGB->SetTransIndex(0);
     }
 
@@ -1614,12 +1614,12 @@ void CxImageGIF::GetComment(char* sz_comment_out)
 void CxImageGIF::GifMix(CxImage & imgsrc2, struct_image & imgdesc)
 {
   int32_t ymin = std::max(0, static_cast<int32_t>(GetHeight()-imgdesc.t
-                                                  - imgdesc.h));
+                          - imgdesc.h));
   int32_t ymax = static_cast<int32_t>(GetHeight()-imgdesc.t);
   int32_t xmin = imgdesc.l;
   int32_t xmax = static_cast<int32_t>(
-        std::min(GetWidth(), static_cast<uint32_t>(imgdesc.l + imgdesc.w))
-        );
+                   std::min(GetWidth(), static_cast<uint32_t>(imgdesc.l + imgdesc.w))
+                 );
 
   int32_t ibg2= imgsrc2.GetTransIndex();
   uint8_t i2;
@@ -1788,7 +1788,7 @@ void CxImageGIF::rle_flush_withtable(int32_t count, struct_RLE* rle)
     repleft = static_cast<int32_t>(1 + rle_compute_triangle_count(
                                      static_cast<uint32_t>(leftover),
                                      static_cast<uint32_t>(rle->max_ocodes))
-                                   );
+                                  );
   }
 
   if (1 + rle_compute_triangle_count(
@@ -1876,10 +1876,10 @@ void CxImageGIF::rle_flush_clearorrep(int32_t count, struct_RLE* rle)
 {
   int32_t withclr;
   withclr = static_cast<int32_t>(
-        1 + rle_compute_triangle_count(
-          static_cast<uint32_t>(count),
-          static_cast<uint32_t>(rle->max_ocodes))
-        );
+              1 + rle_compute_triangle_count(
+                static_cast<uint32_t>(count),
+                static_cast<uint32_t>(rle->max_ocodes))
+            );
 
   if (withclr < count) {
     rle_output(rle->code_clear,rle);

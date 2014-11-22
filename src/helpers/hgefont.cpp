@@ -74,8 +74,8 @@ hgeFont::hgeFont(const char *szFont, bool bMipmap)
   // Parse font description
 
   while(
-        (pdesc = _get_line(pdesc,linebuf))
-        ) {
+    (pdesc = _get_line(pdesc,linebuf))
+  ) {
     if(!strncmp(linebuf, FNTBITMAPTAG, sizeof(FNTBITMAPTAG)-1 )) {
       strcpy(buf,szFont);
       pbuf=strrchr(buf,'\\');

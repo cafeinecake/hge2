@@ -222,7 +222,8 @@ bool CxImage::SelectionAddEllipse(RECT r, uint8_t level)
 
   for (y=ymin; y<min(ycenter,ymax); y++) {
     for (int32_t x=xmin; x<xmax; x++) {
-      yo = static_cast<int32_t>(ycenter - yradius * sqrt(1-pow(static_cast<float>(x - xcenter)/(float)xradius,2)));
+      yo = static_cast<int32_t>(ycenter - yradius * sqrt(1-pow(static_cast<float>(x - xcenter)/
+                                (float)xradius,2)));
 
       if (yo<y) {
         pSelection[x + y * head.biWidth] = level;
@@ -232,7 +233,8 @@ bool CxImage::SelectionAddEllipse(RECT r, uint8_t level)
 
   for (y=ycenter; y<ymax; y++) {
     for (int32_t x=xmin; x<xmax; x++) {
-      yo = static_cast<int32_t>(ycenter + yradius * sqrt(1-pow(static_cast<float>(x - xcenter)/(float)xradius,2)));
+      yo = static_cast<int32_t>(ycenter + yradius * sqrt(1-pow(static_cast<float>(x - xcenter)/
+                                (float)xradius,2)));
 
       if (yo>y) {
         pSelection[x + y * head.biWidth] = level;

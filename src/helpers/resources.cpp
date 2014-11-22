@@ -249,6 +249,7 @@ static void ScriptParseSpriteAnim(RScriptParser *sp, RSprite *rc, bool anim)
         reinterpret_cast<RAnimation *>(rc)->frames = sp->tkn_int();
         break;
       }
+
       break;
 
     case TTPAR_FPS:
@@ -258,6 +259,7 @@ static void ScriptParseSpriteAnim(RScriptParser *sp, RSprite *rc, bool anim)
         reinterpret_cast<RAnimation *>(rc)->fps=sp->tkn_float();
         break;
       }
+
       break;
 
     case TTPAR_MODE:
@@ -303,7 +305,8 @@ static void ScriptParseSpriteAnim(RScriptParser *sp, RSprite *rc, bool anim)
 
         break;
       }
-    break;
+
+      break;
 
     default:
       ScriptSkipToNextParameter(sp,true);
@@ -477,7 +480,8 @@ void RScript::Parse(hgeResourceManager *rm, RScriptParser *sp, const char *sname
 
 void RScript::Free() {}
 
-void RScript::copy_from(IResource *r) {
+void RScript::copy_from(IResource *r)
+{
   IResource::copy_from_base(r);
 }
 
@@ -507,7 +511,8 @@ void RResource::Free()
   handle=0;
 }
 
-void RResource::copy_from(IResource *r) {
+void RResource::copy_from(IResource *r)
+{
   auto src = dynamic_cast<RResource *>(r);
   memcpy(filename, src->filename, sizeof(filename));
   IResource::copy_from_base(r);
@@ -567,7 +572,7 @@ hgeResHandle RTexture::Get(hgeResourceManager * /*rm*/)
 {
   if(!handle) {
     handle = reinterpret_cast<hgeResHandle>(
-          hge->Texture_Load(filename, 0, mipmap));
+               hge->Texture_Load(filename, 0, mipmap));
   }
 
   return handle;
@@ -582,7 +587,8 @@ void RTexture::Free()
   handle=0;
 }
 
-void RTexture::copy_from(IResource *r) {
+void RTexture::copy_from(IResource *r)
+{
   auto src = dynamic_cast<RTexture *>(r);
   memcpy(filename, src->filename, sizeof(filename));
   mipmap = src->mipmap;
@@ -615,7 +621,8 @@ void REffect::Free()
   handle=0;
 }
 
-void REffect::copy_from(IResource *r) {
+void REffect::copy_from(IResource *r)
+{
   auto src = dynamic_cast<REffect *>(r);
   memcpy(filename, src->filename, sizeof(filename));
   IResource::copy_from_base(r);
@@ -693,7 +700,8 @@ void RMusic::Free()
   handle=0;
 }
 
-void RMusic::copy_from(IResource *r) {
+void RMusic::copy_from(IResource *r)
+{
   auto src = dynamic_cast<RMusic *>(r);
   memcpy(filename, src->filename, sizeof(filename));
   amplify = src->amplify;
@@ -726,7 +734,8 @@ void RStream::Free()
   handle=0;
 }
 
-void RStream::copy_from(IResource *r) {
+void RStream::copy_from(IResource *r)
+{
   auto src = dynamic_cast<RStream *>(r);
   memcpy(filename, src->filename, sizeof(filename));
   IResource::copy_from_base(r);
@@ -791,7 +800,7 @@ hgeResHandle RTarget::Get(hgeResourceManager * /*rm*/)
 {
   if(!handle) {
     handle = reinterpret_cast<hgeResHandle>(
-          hge->Target_Create(width, height, zbuffer));
+               hge->Target_Create(width, height, zbuffer));
   }
 
   return handle;
@@ -806,7 +815,8 @@ void RTarget::Free()
   handle=0;
 }
 
-void RTarget::copy_from(IResource *r) {
+void RTarget::copy_from(IResource *r)
+{
   auto src = dynamic_cast<RTarget *>(r);
   width = src->width;
   height = src->height;
@@ -882,7 +892,8 @@ void RSprite::Free()
   handle=0;
 }
 
-void RSprite::copy_from(IResource *r) {
+void RSprite::copy_from(IResource *r)
+{
   auto src = dynamic_cast<RSprite *>(r);
   memcpy(texname, src->texname, sizeof(texname));
   tx = src->tx;
@@ -971,7 +982,8 @@ void RAnimation::Free()
   handle=0;
 }
 
-void RAnimation::copy_from(IResource *r) {
+void RAnimation::copy_from(IResource *r)
+{
   auto src = dynamic_cast<RAnimation *>(r);
   frames = src->frames;
   fps = src->fps;
@@ -1113,7 +1125,8 @@ void RFont::Free()
   handle=0;
 }
 
-void RFont::copy_from(IResource *r) {
+void RFont::copy_from(IResource *r)
+{
   auto src = dynamic_cast<RFont *>(r);
   memcpy(filename, src->filename, sizeof(filename));
   mipmap = src->mipmap;
@@ -1317,7 +1330,8 @@ void RDistort::Free()
   handle=0;
 }
 
-void RDistort::copy_from(IResource *r) {
+void RDistort::copy_from(IResource *r)
+{
   auto src = dynamic_cast<RDistort *>(r);
   memcpy(texname, src->texname, sizeof(texname));
   tx = src->tx;
@@ -1358,7 +1372,8 @@ void RStringTable::Free()
   handle=0;
 }
 
-void RStringTable::copy_from(IResource *r) {
+void RStringTable::copy_from(IResource *r)
+{
   auto src = dynamic_cast<RStringTable *>(r);
   memcpy(filename, src->filename, sizeof(filename));
   IResource::copy_from_base(r);

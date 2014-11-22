@@ -70,7 +70,7 @@ RGBQUAD* CxImage::GetPalette() const
 {
   if ((pDib)&&(head.biClrUsed)) {
     return reinterpret_cast<RGBQUAD*>(
-          static_cast<uint8_t*>(pDib) + sizeof(BITMAPINFOHEADER));
+             static_cast<uint8_t*>(pDib) + sizeof(BITMAPINFOHEADER));
   }
 
   return NULL;
@@ -117,11 +117,11 @@ uint8_t CxImage::GetPixelIndex(int32_t x,int32_t y)
 
   if (head.biBitCount==8) {
     return info.pImage[static_cast<uint32_t>(y) * info.dwEffWidth
-                      + static_cast<uint32_t>(x)];
+                       + static_cast<uint32_t>(x)];
   } else {
     uint8_t pos;
     uint8_t iDst = info.pImage[static_cast<uint32_t>(y) *info.dwEffWidth
-                            + (static_cast<uint32_t>(x) * head.biBitCount >> 3)];
+                               + (static_cast<uint32_t>(x) * head.biBitCount >> 3)];
 
     if (head.biBitCount==4) {
       pos = static_cast<uint8_t>(4*(1-x%2));
@@ -152,11 +152,11 @@ uint8_t CxImage::BlindGetPixelIndex(const int32_t x,const int32_t y)
 
   if (head.biBitCount==8) {
     return info.pImage[static_cast<uint32_t>(y) * info.dwEffWidth
-                      + static_cast<uint32_t>(x)];
+                       + static_cast<uint32_t>(x)];
   } else {
     uint8_t pos;
     uint8_t iDst = info.pImage[static_cast<uint32_t>(y) * info.dwEffWidth
-                            + (static_cast<uint32_t>(x) * head.biBitCount >> 3)];
+                               + (static_cast<uint32_t>(x) * head.biBitCount >> 3)];
 
     if (head.biBitCount==4) {
       pos = static_cast<uint8_t>(4*(1-x%2));
@@ -196,7 +196,7 @@ RGBQUAD CxImage::GetPixelColor(int32_t x,int32_t y, bool bGetAlpha)
     rgb = GetPaletteColor(BlindGetPixelIndex(x,y));
   } else {
     uint8_t* iDst  = info.pImage + static_cast<uint32_t>(y) * info.dwEffWidth
-                      + static_cast<uint32_t>(x) * 3;
+                     + static_cast<uint32_t>(x) * 3;
     rgb.rgbBlue = *iDst++;
     rgb.rgbGreen= *iDst++;
     rgb.rgbRed  = *iDst;
@@ -243,7 +243,7 @@ RGBQUAD CxImage::BlindGetPixelColor(const int32_t x,const int32_t y, bool bGetAl
     rgb = GetPaletteColor(BlindGetPixelIndex(x,y));
   } else {
     uint8_t* iDst  = info.pImage + static_cast<uint32_t>(y) * info.dwEffWidth
-                      + static_cast<uint32_t>(x) * 3;
+                     + static_cast<uint32_t>(x) * 3;
     rgb.rgbBlue = *iDst++;
     rgb.rgbGreen= *iDst++;
     rgb.rgbRed  = *iDst;
@@ -314,7 +314,7 @@ void CxImage::SetPixelIndex(int32_t x,int32_t y,uint8_t i)
 
   if (head.biBitCount==8) {
     info.pImage[static_cast<uint32_t>(y)*info.dwEffWidth
-              + static_cast<uint32_t>(x)]=i;
+                + static_cast<uint32_t>(x)]=i;
     return;
   } else {
     uint8_t pos;
@@ -463,7 +463,7 @@ uint8_t CxImage::GetNearestIndex(RGBQUAD c)
   int32_t i,j = 0;
   int32_t k,l;
   int32_t m = static_cast<int32_t>(head.biClrImportant==0 ?
-                                     head.biClrUsed : head.biClrImportant);
+                                   head.biClrUsed : head.biClrImportant);
 
   for(i=0,l=0; i<m; i++,l+=sizeof(RGBQUAD)) {
     k = (iDst[l]-c.rgbBlue)*(iDst[l]-c.rgbBlue)+
@@ -611,7 +611,7 @@ void CxImage::SetGrayPalette()
 
   for (uint32_t ni=0; ni<head.biClrUsed; ni++) {
     pal[ni].rgbBlue
-        = pal[ni].rgbGreen
+      = pal[ni].rgbGreen
         = pal[ni].rgbRed = static_cast<uint8_t>(ni*(255/(head.biClrUsed-1)));
   }
 }
@@ -639,14 +639,14 @@ void CxImage::BlendPalette(COLORREF cr,int32_t perc)
 
   for(i=0; i<head.biClrUsed; i++) {
     pPal[i].rgbBlue = static_cast<uint8_t>(
-          (static_cast<uint32_t>(pPal[i].rgbBlue*(100-perc))
-           + b * static_cast<uint32_t>(perc))/100);
+                        (static_cast<uint32_t>(pPal[i].rgbBlue*(100-perc))
+                         + b * static_cast<uint32_t>(perc))/100);
     pPal[i].rgbGreen = static_cast<uint8_t>(
-          (static_cast<uint32_t>(pPal[i].rgbGreen*(100-perc))
-           + g * static_cast<uint32_t>(perc))/100);
+                         (static_cast<uint32_t>(pPal[i].rgbGreen*(100-perc))
+                          + g * static_cast<uint32_t>(perc))/100);
     pPal[i].rgbRed = static_cast<uint8_t>(
-          (static_cast<uint32_t>(pPal[i].rgbRed*(100-perc))
-           + r * static_cast<uint32_t>(perc))/100);
+                       (static_cast<uint32_t>(pPal[i].rgbRed*(100-perc))
+                        + r * static_cast<uint32_t>(perc))/100);
   }
 }
 ////////////////////////////////////////////////////////////////////////////////
@@ -898,7 +898,7 @@ void* CxImage::BlindGetPixelPointer(const int32_t x, const int32_t y)
 
   if (!IsIndexed()) {
     return info.pImage + static_cast<uint32_t>(y) * info.dwEffWidth
-        + static_cast<uint32_t>(x) * 3;
+           + static_cast<uint32_t>(x) * 3;
   } else {
     return 0;
   }

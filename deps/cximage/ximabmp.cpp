@@ -138,17 +138,17 @@ bool CxImageBMP::Decode(CxFile * hFile)
     }
 
     if (!Create(static_cast<uint32_t>(bmpHeader.biWidth),
-                static_cast<uint32_t>(bmpHeader.biHeight),
-                bmpHeader.biBitCount,
-                CXIMAGE_FORMAT_BMP))
+    static_cast<uint32_t>(bmpHeader.biHeight),
+    bmpHeader.biBitCount,
+    CXIMAGE_FORMAT_BMP))
     {
       cx_throw("");
     }
 
     SetXDPI(static_cast<int32_t>(floor(bmpHeader.biXPelsPerMeter
-                                       * 254.0 / 10000.0 + 0.5)));
+    * 254.0 / 10000.0 + 0.5)));
     SetYDPI(static_cast<int32_t>(floor(bmpHeader.biYPelsPerMeter
-                                       * 254.0 / 10000.0 + 0.5)));
+    * 254.0 / 10000.0 + 0.5)));
 
     if (info.nEscape)
     {
@@ -163,7 +163,7 @@ bool CxImageBMP::Decode(CxFile * hFile)
         // convert a old color table (3 byte entries) to a new
         // color table (4 byte entries)
         hFile->Read(static_cast<void*>(pRgb),
-              static_cast<size_t>(DibNumColors(&bmpHeader)) * sizeof(RGBTRIPLE),1);
+        static_cast<size_t>(DibNumColors(&bmpHeader)) * sizeof(RGBTRIPLE),1);
 
         for (int32_t i = static_cast<int32_t>(DibNumColors(&head))-1; i>=0; i--) {
           pRgb[i].rgbRed      = reinterpret_cast<RGBTRIPLE *>(pRgb)[i].rgbtRed;
@@ -173,7 +173,7 @@ bool CxImageBMP::Decode(CxFile * hFile)
         }
       } else {
         hFile->Read(reinterpret_cast<void*>(pRgb),
-                static_cast<size_t>(DibNumColors(&bmpHeader)) * sizeof(RGBQUAD),1);
+                    static_cast<size_t>(DibNumColors(&bmpHeader)) * sizeof(RGBQUAD),1);
 
         //force rgbReserved=0, to avoid problems with some WinXp bitmaps
         for (uint32_t i=0; i<head.biClrUsed; i++) {
@@ -388,7 +388,7 @@ bool CxImageBMP::Decode(CxFile * hFile)
 
             for (unsigned i = 0; i < status_byte; i++) {
               if (static_cast<uint8_t*>(sline+bits) <
-                   static_cast<uint8_t*>(info.pImage+head.biSizeImage)) {
+                  static_cast<uint8_t*>(info.pImage+head.biSizeImage)) {
                 if (low_nibble) {
                   if (i&1) {
                     *(sline + bits) |= (second_byte & 0x0f);

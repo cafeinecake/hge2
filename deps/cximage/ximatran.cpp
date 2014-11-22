@@ -7,10 +7,11 @@
 #include "ximath.h"
 #include <algorithm>
 
-inline uint8_t clamp8(int32_t level) {
+inline uint8_t clamp8(int32_t level)
+{
   return static_cast<uint8_t>(
-        std::min(255, std::max(0, level))
-        );
+           std::min(255, std::max(0, level))
+         );
 }
 
 #if CXIMAGE_SUPPORT_BASICTRANSFORMATIONS
@@ -135,7 +136,7 @@ bool CxImage::IncreaseBpp(uint32_t nbit)
 
     if (info.nBkgndIndex>=0) { //translate transparency
       tmp.info.nBkgndColor = GetPaletteColor(
-            static_cast<uint8_t>(info.nBkgndIndex));
+                               static_cast<uint8_t>(info.nBkgndIndex));
     }
 
 #if CXIMAGE_SUPPORT_SELECTION
@@ -231,13 +232,13 @@ bool CxImage::GrayScale()
           if (head.biBitCount==4) {
             uint8_t pos = static_cast<uint8_t>(4*(1-x%2));
             iDst[x]= ppal[static_cast<uint8_t>(
-                  (iSrc[x >> 1]&(static_cast<uint8_t>(0x0F)<<pos))
-                >> pos)].rgbBlue;
+                            (iSrc[x >> 1]&(static_cast<uint8_t>(0x0F)<<pos))
+                            >> pos)].rgbBlue;
           } else {
             uint8_t pos = static_cast<uint8_t>(7-x%8);
             iDst[x]= ppal[static_cast<uint8_t>(
-                  (iSrc[x >> 3] & (static_cast<uint8_t>(0x01)<<pos))
-                >> pos)].rgbBlue;
+                            (iSrc[x >> 3] & (static_cast<uint8_t>(0x01)<<pos))
+                            >> pos)].rgbBlue;
           }
         }
       }
@@ -261,7 +262,7 @@ bool CxImage::GrayScale()
       RGBQUAD c = GetTransColor();
       ima.SetTransIndex(static_cast<uint8_t>(
                           RGB2GRAY(c.rgbRed,c.rgbGreen,c.rgbBlue))
-                        );
+                       );
     }
 
 #if CXIMAGE_SUPPORT_SELECTION
@@ -277,8 +278,8 @@ bool CxImage::GrayScale()
     for(int32_t y=0; y < head.biHeight; y++) {
       for(int32_t x=0,x8=0; x < l; x+=3,x8++) {
         img[x8+y*l8] = static_cast<uint8_t>(
-              RGB2GRAY(*(iSrc+x+2),*(iSrc+x+1),*(iSrc+x+0))
-              );
+                         RGB2GRAY(*(iSrc+x+2),*(iSrc+x+1),*(iSrc+x+0))
+                       );
       }
 
       iSrc+=info.dwEffWidth;
@@ -476,7 +477,7 @@ bool CxImage::RotateLeft(CxImage* iDst)
         sbits = srcdisp + x;
         // Get destination column
         nrow = bdest + static_cast<uint32_t>(x * 8) * imgDest.info.dwEffWidth
-            + imgDest.info.dwEffWidth - 1 - div_r.quot;
+               + imgDest.info.dwEffWidth - 1 - div_r.quot;
 
         for (int32_t z = 0; z < 8; z++) {
           // Get Destination Byte
@@ -673,8 +674,8 @@ bool CxImage::RotateRight(CxImage* iDst)
         sbits = srcdisp + x;
         // Get destination column
         nrow = bdest
-            + static_cast<uint32_t>(imgDest.head.biHeight-1-(x*8))
-            * imgDest.info.dwEffWidth + div_r.quot;
+               + static_cast<uint32_t>(imgDest.head.biHeight-1-(x*8))
+               * imgDest.info.dwEffWidth + div_r.quot;
 
         for (int32_t z = 0; z < 8; z++) {
           // Get Destination Byte
@@ -1125,17 +1126,17 @@ bool CxImage::Rotate2(float angle,
 
   //(read new dimensions from location of corners)
   float minx = static_cast<float>(
-        std::min(std::min(newp[0].x,newp[1].x),std::min(newp[2].x,newp[3].x))
-      );
+                 std::min(std::min(newp[0].x,newp[1].x),std::min(newp[2].x,newp[3].x))
+               );
   float miny = static_cast<float>(
-        std::min(std::min(newp[0].y,newp[1].y),std::min(newp[2].y,newp[3].y))
-      );
+                 std::min(std::min(newp[0].y,newp[1].y),std::min(newp[2].y,newp[3].y))
+               );
   float maxx = static_cast<float>(
-        std::max(std::max(newp[0].x,newp[1].x),std::max(newp[2].x,newp[3].x))
-      );
+                 std::max(std::max(newp[0].x,newp[1].x),std::max(newp[2].x,newp[3].x))
+               );
   float maxy = static_cast<float>(
-        std::max(std::max(newp[0].y,newp[1].y),std::max(newp[2].y,newp[3].y))
-      );
+                 std::max(std::max(newp[0].y,newp[1].y),std::max(newp[2].y,newp[3].y))
+               );
   int32_t newWidth = static_cast<int32_t>(floor(maxx-minx+0.5f));
   int32_t newHeight= static_cast<int32_t>(floor(maxy-miny+0.5f));
   float ssx=((maxx+minx)- (static_cast<float>(newWidth)-1))/2.0f;   //start for x
@@ -1396,10 +1397,10 @@ bool CxImage::Resample(int32_t newx, int32_t newy, int32_t mode, CxImage* iDst)
       for(int32_t x=0; x<newx; x++) {
         fX = x * xScale;
         newImage.SetPixelColor(
-              x, y,
-              GetPixelColor(static_cast<int32_t>(fX),
-                            static_cast<int32_t>(fY))
-              );
+          x, y,
+          GetPixelColor(static_cast<int32_t>(fX),
+                        static_cast<int32_t>(fY))
+        );
       }
     }
 
@@ -1458,7 +1459,7 @@ bool CxImage::Resample(int32_t newx, int32_t newy, int32_t mode, CxImage* iDst)
               rgb = GetPixelColor(xx,yy);
             } else {
               iDst1  = info.pImage + static_cast<uint32_t>(yy) * info.dwEffWidth
-                  + static_cast<uint32_t>(xx) * 3;
+                       + static_cast<uint32_t>(xx) * 3;
               rgb.rgbBlue = *iDst1++;
               rgb.rgbGreen= *iDst1++;
               rgb.rgbRed  = *iDst1;
@@ -1474,10 +1475,10 @@ bool CxImage::Resample(int32_t newx, int32_t newy, int32_t mode, CxImage* iDst)
           newImage.SetPixelColor(x,y,RGB(static_cast<uint8_t>(rr),
                                          static_cast<uint8_t>(gg),
                                          static_cast<uint8_t>(bb)
-                                         ));
+                                        ));
         } else {
           iDst1 = newImage.info.pImage + static_cast<uint32_t>(y) * newImage.info.dwEffWidth
-              + static_cast<uint32_t>(x) * 3;
+                  + static_cast<uint32_t>(x) * 3;
           *iDst1++ = static_cast<uint8_t>(bb);
           *iDst1++ = static_cast<uint8_t>(gg);
           *iDst1   = static_cast<uint8_t>(rr);
@@ -1526,22 +1527,22 @@ bool CxImage::Resample(int32_t newx, int32_t newy, int32_t mode, CxImage* iDst)
           } else {
             uint8_t* iDst2;
             iDst2 = info.pImage + static_cast<uint32_t>(ifY) * info.dwEffWidth
-                + static_cast<uint32_t>(ifX) * 3;
+                    + static_cast<uint32_t>(ifX) * 3;
             rgb1.rgbBlue = *iDst2++;
             rgb1.rgbGreen= *iDst2++;
             rgb1.rgbRed =*iDst2;
             iDst2 = info.pImage + static_cast<uint32_t>(ifY) * info.dwEffWidth
-                + static_cast<uint32_t>(ifX1) * 3;
+                    + static_cast<uint32_t>(ifX1) * 3;
             rgb2.rgbBlue = *iDst2++;
             rgb2.rgbGreen= *iDst2++;
             rgb2.rgbRed =*iDst2;
             iDst2 = info.pImage + static_cast<uint32_t>(ifY1) * info.dwEffWidth
-                + static_cast<uint32_t>(ifX) * 3;
+                    + static_cast<uint32_t>(ifX) * 3;
             rgb3.rgbBlue = *iDst2++;
             rgb3.rgbGreen= *iDst2++;
             rgb3.rgbRed =*iDst2;
             iDst2 = info.pImage + static_cast<uint32_t>(ifY1) * info.dwEffWidth
-                + static_cast<uint32_t>(ifX1) * 3;
+                    + static_cast<uint32_t>(ifX1) * 3;
             rgb4.rgbBlue = *iDst2++;
             rgb4.rgbGreen= *iDst2++;
             rgb4.rgbRed =*iDst2;
@@ -1678,7 +1679,7 @@ bool CxImage::Resample(int32_t newx, int32_t newy, int32_t mode, CxImage* iDst)
           newImage.AlphaSet(x,y,
                             AlphaGet(static_cast<int32_t>(fX),
                                      static_cast<int32_t>(fY)
-                                     ));
+                                    ));
         }
       }
     } else {
@@ -1947,14 +1948,14 @@ bool CxImage::DecreaseBpp(uint32_t nbit, bool errordiffusion, RGBQUAD* ppal, uin
 
         c = GetPixelColor(x+1,y);
         c.rgbRed = static_cast<uint8_t>(
-              std::min<int32_t>(255L,std::max<int32_t>(
-                                  0L, static_cast<int32_t>(c.rgbRed) + ((er*7)/16))));
+                     std::min<int32_t>(255L,std::max<int32_t>(
+                                         0L, static_cast<int32_t>(c.rgbRed) + ((er*7)/16))));
         c.rgbGreen = static_cast<uint8_t>(
-              std::min<int32_t>(255L,std::max<int32_t>(
-                                  0L, static_cast<int32_t>(c.rgbGreen) + ((eg*7)/16))));
+                       std::min<int32_t>(255L,std::max<int32_t>(
+                                           0L, static_cast<int32_t>(c.rgbGreen) + ((eg*7)/16))));
         c.rgbBlue = static_cast<uint8_t>(
-              std::min<int32_t>(255L,std::max<int32_t>(
-                                  0L, static_cast<int32_t>(c.rgbBlue) + ((eb*7)/16))));
+                      std::min<int32_t>(255L,std::max<int32_t>(
+                                          0L, static_cast<int32_t>(c.rgbBlue) + ((eb*7)/16))));
         SetPixelColor(x+1,y,c);
         int32_t coeff=1;
 
@@ -1975,17 +1976,17 @@ bool CxImage::DecreaseBpp(uint32_t nbit, bool errordiffusion, RGBQUAD* ppal, uin
 
           c = GetPixelColor(x+i,y+1);
           c.rgbRed = static_cast<uint8_t>(
-                std::min<int32_t>(255L, std::max<int32_t>(
-                           0L, static_cast<int32_t>(c.rgbRed) + ((er * coeff)/16)))
-                );
+                       std::min<int32_t>(255L, std::max<int32_t>(
+                                           0L, static_cast<int32_t>(c.rgbRed) + ((er * coeff)/16)))
+                     );
           c.rgbGreen = static_cast<uint8_t>(
-                std::min<int32_t>(255L, std::max<int32_t>(
-                           0L, static_cast<int32_t>(c.rgbGreen) + ((eg * coeff)/16)))
-                );
+                         std::min<int32_t>(255L, std::max<int32_t>(
+                                             0L, static_cast<int32_t>(c.rgbGreen) + ((eg * coeff)/16)))
+                       );
           c.rgbBlue = static_cast<uint8_t>(
-                std::min<int32_t>(255L, std::max<int32_t>(
-                           0L, static_cast<int32_t>(c.rgbBlue) + ((eb * coeff)/16)))
-                );
+                        std::min<int32_t>(255L, std::max<int32_t>(
+                                            0L, static_cast<int32_t>(c.rgbBlue) + ((eb * coeff)/16)))
+                      );
           SetPixelColor(x+i,y+1,c);
         }
       }
@@ -2862,7 +2863,7 @@ bool CxImage::Crop(int32_t left, int32_t top, int32_t right, int32_t bottom, CxI
     int32_t linelen = tmp.head.biWidth * tmp.head.biBitCount >> 3;
     uint8_t* pDest = tmp.info.pImage;
     uint8_t* pSrc = info.pImage + static_cast<uint32_t>(starty) * info.dwEffWidth
-        + (startx*head.biBitCount >> 3);
+                    + (startx*head.biBitCount >> 3);
 
     for(int32_t y=starty; y<endy; y++) {
       info.nProgress = static_cast<int32_t>(100*(y-starty)/(endy-starty)); //<Anatoly Ivasyuk>
@@ -3061,14 +3062,14 @@ bool CxImage::Expand(int32_t left, int32_t top, int32_t right, int32_t bottom, R
     }
 
     uint8_t* pDest = tmp.info.pImage + (tmp.info.dwEffWidth * static_cast<uint32_t>(bottom))
-        + (left*(head.biBitCount >> 3));
+                     + (left*(head.biBitCount >> 3));
     uint8_t* pSrc = info.pImage;
 
     for(int32_t y=bottom; y <= top; y++) {
       info.nProgress = static_cast<int32_t>(100*y/(1 + top - bottom));
       memcpy(pDest, pSrc,
              static_cast<uint32_t>((head.biBitCount >> 3) * (right - left + 1))
-             );
+            );
       pDest+=tmp.info.dwEffWidth;
       pSrc+=info.dwEffWidth;
     }
@@ -3248,7 +3249,7 @@ bool CxImage::CircleTransform(int32_t type,int32_t rmax,float Koeff)
 
   if (!rmax) {
     rmax= static_cast<int32_t>(
-          sqrt(static_cast<float>((xmid-xmin)*(xmid-xmin)+(ymid-ymin)*(ymid-ymin)))
+            sqrt(static_cast<float>((xmid-xmin)*(xmid-xmin)+(ymid-ymin)*(ymid-ymin)))
           );
   }
 
@@ -3464,9 +3465,11 @@ bool CxImage::QIShrink(int32_t newx, int32_t newy, CxImage* const iDst, bool bCh
           *(destPtr++) = static_cast<uint8_t>(*(accuPtr+1) / *(accuPtr+3));
           *(destPtr++) = static_cast<uint8_t>(*(accuPtr+2) / *(accuPtr+3));
 #if CXIMAGE_SUPPORT_ALPHA
+
           if (alphaPtr) {
             *(alphaPtr++) = static_cast<uint8_t>(*(accuPtr+4) / *(accuPtr+3));
           }
+
 #endif
           accuPtr += accuCellSize;
         }//for k

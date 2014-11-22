@@ -55,7 +55,8 @@ typedef int16_t    code_int;
 //LZW GIF Image compression
 #define MAXBITSCODES    12
 #define HSIZE  5003     /* 80% occupancy */
-inline int16_t MAXCODE(uint16_t n_bits) {
+inline int16_t MAXCODE(uint16_t n_bits)
+{
   return static_cast<int16_t>((static_cast<code_int>(1) << n_bits) - 1);
 }
 #define HashTabOf(i)    htab[i]

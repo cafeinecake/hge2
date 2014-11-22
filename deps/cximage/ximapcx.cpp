@@ -81,8 +81,8 @@ bool CxImagePCX::Decode(CxFile *hFile)
     if (pcxHeader.ColorPlanes >= 3 && pcxHeader.BitsPerPixel == 8)
     {
       Create (static_cast<uint32_t>(Width),
-              static_cast<uint32_t>(Height),
-              24, CXIMAGE_FORMAT_PCX);
+      static_cast<uint32_t>(Height),
+      24, CXIMAGE_FORMAT_PCX);
 #if CXIMAGE_SUPPORT_ALPHA
 
       if (pcxHeader.ColorPlanes==4) {
@@ -96,10 +96,12 @@ bool CxImagePCX::Decode(CxFile *hFile)
               static_cast<uint32_t>(Height),
               4, CXIMAGE_FORMAT_PCX);
     } else
-    { Create (static_cast<uint32_t>(Width),
-              static_cast<uint32_t>(Height),
-              static_cast<uint32_t>(pcxHeader.BitsPerPixel),
-              CXIMAGE_FORMAT_PCX); }
+    {
+      Create (static_cast<uint32_t>(Width),
+      static_cast<uint32_t>(Height),
+      static_cast<uint32_t>(pcxHeader.BitsPerPixel),
+      CXIMAGE_FORMAT_PCX);
+    }
 
     if (info.nEscape)
     {

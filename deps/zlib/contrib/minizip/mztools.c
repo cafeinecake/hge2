@@ -38,6 +38,7 @@ uLong* bytesRecovered;
   FILE* fpZip = fopen(file, "rb");
   FILE* fpOut = fopen(fileOut, "wb");
   FILE* fpOutCD = fopen(fileOutTmp, "wb");
+
   if (fpZip != NULL &&  fpOut != NULL) {
     int entries = 0;
     uLong totalBytes = 0;
@@ -46,6 +47,7 @@ uLong* bytesRecovered;
     char extra[1024];
     int offset = 0;
     int offsetCD = 0;
+
     while ( fread(header, 1, 30, fpZip) == 30 ) {
       int currentOffset = offset;
 
@@ -107,11 +109,14 @@ uLong* bytesRecovered;
         /* Data */
         {
           int dataSize = cpsize;
+
           if (dataSize == 0) {
             dataSize = uncpsize;
           }
+
           if (dataSize > 0) {
             char* data = malloc(dataSize);
+
             if (data != NULL) {
               if ((int)fread(data, 1, dataSize, fpZip) == dataSize) {
                 if ((int)fwrite(data, 1, dataSize, fpOut) == dataSize) {
@@ -123,7 +128,9 @@ uLong* bytesRecovered;
               } else {
                 err = Z_ERRNO;
               }
+
               free(data);
+
               if (err != Z_OK) {
                 break;
               }
@@ -156,6 +163,7 @@ uLong* bytesRecovered;
           WRITE_16(header + 36, 0);     /* int attrb */
           WRITE_32(header + 38, 0);     /* ext attrb */
           WRITE_32(header + 42, currentOffset);
+
           /* Header */
           if (fwrite(header, 1, 46, fpOutCD) == 46) {
             offsetCD += 46;
@@ -214,9 +222,11 @@ uLong* bytesRecovered;
       char header[22];
       char* comment = ""; // "ZIP File recovered by zlib/minizip/mztools";
       int comsize = (int) strlen(comment);
+
       if (entriesZip > 0xffff) {
         entriesZip = 0xffff;
       }
+
       WRITE_32(header, 0x06054b50);
       WRITE_16(header + 4, 0);    /* disk # */
       WRITE_16(header + 6, 0);    /* disk # */
@@ -243,17 +253,21 @@ uLong* bytesRecovered;
 
     /* Final merge (file + central directory) */
     fclose(fpOutCD);
+
     if (err == Z_OK) {
       fpOutCD = fopen(fileOutTmp, "rb");
+
       if (fpOutCD != NULL) {
         int nRead;
         char buffer[8192];
+
         while ( (nRead = (int)fread(buffer, 1, sizeof(buffer), fpOutCD)) > 0) {
           if ((int)fwrite(buffer, 1, nRead, fpOut) != nRead) {
             err = Z_ERRNO;
             break;
           }
         }
+
         fclose(fpOutCD);
       }
     }
@@ -270,6 +284,7 @@ uLong* bytesRecovered;
       if (nRecovered != NULL) {
         *nRecovered = entries;
       }
+
       if (bytesRecovered != NULL) {
         *bytesRecovered = totalBytes;
       }
@@ -277,5 +292,6 @@ uLong* bytesRecovered;
   } else {
     err = Z_STREAM_ERROR;
   }
+
   return err;
 }

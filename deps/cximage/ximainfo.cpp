@@ -71,7 +71,7 @@ bool CxImage::IsIndexed() const
 uint8_t CxImage::GetColorType()
 {
   uint8_t b = static_cast<uint8_t>((head.biBitCount>8) ?
-                                     2 /*COLORTYPE_COLOR*/
+                                   2 /*COLORTYPE_COLOR*/
                                    : 1 /*COLORTYPE_PALETTE*/);
 #if CXIMAGE_SUPPORT_ALPHA
 

@@ -70,9 +70,14 @@ void CxImage::OverflowCoordinates(int32_t &x, int32_t &y, OverflowMethod const o
 
     break;
 
-  case OM_COLOR: break;
-  case OM_BACKGROUND: break;
-  case OM_TRANSPARENT: break;
+  case OM_COLOR:
+    break;
+
+  case OM_BACKGROUND:
+    break;
+
+  case OM_TRANSPARENT:
+    break;
   }//switch
 }
 
@@ -125,14 +130,19 @@ void CxImage::OverflowCoordinates(float &x, float &y, OverflowMethod const ofMet
       y = static_cast<float>(fmod(-y, static_cast<float>(head.biHeight)));
     } else if (y>=head.biHeight) {
       y = head.biHeight-(static_cast<float>(
-                          fmod(y, static_cast<float>(head.biHeight))) + 1);
+                           fmod(y, static_cast<float>(head.biHeight))) + 1);
     }
 
     break;
 
-  case OM_COLOR: break;
-  case OM_BACKGROUND: break;
-  case OM_TRANSPARENT: break;
+  case OM_COLOR:
+    break;
+
+  case OM_BACKGROUND:
+    break;
+
+  case OM_TRANSPARENT:
+    break;
   }//switch
 }
 
@@ -324,9 +334,9 @@ RGBQUAD CxImage::GetPixelColorInterpolated(
       uint16_t wa=256-wt1-wc;
       uint16_t wrr,wgg,wbb;
       uint8_t *pxptr = static_cast<uint8_t*>(
-            info.pImage
-            + static_cast<uint32_t>(yi) * info.dwEffWidth
-            + static_cast<uint32_t>(xi) * 3);
+                         info.pImage
+                         + static_cast<uint32_t>(yi) * info.dwEffWidth
+                         + static_cast<uint32_t>(xi) * 3);
       wbb=wa*(*pxptr++);
       wgg=wa*(*pxptr++);
       wrr=wa*(*pxptr++);
@@ -384,9 +394,9 @@ RGBQUAD CxImage::GetPixelColorInterpolated(
                                            +c*rgb12.rgbBlue+d*rgb22.rgbBlue);
 #if CXIMAGE_SUPPORT_ALPHA
       color.rgbReserved = static_cast<uint8_t>(a*rgb11.rgbReserved
-                                               +b*rgb21.rgbReserved
-                                               +c*rgb12.rgbReserved
-                                               +d*rgb22.rgbReserved);
+                          +b*rgb21.rgbReserved
+                          +c*rgb12.rgbReserved
+                          +d*rgb22.rgbReserved);
 #else
       color.rgbReserved = 0;
 #endif
@@ -568,9 +578,14 @@ RGBQUAD CxImage::GetPixelColorInterpolated(
 
       break;
 
-    case IM_NEAREST_NEIGHBOUR: break;
-    case IM_BILINEAR: break;
-    case IM_LANCZOS: break;
+    case IM_NEAREST_NEIGHBOUR:
+      break;
+
+    case IM_BILINEAR:
+      break;
+
+    case IM_LANCZOS:
+      break;
     }//switch
 
     rr=gg=bb=aa=0;
@@ -1238,7 +1253,7 @@ float CxImage::KernelHanning(const float x)
 
   return (0.5f
           + 0.5f * static_cast<float>(cos(PI*x)))
-      * (static_cast<float>(sin(PI*x))/(PI*x));
+         * (static_cast<float>(sin(PI*x))/(PI*x));
 }
 ////////////////////////////////////////////////////////////////////////////////
 float CxImage::KernelHamming(const float x)

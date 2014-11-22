@@ -40,7 +40,7 @@ void hgeParticleManager::Update(float dt)
     psList[i]->Update(dt);
 
     if(flt_equal(psList[i]->GetAge(), -2.0f)
-       && psList[i]->GetParticlesAlive()==0) {
+        && psList[i]->GetParticlesAlive()==0) {
       delete psList[i];
       psList[i]=psList[nPS-1];
       nPS--;
