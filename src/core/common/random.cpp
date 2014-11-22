@@ -9,14 +9,14 @@
 
 #include "hge_impl.h"
 
-unsigned int g_seed=0;
+static int g_seed=0;
 
 void CALL HGE_Impl::Random_Seed(int seed)
 {
   if(!seed) {
-    g_seed=timeGetTime();
+    g_seed = static_cast<int>(timeGetTime());
   } else {
-    g_seed=seed;
+    g_seed = seed;
   }
 }
 

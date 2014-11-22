@@ -90,7 +90,7 @@ void CALL HGE_Impl::Resource_RemoveAllPacks()
   res=0;
 }
 
-void* CALL HGE_Impl::Resource_Load(const char *filename, DWORD *size)
+void* CALL HGE_Impl::Resource_Load(const char *filename, uint32_t *size)
 {
   const char *res_err="Can't load resource: %s";
 
@@ -198,7 +198,7 @@ _fromfile:
     return 0;
   }
 
-  if(ReadFile(hF, ptr, file_info.uncompressed_size, (DWORD *)&file_info.uncompressed_size,
+  if(ReadFile(hF, ptr, file_info.uncompressed_size, (uint32_t *)&file_info.uncompressed_size,
               NULL ) == 0) {
     CloseHandle(hF);
     free(ptr);

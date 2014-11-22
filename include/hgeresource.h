@@ -41,7 +41,7 @@ struct ResDesc {
     hge->Release();
   }
 
-  virtual DWORD Get(hgeResourceManager *rm) = 0;
+  virtual uint32_t Get(hgeResourceManager *rm) = 0;
   virtual void  Free() = 0;
 
 protected:

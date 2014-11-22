@@ -18,7 +18,7 @@
 #define max(x,y) ((x) > (y) ? (x) : (y))
 #endif
 
-void hgeColorHSV::SetHWColor(DWORD col)
+void hgeColorHSV::SetHWColor(uint32_t col)
 {
   float r, g, b;
   float minv, maxv, delta;
@@ -62,7 +62,7 @@ void hgeColorHSV::SetHWColor(DWORD col)
   }
 }
 
-DWORD hgeColorHSV::GetHWColor() const
+uint32_t hgeColorHSV::GetHWColor() const
 {
   float r, g, b;
   float xh, i, p1, p2, p3;
@@ -110,6 +110,6 @@ DWORD hgeColorHSV::GetHWColor() const
     }
   }
 
-  return (DWORD(a*255.0f)<<24) + (DWORD(r*255.0f)<<16) + (DWORD(g*255.0f)<<8) + DWORD(b*255.0f);
+  return (uint32_t(a*255.0f)<<24) + (uint32_t(r*255.0f)<<16) + (uint32_t(g*255.0f)<<8) + uint32_t(b*255.0f);
 }
 

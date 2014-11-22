@@ -275,7 +275,7 @@ public:
   {
     DestroyFrames();
     Destroy();
-  };
+  }
   CxImage& operator = (const CxImage&);
 //@}
 
@@ -312,7 +312,7 @@ public:
   uint32_t  GetType() const;
   const char* GetLastError();
   static const TCHAR* GetVersion();
-  static const float GetVersionNumber();
+  static float GetVersionNumber();
 
   uint32_t  GetFrameDelay() const;
   void  SetFrameDelay(uint32_t d);

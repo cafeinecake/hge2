@@ -40,7 +40,7 @@ hgeParticleSystem::hgeParticleSystem(const char *filename, hgeSprite *sprite, fl
   SETMEMBER(float, fParticleLifeMax);
   SETMEMBER(float, fDirection);
   SETMEMBER(float, fSpread);
-  SETMEMBER(BYTE, bRelative);
+  SETMEMBER(uint8_t, bRelative);
   ptr += 3;  // padding.
   SETMEMBER(float, fSpeedMin);
   SETMEMBER(float, fSpeedMax);
@@ -330,7 +330,7 @@ void hgeParticleSystem::Stop(bool bKillParticles)
 void hgeParticleSystem::Render()
 {
   int i;
-  DWORD col;
+  uint32_t col;
   hgeParticle *par=particles;
 
   col=info.sprite->GetColor();

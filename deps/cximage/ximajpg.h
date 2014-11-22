@@ -179,16 +179,17 @@ public:
 
     static void InitDestination(j_compress_ptr cinfo)
     {
-      CxFileJpg* pDest = (CxFileJpg*)cinfo->dest;
+      CxFileJpg* pDest = reinterpret_cast<CxFileJpg*>(cinfo->dest);
       pDest->next_output_byte = pDest->m_pBuffer;
       pDest->free_in_buffer = eBufSize;
     }
 
     static boolean EmptyOutputBuffer(j_compress_ptr cinfo)
     {
-      CxFileJpg* pDest = (CxFileJpg*)cinfo->dest;
+      CxFileJpg* pDest = reinterpret_cast<CxFileJpg*>(cinfo->dest);
 
-      if (pDest->m_pFile->Write(pDest->m_pBuffer,1,eBufSize)!=(size_t)eBufSize) {
+      if (pDest->m_pFile->Write(pDest->m_pBuffer,1,eBufSize)
+          != static_cast<size_t>(eBufSize)) {
         ERREXIT(cinfo, JERR_FILE_WRITE);
       }
 
@@ -199,7 +200,7 @@ public:
 
     static void TermDestination(j_compress_ptr cinfo)
     {
-      CxFileJpg* pDest = (CxFileJpg*)cinfo->dest;
+      CxFileJpg* pDest = reinterpret_cast<CxFileJpg*>(cinfo->dest);
       size_t datacount = eBufSize - pDest->free_in_buffer;
 
       /* Write any data remaining in the buffer */
@@ -221,14 +222,14 @@ public:
 
     static void InitSource(j_decompress_ptr cinfo)
     {
-      CxFileJpg* pSource = (CxFileJpg*)cinfo->src;
+      CxFileJpg* pSource = static_cast<CxFileJpg*>(cinfo->src);
       pSource->m_bStartOfFile = TRUE;
     }
 
     static boolean FillInputBuffer(j_decompress_ptr cinfo)
     {
       size_t nbytes;
-      CxFileJpg* pSource = (CxFileJpg*)cinfo->src;
+      CxFileJpg* pSource = static_cast<CxFileJpg*>(cinfo->src);
       nbytes = pSource->m_pFile->Read(pSource->m_pBuffer,1,eBufSize);
 
       if (nbytes <= 0) {
@@ -238,8 +239,8 @@ public:
 
         WARNMS(cinfo, JWRN_JPEG_EOF);
         // Insert a fake EOI marker
-        pSource->m_pBuffer[0] = (JOCTET) 0xFF;
-        pSource->m_pBuffer[1] = (JOCTET) JPEG_EOI;
+        pSource->m_pBuffer[0] = static_cast<JOCTET>(0xFF);
+        pSource->m_pBuffer[1] = static_cast<JOCTET>(JPEG_EOI);
         nbytes = 2;
       }
 
@@ -251,18 +252,18 @@ public:
 
     static void SkipInputData(j_decompress_ptr cinfo, long num_bytes)
     {
-      CxFileJpg* pSource = (CxFileJpg*)cinfo->src;
+      CxFileJpg* pSource = static_cast<CxFileJpg*>(cinfo->src);
 
       if (num_bytes > 0) {
-        while (num_bytes > (int32_t)pSource->bytes_in_buffer) {
-          num_bytes -= (int32_t)pSource->bytes_in_buffer;
+        while (num_bytes > static_cast<int32_t>(pSource->bytes_in_buffer)) {
+          num_bytes -= static_cast<int32_t>(pSource->bytes_in_buffer);
           FillInputBuffer(cinfo);
           // note we assume that fill_input_buffer will never return FALSE,
           // so suspension need not be handled.
         }
 
-        pSource->next_input_byte += (size_t) num_bytes;
-        pSource->bytes_in_buffer -= (size_t) num_bytes;
+        pSource->next_input_byte += static_cast<size_t>(num_bytes);
+        pSource->bytes_in_buffer -= static_cast<size_t>(num_bytes);
       }
     }
 

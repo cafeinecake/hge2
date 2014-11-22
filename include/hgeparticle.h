@@ -56,7 +56,7 @@ struct hgeParticleSystemInfo {
 
   float   fDirection;
   float   fSpread;
-  BYTE    bRelative;  // was "bool", but that's 4 bytes on PowerPC instead of 1, and it broke loading from disk...
+  uint8_t    bRelative;  // was "bool", but that's 4 bytes on PowerPC instead of 1, and it broke loading from disk...
 
   float   fSpeedMin;
   float   fSpeedMax;

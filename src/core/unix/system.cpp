@@ -18,13 +18,13 @@
 #define LOWORDINT(n) ((int)((signed short)(LOWORD(n))))
 #define HIWORDINT(n) ((int)((signed short)(HIWORD(n))))
 
-int     nRef=0;
+static int nRef=0;
 HGE_Impl* pHGE=0;
 
 HGE* CALL hgeCreate(int ver)
 {
   if(ver==HGE_VERSION) {
-    return (HGE*)HGE_Impl::_Interface_Get();
+    return dynamic_cast<HGE*>(HGE_Impl::_Interface_Get());
   } else {
     return 0;
   }
@@ -61,7 +61,7 @@ void CALL HGE_Impl::Release()
 
 bool CALL HGE_Impl::System_Initiate()
 {
-  int       width, height;
+  //int       width, height;
 
   // Log system info
   System_Log("");
@@ -490,12 +490,12 @@ void CALL HGE_Impl::System_SetStateBool(hgeBoolState state, bool value)
     bDontSuspend=value;
     break;
 
-#ifdef DEMO
-
   case HGE_SHOWSPLASH:
+#ifdef DEMO
     bDMO=value;
-    break;
 #endif
+    break;
+  case HGEBOOLSTATE_FORCE_DWORD: ;
   }
 }
 
@@ -525,6 +525,8 @@ void CALL HGE_Impl::System_SetStateFunc(hgeFuncState state, hgeCallback value)
   case HGE_EXITFUNC:
     procExitFunc=value;
     break;
+
+  case HGEFUNCSTATE_FORCE_DWORD: ;
   }
 }
 
@@ -542,6 +544,8 @@ void CALL HGE_Impl::System_SetStateHwnd(hgeHwndState state, HWND value)
     }
 
     break;
+  case HGE_HWND: break;
+  case HGEHWNDSTATE_FORCE_DWORD: ;
   }
 }
 
@@ -601,7 +605,7 @@ void CALL HGE_Impl::System_SetStateInt(hgeIntState state, int value)
     nHGEFPS=value;
 
     if(nHGEFPS>0) {
-      nFixedDelta=int(1000.0f/value);
+      nFixedDelta = static_cast<uint32_t>(1000.0f / static_cast<float>(value));
     } else {
       nFixedDelta=0;
     }

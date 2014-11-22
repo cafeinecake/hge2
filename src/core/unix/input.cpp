@@ -9,7 +9,7 @@
 
 #include "hge_impl.h"
 
-const char *KeyNames[] = {
+static const char *KeyNames[] = {
   "?",
   "Left Mouse Button", "Right Mouse Button", "?", "Middle Mouse Button",
   "?", "?", "?", "Backspace", "Tab", "?", "?", "?", "Enter", "?", "?",
@@ -354,8 +354,6 @@ static int SDLKeyToHGEKey(const int sdlkey)
   default:
     return -1;
   }
-
-  return -1;
 }
 
 
@@ -383,7 +381,8 @@ void CALL HGE_Impl::Input_GetMousePos(float *x, float *y)
 
 void CALL HGE_Impl::Input_SetMousePos(float x, float y)
 {
-  SDL_WarpMouse(x, y);
+  SDL_WarpMouse(static_cast<uint16_t>(x),
+                static_cast<uint16_t>(y));
 }
 
 int CALL HGE_Impl::Input_GetMouseWheel()
@@ -443,7 +442,7 @@ void HGE_Impl::_UpdateMouse()
 }
 
 
-void HGE_Impl::_BuildEvent(int type, int key, int scan, int flags, int x, int y)
+void HGE_Impl::_BuildEvent(int type, int key, int /*scan*/, int flags, int x, int y)
 {
   CInputEventList *last, *eptr=new CInputEventList;
 
@@ -455,7 +454,7 @@ void HGE_Impl::_BuildEvent(int type, int key, int scan, int flags, int x, int y)
   if(type==INPUT_KEYDOWN) {
     key = SDLKeyToHGEKey(key);
 
-    if ( (key < 0) || (key > (sizeof (keyz) / sizeof (keyz[0]))) ) {
+    if ( (key < 0) || (key > static_cast<int>(sizeof (keyz) / sizeof (keyz[0]))) ) {
       return;
     }
 
@@ -465,19 +464,21 @@ void HGE_Impl::_BuildEvent(int type, int key, int scan, int flags, int x, int y)
       keyz[key] |= 1;
     }
 
-    eptr->event.chr = (char) ((key >= 32) && (key <= 127)) ? key : 0;  // these map to ASCII in sdl.
+    eptr->event.chr = static_cast<char>((key >= 32) && (key <= 127)) ? key : 0;
+    // these map to ASCII in sdl.
   }
 
   if(type==INPUT_KEYUP) {
     key = SDLKeyToHGEKey(key);
 
-    if ( (key < 0) || (key > (sizeof (keyz) / sizeof (keyz[0]))) ) {
+    if ( (key < 0) || (key > static_cast<int>(sizeof (keyz) / sizeof (keyz[0]))) ) {
       return;
     }
 
     keyz[key] &= ~4;
     keyz[key] |= 2;
-    eptr->event.chr = (char) ((key >= 32) && (key <= 127)) ? key : 0;  // these map to ASCII in sdl.
+    eptr->event.chr = static_cast<char>((key >= 32) && (key <= 127)) ? key : 0;
+    // these map to ASCII in sdl.
   }
 
   if(type==INPUT_MOUSEWHEEL) {
@@ -500,8 +501,8 @@ void HGE_Impl::_BuildEvent(int type, int key, int scan, int flags, int x, int y)
     keyz[key] &= ~4;
     //ReleaseCapture();
     //Input_SetMousePos(Xpos, Ypos);
-    ptx=(int)Xpos;
-    pty=(int)Ypos;
+    ptx = static_cast<int>(Xpos);
+    pty = static_cast<int>(Ypos);
     bCaptured=false;
   }
 
@@ -551,8 +552,8 @@ void HGE_Impl::_BuildEvent(int type, int key, int scan, int flags, int x, int y)
       pty=nScreenHeight-1;
     }
 
-    eptr->event.x=(float)ptx;
-    eptr->event.y=(float)pty;
+    eptr->event.x=static_cast<float>(ptx);
+    eptr->event.y=static_cast<float>(pty);
   }
 
   eptr->next=0;
@@ -585,7 +586,7 @@ void HGE_Impl::_ClearQueue()
   CInputEventList *nexteptr, *eptr=queue;
 
   //memset(&keyz, 0, sizeof(keyz));
-  for (int i = 0; i < sizeof (keyz) / sizeof (keyz[0]); i++) {
+  for (int i = 0; i < static_cast<int>(sizeof (keyz) / sizeof (keyz[0])); i++) {
     keyz[i] &= ~3;  // only reset some of the bits.
   }
 

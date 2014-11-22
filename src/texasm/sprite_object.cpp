@@ -71,7 +71,7 @@ bool CSpriteObject::SaveDescription(FILE *fp, char *texname)
     }
   }
 
-  DWORD Color = spr->GetColor();
+  uint32_t Color = spr->GetColor();
 
   if(Color != 0xFFFFFFFF) {
     fprintf(fp, " color = %08X\n", Color);

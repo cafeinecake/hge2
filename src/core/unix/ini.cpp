@@ -9,7 +9,7 @@
 #include "hge_impl.h"
 
 const char *HGE_Impl::_BuildProfilePath(const char *section, const char *name,
-                                        const char *szIniFile)
+                                        const char *ini_file)
 {
   // !!! FIXME: not efficient.
   static char path[_MAX_PATH];
@@ -35,7 +35,7 @@ const char *HGE_Impl::_BuildProfilePath(const char *section, const char *name,
   mkdir(path, S_IRWXU);
 
   strcat(path, "/");
-  strcat(path, szIniFile);
+  strcat(path, ini_file);
   mkdir(path, S_IRWXU);
   strcat(path, "/");
   strcat(path, section);
@@ -47,9 +47,9 @@ const char *HGE_Impl::_BuildProfilePath(const char *section, const char *name,
 }
 
 bool HGE_Impl::_WritePrivateProfileString(const char *section, const char *name, const char *buf,
-    const char *szIniFile)
+    const char *ini_file)
 {
-  const char *path = _BuildProfilePath(section, name, szIniFile);
+  const char *path = _BuildProfilePath(section, name, ini_file);
   FILE *io = fopen(path, "wb");
 
   if (io == NULL) {
@@ -66,10 +66,10 @@ bool HGE_Impl::_WritePrivateProfileString(const char *section, const char *name,
 }
 
 bool HGE_Impl::_GetPrivateProfileString(const char *section, const char *name, const char *deflt,
-                                        char *buf, size_t bufsize, const char *szIniFile)
+                                        char *buf, size_t bufsize, const char *ini_file)
 {
   bool retval = false;
-  const char *path = _BuildProfilePath(section, name, szIniFile);
+  const char *path = _BuildProfilePath(section, name, ini_file);
   FILE *io = fopen(path, "rb");
 
   if (io != NULL) {
@@ -102,7 +102,7 @@ void HGE_Impl::_LoadIniFile(const char *fname)
 
   FILE *io = fopen(fname, "rb");
   char *buf = new char[statbuf.st_size + 1];
-  size_t rc = fread(buf, statbuf.st_size, 1, io);
+  size_t rc = fread(buf, static_cast<size_t>(statbuf.st_size), 1, io);
   buf[statbuf.st_size] = '\0';
   fclose(io);
 
@@ -197,7 +197,7 @@ float CALL HGE_Impl::Ini_GetFloat(const char *section, const char *name, float d
 
   if(szIniFile[0]) {
     if(_GetPrivateProfileString(section, name, "", buf, sizeof(buf), szIniFile)) {
-      return (float)atof(buf);
+      return static_cast<float>(atof(buf));
     } else {
       return def_val;
     }

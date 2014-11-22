@@ -35,7 +35,7 @@ public:
 
   void    SetTexture(HTEXTURE tex);
   void    SetTextureRect(float x, float y, float w, float h, bool adjSize = true);
-  void    SetColor(DWORD col, int i=-1);
+  void    SetColor(uint32_t col, int i=-1);
   void    SetZ(float z, int i=-1);
   void    SetBlendMode(int blend)
   {
@@ -59,7 +59,7 @@ public:
     *w=width;
     *h=height;
   }
-  DWORD   GetColor(int i=0) const
+  uint32_t   GetColor(int i=0) const
   {
     return quad.v[i].col;
   }

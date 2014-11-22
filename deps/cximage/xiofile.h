@@ -9,13 +9,11 @@ public:
   CxIOFile(FILE* fp = NULL)
   {
     m_fp = fp;
-    m_bCloseFile = (bool)(fp==0);
+    m_bCloseFile = (fp==0);
   }
 
-  ~CxIOFile()
-  {
-    Close();
-  }
+  virtual ~CxIOFile();
+
 //////////////////////////////////////////////////////////
   bool Open(const TCHAR * filename, const TCHAR * mode)
   {
@@ -43,7 +41,7 @@ public:
       m_fp = NULL;
     }
 
-    return (bool)(iErr==0);
+    return (iErr==0);
   }
 //////////////////////////////////////////////////////////
   virtual size_t  Read(void *buffer, size_t size, size_t count)
@@ -70,7 +68,7 @@ public:
       return false;
     }
 
-    return (bool)(fseek(m_fp, offset, origin) == 0);
+    return (fseek(m_fp, offset, origin) == 0);
   }
 //////////////////////////////////////////////////////////
   virtual int32_t Tell()
@@ -79,7 +77,7 @@ public:
       return 0;
     }
 
-    return ftell(m_fp);
+    return static_cast<int32_t>(ftell(m_fp));
   }
 //////////////////////////////////////////////////////////
   virtual int32_t Size()
@@ -89,9 +87,9 @@ public:
     }
 
     int32_t pos,size;
-    pos = ftell(m_fp);
+    pos = static_cast<int32_t>(ftell(m_fp));
     fseek(m_fp, 0, SEEK_END);
-    size = ftell(m_fp);
+    size = static_cast<int32_t>(ftell(m_fp));
     fseek(m_fp, pos,SEEK_SET);
     return size;
   }
@@ -102,7 +100,7 @@ public:
       return false;
     }
 
-    return (bool)(fflush(m_fp) == 0);
+    return (fflush(m_fp) == 0);
   }
 //////////////////////////////////////////////////////////
   virtual bool  Eof()
@@ -111,7 +109,7 @@ public:
       return true;
     }
 
-    return (bool)(feof(m_fp) != 0);
+    return (feof(m_fp) != 0);
   }
 //////////////////////////////////////////////////////////
   virtual int32_t Error()
@@ -129,7 +127,7 @@ public:
       return false;
     }
 
-    return (bool)(fputc(c, m_fp) == c);
+    return (fputc(c, m_fp) == c);
   }
 //////////////////////////////////////////////////////////
   virtual int32_t GetC()

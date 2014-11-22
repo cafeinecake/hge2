@@ -209,10 +209,10 @@ bool RScriptParser::strtkcmp(const char* str, const char* mem)
   return false;
 }
 
-DWORD RScriptParser::tkn_hex()
+uint32_t RScriptParser::tkn_hex()
 {
   int i;
-  DWORD dw=0;
+  uint32_t dw=0;
   char chr;
 
   for(i=0; tokenvalue[i]; i++) {

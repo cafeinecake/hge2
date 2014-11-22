@@ -11,7 +11,7 @@
 
 
 hgeGUIRange::hgeGUIRange(int _id, float x, float y, float w, float h, int _nrows, int _ncols,
-                         DWORD color)
+                         uint32_t color)
 {
   id=_id;
   bStatic=false;

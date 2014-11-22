@@ -416,7 +416,7 @@ void cmdChangePreset(int n)
 void cmdSavePreset(int n)
 {
   HANDLE hF;
-  DWORD size;
+  uint32_t size;
   char filename[_MAX_PATH];
 
   if(!state.ps) {
@@ -452,7 +452,7 @@ void cmdSavePreset(int n)
 void cmdLoadPreset(int n)
 {
   HANDLE hF;
-  DWORD size, col1, col2;
+  uint32_t size, col1, col2;
   char filename[_MAX_PATH];
 
   if(!state.ps) {
@@ -480,8 +480,8 @@ void cmdLoadPreset(int n)
 
   // I'm think this is what they were getting at for these two functions
   // ~losinggeneration 2011-08-18 13:13:42
-  sprParticles->SetFrame((DWORD)state.ps->info.sprite->GetTexture() & 0xFFFF);
-  sprParticles->SetBlendMode((DWORD)state.ps->info.sprite->GetBlendMode() >> 16);
+  sprParticles->SetFrame((uint32_t)state.ps->info.sprite->GetTexture() & 0xFFFF);
+  sprParticles->SetBlendMode((uint32_t)state.ps->info.sprite->GetBlendMode() >> 16);
   state.ps->info.sprite=sprParticles;
 
   // System parameters
@@ -572,7 +572,7 @@ void cmdLoadPreset(int n)
 
 void cmdChangeColor(int id)
 {
-  DWORD col1, col2;
+  uint32_t col1, col2;
   float val=SliderGetValue(id);
 
   switch(id) {

@@ -29,7 +29,7 @@ struct CFontListItem {
 
 class CFontList {
 #ifdef PLATFORM_UNIX
-  friend int EnumFontFamiliesEx(int *lpelfe, int *lpntme, DWORD FontType, void *lParam);
+  friend int EnumFontFamiliesEx(int *lpelfe, int *lpntme, uint32_t FontType, void *lParam);
 #else
   friend int CALLBACK EnumFontFamExProc(ENUMLOGFONTEX *lpelfe, NEWTEXTMETRICEX *lpntme,
                                         DWORD FontType, LPARAM lParam);

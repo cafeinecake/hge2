@@ -12,7 +12,7 @@
 #include <d3dx8.h>
 
 
-void CALL HGE_Impl::Gfx_Clear(DWORD color)
+void CALL HGE_Impl::Gfx_Clear(uint32_t color)
 {
   if(pCurTarget) {
     if(pCurTarget->pDepth) {
@@ -191,7 +191,7 @@ bool CALL HGE_Impl::Gfx_BeginScene(HTARGET targ)
   }
 
   pD3DDevice->BeginScene();
-  pVB->Lock( 0, 0, (BYTE**)&VertArray, 0 );
+  pVB->Lock( 0, 0, (uint8_t**)&VertArray, 0 );
 
   return true;
 }
@@ -206,7 +206,7 @@ void CALL HGE_Impl::Gfx_EndScene()
   }
 }
 
-void CALL HGE_Impl::Gfx_RenderLine(float x1, float y1, float x2, float y2, DWORD color, float z)
+void CALL HGE_Impl::Gfx_RenderLine(float x1, float y1, float x2, float y2, uint32_t color, float z)
 {
   if(VertArray) {
     if(CurPrimType!=HGEPRIM_LINES || nPrim>=VERTEX_BUFFER_SIZE/HGEPRIM_LINES || CurTexture
@@ -408,10 +408,10 @@ HTEXTURE CALL HGE_Impl::Texture_Create(int width, int height)
   return (HTEXTURE)pTex;
 }
 
-HTEXTURE CALL HGE_Impl::Texture_Load(const char *filename, DWORD size, bool bMipmap)
+HTEXTURE CALL HGE_Impl::Texture_Load(const char *filename, uint32_t size, bool bMipmap)
 {
   void *data;
-  DWORD _size;
+  uint32_t _size;
   D3DFORMAT fmt1, fmt2;
   LPDIRECT3DTEXTURE8 pTex;
   D3DXIMAGE_INFO info;
@@ -428,7 +428,7 @@ HTEXTURE CALL HGE_Impl::Texture_Load(const char *filename, DWORD size, bool bMip
     }
   }
 
-  if(*(DWORD*)data == 0x20534444) { // Compressed DDS format magic number
+  if(*(uint32_t*)data == 0x20534444) { // Compressed DDS format magic number
     fmt1=D3DFMT_UNKNOWN;
     fmt2=D3DFMT_A8R8G8B8;
   } else {
@@ -563,7 +563,7 @@ int CALL HGE_Impl::Texture_GetHeight(HTEXTURE tex, bool bOriginal)
 }
 
 
-DWORD * CALL HGE_Impl::Texture_Lock(HTEXTURE tex, bool bReadOnly, int left, int top, int width,
+uint32_t * CALL HGE_Impl::Texture_Lock(HTEXTURE tex, bool bReadOnly, int left, int top, int width,
                                     int height)
 {
   LPDIRECT3DTEXTURE8 pTex=(LPDIRECT3DTEXTURE8)tex;
@@ -599,7 +599,7 @@ DWORD * CALL HGE_Impl::Texture_Lock(HTEXTURE tex, bool bReadOnly, int left, int 
     return 0;
   }
 
-  return (DWORD *)TRect.pBits;
+  return (uint32_t *)TRect.pBits;
 }
 
 
@@ -637,7 +637,7 @@ void HGE_Impl::_render_batch(bool bEndScene)
     if(bEndScene) {
       VertArray = 0;
     } else {
-      pVB->Lock( 0, 0, (BYTE**)&VertArray, 0 );
+      pVB->Lock( 0, 0, (uint8_t**)&VertArray, 0 );
     }
   }
 }
@@ -1063,7 +1063,7 @@ bool HGE_Impl::_init_lost()
 
   WORD *pIndices, n=0;
 
-  if( FAILED( pIB->Lock( 0, 0, (BYTE**)&pIndices, 0 ) ) ) {
+  if( FAILED( pIB->Lock( 0, 0, (uint8_t**)&pIndices, 0 ) ) ) {
     _PostError("Can't lock D3D index buffer");
     return false;
   }

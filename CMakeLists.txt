@@ -14,6 +14,11 @@ if(UNIX OR APPLE)
 	# These libs are linked to every tool or demo executable
 	set(HGE2_EXECLIBS hge2core hge2helpers hgezlib hgecximage )
 
+	# Clang paranoia warnings
+	add_definitions( -std=c++11 -Weverything -Wno-c++98-compat-pedantic
+		-Wno-c++98-compat -Wno-padded -Wno-format-nonliteral -Wno-undef -Wno-documentation )
+	add_definitions( -ggdb3 -Werror ) # debug info and break on warnings
+
 	add_definitions(-D_LINUX)
 	# Needed for FindVorbis
 	set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")

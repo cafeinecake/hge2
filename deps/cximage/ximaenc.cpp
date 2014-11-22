@@ -930,7 +930,7 @@ bool CxImage::Decode(CxFile *hFile, uint32_t imagetype)
     return false;
   }
 
-  uint32_t pos = hFile->Tell();
+  uint32_t pos = static_cast<uint32_t>(hFile->Tell());
 
 #if CXIMAGE_SUPPORT_BMP
 
@@ -949,7 +949,7 @@ bool CxImage::Decode(CxFile *hFile, uint32_t imagetype)
       return true;
     } else {
       strcpy(info.szLastError,newima->GetLastError());
-      hFile->Seek(pos,SEEK_SET);
+      hFile->Seek(static_cast<int32_t>(pos), SEEK_SET);
       delete newima;
 
       if (CXIMAGE_FORMAT_UNKNOWN!=imagetype) {
@@ -976,7 +976,7 @@ bool CxImage::Decode(CxFile *hFile, uint32_t imagetype)
       return true;
     } else {
       strcpy(info.szLastError,newima->GetLastError());
-      hFile->Seek(pos,SEEK_SET);
+      hFile->Seek(static_cast<int32_t>(pos), SEEK_SET);
       delete newima;
 
       if (CXIMAGE_FORMAT_UNKNOWN!=imagetype) {
@@ -1032,7 +1032,7 @@ bool CxImage::Decode(CxFile *hFile, uint32_t imagetype)
     } else {
       info.nNumFrames = newima->info.nNumFrames;
       strcpy(info.szLastError,newima->GetLastError());
-      hFile->Seek(pos,SEEK_SET);
+      hFile->Seek(static_cast<int32_t>(pos), SEEK_SET);
       delete newima;
 
       if (CXIMAGE_FORMAT_UNKNOWN!=imagetype) {

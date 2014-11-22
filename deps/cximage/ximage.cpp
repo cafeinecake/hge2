@@ -5,6 +5,9 @@
 
 #include "ximage.h"
 
+CxFile::~CxFile() {}
+CxIOFile::~CxIOFile() { Close(); }
+
 ////////////////////////////////////////////////////////////////////////////////
 // CxImage
 ////////////////////////////////////////////////////////////////////////////////
@@ -30,7 +33,7 @@ void CxImage::Startup(uint32_t imagetype)
   SetYDPI(CXIMAGE_DEFAULT_DPI);
 
   int16_t test = 1;
-  info.bLittleEndianHost = (*((char *) &test) == 1);
+  info.bLittleEndianHost = (*(reinterpret_cast<char *>(&test)) == 1);
 }
 ////////////////////////////////////////////////////////////////////////////////
 /**
@@ -152,7 +155,7 @@ void CxImage::Copy(const CxImage &src, bool copypixels, bool copyselection, bool
 
   //copy the pixels and the palette, or at least copy the palette only.
   if (copypixels && pDib && src.pDib) {
-    memcpy(pDib,src.pDib,GetSize());
+    memcpy(pDib, src.pDib, static_cast<size_t>(GetSize()));
   } else {
     SetPalette(src.GetPalette());
   }
@@ -165,8 +168,8 @@ void CxImage::Copy(const CxImage &src, bool copypixels, bool copyselection, bool
       free(pSelection);
     }
 
-    pSelection = (uint8_t*)malloc(nSize);
-    memcpy(pSelection,src.pSelection,nSize);
+    pSelection = new uint8_t [nSize];
+    memcpy(pSelection,src.pSelection, static_cast<size_t>(nSize));
   }
 
   //copy the alpha channel
@@ -175,8 +178,8 @@ void CxImage::Copy(const CxImage &src, bool copypixels, bool copyselection, bool
       free(pAlpha);
     }
 
-    pAlpha = (uint8_t*)malloc(nSize);
-    memcpy(pAlpha,src.pAlpha,nSize);
+    pAlpha = new uint8_t [nSize];
+    memcpy(pAlpha, src.pAlpha, static_cast<size_t>(nSize));
   }
 }
 ////////////////////////////////////////////////////////////////////////////////
@@ -237,7 +240,10 @@ void* CxImage::Create(uint32_t dwWidth, uint32_t dwHeight, uint32_t wBpp, uint32
   }
 
   // limit memory requirements
-  if ((((float)dwWidth*(float)dwHeight*(float)wBpp)/8.0f) > (float)CXIMAGE_MAX_MEMORY) {
+  float sz = (static_cast<float>(dwWidth)
+              * static_cast<float>(dwHeight)
+              * static_cast<float>(wBpp)) / 8.0f;
+  if (sz > static_cast<float>(CXIMAGE_MAX_MEMORY)) {
     strcpy(info.szLastError,"CXIMAGE_MAX_MEMORY exceeded");
     return NULL;
   }
@@ -266,17 +272,17 @@ void* CxImage::Create(uint32_t dwWidth, uint32_t dwHeight, uint32_t wBpp, uint32
 
   // initialize BITMAPINFOHEADER
   head.biSize = sizeof(BITMAPINFOHEADER); //<ralphw>
-  head.biWidth = dwWidth;   // fill in width from parameter
-  head.biHeight = dwHeight; // fill in height from parameter
+  head.biWidth = static_cast<int32_t>(dwWidth);   // fill in width from parameter
+  head.biHeight = static_cast<int32_t>(dwHeight); // fill in height from parameter
   head.biPlanes = 1;      // must be 1
-  head.biBitCount = (uint16_t)wBpp;   // from parameter
+  head.biBitCount = static_cast<uint16_t>(wBpp);   // from parameter
   head.biCompression = BI_RGB;
   head.biSizeImage = info.dwEffWidth * dwHeight;
 //    head.biXPelsPerMeter = 0; See SetXDPI
 //    head.biYPelsPerMeter = 0; See SetYDPI
 //    head.biClrImportant = 0;  See SetClrImportant
 
-  pDib = malloc(GetSize()); // alloc memory block to store our bitmap
+  pDib = new uint8_t [GetSize()]; // alloc memory block to store our bitmap
 
   if (!pDib) {
     strcpy(info.szLastError,"CxImage::Create can't allocate memory");
@@ -309,8 +315,7 @@ void* CxImage::Create(uint32_t dwWidth, uint32_t dwHeight, uint32_t wBpp, uint32
 
   // use our bitmap info structure to fill in first part of
   // our DIB with the BITMAPINFOHEADER
-  BITMAPINFOHEADER*  lpbi;
-  lpbi = (BITMAPINFOHEADER*)(pDib);
+  BITMAPINFOHEADER*  lpbi = static_cast<BITMAPINFOHEADER*>(pDib);
   *lpbi = head;
 
   info.pImage=GetBits();
@@ -325,13 +330,18 @@ uint8_t* CxImage::GetBits(uint32_t row)
 {
   if (pDib) {
     if (row) {
-      if (row<(uint32_t)head.biHeight) {
-        return ((uint8_t*)pDib + *(uint32_t*)pDib + GetPaletteSize() + (info.dwEffWidth * row));
+      if (row < static_cast<uint32_t>(head.biHeight)) {
+        return (static_cast<uint8_t*>(pDib)
+                + *static_cast<uint32_t*>(pDib)
+                + GetPaletteSize()
+                + (info.dwEffWidth * row));
       } else {
         return NULL;
       }
     } else {
-      return ((uint8_t*)pDib + *(uint32_t*)pDib + GetPaletteSize());
+      return (static_cast<uint8_t*>(pDib)
+              + *static_cast<uint32_t*>(pDib)
+              + GetPaletteSize());
     }
   }
 
@@ -343,7 +353,7 @@ uint8_t* CxImage::GetBits(uint32_t row)
  */
 int32_t CxImage::GetSize()
 {
-  return head.biSize + head.biSizeImage + GetPaletteSize();
+  return static_cast<int32_t>(head.biSize + head.biSizeImage + GetPaletteSize());
 }
 ////////////////////////////////////////////////////////////////////////////////
 /**
@@ -373,7 +383,7 @@ void CxImage::Clear(uint8_t bval)
   }
 
   if (GetBpp() == 4) {
-    bval = (uint8_t)(17*(0x0F & bval));
+    bval = static_cast<uint8_t>(17*(0x0F & bval));
   }
 
   memset(info.pImage,bval,head.biSizeImage);
@@ -425,7 +435,7 @@ void CxImage::Ghost(const CxImage *from)
     pAlpha = from->pAlpha;
     ppLayers = from->ppLayers;
     ppFrames = from->ppFrames;
-    info.pGhost=(CxImage *)from;
+    info.pGhost = const_cast<CxImage *>(from);
   }
 }
 ////////////////////////////////////////////////////////////////////////////////
@@ -468,7 +478,7 @@ void CxImage::Bitfield2RGB(uint8_t *src, uint32_t redmask, uint32_t greenmask, u
     // scan the buffer in reverse direction to avoid reallocations
     for (int32_t y=head.biHeight-1; y>=0; y--) {
       y2=effwidth2*y;
-      y3=info.dwEffWidth*y;
+      y3 = static_cast<int32_t>(info.dwEffWidth * static_cast<uint32_t>(y));
 
       for (int32_t x=head.biWidth-1; x>=0; x--) {
         x2 = 2*x+y2;

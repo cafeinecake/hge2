@@ -39,7 +39,7 @@ public:
     b=_b;
     a=_a;
   }
-  hgeColorRGB(DWORD col)
+  hgeColorRGB(uint32_t col)
   {
     SetHWColor(col);
   }
@@ -109,16 +109,16 @@ public:
     ColorClamp(b);
     ColorClamp(a);
   }
-  void      SetHWColor(DWORD col)
+  void      SetHWColor(uint32_t col)
   {
     a = (col>>24)/255.0f;
     r = ((col>>16) & 0xFF)/255.0f;
     g = ((col>>8) & 0xFF)/255.0f;
     b = (col & 0xFF)/255.0f;
   }
-  DWORD     GetHWColor() const
+  uint32_t     GetHWColor() const
   {
-    return (DWORD(a*255.0f)<<24) + (DWORD(r*255.0f)<<16) + (DWORD(g*255.0f)<<8) + DWORD(b*255.0f);
+    return (uint32_t(a*255.0f)<<24) + (uint32_t(r*255.0f)<<16) + (uint32_t(g*255.0f)<<8) + uint32_t(b*255.0f);
   }
 };
 
@@ -139,7 +139,7 @@ public:
     v=_v;
     a=_a;
   }
-  hgeColorHSV(DWORD col)
+  hgeColorHSV(uint32_t col)
   {
     SetHWColor(col);
   }
@@ -209,8 +209,8 @@ public:
     ColorClamp(v);
     ColorClamp(a);
   }
-  void      SetHWColor(DWORD col);
-  DWORD     GetHWColor() const;
+  void      SetHWColor(uint32_t col);
+  uint32_t     GetHWColor() const;
 };
 
 inline hgeColorHSV operator* (const float sc, const hgeColorHSV &c)

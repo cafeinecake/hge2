@@ -7,6 +7,7 @@ set(HGE_SRCS
 	common/demo.cpp
 	common/random.cpp
 	common/timer.cpp
+	common/hge2.cpp
 )
 
 include_directories( ${CMAKE_SOURCE_DIR}/deps )

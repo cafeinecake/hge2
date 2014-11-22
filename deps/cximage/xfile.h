@@ -52,8 +52,8 @@
 
 class DLL_EXP CxFile {
 public:
-  CxFile(void) { };
-  virtual ~CxFile() { };
+  CxFile(void) { }
+  virtual ~CxFile();
 
   virtual bool  Close() = 0;
   virtual size_t  Read(void *buffer, size_t size, size_t count) = 0;
@@ -68,7 +68,7 @@ public:
   {
     // Default implementation
     size_t nWrote = Write(&c, 1, 1);
-    return (bool)(nWrote == 1);
+    return nWrote == 1;
   }
   virtual int32_t GetC() = 0;
   virtual char *  GetS(char *string, int32_t n) = 0;

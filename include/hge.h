@@ -1,14 +1,12 @@
 /*
-** Haaf's Game Engine 1.8
-** Copyright (C) 2003-2007, Relish Games
-** hge.relishgames.com
+** This is HGE 2
+** Based on Haaf's Game Engine 1.8, Copyright (C) 2003-2007, Relish Games
+** http://hge.relishgames.com
 **
 ** System layer API
 */
 
-
-#ifndef HGE_H
-#define HGE_H
+#pragma once
 
 #include "unix_compat.h"
 
@@ -16,7 +14,7 @@
 #include <windows.h>
 #endif
 
-#define HGE_VERSION 0x181
+#define HGE_VERSION 0x200
 
 #ifndef EXPORT
 #  ifdef HGEDLL
@@ -38,31 +36,31 @@
 #define CALL
 #endif
 
-#ifdef __BORLANDC__
-#define floorf (float)floor
-#define sqrtf (float)sqrt
-#define acosf (float)acos
-#define atan2f (float)atan2
-#define cosf (float)cos
-#define sinf (float)sin
-#define powf (float)pow
-#define fabsf (float)fabs
+//#ifdef __BORLANDC__
+//#define floorf (float)floor
+//#define sqrtf (float)sqrt
+//#define acosf (float)acos
+//#define atan2f (float)atan2
+//#define cosf (float)cos
+//#define sinf (float)sin
+//#define powf (float)pow
+//#define fabsf (float)fabs
 
-#define min(x,y) ((x) < (y)) ? (x) : (y)
-#define max(x,y) ((x) > (y)) ? (x) : (y)
-#endif
+//#define min(x,y) ((x) < (y)) ? (x) : (y)
+//#define max(x,y) ((x) > (y)) ? (x) : (y)
+//#endif
 
 
 /*
 ** Common data types
 */
-#ifdef _WINDOWS
-#ifndef DWORD
-typedef unsigned long       DWORD;
-typedef unsigned short      WORD;
-typedef unsigned char       BYTE;
-#endif
-#endif
+//#ifdef _WINDOWS
+//#ifndef DWORD
+//typedef unsigned long       DWORD;
+//typedef unsigned short      WORD;
+//typedef unsigned char       BYTE;
+//#endif
+//#endif
 
 /*
 ** Common math constants
@@ -98,15 +96,33 @@ typedef size_t HCHANNEL;
 /*
 ** Hardware color macros
 */
-#define ARGB(a,r,g,b) ((DWORD(a)<<24) + (DWORD(r)<<16) + (DWORD(g)<<8) + DWORD(b))
-#define GETA(col)   ((col)>>24)
-#define GETR(col)   (((col)>>16) & 0xFF)
-#define GETG(col)   (((col)>>8) & 0xFF)
-#define GETB(col)   ((col) & 0xFF)
-#define SETA(col,a)   (((col) & 0x00FFFFFF) + (DWORD(a)<<24))
-#define SETR(col,r)   (((col) & 0xFF00FFFF) + (DWORD(r)<<16))
-#define SETG(col,g)   (((col) & 0xFFFF00FF) + (DWORD(g)<<8))
-#define SETB(col,b)   (((col) & 0xFFFFFF00) + DWORD(b))
+inline uint32_t ARGB(uint8_t a, uint8_t r, uint8_t g, uint8_t b) {
+  return (uint32_t(a)<<24) + (uint32_t(r)<<16) + (uint32_t(g)<<8) + uint32_t(b);
+}
+inline uint8_t GETA(uint32_t col) {
+  return col>>24;
+}
+inline uint8_t GETR(uint32_t col) {
+  return (col>>16) & 0xFF;
+}
+inline uint8_t GETG(uint32_t col) {
+  return (col>>8) & 0xFF;
+}
+inline uint8_t GETB(uint32_t col) {
+  return col & 0xFF;
+}
+inline uint32_t SETA(uint32_t col, uint8_t a) {
+  return (col & 0x00FFFFFF) + (uint32_t(a)<<24);
+}
+inline uint32_t SETR(uint32_t col, uint8_t r) {
+  return (col & 0xFF00FFFF) + (uint32_t(r)<<16);
+}
+inline uint32_t SETG(uint32_t col, uint8_t g) {
+  return (col & 0xFFFF00FF) + (uint32_t(g)<<8);
+}
+inline uint32_t SETB(uint32_t col, uint8_t b) {
+  return (col & 0xFFFFFF00) + uint32_t(b);
+}
 
 
 /*
@@ -223,7 +239,7 @@ typedef bool (*hgeCallback)();
 struct hgeVertex {
   float     x, y;   // screen position
   float     z;      // Z-buffer depth 0..1
-  DWORD     col;    // color
+  uint32_t     col;    // color
   float     tx, ty;   // texture coordinates
 };
 
@@ -291,7 +307,7 @@ struct hgeInputEvent {
 class HGE {
 public:
   HGE() {}
-  virtual ~HGE() {};
+  virtual ~HGE();
 
   virtual void    CALL  Release() = 0;
 
@@ -357,7 +373,7 @@ public:
     return System_GetStateString(state);
   }
 
-  virtual void*   CALL  Resource_Load(const char *filename, DWORD *size=0) = 0;
+  virtual void*   CALL  Resource_Load(const char *filename, uint32_t *size=0) = 0;
   virtual void    CALL  Resource_Free(void *res) = 0;
   virtual bool    CALL  Resource_AttachPack(const char *filename, const char *password=0) = 0;
   virtual void    CALL  Resource_RemovePack(const char *filename) = 0;
@@ -381,13 +397,13 @@ public:
   virtual float   CALL  Timer_GetDelta() = 0;
   virtual int     CALL  Timer_GetFPS() = 0;
 
-  virtual HEFFECT   CALL  Effect_Load(const char *filename, DWORD size=0) = 0;
+  virtual HEFFECT   CALL  Effect_Load(const char *filename, uint32_t size=0) = 0;
   virtual void    CALL  Effect_Free(HEFFECT eff) = 0;
   virtual HCHANNEL  CALL  Effect_Play(HEFFECT eff) = 0;
   virtual HCHANNEL  CALL  Effect_PlayEx(HEFFECT eff, int volume=100, int pan=0, float pitch=1.0f,
                                         bool loop=false) = 0;
 
-  virtual HMUSIC    CALL  Music_Load(const char *filename, DWORD size=0) = 0;
+  virtual HMUSIC    CALL  Music_Load(const char *filename, uint32_t size=0) = 0;
   virtual void    CALL  Music_Free(HMUSIC mus) = 0;
   virtual HCHANNEL  CALL  Music_Play(HMUSIC mus, bool loop, int volume = 100, int order = -1,
                                      int row = -1) = 0;
@@ -401,7 +417,7 @@ public:
   virtual void    CALL  Music_SetChannelVolume(HMUSIC music, int channel, int volume) = 0;
   virtual int     CALL  Music_GetChannelVolume(HMUSIC music, int channel) = 0;
 
-  virtual HSTREAM   CALL  Stream_Load(const char *filename, DWORD size=0) = 0;
+  virtual HSTREAM   CALL  Stream_Load(const char *filename, uint32_t size=0) = 0;
   virtual void    CALL  Stream_Free(HSTREAM stream) = 0;
   virtual HCHANNEL  CALL  Stream_Play(HSTREAM stream, bool loop, int volume = 100) = 0;
 
@@ -436,8 +452,8 @@ public:
 
   virtual bool    CALL  Gfx_BeginScene(HTARGET target=0) = 0;
   virtual void    CALL  Gfx_EndScene() = 0;
-  virtual void    CALL  Gfx_Clear(DWORD color) = 0;
-  virtual void    CALL  Gfx_RenderLine(float x1, float y1, float x2, float y2, DWORD color=0xFFFFFFFF,
+  virtual void    CALL  Gfx_Clear(uint32_t color) = 0;
+  virtual void    CALL  Gfx_RenderLine(float x1, float y1, float x2, float y2, uint32_t color=0xFFFFFFFF,
                                        float z=0.5f) = 0;
   virtual void    CALL  Gfx_RenderTriple(const hgeTriple *triple) = 0;
   virtual void    CALL  Gfx_RenderQuad(const hgeQuad *quad) = 0;
@@ -452,11 +468,11 @@ public:
   virtual HTEXTURE  CALL  Target_GetTexture(HTARGET target) = 0;
 
   virtual HTEXTURE  CALL  Texture_Create(int width, int height) = 0;
-  virtual HTEXTURE  CALL  Texture_Load(const char *filename, DWORD size=0, bool bMipmap=false) = 0;
+  virtual HTEXTURE  CALL  Texture_Load(const char *filename, uint32_t size=0, bool bMipmap=false) = 0;
   virtual void    CALL  Texture_Free(HTEXTURE tex) = 0;
   virtual int     CALL  Texture_GetWidth(HTEXTURE tex, bool bOriginal=false) = 0;
   virtual int     CALL  Texture_GetHeight(HTEXTURE tex, bool bOriginal=false) = 0;
-  virtual DWORD*    CALL  Texture_Lock(HTEXTURE tex, bool bReadOnly=true, int left=0, int top=0,
+  virtual uint32_t*    CALL  Texture_Lock(HTEXTURE tex, bool bReadOnly=true, int left=0, int top=0,
                                        int width=0, int height=0) = 0;
   virtual void    CALL  Texture_Unlock(HTEXTURE tex) = 0;
 };
@@ -583,6 +599,3 @@ extern "C" {
 #define HGEK_F10    0x79
 #define HGEK_F11    0x7A
 #define HGEK_F12    0x7B
-
-#endif
-

@@ -18,6 +18,8 @@
 
 #include "hge_impl.h"
 
+#include <algorithm>
+
 //#define SUPPORT_CXIMAGE 1
 #if SUPPORT_CXIMAGE
 // conflict with Mac OS X 10.3.9 SDK...
@@ -70,8 +72,8 @@ struct gltexture {
   GLuint potw;  // Power-of-two width.
   GLuint poth;  // Power-of-two height.
   const char *filename;  // if backed by a file, not a managed buffer.
-  DWORD *pixels;  // original rgba data.
-  DWORD *lock_pixels;  // for locked texture
+  uint32_t *pixels;  // original rgba data.
+  uint32_t *lock_pixels;  // for locked texture
   bool is_render_target;
   bool lost;
   bool lock_readonly;
@@ -81,24 +83,24 @@ struct gltexture {
   GLint lock_height;
 };
 
-static DWORD *_DecodeImage(BYTE *data, const char *fname, DWORD size, int &width, int &height)
+static uint32_t *_DecodeImage(uint8_t *data, const char *fname, uint32_t size, int &width, int &height)
 {
   width = height = 0;
 
-  DWORD *pixels = NULL;
+  uint32_t *pixels = NULL;
   const size_t fnamelen = fname ? strlen(fname) : 0;
 
   if ( (fnamelen > 5) && (strcasecmp((fname + fnamelen) - 5, ".rgba") == 0) ) {
-    DWORD *ptr = (DWORD *) data;
-    DWORD w = ptr[0];
-    DWORD h = ptr[1];
+    uint32_t *ptr = reinterpret_cast<uint32_t *>(data);
+    uint32_t w = ptr[0];
+    uint32_t h = ptr[1];
     BYTESWAP(w);
     BYTESWAP(h);
 
     if ( ((w * h * 4) + 8) == size ) { // not truncated?
-      width = (int) w;
-      height = (int) h;
-      pixels = new DWORD[width * height];
+      width = static_cast<int>(w);
+      height = static_cast<int>(h);
+      pixels = new uint32_t[width * height];
       memcpy(pixels, ptr + 2, w * h * 4);  // !!! FIXME: ignores pitch.
     }
 
@@ -110,10 +112,10 @@ static DWORD *_DecodeImage(BYTE *data, const char *fname, DWORD size, int &width
   img.Decode(data, size, CXIMAGE_FORMAT_UNKNOWN);
 
   if (img.IsValid()) {
-    width = img.GetWidth();
-    height = img.GetHeight();
-    pixels = new DWORD[width * height];
-    BYTE *wptr = (BYTE *) pixels;
+    width = static_cast<int>(img.GetWidth());
+    height = static_cast<int>(img.GetHeight());
+    pixels = new uint32_t[width * height];
+    uint8_t *wptr = reinterpret_cast<uint8_t *>(pixels);
     const bool hasalpha = img.AlphaIsValid();
 
     for (int y = 0; y < height; y++) {
@@ -141,7 +143,7 @@ static DWORD *_DecodeImage(BYTE *data, const char *fname, DWORD size, int &width
     width = info.Width;
     height = info.Height;
     size = info.SizeOfData;
-    pixels = new DWORD[width * height];
+    pixels = new uint32_t[width * height];
     ilCopyPixels(0, 0, 0, width, height, 0, IL_RGBA, IL_UNSIGNED_INT, pixels);
     ilShutDown();
   }
@@ -157,16 +159,19 @@ void HGE_Impl::_BindTexture(gltexture *t)
   // The Direct3D renderer is using managed textures, so they aren't every
   //  actually "lost" ... we may have to rebuild them here, though.
   if ((t != NULL) && (t->lost)) {
-    _ConfigureTexture(t, t->width, t->height, t->pixels);
+    _ConfigureTexture(t,
+                      static_cast<int>(t->width),
+                      static_cast<int>(t->height),
+                      t->pixels);
   }
 
-  if ( ((HTEXTURE)t) != CurTexture ) {
+  if ( (reinterpret_cast<HTEXTURE>(t)) != CurTexture ) {
     pOpenGLDevice->glBindTexture(pOpenGLDevice->TextureTarget, t ? t->name : 0);
-    CurTexture = (HTEXTURE) t;
+    CurTexture = reinterpret_cast<HTEXTURE>(t);
   }
 }
 
-void CALL HGE_Impl::Gfx_Clear(DWORD color)
+void CALL HGE_Impl::Gfx_Clear(uint32_t color)
 {
   GLbitfield flags = GL_COLOR_BUFFER_BIT;
 
@@ -174,10 +179,10 @@ void CALL HGE_Impl::Gfx_Clear(DWORD color)
     flags |= GL_DEPTH_BUFFER_BIT;
   }
 
-  const GLfloat a = ((GLfloat) ((color >> 24) & 0xFF)) / 255.0f;
-  const GLfloat r = ((GLfloat) ((color >> 16) & 0xFF)) / 255.0f;
-  const GLfloat g = ((GLfloat) ((color >>  8) & 0xFF)) / 255.0f;
-  const GLfloat b = ((GLfloat) ((color >>  0) & 0xFF)) / 255.0f;
+  const GLfloat a = (static_cast<GLfloat>((color >> 24) & 0xFF)) / 255.0f;
+  const GLfloat r = (static_cast<GLfloat>((color >> 16) & 0xFF)) / 255.0f;
+  const GLfloat g = (static_cast<GLfloat>((color >>  8) & 0xFF)) / 255.0f;
+  const GLfloat b = (static_cast<GLfloat>((color >>  0) & 0xFF)) / 255.0f;
   pOpenGLDevice->glClearColor(r, g, b, a);
   pOpenGLDevice->glClear(flags);
 }
@@ -278,7 +283,7 @@ void CALL HGE_Impl::Gfx_SetTransform(float x, float y, float dx, float dy, float
 
 bool CALL HGE_Impl::Gfx_BeginScene(HTARGET targ)
 {
-  CRenderTargetList *target=(CRenderTargetList *)targ;
+  CRenderTargetList *target = reinterpret_cast<CRenderTargetList *>(targ);
 
   if(VertArray) {
     _PostError("Gfx_BeginScene: Scene is already being rendered");
@@ -325,22 +330,26 @@ void CALL HGE_Impl::Gfx_EndScene()
   // This is not going to work in lots of legitimate scenarios, but it will
   //  most of the time, so it's better than nothing when you lack FBOs.
   if ((pCurTarget) && (!pOpenGLDevice->have_GL_EXT_framebuffer_object)) {
-    gltexture *pTex = (gltexture *) pCurTarget->tex;
+    gltexture *pTex = reinterpret_cast<gltexture *>(pCurTarget->tex);
 
     if ((pTex != NULL) && (pTex->lost)) {
-      _ConfigureTexture(pTex, pTex->width, pTex->height, pTex->pixels);
+      _ConfigureTexture(pTex,
+                        static_cast<int>(pTex->width),
+                        static_cast<int>(pTex->height),
+                        pTex->pixels);
     }
 
     const int width = pCurTarget->width;
     const int height = pCurTarget->height;
     pOpenGLDevice->glFinish();
-    DWORD *pixels = new DWORD[width * height];
+    uint32_t *pixels = new uint32_t[width * height];
     pOpenGLDevice->glReadPixels(0, 0, width, height, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
     pOpenGLDevice->glBindTexture(pOpenGLDevice->TextureTarget, pTex->name);
     pOpenGLDevice->glTexSubImage2D(pOpenGLDevice->TextureTarget, 0, 0, 0, width, height,
                                    GL_RGBA, GL_UNSIGNED_BYTE, pixels);
     pOpenGLDevice->glBindTexture(pOpenGLDevice->TextureTarget,
-                                 CurTexture ? (((gltexture *) CurTexture)->name) : 0);
+                                 CurTexture ?
+                                   ((reinterpret_cast<gltexture *>(CurTexture))->name) : 0);
     delete[] pixels;
   }
 
@@ -357,8 +366,12 @@ void CALL HGE_Impl::Gfx_EndScene()
 void HGE_Impl::_SetTextureFilter()
 {
   const GLenum filter = (bTextureFilter) ? GL_LINEAR : GL_NEAREST;
-  pOpenGLDevice->glTexParameteri(pOpenGLDevice->TextureTarget, GL_TEXTURE_MIN_FILTER, filter);
-  pOpenGLDevice->glTexParameteri(pOpenGLDevice->TextureTarget, GL_TEXTURE_MAG_FILTER, filter);
+  pOpenGLDevice->glTexParameteri(pOpenGLDevice->TextureTarget,
+                                 GL_TEXTURE_MIN_FILTER,
+                                 static_cast<GLint>(filter));
+  pOpenGLDevice->glTexParameteri(pOpenGLDevice->TextureTarget,
+                                 GL_TEXTURE_MAG_FILTER,
+                                 static_cast<GLint>(filter));
 }
 
 
@@ -372,8 +385,8 @@ bool HGE_Impl::_PrimsOutsideClipping(const hgeVertex *v, const int verts)
   const int maxY = clipY + clipH;
 
   for (int i = 0; i < verts; i++, v++) {
-    const int x = v->x;
-    const int y = v->y;
+    const int x = static_cast<int>(v->x);
+    const int y = static_cast<int>(v->y);
 
     if ((x > clipX) && (x < maxX) && (y > clipY) && (y < maxY)) {
       return false;
@@ -384,7 +397,7 @@ bool HGE_Impl::_PrimsOutsideClipping(const hgeVertex *v, const int verts)
 }
 
 
-void CALL HGE_Impl::Gfx_RenderLine(float x1, float y1, float x2, float y2, DWORD color, float z)
+void CALL HGE_Impl::Gfx_RenderLine(float x1, float y1, float x2, float y2, uint32_t color, float z)
 {
   if (VertArray) {
     if(CurPrimType!=HGEPRIM_LINES || nPrim>=VERTEX_BUFFER_SIZE/HGEPRIM_LINES || CurTexture
@@ -416,14 +429,14 @@ void CALL HGE_Impl::Gfx_RenderLine(float x1, float y1, float x2, float y2, DWORD
   }
 }
 
-template <class T> static inline const T Min(const T a, const T b)
-{
-  return a < b ? a : b;
-}
-template <class T> static inline const T Max(const T a, const T b)
-{
-  return a > b ? a : b;
-}
+//template <class T> static inline const T Min(const T a, const T b)
+//{
+//  return a < b ? a : b;
+//}
+//template <class T> static inline const T Max(const T a, const T b)
+//{
+//  return a > b ? a : b;
+//}
 
 void CALL HGE_Impl::Gfx_RenderTriple(const hgeTriple *triple)
 {
@@ -434,10 +447,10 @@ void CALL HGE_Impl::Gfx_RenderTriple(const hgeTriple *triple)
       // check for overlap, despite triangle points being outside clipping...
       const int maxX = clipX + clipW;
       const int maxY = clipY + clipH;
-      const int leftmost = Min(Min(v[0].x, v[1].x), v[2].x);
-      const int rightmost = Max(Max(v[0].x, v[1].x), v[2].x);
-      const int topmost = Min(Min(v[0].y, v[1].y), v[2].y);
-      const int bottommost = Max(Max(v[0].y, v[1].y), v[2].y);
+      const int leftmost = std::min(std::min(v[0].x, v[1].x), v[2].x);
+      const int rightmost = std::max(std::max(v[0].x, v[1].x), v[2].x);
+      const int topmost = std::min(std::min(v[0].y, v[1].y), v[2].y);
+      const int bottommost = std::max(std::max(v[0].y, v[1].y), v[2].y);
 
       if ( ((clipX < leftmost) || (clipX > rightmost)) &&
            ((maxX < leftmost) || (maxX > rightmost)) &&
@@ -664,7 +677,7 @@ static inline GLuint _NextPowerOfTwo(GLuint x)
   return x + 1;
 }
 
-void HGE_Impl::_ConfigureTexture(gltexture *t, int width, int height, DWORD *pixels)
+void HGE_Impl::_ConfigureTexture(gltexture *t, int width, int height, uint32_t *pixels)
 {
   GLuint tex = 0;
   pOpenGLDevice->glGenTextures(1, &tex);
@@ -681,8 +694,8 @@ void HGE_Impl::_ConfigureTexture(gltexture *t, int width, int height, DWORD *pix
   const bool loadFromFile = ((pixels == NULL) && (t->filename != NULL));
 
   if (loadFromFile) {
-    DWORD size = 0;
-    BYTE *data = (BYTE *) pHGE->Resource_Load(t->filename, &size);
+    uint32_t size = 0;
+    uint8_t *data = (uint8_t *) pHGE->Resource_Load(t->filename, &size);
 
     if (data != NULL) {
       int w, h;
@@ -731,7 +744,7 @@ void HGE_Impl::_ConfigureTexture(gltexture *t, int width, int height, DWORD *pix
   }
 }
 
-HTEXTURE HGE_Impl::_BuildTexture(int width, int height, DWORD *pixels)
+HTEXTURE HGE_Impl::_BuildTexture(int width, int height, uint32_t *pixels)
 {
   gltexture *retval = new gltexture;
   memset(retval, '\0', sizeof (gltexture));
@@ -744,8 +757,8 @@ HTEXTURE HGE_Impl::_BuildTexture(int width, int height, DWORD *pixels)
 
 HTEXTURE CALL HGE_Impl::Texture_Create(int width, int height)
 {
-  DWORD *pixels = new DWORD[width * height];
-  memset(pixels, '\0', sizeof (DWORD) * width * height);
+  uint32_t *pixels = new uint32_t[width * height];
+  memset(pixels, '\0', sizeof (uint32_t) * width * height);
   HTEXTURE retval = _BuildTexture(width, height, pixels);
 
   // the Direct3D renderer doesn't add these to the (textures) list, but we need them for when we "lose" the GL context.
@@ -761,14 +774,14 @@ HTEXTURE CALL HGE_Impl::Texture_Create(int width, int height)
   return retval;
 }
 
-HTEXTURE CALL HGE_Impl::Texture_Load(const char *filename, DWORD size, bool bMipmap)
+HTEXTURE CALL HGE_Impl::Texture_Load(const char *filename, uint32_t size, bool bMipmap)
 {
   HTEXTURE retval = 0;
   int width = 0;
   int height = 0;
 
   void *data;
-  DWORD _size;
+  uint32_t _size;
   CTextureList *texItem;
   const char *fname = NULL;
 
@@ -784,7 +797,7 @@ HTEXTURE CALL HGE_Impl::Texture_Load(const char *filename, DWORD size, bool bMip
     }
   }
 
-  DWORD *pixels = _DecodeImage((BYTE *) data, fname, _size, width, height);
+  uint32_t *pixels = _DecodeImage((uint8_t *) data, fname, _size, width, height);
 
   if (pixels != NULL) {
     retval = _BuildTexture(width, height, pixels);
@@ -900,7 +913,7 @@ int CALL HGE_Impl::Texture_GetHeight(HTEXTURE tex, bool bOriginal)
 // This lets us use OpenGL extensions to move data to the hardware
 //  without conversion.
 // Don't taunt this function. Side effects are probably rampant.
-bool CALL HGE_Impl::HGEEXT_Texture_PushYUV422(HTEXTURE tex, const BYTE *yuv)
+bool CALL HGE_Impl::HGEEXT_Texture_PushYUV422(HTEXTURE tex, const uint8_t *yuv)
 {
   if (!pOpenGLDevice->have_GL_APPLE_ycbcr_422) {
     return false;
@@ -928,7 +941,7 @@ bool CALL HGE_Impl::HGEEXT_Texture_PushYUV422(HTEXTURE tex, const BYTE *yuv)
   return true;
 }
 
-DWORD * CALL HGE_Impl::Texture_Lock(HTEXTURE tex, bool bReadOnly, int left, int top, int width,
+uint32_t * CALL HGE_Impl::Texture_Lock(HTEXTURE tex, bool bReadOnly, int left, int top, int width,
                                     int height)
 {
   gltexture *pTex=(gltexture*)tex;
@@ -942,8 +955,8 @@ DWORD * CALL HGE_Impl::Texture_Lock(HTEXTURE tex, bool bReadOnly, int left, int 
   const bool loadFromFile = ((pTex->pixels == NULL) && (pTex->filename != NULL));
 
   if (loadFromFile) {
-    DWORD size = 0;
-    BYTE *data = (BYTE *) pHGE->Resource_Load(pTex->filename, &size);
+    uint32_t size = 0;
+    uint8_t *data = (uint8_t *) pHGE->Resource_Load(pTex->filename, &size);
 
     if (data != NULL) {
       int w, h;
@@ -991,29 +1004,29 @@ DWORD * CALL HGE_Impl::Texture_Lock(HTEXTURE tex, bool bReadOnly, int left, int 
   pTex->lock_y = top;
   pTex->lock_width = width;
   pTex->lock_height = height;
-  pTex->lock_pixels = new DWORD[width * height];
+  pTex->lock_pixels = new uint32_t[width * height];
 
-  DWORD *dst = pTex->lock_pixels;
+  uint32_t *dst = pTex->lock_pixels;
 
   if (pTex->is_render_target) {
     assert(false && "need to bind fbo before glReadPixels...");
-    DWORD *upsideDown = new DWORD[width * height];
-    DWORD *src = upsideDown + ((height-1) * width);
+    uint32_t *upsideDown = new uint32_t[width * height];
+    uint32_t *src = upsideDown + ((height-1) * width);
     pOpenGLDevice->glReadPixels(left, (pTex->height-top)-height, width, height, GL_RGBA,
                                 GL_UNSIGNED_BYTE, upsideDown);
 
     for (int i = 0; i < height; i++) {
-      memcpy(dst, src, width * sizeof (DWORD));
+      memcpy(dst, src, width * sizeof (uint32_t));
       dst += width;
       src -= width;
     }
 
     delete[] upsideDown;
   } else {
-    DWORD *src = pTex->pixels + ((top*pTex->width) + left);
+    uint32_t *src = pTex->pixels + ((top*pTex->width) + left);
 
     for (int i = 0; i < height; i++) {
-      memcpy(dst, src, width * sizeof (DWORD));
+      memcpy(dst, src, width * sizeof (uint32_t));
       dst += width;
       src += pTex->width;
     }
@@ -1033,11 +1046,11 @@ void CALL HGE_Impl::Texture_Unlock(HTEXTURE tex)
 
   if (!pTex->lock_readonly) { // have to reupload to the hardware.
     // need to update pTex->pixels ...
-    const DWORD *src = pTex->lock_pixels;
-    DWORD *dst = pTex->pixels + ((pTex->lock_y*pTex->width) + pTex->lock_x);
+    const uint32_t *src = pTex->lock_pixels;
+    uint32_t *dst = pTex->pixels + ((pTex->lock_y*pTex->width) + pTex->lock_x);
 
     for (int i = 0; i < pTex->lock_height; i++) {
-      memcpy(dst, src, pTex->lock_width * sizeof (DWORD));
+      memcpy(dst, src, pTex->lock_width * sizeof (uint32_t));
       dst += pTex->width;
       src += pTex->lock_width;
     }
@@ -1116,12 +1129,12 @@ void HGE_Impl::_render_batch(bool bEndScene)
         VertArray[i].ty = (1.0f - VertArray[i].ty) * texhmult;
 
         // Colors are RGBA in OpenGL, ARGB in Direct3D.
-        const DWORD color = VertArray[i].col;
-        BYTE *col = (BYTE *) &VertArray[i].col;
-        const BYTE a = ((color >> 24) & 0xFF);
-        const BYTE r = ((color >> 16) & 0xFF);
-        const BYTE g = ((color >>  8) & 0xFF);
-        const BYTE b = ((color >>  0) & 0xFF);
+        const uint32_t color = VertArray[i].col;
+        uint8_t *col = (uint8_t *) &VertArray[i].col;
+        const uint8_t a = ((color >> 24) & 0xFF);
+        const uint8_t r = ((color >> 16) & 0xFF);
+        const uint8_t g = ((color >>  8) & 0xFF);
+        const uint8_t b = ((color >>  0) & 0xFF);
         col[0] = r;
         col[1] = g;
         col[2] = b;

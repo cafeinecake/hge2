@@ -9,10 +9,10 @@
 #include "hge_impl.h"
 
 #ifndef strupr
-void strupr(char *s)
+static void strupr(char *s)
 {
   while(*s) {
-    *s = toupper(*s);
+    *s = static_cast<char>(toupper(*s));
     s++;
   }
 }
@@ -20,7 +20,7 @@ void strupr(char *s)
 
 #include <zlib.h>  // the system version is better here. HGE's is out of date.
 
-#define NOCRYPT
+//#define NOCRYPT
 //#define NOUNCRYPT
 #include <zlib/contrib/minizip/unzip.h>
 
@@ -103,7 +103,7 @@ void CALL HGE_Impl::Resource_RemoveAllPacks()
   res=0;
 }
 
-void* CALL HGE_Impl::Resource_Load(const char *filename, DWORD *size)
+void* CALL HGE_Impl::Resource_Load(const char *filename, uint32_t *size)
 {
   const char *res_err="Can't load resource: %s";
 
@@ -163,7 +163,8 @@ void* CALL HGE_Impl::Resource_Load(const char *filename, DWORD *size)
           return 0;
         }
 
-        if(unzReadCurrentFile(zip, ptr, file_info.uncompressed_size) < 0) {
+        if(unzReadCurrentFile(
+             zip, ptr, static_cast<uint32_t>(file_info.uncompressed_size)) < 0) {
           unzCloseCurrentFile(zip);
           unzClose(zip);
           free(ptr);
@@ -176,7 +177,7 @@ void* CALL HGE_Impl::Resource_Load(const char *filename, DWORD *size)
         unzClose(zip);
 
         if(size) {
-          *size=file_info.uncompressed_size;
+          *size = static_cast<uint32_t>(file_info.uncompressed_size);
         }
 
         return ptr;
@@ -209,7 +210,7 @@ _fromfile:
     return 0;
   }
 
-  file_info.uncompressed_size = statbuf.st_size;
+  file_info.uncompressed_size = static_cast<size_t>(statbuf.st_size);
   ptr = malloc(file_info.uncompressed_size);
 
   if(!ptr) {
@@ -230,17 +231,17 @@ _fromfile:
   fclose(hF);
 
   if(size) {
-    *size=file_info.uncompressed_size;
+    *size = static_cast<uint32_t>(file_info.uncompressed_size);
   }
 
   return ptr;
 }
 
 
-void CALL HGE_Impl::Resource_Free(void *res)
+void CALL HGE_Impl::Resource_Free(void *res0)
 {
-  if(res) {
-    free(res);
+  if(res0) {
+    free(res0);
   }
 }
 
@@ -284,9 +285,9 @@ static int locateOneElement(char *buf)
 static int locateCorrectCase(char *buf)
 {
   char *ptr = buf;
-  char *prevptr = buf;
+  //char *prevptr = buf;
 
-  while (ptr = strchr(ptr + 1, '/')) {
+  while ((ptr = strchr(ptr + 1, '/'))) {
     *ptr = '\0';  /* block this path section off */
 
     if (!locateOneElement(buf)) {
@@ -392,7 +393,7 @@ bool HGE_Impl::_PrepareFileEnum(const char *wildcard)
     fname = madepath;
   } else {
     dir = madepath;
-    char *ptr = (char *) fname;
+    char *ptr = const_cast<char *>(fname); // what is this? remove const?
     *ptr = '\0';  // split dir and filename.
     fname++;
   }
@@ -443,7 +444,7 @@ char *HGE_Impl::_DoEnumIteration(const bool wantdir)
     }
   }
 
-  return 0;
+  //return 0;
 }
 
 char* CALL HGE_Impl::Resource_EnumFiles(const char *wildcard)

@@ -113,7 +113,7 @@ void CFontList::FindSortAdd(char *family)
 }
 
 #ifdef PLATFORM_UNIX
-int EnumFontFamiliesEx(int *lpelfe, int *lpntme, DWORD FontType, void *lParam)
+int EnumFontFamiliesEx(int *lpelfe, int *lpntme, uint32_t FontType, void *lParam)
 {
   assert(true && "write me");
   return 1;

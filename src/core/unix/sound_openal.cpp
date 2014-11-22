@@ -22,15 +22,15 @@
 
 // ogg i/o callbacks.
 struct oggcbdata {
-  const BYTE *data;
-  DWORD size;
-  DWORD pos;
+  const uint8_t *data;
+  uint32_t size;
+  uint32_t pos;
 };
 
 static size_t oggcb_read(void *ptr, size_t size, size_t nmemb, void *datasource)
 {
-  oggcbdata *data = (oggcbdata *) datasource;
-  const DWORD avail = data->size - data->pos;
+  oggcbdata *data = static_cast<oggcbdata *>(datasource);
+  const uint32_t avail = data->size - data->pos;
   size_t want = nmemb * size;
 
   if (want > avail) {
@@ -47,7 +47,7 @@ static size_t oggcb_read(void *ptr, size_t size, size_t nmemb, void *datasource)
 
 static int oggcb_seek(void *datasource, ogg_int64_t offset, int whence)
 {
-  oggcbdata *data = (oggcbdata *) datasource;
+  oggcbdata *data = static_cast<oggcbdata *>(datasource);
   ogg_int64_t pos = 0;
 
   switch (whence) {
@@ -56,39 +56,39 @@ static int oggcb_seek(void *datasource, ogg_int64_t offset, int whence)
     break;
 
   case SEEK_CUR:
-    pos = ((ogg_int64_t) data->pos) + offset;
+    pos = (static_cast<ogg_int64_t>(data->pos)) + offset;
     break;
 
   case SEEK_END:
-    pos = ((ogg_int64_t) data->size) + offset;
+    pos = (static_cast<ogg_int64_t>(data->size)) + offset;
     break;
 
   default:
     return -1;
   }
 
-  if ( (pos < 0) || (pos > ((ogg_int64_t) data->size)) ) {
+  if ( (pos < 0) || (pos > (static_cast<ogg_int64_t>(data->size))) ) {
     return -1;
   }
 
-  data->pos = (DWORD) pos;
+  data->pos = static_cast<uint32_t>(pos);
   return 0;
 }
 
-static int oggcb_close(void *datasource)
+static int oggcb_close(void * /*datasource*/)
 {
   return 0; // no-op.
 }
 
 static long oggcb_tell(void *datasource)
 {
-  oggcbdata *data = (oggcbdata *) datasource;
-  return (long) data->pos;
+  oggcbdata *data = static_cast<oggcbdata *>(datasource);
+  return static_cast<long>(data->pos);
 }
 
 static ov_callbacks oggcb = { oggcb_read, oggcb_seek, oggcb_close, oggcb_tell };
 
-static void *decompress_vorbis(const BYTE *data, const DWORD size, ALsizei *decompressed_size,
+static void *decompress_vorbis(const uint8_t *data, const uint32_t size, ALsizei *decompressed_size,
                                ALenum *fmt, ALsizei *freq)
 {
 #ifdef __POWERPC__
@@ -107,7 +107,7 @@ static void *decompress_vorbis(const BYTE *data, const DWORD size, ALsizei *deco
 
     *decompressed_size = 0;
     *fmt = (info->channels == 1) ? AL_FORMAT_MONO16 : AL_FORMAT_STEREO16;
-    *freq = info->rate;
+    *freq = static_cast<ALsizei>(info->rate);
 
     if ((info->channels != 1) && (info->channels != 2)) {
       ov_clear(&vf);
@@ -117,15 +117,15 @@ static void *decompress_vorbis(const BYTE *data, const DWORD size, ALsizei *deco
     char buf[1024 * 16];
     long rc = 0;
     size_t allocated = 64 * 1024;
-    BYTE *retval = (ALubyte *) malloc(allocated);
+    uint8_t *retval = new ALubyte [allocated];
 
     while ( (rc = ov_read(&vf, buf, sizeof (buf), bigendian, 2, 1, &bitstream)) != 0 ) {
       if (rc > 0) {
         *decompressed_size += rc;
 
-        if (*decompressed_size >= allocated) {
+        if (static_cast<size_t>(*decompressed_size) >= allocated) {
           allocated *= 2;
-          ALubyte *tmp = (ALubyte *) realloc(retval, allocated);
+          ALubyte *tmp = static_cast<ALubyte *>(realloc(retval, allocated));
 
           if (tmp == NULL) {
             free(retval);
@@ -136,7 +136,9 @@ static void *decompress_vorbis(const BYTE *data, const DWORD size, ALsizei *deco
           retval = tmp;
         }
 
-        memcpy(retval + (*decompressed_size - rc), buf, rc);
+        memcpy(retval + (*decompressed_size - rc),
+               buf,
+               static_cast<size_t>(rc));
       }
     }
 
@@ -178,9 +180,9 @@ static ALuint get_source()
 }
 
 
-HEFFECT CALL HGE_Impl::Effect_Load(const char *filename, DWORD size)
+HEFFECT CALL HGE_Impl::Effect_Load(const char *filename, uint32_t size)
 {
-  DWORD _size, length, samples;
+  uint32_t _size; //, length, samples;
   void *data;
 
   if(hOpenAL) {
@@ -189,7 +191,7 @@ HEFFECT CALL HGE_Impl::Effect_Load(const char *filename, DWORD size)
     }
 
     if(size) {
-      data=(void *)filename;
+      data = reinterpret_cast<void *>(const_cast<char *>(filename));
       _size=size;
     } else {
       data=Resource_Load(filename, &_size);
@@ -199,7 +201,7 @@ HEFFECT CALL HGE_Impl::Effect_Load(const char *filename, DWORD size)
       }
     }
 
-    const BYTE *magic = (const BYTE *) data;
+    const uint8_t *magic = static_cast<const uint8_t *>(data);
     const bool isOgg = ( (_size > 4) &&
                          (magic[0] == 'O') && (magic[1] == 'g') &&
                          (magic[2] == 'g') && (magic[3] == 'S') );
@@ -227,7 +229,7 @@ HEFFECT CALL HGE_Impl::Effect_Load(const char *filename, DWORD size)
         decompressed = data;
         decompressed_size = _size;
       } else {
-        allocation_decompressed = decompress_vorbis((const BYTE *) data, _size, &decompressed_size, &fmt,
+        allocation_decompressed = decompress_vorbis((const uint8_t *) data, _size, &decompressed_size, &fmt,
                                   &freq);
         decompressed = allocation_decompressed;
       }
@@ -296,7 +298,7 @@ void CALL HGE_Impl::Effect_Free(HEFFECT eff)
 }
 
 
-HMUSIC CALL HGE_Impl::Music_Load(const char *filename, DWORD size)
+HMUSIC CALL HGE_Impl::Music_Load(const char *filename, uint32_t size)
 {
   assert(false && "write me");
   return 0;  // !!! FIXME: MOD (etc) music unsupported at the moment.
@@ -363,7 +365,7 @@ int CALL HGE_Impl::Music_GetChannelVolume(HMUSIC music, int channel)
   return -1;  // !!! FIXME: MOD (etc) music unsupported at the moment.
 }
 
-HSTREAM CALL HGE_Impl::Stream_Load(const char *filename, DWORD size)
+HSTREAM CALL HGE_Impl::Stream_Load(const char *filename, uint32_t size)
 {
   assert(false && "write me");
   return 0; // !!! FIXME: streaming unsupported at the moment.

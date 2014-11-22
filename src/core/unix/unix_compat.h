@@ -1,11 +1,10 @@
-#ifndef _INCL_UNIX_COMPAT_H_
-#define _INCL_UNIX_COMPAT_H_
+#pragma once
 
 #if (defined(__APPLE__) && defined(__MACH__))
 #define PLATFORM_MACOSX 1
 #endif
 
-#if ( defined(unix) || PLATFORM_MACOSX )
+#if ( defined(unix) || defined(__linux__) || PLATFORM_MACOSX )
 #define PLATFORM_UNIX 1
 #endif
 
@@ -35,15 +34,10 @@
 #define _MAX_PATH PATH_MAX
 #define MAX_PATH PATH_MAX
 
-typedef int64_t __int64;
-typedef uint32_t DWORD;
-typedef uint64_t UINT64;
-typedef uint8_t BYTE;
 typedef void *HANDLE;
 typedef HANDLE HWND;
-typedef int32_t BOOL;
 
-static inline DWORD timeGetTime(void)
+static inline uint32_t timeGetTime(void)
 {
   return SDL_GetTicks();
 } // timeGetTime
@@ -73,22 +67,22 @@ static inline char *itoa(const int i, char *s, const int radix)
   return s;
 }
 
-static inline char *_i64toa(const __int64 i, char *s, const int radix)
+static inline char *_i64toa(const int64_t i, char *s, const int radix)
 {
   assert(radix == 10);
-  assert(sizeof (long long) == sizeof (__int64));
-  sprintf(s, "%lld", (long long) i);
+  assert(sizeof (long long) == sizeof (int64_t));
+  sprintf(s, "%lld", static_cast<long long>(i));
   return s;
 }
 
-static inline __int64 _atoi64(const char *str)
+static inline int64_t _atoi64(const char *str)
 {
-  return (__int64) strtoll(str, NULL, 10);
+  return static_cast<int64_t>(strtoll(str, NULL, 10));
 }
 
 static inline void Sleep(const int ms)
 {
-  usleep(ms * 1000);
+  usleep(static_cast<__useconds_t>(ms * 1000));
 }
 
 static inline char *_gcvt(const double value, const int digits, char *buffer)
@@ -167,5 +161,3 @@ SWAPPER8(BYTE)
 #endif
 
 #endif  // PLATFORM_UNIX
-
-#endif  // include-once blocker.

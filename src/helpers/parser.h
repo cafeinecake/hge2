@@ -79,7 +79,7 @@ public:
   {
     return (tokenvalue[0]=='t' || tokenvalue[0]=='T') ? true : false;
   }
-  DWORD tkn_hex();
+  uint32_t tkn_hex();
 
   void  ScriptPostError(const char *msg1, const char *msg2);
 

@@ -31,6 +31,7 @@
 
 #include "ximage.h"
 #include "ximadef.h"
+#include <algorithm>
 
 class CImageIterator {
   friend class CxImage;
@@ -138,13 +139,13 @@ inline void CImageIterator::Reset()
 inline void CImageIterator::Upset()
 {
   Itx = 0;
-  Ity = ima->GetHeight()-1;
+  Ity = static_cast<int32_t>(ima->GetHeight()-1);
   IterImage = ima->GetBits() + ima->GetEffWidth()*(ima->GetHeight()-1);
 }
 /////////////////////////////////////////////////////////////////////
 inline BOOL CImageIterator::NextRow()
 {
-  if (++Ity >= (int32_t)ima->GetHeight()) {
+  if (++Ity >= static_cast<int32_t>(ima->GetHeight())) {
     return 0;
   }
 
@@ -164,20 +165,20 @@ inline BOOL CImageIterator::PrevRow()
 /* AD - for interlace */
 inline void CImageIterator::SetY(int32_t y)
 {
-  if ((y < 0) || (y > (int32_t)ima->GetHeight())) {
+  if ((y < 0) || (y > static_cast<int32_t>(ima->GetHeight()))) {
     return;
   }
 
   Ity = y;
-  IterImage = ima->GetBits() + ima->GetEffWidth()*y;
+  IterImage = ima->GetBits() + ima->GetEffWidth() * static_cast<uint32_t>(y);
 }
 /////////////////////////////////////////////////////////////////////
 inline void CImageIterator::SetRow(uint8_t *buf, int32_t n)
 {
   if (n<0) {
-    n = (int32_t)ima->GetEffWidth();
+    n = static_cast<int32_t>(ima->GetEffWidth());
   } else {
-    n = min(n,(int32_t)ima->GetEffWidth());
+    n = std::min(n, static_cast<int32__t>(ima->GetEffWidth()));
   }
 
   if ((IterImage!=NULL)&&(buf!=NULL)&&(n>0)) {
