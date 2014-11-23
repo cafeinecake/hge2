@@ -16,17 +16,17 @@ hgeAnimation::hgeAnimation(HTEXTURE tex, int nframes, float FPS, float x, float 
 {
   orig_width = hge->Texture_GetWidth(tex, true);
 
-  fSinceLastFrame=-1.0f;
-  fSpeed=1.0f/FPS;
-  bPlaying=false;
-  nFrames=nframes;
+  fSinceLastFrame = -1.0f;
+  fSpeed = 1.0f / FPS;
+  bPlaying = false;
+  nFrames = nframes;
 
-  Mode=HGEANIM_FWD | HGEANIM_LOOP;
-  nDelta=1;
+  Mode = HGEANIM_FWD | HGEANIM_LOOP;
+  nDelta = 1;
   SetFrame(0);
 }
 
-hgeAnimation::hgeAnimation(const hgeAnimation & anim)
+hgeAnimation::hgeAnimation(const hgeAnimation &anim)
   : hgeSprite(anim)
 {
   // Copy hgeAnimation parameters:
@@ -42,11 +42,11 @@ hgeAnimation::hgeAnimation(const hgeAnimation & anim)
 
 void hgeAnimation::SetMode(int mode)
 {
-  Mode=mode;
+  Mode = mode;
 
-  if(mode & HGEANIM_REV) {
+  if (mode & HGEANIM_REV) {
     nDelta = -1;
-    SetFrame(nFrames-1);
+    SetFrame(nFrames - 1);
   } else {
     nDelta = 1;
     SetFrame(0);
@@ -56,12 +56,12 @@ void hgeAnimation::SetMode(int mode)
 
 void hgeAnimation::Play()
 {
-  bPlaying=true;
-  fSinceLastFrame=-1.0f;
+  bPlaying = true;
+  fSinceLastFrame = -1.0f;
 
-  if(Mode & HGEANIM_REV) {
+  if (Mode & HGEANIM_REV) {
     nDelta = -1;
-    SetFrame(nFrames-1);
+    SetFrame(nFrames - 1);
   } else {
     nDelta = 1;
     SetFrame(0);
@@ -71,21 +71,21 @@ void hgeAnimation::Play()
 
 void hgeAnimation::Update(float fDeltaTime)
 {
-  if(!bPlaying) {
+  if (!bPlaying) {
     return;
   }
 
-  if(std::abs(fSinceLastFrame - (-1.0f)) <= FLT_EPSILON) {
-    fSinceLastFrame=0.0f;
+  if (std::abs(fSinceLastFrame - (-1.0f)) <= FLT_EPSILON) {
+    fSinceLastFrame = 0.0f;
   } else {
     fSinceLastFrame += fDeltaTime;
   }
 
-  while(fSinceLastFrame >= fSpeed) {
+  while (fSinceLastFrame >= fSpeed) {
     fSinceLastFrame -= fSpeed;
 
-    if(nCurFrame + nDelta == nFrames) {
-      switch(Mode) {
+    if (nCurFrame + nDelta == nFrames) {
+      switch (Mode) {
       case HGEANIM_FWD:
       case HGEANIM_REV | HGEANIM_PINGPONG:
         bPlaying = false;
@@ -97,8 +97,8 @@ void hgeAnimation::Update(float fDeltaTime)
         nDelta = -nDelta;
         break;
       }
-    } else if(nCurFrame + nDelta < 0) {
-      switch(Mode) {
+    } else if (nCurFrame + nDelta < 0) {
+      switch (Mode) {
       case HGEANIM_REV:
       case HGEANIM_FWD | HGEANIM_PINGPONG:
         bPlaying = false;
@@ -112,8 +112,8 @@ void hgeAnimation::Update(float fDeltaTime)
       }
     }
 
-    if(bPlaying) {
-      SetFrame(nCurFrame+nDelta);
+    if (bPlaying) {
+      SetFrame(nCurFrame + nDelta);
     }
   }
 }
@@ -127,7 +127,7 @@ void hgeAnimation::SetFrame(int n)
 
   n = n % nFrames;
 
-  if(n < 0) {
+  if (n < 0) {
     n = nFrames + n;
   }
 
@@ -135,12 +135,12 @@ void hgeAnimation::SetFrame(int n)
 
   // calculate texture coords for frame n
   ty1 = ty;
-  tx1 = tx + n*width;
+  tx1 = tx + n * width;
 
-  if(tx1 > orig_width-width) {
-    n -= int(orig_width-tx) / int(width);
-    tx1 = width * (n%ncols);
-    ty1 += height * (1 + n/ncols);
+  if (tx1 > orig_width - width) {
+    n -= int(orig_width - tx) / int(width);
+    tx1 = width * (n % ncols);
+    ty1 += height * (1 + n / ncols);
   }
 
   tx2 = tx1 + width;
@@ -151,20 +151,20 @@ void hgeAnimation::SetFrame(int n)
   tx2 /= tex_width;
   ty2 /= tex_height;
 
-  quad.v[0].tx=tx1;
-  quad.v[0].ty=ty1;
-  quad.v[1].tx=tx2;
-  quad.v[1].ty=ty1;
-  quad.v[2].tx=tx2;
-  quad.v[2].ty=ty2;
-  quad.v[3].tx=tx1;
-  quad.v[3].ty=ty2;
+  quad.v[0].tx = tx1;
+  quad.v[0].ty = ty1;
+  quad.v[1].tx = tx2;
+  quad.v[1].ty = ty1;
+  quad.v[2].tx = tx2;
+  quad.v[2].ty = ty2;
+  quad.v[3].tx = tx1;
+  quad.v[3].ty = ty2;
 
-  bX=bXFlip;
-  bY=bYFlip;
-  bHS=bHSFlip;
-  bXFlip=false;
-  bYFlip=false;
-  SetFlip(bX,bY,bHS);
+  bX = bXFlip;
+  bY = bYFlip;
+  bHS = bHSFlip;
+  bXFlip = false;
+  bYFlip = false;
+  SetFlip(bX, bY, bHS);
 }
 

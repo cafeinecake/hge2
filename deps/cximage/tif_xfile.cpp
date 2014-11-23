@@ -19,13 +19,13 @@
 static tsize_t
 _tiffReadProcEx(thandle_t fd, tdata_t buf, tsize_t size)
 {
-  return (tsize_t)((CxFile*)fd)->Read(buf, 1, size);
+  return (tsize_t)((CxFile *)fd)->Read(buf, 1, size);
 }
 
 static tsize_t
 _tiffWriteProcEx(thandle_t fd, tdata_t buf, tsize_t size)
 {
-  return (tsize_t)((CxFile*)fd)->Write(buf, 1, size);
+  return (tsize_t)((CxFile *)fd)->Write(buf, 1, size);
 }
 
 static toff_t
@@ -35,7 +35,7 @@ _tiffSeekProcEx(thandle_t fd, toff_t off, int whence)
     return 0xFFFFFFFF;
   }
 
-  if (!((CxFile*)fd)->Seek(off, whence)) {
+  if (!((CxFile *)fd)->Seek(off, whence)) {
     return 0xFFFFFFFF;
   }
 
@@ -43,7 +43,7 @@ _tiffSeekProcEx(thandle_t fd, toff_t off, int whence)
     return off;
   }
 
-  return (toff_t)((CxFile*)fd)->Tell();
+  return (toff_t)((CxFile *)fd)->Tell();
 }
 
 // Return nonzero if error
@@ -59,11 +59,11 @@ _tiffCloseProcEx(thandle_t /*fd*/)
 static toff_t
 _tiffSizeProcEx(thandle_t fd)
 {
-  return ((CxFile*)fd)->Size();
+  return ((CxFile *)fd)->Size();
 }
 
 static int
-_tiffMapProcEx(thandle_t /*fd*/, tdata_t* /*pbase*/, toff_t* /*psize*/)
+_tiffMapProcEx(thandle_t /*fd*/, tdata_t * /*pbase*/, toff_t * /*psize*/)
 {
   return (0);
 }
@@ -89,10 +89,10 @@ TIFFOpen(const char* name, const char* mode)
 }
 */
 
-TIFF*
-_TIFFFdOpen(void* fd, const char* name, const char* mode)
+TIFF *
+_TIFFFdOpen(void *fd, const char *name, const char *mode)
 {
-  TIFF* tif;
+  TIFF *tif;
 
   tif = TIFFClientOpen(name, mode,
                        (thandle_t) fd,
@@ -106,14 +106,14 @@ _TIFFFdOpen(void* fd, const char* name, const char* mode)
   return (tif);
 }
 
-extern "C" TIFF* _TIFFOpenEx(CxFile* stream, const char* mode)
+extern "C" TIFF *_TIFFOpenEx(CxFile *stream, const char *mode)
 {
   return (_TIFFFdOpen(stream, "TIFF IMAGE", mode));
 }
 
 #ifdef __GNUC__
-extern  char* malloc();
-extern  char* realloc();
+extern  char *malloc();
+extern  char *realloc();
 #else
 #include <malloc.h>
 #endif
@@ -165,7 +165,7 @@ _TIFFmemcmp(const tdata_t p1, const tdata_t p2, tsize_t c)
 #endif
 
 static void
-Win32WarningHandler(const char* module, const char* fmt, va_list ap)
+Win32WarningHandler(const char *module, const char *fmt, va_list ap)
 {
 #ifdef _DEBUG
 #if (!defined(_CONSOLE) && !defined(_WIN32_WCE) && defined(WIN32))
@@ -181,7 +181,7 @@ Win32WarningHandler(const char* module, const char* fmt, va_list ap)
   }
 
   DbgPrint2(szTitle, szTitleText, szTmp);
-  szTmp = szTitle + (strlen(szTitle)+2);
+  szTmp = szTitle + (strlen(szTitle) + 2);
   DbgPrint(szTmp, fmt, ap);
   DbgMsgBox(GetFocus(), szTmp, szTitle, MB_OK | MB_ICONINFORMATION);
   LocalFree(szTitle);
@@ -201,7 +201,7 @@ Win32WarningHandler(const char* module, const char* fmt, va_list ap)
 TIFFErrorHandler _TIFFwarningHandler = Win32WarningHandler;
 
 static void
-Win32ErrorHandler(const char* module, const char* fmt, va_list ap)
+Win32ErrorHandler(const char *module, const char *fmt, va_list ap)
 {
 #ifdef _DEBUG
 #if (!defined(_CONSOLE) && !defined(_WIN32_WCE) && defined(WIN32))
@@ -217,7 +217,7 @@ Win32ErrorHandler(const char* module, const char* fmt, va_list ap)
   }
 
   DbgPrint2(szTitle, szTitleText, szTmp);
-  szTmp = szTitle + (strlen(szTitle)+2);
+  szTmp = szTitle + (strlen(szTitle) + 2);
   DbgPrint(szTmp, fmt, ap);
   DbgMsgBox(GetFocus(), szTmp, szTitle, MB_OK | MB_ICONEXCLAMATION);
   LocalFree(szTitle);

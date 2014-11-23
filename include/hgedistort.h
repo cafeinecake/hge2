@@ -27,10 +27,10 @@ public:
   hgeDistortionMesh(const hgeDistortionMesh &dm);
   ~hgeDistortionMesh();
 
-  hgeDistortionMesh& operator= (const hgeDistortionMesh &dm);
+  hgeDistortionMesh &operator= (const hgeDistortionMesh &dm);
 
   void   Render(float x, float y);
-  void   Clear(uint32_t col=0xFFFFFFFF, float z=0.5f);
+  void   Clear(uint32_t col = 0xFFFFFFFF, float z = 0.5f);
 
   void   SetTexture(HTEXTURE tex);
   void   SetTextureRect(float x, float y, float w, float h);
@@ -45,10 +45,10 @@ public:
   }
   void   GetTextureRect(float *x, float *y, float *w, float *h) const
   {
-    *x=tx;
-    *y=ty;
-    *w=width;
-    *h=height;
+    *x = tx;
+    *y = ty;
+    *w = width;
+    *h = height;
   }
   int    GetBlendMode() const
   {
@@ -74,8 +74,8 @@ private:
 
   hgeVertex *disp_array;
   int     nRows, nCols;
-  float   cellw,cellh;
-  float   tx,ty,width,height;
+  float   cellw, cellh;
+  float   tx, ty, width, height;
   hgeQuad   quad;
 };
 

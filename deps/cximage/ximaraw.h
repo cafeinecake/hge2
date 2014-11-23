@@ -31,7 +31,7 @@ public:
 
 //  bool Load(const char * imageFileName){ return CxImage::Load(imageFileName,CXIMAGE_FORMAT_ICO);}
 //  bool Save(const char * imageFileName){ return CxImage::Save(imageFileName,CXIMAGE_FORMAT_ICO);}
-  bool Decode(CxFile * hFile);
+  bool Decode(CxFile *hFile);
   bool Decode(FILE *hFile)
   {
     CxIOFile file(hFile);
@@ -43,7 +43,7 @@ public:
 #endif //CXIMAGE_SUPPORT_EXIF
 
 #if CXIMAGE_SUPPORT_ENCODE
-  bool Encode(CxFile * hFile);
+  bool Encode(CxFile *hFile);
   bool Encode(FILE *hFile)
   {
     CxIOFile file(hFile);
@@ -62,7 +62,7 @@ protected:
 
   class CxFileRaw {
   public:
-    CxFileRaw(CxFile* pFile,DCRAW *stream)
+    CxFileRaw(CxFile *pFile, DCRAW *stream)
     {
       stream->obj_ = pFile;
 
@@ -82,17 +82,17 @@ protected:
 
     static int32_t raw_sfile_read(dcr_stream_obj *obj, void *buf, int32_t size, int32_t cnt)
     {
-      return ((CxFile*)obj)->Read(buf,size,cnt);
+      return ((CxFile *)obj)->Read(buf, size, cnt);
     }
 
     static int32_t raw_sfile_write(dcr_stream_obj *obj, void *buf, int32_t size, int32_t cnt)
     {
-      return ((CxFile*)obj)->Write(buf,size,cnt);
+      return ((CxFile *)obj)->Write(buf, size, cnt);
     }
 
     static long raw_sfile_seek(dcr_stream_obj *obj, long offset, int32_t origin)
     {
-      return ((CxFile*)obj)->Seek(offset,origin);
+      return ((CxFile *)obj)->Seek(offset, origin);
     }
 
     static int32_t raw_sfile_close(dcr_stream_obj *obj)
@@ -100,29 +100,29 @@ protected:
       return 1; /*((CxFile*)obj)->Close();*/
     }
 
-    static char* raw_sfile_gets(dcr_stream_obj *obj, char *string, int32_t n)
+    static char *raw_sfile_gets(dcr_stream_obj *obj, char *string, int32_t n)
     {
-      return ((CxFile*)obj)->GetS(string,n);
+      return ((CxFile *)obj)->GetS(string, n);
     }
 
     static int32_t   raw_sfile_eof(dcr_stream_obj *obj)
     {
-      return ((CxFile*)obj)->Eof();
+      return ((CxFile *)obj)->Eof();
     }
 
     static long  raw_sfile_tell(dcr_stream_obj *obj)
     {
-      return ((CxFile*)obj)->Tell();
+      return ((CxFile *)obj)->Tell();
     }
 
     static int32_t   raw_sfile_getc(dcr_stream_obj *obj)
     {
-      return ((CxFile*)obj)->GetC();
+      return ((CxFile *)obj)->GetC();
     }
 
-    static int32_t   raw_sfile_scanf(dcr_stream_obj *obj,const char *format, void* output)
+    static int32_t   raw_sfile_scanf(dcr_stream_obj *obj, const char *format, void *output)
     {
-      return ((CxFile*)obj)->Scanf(format, output);
+      return ((CxFile *)obj)->Scanf(format, output);
     }
 
   private:

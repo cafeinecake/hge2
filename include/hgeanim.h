@@ -33,11 +33,11 @@ public:
   void    Play();
   void    Stop()
   {
-    bPlaying=false;
+    bPlaying = false;
   }
   void    Resume()
   {
-    bPlaying=true;
+    bPlaying = true;
   }
   void    Update(float fDeltaTime);
   bool    IsPlaying() const
@@ -52,18 +52,18 @@ public:
   }
   void    SetTextureRect(float x1, float y1, float x2, float y2)
   {
-    hgeSprite::SetTextureRect(x1,y1,x2,y2);
+    hgeSprite::SetTextureRect(x1, y1, x2, y2);
     SetFrame(nCurFrame);
   }
   void    SetMode(int mode);
   void    SetSpeed(float FPS)
   {
-    fSpeed=1.0f/FPS;
+    fSpeed = 1.0f / FPS;
   }
   void    SetFrame(int n);
   void    SetFrames(int n)
   {
-    nFrames=n;
+    nFrames = n;
   }
 
   int     GetMode() const
@@ -72,7 +72,7 @@ public:
   }
   float   GetSpeed() const
   {
-    return 1.0f/fSpeed;
+    return 1.0f / fSpeed;
   }
   int     GetFrame() const
   {

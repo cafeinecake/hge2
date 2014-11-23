@@ -25,12 +25,12 @@ void COptimizedTexture::Reset()
   texh = 0;
   pitch = 0;
 
-  if(tex_data) {
+  if (tex_data) {
     hge->Texture_Unlock(tex);
     tex_data = 0;
   }
 
-  if(tex) {
+  if (tex) {
     hge->Texture_Free(tex);
     tex = 0;
   }
@@ -43,7 +43,7 @@ bool COptimizedTexture::PlaceObject(CGfxObject *obj)
 
   CRectPlacement::TRect r(0, 0, obj->GetWidth(), obj->GetHeight());
 
-  if(placer.AddAtEmptySpotAutoGrow(&r, maxw, maxh)) {
+  if (placer.AddAtEmptySpotAutoGrow(&r, maxw, maxh)) {
     obj->Place(r.x, r.y);
     obj_list.push_back(obj);
     return true;
@@ -55,7 +55,7 @@ bool COptimizedTexture::PlaceObject(CGfxObject *obj)
 
 void COptimizedTexture::AddNoTextureObject(CGfxObject *obj)
 {
-  obj->Place(0,0);
+  obj->Place(0, 0);
   obj_list.push_back(obj);
 }
 
@@ -68,7 +68,7 @@ bool COptimizedTexture::Create()
 
   tex = hge->Texture_Create(texw, texh);
 
-  if(!tex) {
+  if (!tex) {
     SysLog("Can't create target texture.\n");
     return false;
   }
@@ -77,15 +77,17 @@ bool COptimizedTexture::Create()
   pitch = hge->Texture_GetWidth(tex, false);
 
   // lock texture
-  tex_data = (CColor *)hge->Texture_Lock(tex);
+  tex_data = reinterpret_cast<CColor *>(hge->Texture_Lock(tex));
 
-  if(!tex_data) {
+  if (!tex_data) {
     SysLog("Can't lock target texture.\n");
     return false;
   }
 
   // clear texture
-  memset(tex_data, 0, sizeof(CColor) * pitch * hge->Texture_GetHeight(tex, false));
+  memset(tex_data, 0,
+         sizeof(CColor) * static_cast<uint32_t>(pitch)
+         * static_cast<uint32_t>(hge->Texture_GetHeight(tex, false)));
 
   return true;
 }
@@ -103,14 +105,14 @@ bool COptimizedTexture::CopyData()
   CColor *source_data;
   int source_pitch;
 
-  for(it = obj_list.begin(); it != obj_list.end(); it++) {
+  for (it = obj_list.begin(); it != obj_list.end(); it++) {
     obj = *it;
 
     source_tex = obj->GetTexture();
     source_pitch = hge->Texture_GetWidth(source_tex, false);
-    source_data = (CColor *)hge->Texture_Lock(source_tex, true);
+    source_data = reinterpret_cast<CColor *>(hge->Texture_Lock(source_tex, true));
 
-    if(!source_data) {
+    if (!source_data) {
       SysLog("Can't lock source texture for \"%s\"\n", obj->GetName());
       return false;
     }
@@ -118,10 +120,10 @@ bool COptimizedTexture::CopyData()
     obj->GetSourcePos(&src_x, &src_y);
     obj->GetTargetPos(&tgt_x, &tgt_y);
 
-    for(i = 0; i < obj->GetHeight(); i++) {
+    for (i = 0; i < obj->GetHeight(); i++) {
       memcpy(&tex_data[tgt_y * pitch + tgt_x],
              &source_data[src_y * source_pitch + src_x],
-             sizeof(CColor) * int(obj->GetWidth()));
+             sizeof(CColor) * static_cast<uint32_t>(obj->GetWidth()));
 
       src_y++;
       tgt_y++;
@@ -137,38 +139,38 @@ bool COptimizedTexture::OptimizeAlpha()
 {
   CColor *buf;
 
-  int i,j,k,l;
-  int r,g,b;
+  int i, j, k, l;
+  int r, g, b;
   int count;
 
-  if(!tex_data || !pitch) {
+  if (!tex_data || !pitch) {
     SysLog("No texture generated to optimize alpha.\n");
     return false;
   }
 
   buf = tex_data;
 
-  for(i=0; i<texh; i++)
-    for(j=0; j<texw; j++)
-      if(!buf[i*pitch+j].a) {
+  for (i = 0; i < texh; i++)
+    for (j = 0; j < texw; j++)
+      if (!buf[i * pitch + j].a) {
         count = 0;
-        r=g=b = 0;
+        r = g = b = 0;
 
-        for(k=-1; k<=1; k++)
-          for(l=-1; l<=1; l++)
-            if(i+k >= 0 && i+k < texh &&
-                j+l >= 0 && j+l < texw &&
-                buf[(i+k)*pitch + (j+l)].a) {
-              r += buf[(i+k)*pitch + (j+l)].r;
-              g += buf[(i+k)*pitch + (j+l)].g;
-              b += buf[(i+k)*pitch + (j+l)].b;
+        for (k = -1; k <= 1; k++)
+          for (l = -1; l <= 1; l++)
+            if (i + k >= 0 && i + k < texh &&
+                j + l >= 0 && j + l < texw &&
+                buf[(i + k)*pitch + (j + l)].a) {
+              r += buf[(i + k) * pitch + (j + l)].r;
+              g += buf[(i + k) * pitch + (j + l)].g;
+              b += buf[(i + k) * pitch + (j + l)].b;
               count++;
             }
 
-        if(count) {
-          buf[i*pitch+j].r = (unsigned char)(r / count);
-          buf[i*pitch+j].g = (unsigned char)(g / count);
-          buf[i*pitch+j].b = (unsigned char)(b / count);
+        if (count) {
+          buf[i * pitch + j].r = static_cast<uint8_t>(r / count);
+          buf[i * pitch + j].g = static_cast<uint8_t>(g / count);
+          buf[i * pitch + j].b = static_cast<uint8_t>(b / count);
         }
       }
 
@@ -179,19 +181,19 @@ bool COptimizedTexture::Save(char *filename)
 {
   FILE *fp;
 
-  if(!tex_data || !pitch) {
+  if (!tex_data || !pitch) {
     SysLog("No texture generated to save: %s\n", filename);
     return false;
   }
 
-  fp=fopen(filename,"wb");
+  fp = fopen(filename, "wb");
 
-  if(!fp) {
+  if (!fp) {
     SysLog("Can't create texture file: %s\n", filename);
     return false;
   }
 
-  if(!Write32BitPNGWithPitch(fp, tex_data, true, texw, texh, pitch)) {
+  if (!Write32BitPNGWithPitch(fp, tex_data, true, texw, texh, pitch)) {
     fclose(fp);
     SysLog("Error writing data: %s\n", filename);
     return false;
@@ -207,21 +209,21 @@ bool COptimizedTexture::SaveDescriptions(char *resfile, char *texfile, char *tex
   FILE *fp;
 
   // check for data to be available
-  if(!GetNumPlaced()) {
+  if (!GetNumPlaced()) {
     SysLog("No descriptions to save: %s\n", resfile);
     return false;
   }
 
   // create resource file
-  fp=fopen(resfile,"w");
+  fp = fopen(resfile, "w");
 
-  if(!fp) {
+  if (!fp) {
     SysLog("Can't create description file: %s\n", resfile);
     return false;
   }
 
   // save texture description
-  if(texfile && texname) {
+  if (texfile && texname) {
     fprintf(fp, "Texture %s\n", texname);
     fprintf(fp, "{\n");
     fprintf(fp, " filename = \"%s\"\n", texfile);
@@ -230,14 +232,14 @@ bool COptimizedTexture::SaveDescriptions(char *resfile, char *texfile, char *tex
   }
 
   // save object descriptions
-  for(it = obj_list.begin(); it != obj_list.end(); it++) {
-    if(!(*it)->SaveDescription(fp, texname)) {
+  for (it = obj_list.begin(); it != obj_list.end(); it++) {
+    if (!(*it)->SaveDescription(fp, texname)) {
       fclose(fp);
       SysLog("Error writing description: %s\n", (*it)->GetName());
       return false;
     }
 
-    fprintf(fp,"\n");
+    fprintf(fp, "\n");
   }
 
   fclose(fp);

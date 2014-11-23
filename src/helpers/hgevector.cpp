@@ -21,7 +21,7 @@ float InvSqrt(float x)
 
   convertor.floatPart = x;
   convertor.intPart = 0x5f3759df - (convertor.intPart >> 1);
-  return convertor.floatPart*(1.5f - 0.4999f*x*convertor.floatPart*convertor.floatPart);
+  return convertor.floatPart * (1.5f - 0.4999f * x * convertor.floatPart * convertor.floatPart);
 }
 
 /*
@@ -55,8 +55,8 @@ bool hgeVector::operator!=(const hgeVector &v) const
 
 float hgeVector::Angle(const hgeVector *v) const
 {
-  if(v) {
-    hgeVector s=*this, t=*v;
+  if (v) {
+    hgeVector s = *this, t = *v;
 
     s.Normalize();
     t.Normalize();
@@ -70,11 +70,11 @@ hgeVector *hgeVector::Rotate(float a)
 {
   hgeVector v;
 
-  v.x=x*cosf(a) - y*sinf(a);
-  v.y=x*sinf(a) + y*cosf(a);
+  v.x = x * cosf(a) - y * sinf(a);
+  v.y = x * sinf(a) + y * cosf(a);
 
-  x=v.x;
-  y=v.y;
+  x = v.x;
+  y = v.y;
 
   return this;
 }

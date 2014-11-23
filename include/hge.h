@@ -98,19 +98,19 @@ typedef size_t HCHANNEL;
 */
 inline uint32_t ARGB(uint8_t a, uint8_t r, uint8_t g, uint8_t b)
 {
-  return (uint32_t(a)<<24) + (uint32_t(r)<<16) + (uint32_t(g)<<8) + uint32_t(b);
+  return (uint32_t(a) << 24) + (uint32_t(r) << 16) + (uint32_t(g) << 8) + uint32_t(b);
 }
 inline uint8_t GETA(uint32_t col)
 {
-  return col>>24;
+  return col >> 24;
 }
 inline uint8_t GETR(uint32_t col)
 {
-  return (col>>16) & 0xFF;
+  return (col >> 16) & 0xFF;
 }
 inline uint8_t GETG(uint32_t col)
 {
-  return (col>>8) & 0xFF;
+  return (col >> 8) & 0xFF;
 }
 inline uint8_t GETB(uint32_t col)
 {
@@ -118,15 +118,15 @@ inline uint8_t GETB(uint32_t col)
 }
 inline uint32_t SETA(uint32_t col, uint8_t a)
 {
-  return (col & 0x00FFFFFF) + (uint32_t(a)<<24);
+  return (col & 0x00FFFFFF) + (uint32_t(a) << 24);
 }
 inline uint32_t SETR(uint32_t col, uint8_t r)
 {
-  return (col & 0xFF00FFFF) + (uint32_t(r)<<16);
+  return (col & 0xFF00FFFF) + (uint32_t(r) << 16);
 }
 inline uint32_t SETG(uint32_t col, uint8_t g)
 {
-  return (col & 0xFFFF00FF) + (uint32_t(g)<<8);
+  return (col & 0xFFFF00FF) + (uint32_t(g) << 8);
 }
 inline uint32_t SETB(uint32_t col, uint8_t b)
 {
@@ -323,10 +323,10 @@ public:
   virtual bool    CALL  System_Initiate() = 0;
   virtual void    CALL  System_Shutdown() = 0;
   virtual bool    CALL  System_Start() = 0;
-  virtual const char* CALL  System_GetErrorMessage() = 0;
+  virtual const char *CALL  System_GetErrorMessage() = 0;
   virtual void    CALL  System_Log(const char *format, ...) = 0;
   virtual bool    CALL  System_Launch(const char *url) = 0;
-  virtual void    CALL  System_Snapshot(const char *filename=0) = 0;
+  virtual void    CALL  System_Snapshot(const char *filename = 0) = 0;
 
 private:
   virtual void    CALL  System_SetStateBool  (hgeBoolState   state, bool        value) = 0;
@@ -338,7 +338,7 @@ private:
   virtual hgeCallback CALL  System_GetStateFunc  (hgeFuncState   state) = 0;
   virtual HWND    CALL  System_GetStateHwnd  (hgeHwndState   state) = 0;
   virtual int     CALL  System_GetStateInt   (hgeIntState    state) = 0;
-  virtual const char* CALL  System_GetStateString(hgeStringState state) = 0;
+  virtual const char *CALL  System_GetStateString(hgeStringState state) = 0;
 
 public:
   inline void         System_SetState(hgeBoolState   state, bool        value)
@@ -377,28 +377,28 @@ public:
   {
     return System_GetStateInt   (state);
   }
-  inline const char*      System_GetState(hgeStringState state)
+  inline const char      *System_GetState(hgeStringState state)
   {
     return System_GetStateString(state);
   }
 
-  virtual void*   CALL  Resource_Load(const char *filename, uint32_t *size=0) = 0;
+  virtual void   *CALL  Resource_Load(const char *filename, uint32_t *size = 0) = 0;
   virtual void    CALL  Resource_Free(void *res) = 0;
-  virtual bool    CALL  Resource_AttachPack(const char *filename, const char *password=0) = 0;
+  virtual bool    CALL  Resource_AttachPack(const char *filename, const char *password = 0) = 0;
   virtual void    CALL  Resource_RemovePack(const char *filename) = 0;
   virtual void    CALL  Resource_RemoveAllPacks() = 0;
-  virtual char*   CALL  Resource_MakePath(const char *filename=0) = 0;
-  virtual char*   CALL  Resource_EnumFiles(const char *wildcard=0) = 0;
-  virtual char*   CALL  Resource_EnumFolders(const char *wildcard=0) = 0;
+  virtual char   *CALL  Resource_MakePath(const char *filename = 0) = 0;
+  virtual char   *CALL  Resource_EnumFiles(const char *wildcard = 0) = 0;
+  virtual char   *CALL  Resource_EnumFolders(const char *wildcard = 0) = 0;
 
   virtual void    CALL  Ini_SetInt(const char *section, const char *name, int value) = 0;
   virtual int     CALL  Ini_GetInt(const char *section, const char *name, int def_val) = 0;
   virtual void    CALL  Ini_SetFloat(const char *section, const char *name, float value) = 0;
   virtual float   CALL  Ini_GetFloat(const char *section, const char *name, float def_val) = 0;
   virtual void    CALL  Ini_SetString(const char *section, const char *name, const char *value) = 0;
-  virtual char*   CALL  Ini_GetString(const char *section, const char *name, const char *def_val) = 0;
+  virtual char   *CALL  Ini_GetString(const char *section, const char *name, const char *def_val) = 0;
 
-  virtual void    CALL  Random_Seed(int seed=0) = 0;
+  virtual void    CALL  Random_Seed(int seed = 0) = 0;
   virtual int     CALL  Random_Int(int min, int max) = 0;
   virtual float   CALL  Random_Float(float min, float max) = 0;
 
@@ -406,13 +406,14 @@ public:
   virtual float   CALL  Timer_GetDelta() = 0;
   virtual int     CALL  Timer_GetFPS() = 0;
 
-  virtual HEFFECT   CALL  Effect_Load(const char *filename, uint32_t size=0) = 0;
+  virtual HEFFECT   CALL  Effect_Load(const char *filename, uint32_t size = 0) = 0;
   virtual void    CALL  Effect_Free(HEFFECT eff) = 0;
   virtual HCHANNEL  CALL  Effect_Play(HEFFECT eff) = 0;
-  virtual HCHANNEL  CALL  Effect_PlayEx(HEFFECT eff, int volume=100, int pan=0, float pitch=1.0f,
-                                        bool loop=false) = 0;
+  virtual HCHANNEL  CALL  Effect_PlayEx(HEFFECT eff, int volume = 100, int pan = 0,
+                                        float pitch = 1.0f,
+                                        bool loop = false) = 0;
 
-  virtual HMUSIC    CALL  Music_Load(const char *filename, uint32_t size=0) = 0;
+  virtual HMUSIC    CALL  Music_Load(const char *filename, uint32_t size = 0) = 0;
   virtual void    CALL  Music_Free(HMUSIC mus) = 0;
   virtual HCHANNEL  CALL  Music_Play(HMUSIC mus, bool loop, int volume = 100, int order = -1,
                                      int row = -1) = 0;
@@ -426,7 +427,7 @@ public:
   virtual void    CALL  Music_SetChannelVolume(HMUSIC music, int channel, int volume) = 0;
   virtual int     CALL  Music_GetChannelVolume(HMUSIC music, int channel) = 0;
 
-  virtual HSTREAM   CALL  Stream_Load(const char *filename, uint32_t size=0) = 0;
+  virtual HSTREAM   CALL  Stream_Load(const char *filename, uint32_t size = 0) = 0;
   virtual void    CALL  Stream_Free(HSTREAM stream) = 0;
   virtual HCHANNEL  CALL  Stream_Play(HSTREAM stream, bool loop, int volume = 100) = 0;
 
@@ -454,41 +455,44 @@ public:
   virtual bool    CALL  Input_KeyDown(int key) = 0;
   virtual bool    CALL  Input_KeyUp(int key) = 0;
   virtual bool    CALL  Input_GetKeyState(int key) = 0;
-  virtual const char*   CALL  Input_GetKeyName(int key) = 0;
+  virtual const char   *CALL  Input_GetKeyName(int key) = 0;
   virtual int     CALL  Input_GetKey() = 0;
   virtual int     CALL  Input_GetChar() = 0;
   virtual bool    CALL  Input_GetEvent(hgeInputEvent *event) = 0;
 
-  virtual bool    CALL  Gfx_BeginScene(HTARGET target=0) = 0;
+  virtual bool    CALL  Gfx_BeginScene(HTARGET target = 0) = 0;
   virtual void    CALL  Gfx_EndScene() = 0;
   virtual void    CALL  Gfx_Clear(uint32_t color) = 0;
   virtual void    CALL  Gfx_RenderLine(float x1, float y1, float x2, float y2,
-                                       uint32_t color=0xFFFFFFFF,
-                                       float z=0.5f) = 0;
+                                       uint32_t color = 0xFFFFFFFF,
+                                       float z = 0.5f) = 0;
   virtual void    CALL  Gfx_RenderTriple(const hgeTriple *triple) = 0;
   virtual void    CALL  Gfx_RenderQuad(const hgeQuad *quad) = 0;
-  virtual hgeVertex*  CALL  Gfx_StartBatch(int prim_type, HTEXTURE tex, int blend, int *max_prim) = 0;
+  virtual hgeVertex  *CALL  Gfx_StartBatch(int prim_type, HTEXTURE tex, int blend, int *max_prim) = 0;
   virtual void    CALL  Gfx_FinishBatch(int nprim) = 0;
-  virtual void    CALL  Gfx_SetClipping(int x=0, int y=0, int w=0, int h=0) = 0;
-  virtual void    CALL  Gfx_SetTransform(float x=0, float y=0, float dx=0, float dy=0, float rot=0,
-                                         float hscale=0, float vscale=0) = 0;
+  virtual void    CALL  Gfx_SetClipping(int x = 0, int y = 0, int w = 0, int h = 0) = 0;
+  virtual void    CALL  Gfx_SetTransform(float x = 0, float y = 0, float dx = 0, float dy = 0,
+                                         float rot = 0,
+                                         float hscale = 0, float vscale = 0) = 0;
 
   virtual HTARGET   CALL  Target_Create(int width, int height, bool zbuffer) = 0;
   virtual void    CALL  Target_Free(HTARGET target) = 0;
   virtual HTEXTURE  CALL  Target_GetTexture(HTARGET target) = 0;
 
   virtual HTEXTURE  CALL  Texture_Create(int width, int height) = 0;
-  virtual HTEXTURE  CALL  Texture_Load(const char *filename, uint32_t size=0, bool bMipmap=false) = 0;
+  virtual HTEXTURE  CALL  Texture_Load(const char *filename, uint32_t size = 0,
+                                       bool bMipmap = false) = 0;
   virtual void    CALL  Texture_Free(HTEXTURE tex) = 0;
-  virtual int     CALL  Texture_GetWidth(HTEXTURE tex, bool bOriginal=false) = 0;
-  virtual int     CALL  Texture_GetHeight(HTEXTURE tex, bool bOriginal=false) = 0;
-  virtual uint32_t*    CALL  Texture_Lock(HTEXTURE tex, bool bReadOnly=true, int left=0, int top=0,
-                                          int width=0, int height=0) = 0;
+  virtual int     CALL  Texture_GetWidth(HTEXTURE tex, bool bOriginal = false) = 0;
+  virtual int     CALL  Texture_GetHeight(HTEXTURE tex, bool bOriginal = false) = 0;
+  virtual uint32_t    *CALL  Texture_Lock(HTEXTURE tex, bool bReadOnly = true, int left = 0,
+                                          int top = 0,
+                                          int width = 0, int height = 0) = 0;
   virtual void    CALL  Texture_Unlock(HTEXTURE tex) = 0;
 };
 
 extern "C" {
-  EXPORT HGE * CALL hgeCreate(int ver);
+  EXPORT HGE *CALL hgeCreate(int ver);
 }
 
 

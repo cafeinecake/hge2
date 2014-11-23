@@ -24,8 +24,8 @@ void CxImage::Startup(uint32_t imagetype)
   pDib = pSelection = pAlpha = NULL;
   ppLayers = ppFrames = NULL;
   //init structures
-  memset(&head,0,sizeof(BITMAPINFOHEADER));
-  memset(&info,0,sizeof(CXIMAGEINFO));
+  memset(&head, 0, sizeof(BITMAPINFOHEADER));
+  memset(&info, 0, sizeof(CXIMAGEINFO));
   //init default attributes
   info.dwType = imagetype;
   info.fQuality = 90.0f;
@@ -58,30 +58,30 @@ CxImage::CxImage(uint32_t imagetype)
 bool CxImage::Destroy()
 {
   //free this only if it's valid and it's not a ghost
-  if (info.pGhost==NULL) {
+  if (info.pGhost == NULL) {
     if (ppLayers) {
-      for(int32_t n=0; n<info.nNumLayers; n++) {
+      for (int32_t n = 0; n < info.nNumLayers; n++) {
         delete ppLayers[n];
       }
 
       delete [] ppLayers;
-      ppLayers=0;
+      ppLayers = 0;
       info.nNumLayers = 0;
     }
 
     if (pSelection) {
       free(pSelection);
-      pSelection=0;
+      pSelection = 0;
     }
 
     if (pAlpha) {
       free(pAlpha);
-      pAlpha=0;
+      pAlpha = 0;
     }
 
     if (pDib) {
       free(pDib);
-      pDib=0;
+      pDib = 0;
     }
 
     return true;
@@ -92,9 +92,9 @@ bool CxImage::Destroy()
 ////////////////////////////////////////////////////////////////////////////////
 bool CxImage::DestroyFrames()
 {
-  if (info.pGhost==NULL) {
+  if (info.pGhost == NULL) {
     if (ppFrames) {
-      for (int32_t n=0; n<info.nNumFrames; n++) {
+      for (int32_t n = 0; n < info.nNumFrames; n++) {
         delete ppFrames[n];
       }
 
@@ -119,7 +119,7 @@ bool CxImage::DestroyFrames()
 CxImage::CxImage(uint32_t dwWidth, uint32_t dwHeight, uint32_t wBpp, uint32_t imagetype)
 {
   Startup(imagetype);
-  Create(dwWidth,dwHeight,wBpp,imagetype);
+  Create(dwWidth, dwHeight, wBpp, imagetype);
 }
 ////////////////////////////////////////////////////////////////////////////////
 /**
@@ -133,7 +133,7 @@ CxImage::CxImage(uint32_t dwWidth, uint32_t dwHeight, uint32_t wBpp, uint32_t im
 CxImage::CxImage(const CxImage &src, bool copypixels, bool copyselection, bool copyalpha)
 {
   Startup(src.GetType());
-  Copy(src,copypixels,copyselection,copyalpha);
+  Copy(src, copypixels, copyselection, copyalpha);
 }
 
 CxImage::~CxImage()
@@ -158,10 +158,10 @@ void CxImage::Copy(const CxImage &src, bool copypixels, bool copyselection, bool
   }
 
   //copy the attributes
-  memcpy(&info,&src.info,sizeof(CXIMAGEINFO));
-  memcpy(&head,&src.head,sizeof(BITMAPINFOHEADER)); // [andy] - fix for bitmap header DPI
+  memcpy(&info, &src.info, sizeof(CXIMAGEINFO));
+  memcpy(&head, &src.head, sizeof(BITMAPINFOHEADER)); // [andy] - fix for bitmap header DPI
   //rebuild the image
-  Create(src.GetWidth(),src.GetHeight(),src.GetBpp(),src.GetType());
+  Create(src.GetWidth(), src.GetHeight(), src.GetBpp(), src.GetType());
 
   //copy the pixels and the palette, or at least copy the palette only.
   if (copypixels && pDib && src.pDib) {
@@ -179,7 +179,7 @@ void CxImage::Copy(const CxImage &src, bool copypixels, bool copyselection, bool
     }
 
     pSelection = new uint8_t [nSize];
-    memcpy(pSelection,src.pSelection, static_cast<size_t>(nSize));
+    memcpy(pSelection, src.pSelection, static_cast<size_t>(nSize));
   }
 
   //copy the alpha channel
@@ -200,15 +200,15 @@ void CxImage::Copy(const CxImage &src, bool copypixels, bool copyselection, bool
  */
 void CxImage::CopyInfo(const CxImage &src)
 {
-  if (pDib==NULL) {
-    memcpy(&info,&src.info,sizeof(CXIMAGEINFO));
+  if (pDib == NULL) {
+    memcpy(&info, &src.info, sizeof(CXIMAGEINFO));
   }
 }
 ////////////////////////////////////////////////////////////////////////////////
 /**
  * \sa Copy
  */
-CxImage& CxImage::operator = (const CxImage& isrc)
+CxImage &CxImage::operator = (const CxImage &isrc)
 {
   if (this != &isrc) {
     Copy(isrc);
@@ -225,7 +225,7 @@ CxImage& CxImage::operator = (const CxImage& isrc)
  * \param imagetype: (optional) set the image format, see ENUM_CXIMAGE_FORMATS
  * \return pointer to the internal pDib object; NULL if an error occurs.
  */
-void* CxImage::Create(uint32_t dwWidth, uint32_t dwHeight, uint32_t wBpp, uint32_t imagetype)
+void *CxImage::Create(uint32_t dwWidth, uint32_t dwHeight, uint32_t wBpp, uint32_t imagetype)
 {
   // destroy the existing image (if any)
   if (!Destroy()) {
@@ -234,7 +234,7 @@ void* CxImage::Create(uint32_t dwWidth, uint32_t dwHeight, uint32_t wBpp, uint32
 
   // prevent further actions if width or height are not vaild <Balabasnia>
   if ((dwWidth == 0) || (dwHeight == 0)) {
-    strcpy(info.szLastError,"CxImage::Create : width and height must be greater than zero");
+    strcpy(info.szLastError, "CxImage::Create : width and height must be greater than zero");
     return NULL;
   }
 
@@ -255,7 +255,7 @@ void* CxImage::Create(uint32_t dwWidth, uint32_t dwHeight, uint32_t wBpp, uint32
               * static_cast<float>(wBpp)) / 8.0f;
 
   if (sz > static_cast<float>(CXIMAGE_MAX_MEMORY)) {
-    strcpy(info.szLastError,"CXIMAGE_MAX_MEMORY exceeded");
+    strcpy(info.szLastError, "CXIMAGE_MAX_MEMORY exceeded");
     return NULL;
   }
 
@@ -296,15 +296,15 @@ void* CxImage::Create(uint32_t dwWidth, uint32_t dwHeight, uint32_t wBpp, uint32
   pDib = new uint8_t [GetSize()]; // alloc memory block to store our bitmap
 
   if (!pDib) {
-    strcpy(info.szLastError,"CxImage::Create can't allocate memory");
+    strcpy(info.szLastError, "CxImage::Create can't allocate memory");
     return NULL;
   }
 
   //clear the palette
-  RGBQUAD* pal=GetPalette();
+  RGBQUAD *pal = GetPalette();
 
   if (pal) {
-    memset(pal,0,GetPaletteSize());
+    memset(pal, 0, GetPaletteSize());
   }
 
   //Destroy the existing selection
@@ -326,10 +326,10 @@ void* CxImage::Create(uint32_t dwWidth, uint32_t dwHeight, uint32_t wBpp, uint32
 
   // use our bitmap info structure to fill in first part of
   // our DIB with the BITMAPINFOHEADER
-  BITMAPINFOHEADER*  lpbi = static_cast<BITMAPINFOHEADER*>(pDib);
+  BITMAPINFOHEADER  *lpbi = static_cast<BITMAPINFOHEADER *>(pDib);
   *lpbi = head;
 
-  info.pImage=GetBits();
+  info.pImage = GetBits();
 
   return pDib; //return handle to the DIB
 }
@@ -337,21 +337,21 @@ void* CxImage::Create(uint32_t dwWidth, uint32_t dwHeight, uint32_t wBpp, uint32
 /**
  * \return pointer to the image pixels. <b> USE CAREFULLY </b>
  */
-uint8_t* CxImage::GetBits(uint32_t row)
+uint8_t *CxImage::GetBits(uint32_t row)
 {
   if (pDib) {
     if (row) {
       if (row < static_cast<uint32_t>(head.biHeight)) {
-        return (static_cast<uint8_t*>(pDib)
-                + *static_cast<uint32_t*>(pDib)
+        return (static_cast<uint8_t *>(pDib)
+                + *static_cast<uint32_t *>(pDib)
                 + GetPaletteSize()
                 + (info.dwEffWidth * row));
       } else {
         return NULL;
       }
     } else {
-      return (static_cast<uint8_t*>(pDib)
-              + *static_cast<uint32_t*>(pDib)
+      return (static_cast<uint8_t *>(pDib)
+              + *static_cast<uint32_t *>(pDib)
               + GetPaletteSize());
     }
   }
@@ -373,7 +373,7 @@ int32_t CxImage::GetSize()
  */
 bool CxImage::IsInside(int32_t x, int32_t y)
 {
-  return (0<=y && y<head.biHeight && 0<=x && x<head.biWidth);
+  return (0 <= y && y < head.biHeight && 0 <= x && x < head.biWidth);
 }
 ////////////////////////////////////////////////////////////////////////////////
 /**
@@ -394,10 +394,10 @@ void CxImage::Clear(uint8_t bval)
   }
 
   if (GetBpp() == 4) {
-    bval = static_cast<uint8_t>(17*(0x0F & bval));
+    bval = static_cast<uint8_t>(17 * (0x0F & bval));
   }
 
-  memset(info.pImage,bval,head.biSizeImage);
+  memset(info.pImage, bval, head.biSizeImage);
 }
 ////////////////////////////////////////////////////////////////////////////////
 /**
@@ -410,16 +410,16 @@ bool CxImage::Transfer(CxImage &from, bool bTransferFrames /*=true*/)
     return false;
   }
 
-  memcpy(&head,&from.head,sizeof(BITMAPINFOHEADER));
-  memcpy(&info,&from.info,sizeof(CXIMAGEINFO));
+  memcpy(&head, &from.head, sizeof(BITMAPINFOHEADER));
+  memcpy(&info, &from.info, sizeof(CXIMAGEINFO));
 
   pDib = from.pDib;
   pSelection = from.pSelection;
   pAlpha = from.pAlpha;
   ppLayers = from.ppLayers;
 
-  memset(&from.head,0,sizeof(BITMAPINFOHEADER));
-  memset(&from.info,0,sizeof(CXIMAGEINFO));
+  memset(&from.head, 0, sizeof(BITMAPINFOHEADER));
+  memset(&from.info, 0, sizeof(CXIMAGEINFO));
   from.pDib = from.pSelection = from.pAlpha = NULL;
   from.ppLayers = NULL;
 
@@ -439,8 +439,8 @@ bool CxImage::Transfer(CxImage &from, bool bTransferFrames /*=true*/)
 void CxImage::Ghost(const CxImage *from)
 {
   if (from) {
-    memcpy(&head,&from->head,sizeof(BITMAPINFOHEADER));
-    memcpy(&info,&from->info,sizeof(CXIMAGEINFO));
+    memcpy(&head, &from->head, sizeof(BITMAPINFOHEADER));
+    memcpy(&info, &from->info, sizeof(CXIMAGEINFO));
     pDib = from->pDib;
     pSelection = from->pSelection;
     pAlpha = from->pAlpha;
@@ -458,46 +458,46 @@ void CxImage::Bitfield2RGB(uint8_t *src, uint32_t redmask, uint32_t greenmask, u
 {
   switch (bpp) {
   case 16: {
-    uint32_t ns[3]= {0,0,0};
+    uint32_t ns[3] = {0, 0, 0};
 
     // compute the number of shift for each mask
-    for (int32_t i=0; i<16; i++) {
-      if ((redmask>>i)&0x01) {
+    for (int32_t i = 0; i < 16; i++) {
+      if ((redmask >> i) & 0x01) {
         ns[0]++;
       }
 
-      if ((greenmask>>i)&0x01) {
+      if ((greenmask >> i) & 0x01) {
         ns[1]++;
       }
 
-      if ((bluemask>>i)&0x01) {
+      if ((bluemask >> i) & 0x01) {
         ns[2]++;
       }
     }
 
-    ns[1]+=ns[0];
-    ns[2]+=ns[1];
-    ns[0]=8-ns[0];
-    ns[1]-=8;
-    ns[2]-=8;
+    ns[1] += ns[0];
+    ns[2] += ns[1];
+    ns[0] = 8 - ns[0];
+    ns[1] -= 8;
+    ns[2] -= 8;
     // dword aligned width for 16 bit image
-    int32_t effwidth2=(((head.biWidth + 1) / 2) * 4);
+    int32_t effwidth2 = (((head.biWidth + 1) / 2) * 4);
     uint16_t w;
-    int32_t y2,y3,x2,x3;
-    uint8_t *p=info.pImage;
+    int32_t y2, y3, x2, x3;
+    uint8_t *p = info.pImage;
 
     // scan the buffer in reverse direction to avoid reallocations
-    for (int32_t y=head.biHeight-1; y>=0; y--) {
-      y2=effwidth2*y;
+    for (int32_t y = head.biHeight - 1; y >= 0; y--) {
+      y2 = effwidth2 * y;
       y3 = static_cast<int32_t>(info.dwEffWidth * static_cast<uint32_t>(y));
 
-      for (int32_t x=head.biWidth-1; x>=0; x--) {
-        x2 = 2*x+y2;
-        x3 = 3*x+y3;
-        w = static_cast<uint16_t>(src[x2]+256*src[1+x2]);
-        p[  x3]=static_cast<uint8_t>((w & bluemask)<<ns[0]);
-        p[1+x3]=static_cast<uint8_t>((w & greenmask)>>ns[1]);
-        p[2+x3]=static_cast<uint8_t>((w & redmask)>>ns[2]);
+      for (int32_t x = head.biWidth - 1; x >= 0; x--) {
+        x2 = 2 * x + y2;
+        x3 = 3 * x + y3;
+        w = static_cast<uint16_t>(src[x2] + 256 * src[1 + x2]);
+        p[  x3] = static_cast<uint8_t>((w & bluemask) << ns[0]);
+        p[1 + x3] = static_cast<uint8_t>((w & greenmask) >> ns[1]);
+        p[2 + x3] = static_cast<uint8_t>((w & redmask) >> ns[2]);
       }
     }
 
@@ -505,39 +505,39 @@ void CxImage::Bitfield2RGB(uint8_t *src, uint32_t redmask, uint32_t greenmask, u
   }
 
   case 32: {
-    uint32_t ns[3]= {0,0,0};
+    uint32_t ns[3] = {0, 0, 0};
 
     // compute the number of shift for each mask
-    for (int32_t i=8; i<32; i+=8) {
-      if (redmask>>i) {
+    for (int32_t i = 8; i < 32; i += 8) {
+      if (redmask >> i) {
         ns[0]++;
       }
 
-      if (greenmask>>i) {
+      if (greenmask >> i) {
         ns[1]++;
       }
 
-      if (bluemask>>i) {
+      if (bluemask >> i) {
         ns[2]++;
       }
     }
 
     // dword aligned width for 32 bit image
     int32_t effwidth4 = head.biWidth * 4;
-    int32_t y4,y3,x4,x3;
-    uint8_t *p=info.pImage;
+    int32_t y4, y3, x4, x3;
+    uint8_t *p = info.pImage;
 
     // scan the buffer in reverse direction to avoid reallocations
-    for (int32_t y=head.biHeight-1; y>=0; y--) {
-      y4=effwidth4*y;
+    for (int32_t y = head.biHeight - 1; y >= 0; y--) {
+      y4 = effwidth4 * y;
       y3 = static_cast<int32_t>(info.dwEffWidth * static_cast<uint32_t>(y));
 
-      for (int32_t x=head.biWidth-1; x>=0; x--) {
-        x4 = 4*x+y4;
-        x3 = 3*x+y3;
-        p[  x3]= src[ns[2] + static_cast<uint32_t>(x4)];
-        p[1+x3]= src[ns[1] + static_cast<uint32_t>(x4)];
-        p[2+x3]= src[ns[0] + static_cast<uint32_t>(x4)];
+      for (int32_t x = head.biWidth - 1; x >= 0; x--) {
+        x4 = 4 * x + y4;
+        x3 = 3 * x + y3;
+        p[  x3] = src[ns[2] + static_cast<uint32_t>(x4)];
+        p[1 + x3] = src[ns[1] + static_cast<uint32_t>(x4)];
+        p[2 + x3] = src[ns[0] + static_cast<uint32_t>(x4)];
       }
     }
   }
@@ -557,54 +557,54 @@ void CxImage::Bitfield2RGB(uint8_t *src, uint32_t redmask, uint32_t greenmask, u
  * \param bFlipImage: tune this parameter if the image is upsidedown
  * \return true if everything is ok
  */
-bool CxImage::CreateFromArray(uint8_t* pArray,uint32_t dwWidth,uint32_t dwHeight,
+bool CxImage::CreateFromArray(uint8_t *pArray, uint32_t dwWidth, uint32_t dwHeight,
                               uint32_t dwBitsperpixel, uint32_t dwBytesperline, bool bFlipImage)
 {
-  if (pArray==NULL) {
+  if (pArray == NULL) {
     return false;
   }
 
-  if (!((dwBitsperpixel==1)||(dwBitsperpixel==4)||(dwBitsperpixel==8)||
-        (dwBitsperpixel==24)||(dwBitsperpixel==32))) {
+  if (!((dwBitsperpixel == 1) || (dwBitsperpixel == 4) || (dwBitsperpixel == 8) ||
+        (dwBitsperpixel == 24) || (dwBitsperpixel == 32))) {
     return false;
   }
 
-  if (!Create(dwWidth,dwHeight,dwBitsperpixel)) {
+  if (!Create(dwWidth, dwHeight, dwBitsperpixel)) {
     return false;
   }
 
-  if (dwBitsperpixel<24) {
+  if (dwBitsperpixel < 24) {
     SetGrayPalette();
   }
 
 #if CXIMAGE_SUPPORT_ALPHA
 
-  if (dwBitsperpixel==32) {
+  if (dwBitsperpixel == 32) {
     AlphaCreate();
   }
 
 #endif //CXIMAGE_SUPPORT_ALPHA
 
-  uint8_t *dst,*src;
+  uint8_t *dst, *src;
 
-  for (uint32_t y = 0; y<dwHeight; y++) {
-    dst = info.pImage + (bFlipImage?(dwHeight-1-y):y) * info.dwEffWidth;
+  for (uint32_t y = 0; y < dwHeight; y++) {
+    dst = info.pImage + (bFlipImage ? (dwHeight - 1 - y) : y) * info.dwEffWidth;
     src = pArray + y * dwBytesperline;
 
-    if (dwBitsperpixel==32) {
-      for(uint32_t x=0; x<dwWidth; x++) {
-        *dst++=src[0];
-        *dst++=src[1];
-        *dst++=src[2];
+    if (dwBitsperpixel == 32) {
+      for (uint32_t x = 0; x < dwWidth; x++) {
+        *dst++ = src[0];
+        *dst++ = src[1];
+        *dst++ = src[2];
 #if CXIMAGE_SUPPORT_ALPHA
         AlphaSet(static_cast<int32_t>(x),
-                 static_cast<int32_t>(bFlipImage?(dwHeight-1u-y):y),
+                 static_cast<int32_t>(bFlipImage ? (dwHeight - 1u - y) : y),
                  src[3]);
 #endif //CXIMAGE_SUPPORT_ALPHA
-        src+=4;
+        src += 4;
       }
     } else {
-      memcpy(dst,src, std::min(info.dwEffWidth,dwBytesperline));
+      memcpy(dst, src, std::min(info.dwEffWidth, dwBytesperline));
     }
   }
 
@@ -614,58 +614,58 @@ bool CxImage::CreateFromArray(uint8_t* pArray,uint32_t dwWidth,uint32_t dwHeight
 /**
  * \sa CreateFromArray
  */
-bool CxImage::CreateFromMatrix(uint8_t** ppMatrix,uint32_t dwWidth,uint32_t dwHeight,
+bool CxImage::CreateFromMatrix(uint8_t **ppMatrix, uint32_t dwWidth, uint32_t dwHeight,
                                uint32_t dwBitsperpixel, uint32_t dwBytesperline, bool bFlipImage)
 {
-  if (ppMatrix==NULL) {
+  if (ppMatrix == NULL) {
     return false;
   }
 
-  if (!((dwBitsperpixel==1)||(dwBitsperpixel==4)||(dwBitsperpixel==8)||
-        (dwBitsperpixel==24)||(dwBitsperpixel==32))) {
+  if (!((dwBitsperpixel == 1) || (dwBitsperpixel == 4) || (dwBitsperpixel == 8) ||
+        (dwBitsperpixel == 24) || (dwBitsperpixel == 32))) {
     return false;
   }
 
-  if (!Create(dwWidth,dwHeight,dwBitsperpixel)) {
+  if (!Create(dwWidth, dwHeight, dwBitsperpixel)) {
     return false;
   }
 
-  if (dwBitsperpixel<24) {
+  if (dwBitsperpixel < 24) {
     SetGrayPalette();
   }
 
 #if CXIMAGE_SUPPORT_ALPHA
 
-  if (dwBitsperpixel==32) {
+  if (dwBitsperpixel == 32) {
     AlphaCreate();
   }
 
 #endif //CXIMAGE_SUPPORT_ALPHA
 
-  uint8_t *dst,*src;
+  uint8_t *dst, *src;
 
-  for (uint32_t y = 0; y<dwHeight; y++) {
-    dst = info.pImage + (bFlipImage?(dwHeight-1-y):y) * info.dwEffWidth;
+  for (uint32_t y = 0; y < dwHeight; y++) {
+    dst = info.pImage + (bFlipImage ? (dwHeight - 1 - y) : y) * info.dwEffWidth;
     src = ppMatrix[y];
 
     if (src) {
-      if (dwBitsperpixel==32) {
-        for(uint32_t x=0; x<dwWidth; x++) {
-          *dst++=src[0];
-          *dst++=src[1];
-          *dst++=src[2];
+      if (dwBitsperpixel == 32) {
+        for (uint32_t x = 0; x < dwWidth; x++) {
+          *dst++ = src[0];
+          *dst++ = src[1];
+          *dst++ = src[2];
 #if CXIMAGE_SUPPORT_ALPHA
           AlphaSet(static_cast<int32_t>(x),
                    (bFlipImage ?
-                    static_cast<int32_t>(dwHeight-1-y)
+                    static_cast<int32_t>(dwHeight - 1 - y)
                     : static_cast<int32_t>(y)),
                    src[3]);
 #endif //CXIMAGE_SUPPORT_ALPHA
-          src+=4;
+          src += 4;
         }
       } else {
         memcpy(dst, src,
-               std::min(info.dwEffWidth,dwBytesperline));
+               std::min(info.dwEffWidth, dwBytesperline));
       }
     }
   }
@@ -678,13 +678,13 @@ bool CxImage::CreateFromMatrix(uint8_t** ppMatrix,uint32_t dwWidth,uint32_t dwHe
  */
 int32_t CxImage::CompareColors(const void *elem1, const void *elem2)
 {
-  const RGBQUAD* c1 = reinterpret_cast<const RGBQUAD*>(elem1);
-  const RGBQUAD* c2 = reinterpret_cast<const RGBQUAD*>(elem2);
+  const RGBQUAD *c1 = reinterpret_cast<const RGBQUAD *>(elem1);
+  const RGBQUAD *c2 = reinterpret_cast<const RGBQUAD *>(elem2);
 
-  int32_t g1 = static_cast<int32_t>(RGB2GRAY(c1->rgbRed,c1->rgbGreen,c1->rgbBlue));
-  int32_t g2 = static_cast<int32_t>(RGB2GRAY(c2->rgbRed,c2->rgbGreen,c2->rgbBlue));
+  int32_t g1 = static_cast<int32_t>(RGB2GRAY(c1->rgbRed, c1->rgbGreen, c1->rgbBlue));
+  int32_t g2 = static_cast<int32_t>(RGB2GRAY(c2->rgbRed, c2->rgbGreen, c2->rgbBlue));
 
-  return (g1-g2);
+  return (g1 - g2);
 }
 ////////////////////////////////////////////////////////////////////////////////
 /**
@@ -694,7 +694,7 @@ int32_t CxImage::CompareColors(const void *elem1, const void *elem2)
  * CxImage::FreeMemory will use the same memory environment used by Encode.
  * \author [livecn]
  */
-void CxImage::FreeMemory(void* memblock)
+void CxImage::FreeMemory(void *memblock)
 {
   if (memblock) {
     free(memblock);

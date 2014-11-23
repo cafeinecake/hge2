@@ -35,12 +35,12 @@ class CxImageICO: public CxImage {
 public:
   CxImageICO(): CxImage(CXIMAGE_FORMAT_ICO)
   {
-    m_dwImageOffset=0;
+    m_dwImageOffset = 0;
   }
 
 //  bool Load(const TCHAR * imageFileName){ return CxImage::Load(imageFileName,CXIMAGE_FORMAT_ICO);}
 //  bool Save(const TCHAR * imageFileName){ return CxImage::Save(imageFileName,CXIMAGE_FORMAT_ICO);}
-  bool Decode(CxFile * hFile);
+  bool Decode(CxFile *hFile);
   bool Decode(FILE *hFile)
   {
     CxIOFile file(hFile);
@@ -48,14 +48,14 @@ public:
   }
 
 #if CXIMAGE_SUPPORT_ENCODE
-  bool Encode(CxFile * hFile, bool bAppend=false, int32_t nPageCount=0);
-  bool Encode(CxFile * hFile, CxImage ** pImages, int32_t nPageCount);
-  bool Encode(FILE *hFile, bool bAppend=false, int32_t nPageCount=0)
+  bool Encode(CxFile *hFile, bool bAppend = false, int32_t nPageCount = 0);
+  bool Encode(CxFile *hFile, CxImage **pImages, int32_t nPageCount);
+  bool Encode(FILE *hFile, bool bAppend = false, int32_t nPageCount = 0)
   {
     CxIOFile file(hFile);
-    return Encode(&file,bAppend,nPageCount);
+    return Encode(&file, bAppend, nPageCount);
   }
-  bool Encode(FILE *hFile, CxImage ** pImages, int32_t nPageCount)
+  bool Encode(FILE *hFile, CxImage **pImages, int32_t nPageCount)
   {
     CxIOFile file(hFile);
     return Encode(&file, pImages, nPageCount);

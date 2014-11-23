@@ -29,22 +29,22 @@ public:
 
 
   void    Render(float x, float y);
-  void    RenderEx(float x, float y, float rot, float hscale=1.0f, float vscale=0.0f);
+  void    RenderEx(float x, float y, float rot, float hscale = 1.0f, float vscale = 0.0f);
   void    RenderStretch(float x1, float y1, float x2, float y2);
   void    Render4V(float x0, float y0, float x1, float y1, float x2, float y2, float x3, float y3);
 
   void    SetTexture(HTEXTURE tex);
   void    SetTextureRect(float x, float y, float w, float h, bool adjSize = true);
-  void    SetColor(uint32_t col, int i=-1);
-  void    SetZ(float z, int i=-1);
+  void    SetColor(uint32_t col, int i = -1);
+  void    SetZ(float z, int i = -1);
   void    SetBlendMode(int blend)
   {
-    quad.blend=blend;
+    quad.blend = blend;
   }
   void    SetHotSpot(float x, float y)
   {
-    hotX=x;
-    hotY=y;
+    hotX = x;
+    hotY = y;
   }
   void    SetFlip(bool bX, bool bY, bool bHotSpot = false);
 
@@ -54,16 +54,16 @@ public:
   }
   void    GetTextureRect(float *x, float *y, float *w, float *h) const
   {
-    *x=tx;
-    *y=ty;
-    *w=width;
-    *h=height;
+    *x = tx;
+    *y = ty;
+    *w = width;
+    *h = height;
   }
-  uint32_t   GetColor(int i=0) const
+  uint32_t   GetColor(int i = 0) const
   {
     return quad.v[i].col;
   }
-  float   GetZ(int i=0) const
+  float   GetZ(int i = 0) const
   {
     return quad.v[i].z;
   }
@@ -73,13 +73,13 @@ public:
   }
   void    GetHotSpot(float *x, float *y) const
   {
-    *x=hotX;
-    *y=hotY;
+    *x = hotX;
+    *y = hotY;
   }
   void    GetFlip(bool *bX, bool *bY) const
   {
-    *bX=bXFlip;
-    *bY=bYFlip;
+    *bX = bXFlip;
+    *bY = bYFlip;
   }
 
   float   GetWidth() const
@@ -90,12 +90,12 @@ public:
   {
     return height;
   }
-  hgeRect*  GetBoundingBox(float x, float y, hgeRect *rect) const
+  hgeRect  *GetBoundingBox(float x, float y, hgeRect *rect) const
   {
-    rect->Set(x-hotX, y-hotY, x-hotX+width, y-hotY+height);
+    rect->Set(x - hotX, y - hotY, x - hotX + width, y - hotY + height);
     return rect;
   }
-  hgeRect*  GetBoundingBoxEx(float x, float y, float rot, float hscale, float vscale,
+  hgeRect  *GetBoundingBoxEx(float x, float y, float rot, float hscale, float vscale,
                              hgeRect *rect) const;
 
 protected:

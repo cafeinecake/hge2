@@ -27,10 +27,10 @@ png_do_write_transformations(png_structp png_ptr)
 #if defined(PNG_WRITE_USER_TRANSFORM_SUPPORTED)
 
   if (png_ptr->transformations & PNG_USER_TRANSFORM)
-    if(png_ptr->write_user_transform_fn != NULL)
+    if (png_ptr->write_user_transform_fn != NULL)
       (*(png_ptr->write_user_transform_fn)) /* user write transform function */
       (png_ptr,                    /* png_ptr */
-       &(png_ptr->row_info),       /* row_info:     */
+       & (png_ptr->row_info),      /* row_info:     */
        /*  png_uint_32 width;          width of row */
        /*  png_uint_32 rowbytes;       number of bytes in row */
        /*  png_byte color_type;        color type of pixels */
@@ -320,7 +320,7 @@ png_do_shift(png_row_infop row_info, png_bytep row, png_color_8p bit_depth)
 
         png_uint_16 v;
         int j;
-        int c = (int)(i%channels);
+        int c = (int)(i % channels);
 
         v = *bp;
         *bp = 0;
@@ -339,11 +339,11 @@ png_do_shift(png_row_infop row_info, png_bytep row, png_color_8p bit_depth)
       png_uint_32 istop = channels * row_info->width;
 
       for (bp = row, i = 0; i < istop; i++) {
-        int c = (int)(i%channels);
+        int c = (int)(i % channels);
         png_uint_16 value, v;
         int j;
 
-        v = (png_uint_16)(((png_uint_16)(*bp) << 8) + *(bp + 1));
+        v = (png_uint_16)(((png_uint_16)(*bp) << 8) + * (bp + 1));
         value = 0;
 
         for (j = shift_start[c]; j > -shift_dec[c]; j -= shift_dec[c]) {
@@ -462,7 +462,7 @@ png_do_write_invert_alpha(png_row_infop row_info, png_bytep row)
           *(dp++) = *(sp++);
           *(dp++) = *(sp++);
           *(dp++) = *(sp++);
-          *(dp++) = (png_byte)(255 - *(sp++));
+          *(dp++) = (png_byte)(255 - * (sp++));
         }
       }
       /* This inverts the alpha channel in RRGGBBAA */
@@ -478,8 +478,8 @@ png_do_write_invert_alpha(png_row_infop row_info, png_bytep row)
           *(dp++) = *(sp++);
           *(dp++) = *(sp++);
           *(dp++) = *(sp++);
-          *(dp++) = (png_byte)(255 - *(sp++));
-          *(dp++) = (png_byte)(255 - *(sp++));
+          *(dp++) = (png_byte)(255 - * (sp++));
+          *(dp++) = (png_byte)(255 - * (sp++));
         }
       }
     } else if (row_info->color_type == PNG_COLOR_TYPE_GRAY_ALPHA) {
@@ -491,7 +491,7 @@ png_do_write_invert_alpha(png_row_infop row_info, png_bytep row)
 
         for (i = 0, sp = dp = row; i < row_width; i++) {
           *(dp++) = *(sp++);
-          *(dp++) = (png_byte)(255 - *(sp++));
+          *(dp++) = (png_byte)(255 - * (sp++));
         }
       }
       /* This inverts the alpha channel in GGAA */
@@ -503,8 +503,8 @@ png_do_write_invert_alpha(png_row_infop row_info, png_bytep row)
         for (i = 0, sp = dp = row; i < row_width; i++) {
           *(dp++) = *(sp++);
           *(dp++) = *(sp++);
-          *(dp++) = (png_byte)(255 - *(sp++));
-          *(dp++) = (png_byte)(255 - *(sp++));
+          *(dp++) = (png_byte)(255 - * (sp++));
+          *(dp++) = (png_byte)(255 - * (sp++));
         }
       }
     }
@@ -540,8 +540,8 @@ png_do_write_intrapixel(png_row_infop row_info, png_bytep row)
       }
 
       for (i = 0, rp = row; i < row_width; i++, rp += bytes_per_pixel) {
-        *(rp)   = (png_byte)((*rp     - *(rp+1))&0xff);
-        *(rp+2) = (png_byte)((*(rp+2) - *(rp+1))&0xff);
+        *(rp)   = (png_byte)((*rp     - * (rp + 1)) & 0xff);
+        *(rp + 2) = (png_byte)((*(rp + 2) - * (rp + 1)) & 0xff);
       }
     } else if (row_info->bit_depth == 16) {
       png_bytep rp;
@@ -556,15 +556,15 @@ png_do_write_intrapixel(png_row_infop row_info, png_bytep row)
       }
 
       for (i = 0, rp = row; i < row_width; i++, rp += bytes_per_pixel) {
-        png_uint_32 s0   = (*(rp  ) << 8) | *(rp+1);
-        png_uint_32 s1   = (*(rp+2) << 8) | *(rp+3);
-        png_uint_32 s2   = (*(rp+4) << 8) | *(rp+5);
-        png_uint_32 red  = (png_uint_32)((s0-s1) & 0xffffL);
-        png_uint_32 blue = (png_uint_32)((s2-s1) & 0xffffL);
+        png_uint_32 s0   = (*(rp  ) << 8) | *(rp + 1);
+        png_uint_32 s1   = (*(rp + 2) << 8) | *(rp + 3);
+        png_uint_32 s2   = (*(rp + 4) << 8) | *(rp + 5);
+        png_uint_32 red  = (png_uint_32)((s0 - s1) & 0xffffL);
+        png_uint_32 blue = (png_uint_32)((s2 - s1) & 0xffffL);
         *(rp  ) = (png_byte)((red >> 8) & 0xff);
-        *(rp+1) = (png_byte)(red & 0xff);
-        *(rp+4) = (png_byte)((blue >> 8) & 0xff);
-        *(rp+5) = (png_byte)(blue & 0xff);
+        *(rp + 1) = (png_byte)(red & 0xff);
+        *(rp + 4) = (png_byte)((blue >> 8) & 0xff);
+        *(rp + 5) = (png_byte)(blue & 0xff);
       }
     }
   }

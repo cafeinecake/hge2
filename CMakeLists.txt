@@ -17,11 +17,10 @@ if(UNIX OR APPLE)
 	# Clang paranoia warnings
 	#add_definitions( -std=c++11 -Weverything -Wno-c++98-compat-pedantic
 	#	-Wno-c++98-compat -Wno-padded -Wno-format-nonliteral -Wno-undef -Wno-documentation )
-	add_definitions( -ggdb3 -Werror ) # debug info and break on warnings
-	set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} -std=c++11 -Weverything -Wno-c++98-compat-pedantic
-		-Wno-c++98-compat -Wno-padded -Wno-format-nonliteral -Wno-undef -Wno-documentation)
-	#set(CMAKE_C_FLAGS ${CMAKE_C_FLAGS} -std=c99 -Weverything 
-	#	-Wno-padded -Wno-format-nonliteral -Wno-undef -Wno-documentation)
+        add_definitions( -ggdb3 ) # debug info and break on warnings
+        set(CMAKE_CXX_FLAGS "-std=c++11 -Werror -Weverything -Wno-c++98-compat-pedantic -Wno-c++98-compat -Wno-padded -Wno-format-nonliteral -Wno-undef -Wno-documentation")
+        #set(CMAKE_C_FLAGS "-std=c99 -Weverything -Wno-padded -Wno-format-nonliteral -Wno-undef -Wno-documentation")
+        set(CMAKE_C_FLAGS "-std=c89")
 
 	add_definitions(-D_LINUX)
 	# Needed for FindVorbis

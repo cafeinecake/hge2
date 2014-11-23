@@ -778,7 +778,7 @@ uint32_t BASSDEF(BASS_MusicGetOrderPosition)(HMUSIC handle);
 HSAMPLE BASSDEF(BASS_SampleLoad)(bool mem, const void *file, uint32_t offset, uint32_t length,
                                  uint32_t max,
                                  uint32_t flags);
-void* BASSDEF(BASS_SampleCreate)(uint32_t length, uint32_t freq, uint32_t chans, uint32_t max,
+void *BASSDEF(BASS_SampleCreate)(uint32_t length, uint32_t freq, uint32_t chans, uint32_t max,
                                  uint32_t flags);
 HSAMPLE BASSDEF(BASS_SampleCreateDone)();
 bool BASSDEF(BASS_SampleFree)(HSAMPLE handle);

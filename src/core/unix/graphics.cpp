@@ -137,7 +137,7 @@ static uint32_t *_DecodeImage(uint8_t *data, const char *fname, uint32_t size, i
   ILuint id;
   ilGenImages(1, &id);
 
-  if(ilLoadImage(fname)) {
+  if (ilLoadImage(fname)) {
     printf("success: %s\n", fname);
     ILinfo info;
     iluGetImageInfo(&info);
@@ -200,50 +200,50 @@ void CALL HGE_Impl::Gfx_SetClipping(int x, int y, int w, int h)
     float MaxZ;
   } vp;
 
-  if(!pCurTarget) {
-    scr_width=pHGE->System_GetStateInt(HGE_SCREENWIDTH);
-    scr_height=pHGE->System_GetStateInt(HGE_SCREENHEIGHT);
+  if (!pCurTarget) {
+    scr_width = pHGE->System_GetStateInt(HGE_SCREENWIDTH);
+    scr_height = pHGE->System_GetStateInt(HGE_SCREENHEIGHT);
   } else {
-    scr_width=Texture_GetWidth(pCurTarget->tex);
-    scr_height=Texture_GetHeight(pCurTarget->tex);
+    scr_width = Texture_GetWidth(pCurTarget->tex);
+    scr_height = Texture_GetHeight(pCurTarget->tex);
   }
 
-  if(!w) {
-    vp.X=0;
-    vp.Y=0;
-    vp.Width=scr_width;
-    vp.Height=scr_height;
+  if (!w) {
+    vp.X = 0;
+    vp.Y = 0;
+    vp.Width = scr_width;
+    vp.Height = scr_height;
   } else {
-    if(x<0) {
-      w+=x;
-      x=0;
+    if (x < 0) {
+      w += x;
+      x = 0;
     }
 
-    if(y<0) {
-      h+=y;
-      y=0;
+    if (y < 0) {
+      h += y;
+      y = 0;
     }
 
-    if(x+w > scr_width) {
-      w=scr_width-x;
+    if (x + w > scr_width) {
+      w = scr_width - x;
     }
 
-    if(y+h > scr_height) {
-      h=scr_height-y;
+    if (y + h > scr_height) {
+      h = scr_height - y;
     }
 
-    vp.X=x;
-    vp.Y=y;
-    vp.Width=w;
-    vp.Height=h;
+    vp.X = x;
+    vp.Y = y;
+    vp.Width = w;
+    vp.Height = h;
   }
 
   if ((clipX == vp.X) && (clipY == vp.Y) && (clipW == vp.Width) && (clipH == vp.Height)) {
     return;  // nothing to do here, don't call into the GL.
   }
 
-  vp.MinZ=0.0f;
-  vp.MaxZ=1.0f;
+  vp.MinZ = 0.0f;
+  vp.MaxZ = 1.0f;
 
   _render_batch();
 
@@ -251,7 +251,7 @@ void CALL HGE_Impl::Gfx_SetClipping(int x, int y, int w, int h)
   clipY = vp.Y;
   clipW = vp.Width;
   clipH = vp.Height;
-  pOpenGLDevice->glScissor(vp.X, (scr_height-vp.Y)-vp.Height, vp.Width, vp.Height);
+  pOpenGLDevice->glScissor(vp.X, (scr_height - vp.Y) - vp.Height, vp.Width, vp.Height);
 }
 
 void CALL HGE_Impl::Gfx_SetTransform(float x, float y, float dx, float dy, float rot, float hscale,
@@ -272,13 +272,13 @@ void CALL HGE_Impl::Gfx_SetTransform(float x, float y, float dx, float dy, float
 
   pOpenGLDevice->glMatrixMode(GL_MODELVIEW);
 
-  if(vscale==0.0f) {
+  if (vscale == 0.0f) {
     pOpenGLDevice->glLoadIdentity();
   } else {
     pOpenGLDevice->glTranslatef(-x, -y, 0.0f);
     //pOpenGLDevice->glScalef(1.0f, -1.0f, 1.0f);
     pOpenGLDevice->glRotatef(-rot, 0.0f, 0.0f, -1.0f);
-    pOpenGLDevice->glTranslatef(x+dx, y+dy, 0.0f);
+    pOpenGLDevice->glTranslatef(x + dx, y + dy, 0.0f);
   }
 }
 
@@ -286,12 +286,12 @@ bool CALL HGE_Impl::Gfx_BeginScene(HTARGET targ)
 {
   CRenderTargetList *target = reinterpret_cast<CRenderTargetList *>(targ);
 
-  if(VertArray) {
+  if (VertArray) {
     _PostError("Gfx_BeginScene: Scene is already being rendered");
     return false;
   }
 
-  if(target != pCurTarget) {
+  if (target != pCurTarget) {
     if (pOpenGLDevice->have_GL_EXT_framebuffer_object) {
       pOpenGLDevice->glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, (target) ? target->frame : 0);
     }
@@ -316,7 +316,7 @@ bool CALL HGE_Impl::Gfx_BeginScene(HTARGET targ)
     pOpenGLDevice->glMatrixMode(GL_MODELVIEW);
     pOpenGLDevice->glLoadIdentity();
 
-    pCurTarget=target;
+    pCurTarget = target;
   }
 
   VertArray = pVB;
@@ -354,7 +354,7 @@ void CALL HGE_Impl::Gfx_EndScene()
     delete[] pixels;
   }
 
-  if(!pCurTarget) {
+  if (!pCurTarget) {
     SDL_GL_SwapBuffers();
   }
 
@@ -401,28 +401,28 @@ bool HGE_Impl::_PrimsOutsideClipping(const hgeVertex *v, const int verts)
 void CALL HGE_Impl::Gfx_RenderLine(float x1, float y1, float x2, float y2, uint32_t color, float z)
 {
   if (VertArray) {
-    if(CurPrimType!=HGEPRIM_LINES || nPrim>=VERTEX_BUFFER_SIZE/HGEPRIM_LINES || CurTexture
-        || CurBlendMode!=BLEND_DEFAULT) {
+    if (CurPrimType != HGEPRIM_LINES || nPrim >= VERTEX_BUFFER_SIZE / HGEPRIM_LINES || CurTexture
+        || CurBlendMode != BLEND_DEFAULT) {
       _render_batch();
 
-      CurPrimType=HGEPRIM_LINES;
+      CurPrimType = HGEPRIM_LINES;
 
-      if(CurBlendMode != BLEND_DEFAULT) {
+      if (CurBlendMode != BLEND_DEFAULT) {
         _SetBlendMode(BLEND_DEFAULT);
       }
 
       _BindTexture(NULL);
     }
 
-    int i=nPrim*HGEPRIM_LINES;
+    int i = nPrim * HGEPRIM_LINES;
     VertArray[i].x = x1;
-    VertArray[i+1].x = x2;
+    VertArray[i + 1].x = x2;
     VertArray[i].y = y1;
-    VertArray[i+1].y = y2;
-    VertArray[i].z     = VertArray[i+1].z = z;
-    VertArray[i].col   = VertArray[i+1].col = color;
-    VertArray[i].tx    = VertArray[i+1].tx =
-                           VertArray[i].ty    = VertArray[i+1].ty = 0.0f;
+    VertArray[i + 1].y = y2;
+    VertArray[i].z     = VertArray[i + 1].z = z;
+    VertArray[i].col   = VertArray[i + 1].col = color;
+    VertArray[i].tx    = VertArray[i + 1].tx =
+                           VertArray[i].ty    = VertArray[i + 1].ty = 0.0f;
 
     if (!_PrimsOutsideClipping(&VertArray[i], HGEPRIM_LINES)) {
       nPrim++;
@@ -465,20 +465,20 @@ void CALL HGE_Impl::Gfx_RenderTriple(const hgeTriple *triple)
       }
     }
 
-    if(CurPrimType!=HGEPRIM_TRIPLES || nPrim>=VERTEX_BUFFER_SIZE/HGEPRIM_TRIPLES
-        || CurTexture!=triple->tex || CurBlendMode!=triple->blend) {
+    if (CurPrimType != HGEPRIM_TRIPLES || nPrim >= VERTEX_BUFFER_SIZE / HGEPRIM_TRIPLES
+        || CurTexture != triple->tex || CurBlendMode != triple->blend) {
       _render_batch();
 
-      CurPrimType=HGEPRIM_TRIPLES;
+      CurPrimType = HGEPRIM_TRIPLES;
 
-      if(CurBlendMode != triple->blend) {
+      if (CurBlendMode != triple->blend) {
         _SetBlendMode(triple->blend);
       }
 
       _BindTexture(reinterpret_cast<gltexture *>(triple->tex));
     }
 
-    memcpy(&VertArray[nPrim*HGEPRIM_TRIPLES], triple->v, sizeof(hgeVertex)*HGEPRIM_TRIPLES);
+    memcpy(&VertArray[nPrim * HGEPRIM_TRIPLES], triple->v, sizeof(hgeVertex)*HGEPRIM_TRIPLES);
     nPrim++;
   }
 }
@@ -509,37 +509,38 @@ void CALL HGE_Impl::Gfx_RenderQuad(const hgeQuad *quad)
       }
     }
 
-    if(CurPrimType!=HGEPRIM_QUADS || nPrim>=VERTEX_BUFFER_SIZE/HGEPRIM_QUADS || CurTexture!=quad->tex
-        || CurBlendMode!=quad->blend) {
+    if (CurPrimType != HGEPRIM_QUADS || nPrim >= VERTEX_BUFFER_SIZE / HGEPRIM_QUADS
+        || CurTexture != quad->tex
+        || CurBlendMode != quad->blend) {
       _render_batch();
 
-      CurPrimType=HGEPRIM_QUADS;
+      CurPrimType = HGEPRIM_QUADS;
 
-      if(CurBlendMode != quad->blend) {
+      if (CurBlendMode != quad->blend) {
         _SetBlendMode(quad->blend);
       }
 
       _BindTexture(reinterpret_cast<gltexture *>(quad->tex));
     }
 
-    memcpy(&VertArray[nPrim*HGEPRIM_QUADS], quad->v, sizeof(hgeVertex)*HGEPRIM_QUADS);
+    memcpy(&VertArray[nPrim * HGEPRIM_QUADS], quad->v, sizeof(hgeVertex)*HGEPRIM_QUADS);
     nPrim++;
   }
 }
 
-hgeVertex* CALL HGE_Impl::Gfx_StartBatch(int prim_type, HTEXTURE tex, int blend, int *max_prim)
+hgeVertex *CALL HGE_Impl::Gfx_StartBatch(int prim_type, HTEXTURE tex, int blend, int *max_prim)
 {
-  if(VertArray) {
+  if (VertArray) {
     _render_batch();
 
-    CurPrimType=prim_type;
+    CurPrimType = prim_type;
 
-    if(CurBlendMode != blend) {
+    if (CurBlendMode != blend) {
       _SetBlendMode(blend);
     }
 
     _BindTexture(reinterpret_cast<gltexture *>(tex));
-    *max_prim=VERTEX_BUFFER_SIZE / prim_type;
+    *max_prim = VERTEX_BUFFER_SIZE / prim_type;
     return VertArray;
   } else {
     return 0;
@@ -615,19 +616,19 @@ HTARGET CALL HGE_Impl::Target_Create(int width, int height, bool zbuffer)
     return 0;
   }
 
-  pTarget->next=pTargets;
-  pTargets=pTarget;
+  pTarget->next = pTargets;
+  pTargets = pTarget;
 
   return reinterpret_cast<HTARGET>(pTarget);
 }
 
 void CALL HGE_Impl::Target_Free(HTARGET target)
 {
-  CRenderTargetList *pTarget=pTargets, *pPrevTarget=NULL;
+  CRenderTargetList *pTarget = pTargets, *pPrevTarget = NULL;
 
-  while(pTarget) {
-    if(reinterpret_cast<CRenderTargetList *>(target) == pTarget) {
-      if(pPrevTarget) {
+  while (pTarget) {
+    if (reinterpret_cast<CRenderTargetList *>(target) == pTarget) {
+      if (pPrevTarget) {
         pPrevTarget->next = pTarget->next;
       } else {
         pTargets = pTarget->next;
@@ -661,9 +662,9 @@ void CALL HGE_Impl::Target_Free(HTARGET target)
 
 HTEXTURE CALL HGE_Impl::Target_GetTexture(HTARGET target)
 {
-  CRenderTargetList *targ= reinterpret_cast<CRenderTargetList *>(target);
+  CRenderTargetList *targ = reinterpret_cast<CRenderTargetList *>(target);
 
-  if(target) {
+  if (target) {
     return targ->tex;
   } else {
     return 0;
@@ -781,12 +782,12 @@ HTEXTURE CALL HGE_Impl::Texture_Create(int width, int height)
 
   // the Direct3D renderer doesn't add these to the (textures) list, but we need them for when we "lose" the GL context.
   if (retval != 0) {
-    CTextureList *texItem=new CTextureList;
-    texItem->tex=retval;
-    texItem->width=width;
-    texItem->height=height;
-    texItem->next=textures;
-    textures=texItem;
+    CTextureList *texItem = new CTextureList;
+    texItem->tex = retval;
+    texItem->width = width;
+    texItem->height = height;
+    texItem->next = textures;
+    textures = texItem;
   }
 
   return retval;
@@ -803,14 +804,14 @@ HTEXTURE CALL HGE_Impl::Texture_Load(const char *filename, uint32_t size, bool /
   CTextureList *texItem;
   const char *fname = NULL;
 
-  if(size) {
+  if (size) {
     data = reinterpret_cast<void *>(const_cast<char *>(filename));
-    _size=size;
+    _size = size;
   } else {
     fname = filename;
-    data=pHGE->Resource_Load(filename, &_size);
+    data = pHGE->Resource_Load(filename, &_size);
 
-    if(!data) {
+    if (!data) {
       return 0;
     }
   }
@@ -822,7 +823,7 @@ HTEXTURE CALL HGE_Impl::Texture_Load(const char *filename, uint32_t size, bool /
     retval = _BuildTexture(width, height, pixels);
   }
 
-  if(!size) {
+  if (!size) {
     Resource_Free(data);
   }
 
@@ -830,12 +831,12 @@ HTEXTURE CALL HGE_Impl::Texture_Load(const char *filename, uint32_t size, bool /
     STUBBED("texture load fail!");
     _PostError("Can't create texture");
   } else {
-    texItem=new CTextureList;
-    texItem->tex=retval;
-    texItem->width=width;
-    texItem->height=height;
-    texItem->next=textures;
-    textures=texItem;
+    texItem = new CTextureList;
+    texItem->tex = retval;
+    texItem->width = width;
+    texItem->height = height;
+    texItem->next = textures;
+    textures = texItem;
 
     // force an upload to the GL and lose our copy if it's backed by
     //  a file. We won't keep it here to conserve system RAM.
@@ -858,25 +859,25 @@ void CALL HGE_Impl::Texture_Free(HTEXTURE tex)
     return;  // in case we already shut down.
   }
 
-  CTextureList *texItem=textures, *texPrev=0;
+  CTextureList *texItem = textures, *texPrev = 0;
 
-  while(texItem) {
-    if(texItem->tex==tex) {
-      if(texPrev) {
-        texPrev->next=texItem->next;
+  while (texItem) {
+    if (texItem->tex == tex) {
+      if (texPrev) {
+        texPrev->next = texItem->next;
       } else {
-        textures=texItem->next;
+        textures = texItem->next;
       }
 
       delete texItem;
       break;
     }
 
-    texPrev=texItem;
-    texItem=texItem->next;
+    texPrev = texItem;
+    texItem = texItem->next;
   }
 
-  if(tex) {
+  if (tex) {
     gltexture *pTex = reinterpret_cast<gltexture *>(tex);
     delete[] pTex->filename;
     delete[] pTex->lock_pixels;
@@ -888,18 +889,18 @@ void CALL HGE_Impl::Texture_Free(HTEXTURE tex)
 
 int CALL HGE_Impl::Texture_GetWidth(HTEXTURE tex, bool bOriginal)
 {
-  CTextureList *texItem=textures;
+  CTextureList *texItem = textures;
 
-  if(bOriginal) {
-    while(texItem) {
-      if(texItem->tex==tex) {
+  if (bOriginal) {
+    while (texItem) {
+      if (texItem->tex == tex) {
         return texItem->width;
       }
 
-      texItem=texItem->next;
+      texItem = texItem->next;
     }
   } else {
-    return static_cast<int32_t>(reinterpret_cast<gltexture*>(tex)->width);
+    return static_cast<int32_t>(reinterpret_cast<gltexture *>(tex)->width);
   }
 
   return 0;
@@ -908,19 +909,19 @@ int CALL HGE_Impl::Texture_GetWidth(HTEXTURE tex, bool bOriginal)
 
 int CALL HGE_Impl::Texture_GetHeight(HTEXTURE tex, bool bOriginal)
 {
-  CTextureList *texItem=textures;
+  CTextureList *texItem = textures;
 
-  if(bOriginal) {
-    while(texItem) {
-      if(texItem->tex==tex) {
+  if (bOriginal) {
+    while (texItem) {
+      if (texItem->tex == tex) {
         return texItem->height;
       }
 
-      texItem=texItem->next;
+      texItem = texItem->next;
     }
   } else {
     return static_cast<int32_t>(
-             reinterpret_cast<gltexture*>(tex)->height
+             reinterpret_cast<gltexture *>(tex)->height
            );
   }
 
@@ -941,7 +942,7 @@ bool CALL HGE_Impl::HGEEXT_Texture_PushYUV422(HTEXTURE tex, const uint8_t *yuv)
     return false;
   }
 
-  gltexture *pTex= reinterpret_cast<gltexture*>(tex);
+  gltexture *pTex = reinterpret_cast<gltexture *>(tex);
   assert(!pTex->lock_pixels);
 
   if (pTex->lost) { // just reupload the whole thing.
@@ -966,10 +967,10 @@ bool CALL HGE_Impl::HGEEXT_Texture_PushYUV422(HTEXTURE tex, const uint8_t *yuv)
   return true;
 }
 
-uint32_t * CALL HGE_Impl::Texture_Lock(HTEXTURE tex, bool bReadOnly, int left, int top, int width,
-                                       int height)
+uint32_t *CALL HGE_Impl::Texture_Lock(HTEXTURE tex, bool bReadOnly, int left, int top, int width,
+                                      int height)
 {
-  gltexture *pTex= reinterpret_cast<gltexture*>(tex);
+  gltexture *pTex = reinterpret_cast<gltexture *>(tex);
 
   if (pTex->lock_pixels) {
     assert(false && "multiple lock of texture...");
@@ -1010,7 +1011,7 @@ uint32_t * CALL HGE_Impl::Texture_Lock(HTEXTURE tex, bool bReadOnly, int left, i
   }
 
   // !!! FIXME: is this right?
-  if((width == 0) && (height == 0)) {
+  if ((width == 0) && (height == 0)) {
     width = static_cast<int32_t>(pTex->width);
     height = static_cast<int32_t>(pTex->height);
   }
@@ -1037,7 +1038,7 @@ uint32_t * CALL HGE_Impl::Texture_Lock(HTEXTURE tex, bool bReadOnly, int left, i
   if (pTex->is_render_target) {
     assert(false && "need to bind fbo before glReadPixels...");
     uint32_t *upsideDown = new uint32_t[width * height];
-    uint32_t *src = upsideDown + ((height-1) * width);
+    uint32_t *src = upsideDown + ((height - 1) * width);
     pOpenGLDevice->glReadPixels(left,
                                 (static_cast<int32_t>(pTex->height) - top) - height,
                                 width, height, GL_RGBA,
@@ -1067,7 +1068,7 @@ uint32_t * CALL HGE_Impl::Texture_Lock(HTEXTURE tex, bool bReadOnly, int left, i
 
 void CALL HGE_Impl::Texture_Unlock(HTEXTURE tex)
 {
-  gltexture *pTex= reinterpret_cast<gltexture*>(tex);
+  gltexture *pTex = reinterpret_cast<gltexture *>(tex);
 
   if (pTex->lock_pixels == NULL) {
     return;  // not locked.
@@ -1091,7 +1092,7 @@ void CALL HGE_Impl::Texture_Unlock(HTEXTURE tex)
     } else {
       pOpenGLDevice->glBindTexture(pOpenGLDevice->TextureTarget, pTex->name);
       pOpenGLDevice->glTexSubImage2D(pOpenGLDevice->TextureTarget, 0, pTex->lock_x,
-                                     ((static_cast<int32_t>(pTex->height) - pTex->lock_y)-pTex->lock_height),
+                                     ((static_cast<int32_t>(pTex->height) - pTex->lock_y) - pTex->lock_height),
                                      pTex->lock_width, pTex->lock_height, GL_RGBA,
                                      GL_UNSIGNED_BYTE, pTex->lock_pixels);
       pOpenGLDevice->glBindTexture(pOpenGLDevice->TextureTarget,
@@ -1127,8 +1128,8 @@ static inline void print_vertex(const hgeVertex *v)
 
 void HGE_Impl::_render_batch(bool bEndScene)
 {
-  if(VertArray) {
-    if(nPrim) {
+  if (VertArray) {
+    if (nPrim) {
       const float h = static_cast<float>((pCurTarget) ? pCurTarget->height : nScreenHeight);
 
       // texture rectangles range from 0 to size, not 0 to 1.  :/
@@ -1148,7 +1149,7 @@ void HGE_Impl::_render_batch(bool bEndScene)
         }
       }
 
-      for (int i = 0; i < nPrim*CurPrimType; i++) {
+      for (int i = 0; i < nPrim * CurPrimType; i++) {
         // (0, 0) is the lower left in OpenGL, upper left in D3D.
         VertArray[i].y = h - VertArray[i].y;
 
@@ -1173,16 +1174,16 @@ void HGE_Impl::_render_batch(bool bEndScene)
         col[3] = a;
       }
 
-      switch(CurPrimType) {
+      switch (CurPrimType) {
       case HGEPRIM_QUADS:
         pOpenGLDevice->glDrawElements(GL_TRIANGLES, nPrim * 6, GL_UNSIGNED_SHORT, pIB);
 #if DEBUG_VERTICES
 
-        for (int i = 0; i < nPrim*6; i+=3) {
+        for (int i = 0; i < nPrim * 6; i += 3) {
           printf("QUAD'S TRIANGLE:\n");
-          print_vertex(&pVB[pIB[i+0]]);
-          print_vertex(&pVB[pIB[i+1]]);
-          print_vertex(&pVB[pIB[i+2]]);
+          print_vertex(&pVB[pIB[i + 0]]);
+          print_vertex(&pVB[pIB[i + 1]]);
+          print_vertex(&pVB[pIB[i + 2]]);
         }
 
         printf("DONE.\n");
@@ -1198,10 +1199,10 @@ void HGE_Impl::_render_batch(bool bEndScene)
         break;
       }
 
-      nPrim=0;
+      nPrim = 0;
     }
 
-    if(bEndScene) {
+    if (bEndScene) {
       VertArray = 0;
     } else {
       VertArray = pVB;
@@ -1211,24 +1212,24 @@ void HGE_Impl::_render_batch(bool bEndScene)
 
 void HGE_Impl::_SetBlendMode(int blend)
 {
-  if((blend & BLEND_ALPHABLEND) != (CurBlendMode & BLEND_ALPHABLEND)) {
-    if(blend & BLEND_ALPHABLEND) {
+  if ((blend & BLEND_ALPHABLEND) != (CurBlendMode & BLEND_ALPHABLEND)) {
+    if (blend & BLEND_ALPHABLEND) {
       pOpenGLDevice->glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     } else {
       pOpenGLDevice->glBlendFunc(GL_SRC_ALPHA, GL_ONE);
     }
   }
 
-  if((blend & BLEND_ZWRITE) != (CurBlendMode & BLEND_ZWRITE)) {
-    if(blend & BLEND_ZWRITE) {
+  if ((blend & BLEND_ZWRITE) != (CurBlendMode & BLEND_ZWRITE)) {
+    if (blend & BLEND_ZWRITE) {
       pOpenGLDevice->glDepthMask(GL_TRUE);
     } else {
       pOpenGLDevice->glDepthMask(GL_FALSE);
     }
   }
 
-  if((blend & BLEND_COLORADD) != (CurBlendMode & BLEND_COLORADD)) {
-    if(blend & BLEND_COLORADD) {
+  if ((blend & BLEND_COLORADD) != (CurBlendMode & BLEND_COLORADD)) {
+    if (blend & BLEND_COLORADD) {
       pOpenGLDevice->glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_ADD);
     } else {
       pOpenGLDevice->glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
@@ -1440,21 +1441,21 @@ bool HGE_Impl::_GfxInit()
     return false;  // already called _PostError().
   }
 
-  nScreenBPP=SDL_GetVideoSurface()->format->BitsPerPixel;
+  nScreenBPP = SDL_GetVideoSurface()->format->BitsPerPixel;
 
   _AdjustWindow();
 
-  System_Log("Mode: %d x %d\n",nScreenWidth,nScreenHeight);
+  System_Log("Mode: %d x %d\n", nScreenWidth, nScreenHeight);
 
 // Create vertex batch buffer
 
-  VertArray=0;
-  textures=0;
-  IndexBufferObject=0;
+  VertArray = 0;
+  textures = 0;
+  IndexBufferObject = 0;
 
 // Init all stuff that can be lost
 
-  if(!_init_lost()) {
+  if (!_init_lost()) {
     return false;
   }
 
@@ -1474,14 +1475,14 @@ void HGE_Impl::_AdjustWindow()
 
 void HGE_Impl::_Resize(int /*width*/, int /*height*/)
 {
-  if(hwndParent) {
+  if (hwndParent) {
     //if(procFocusLostFunc) procFocusLostFunc();
     STUBBED("resize");
 #if 0
-    d3dppW.BackBufferWidth=width;
-    d3dppW.BackBufferHeight=height;
-    nScreenWidth=width;
-    nScreenHeight=height;
+    d3dppW.BackBufferWidth = width;
+    d3dppW.BackBufferHeight = height;
+    nScreenWidth = width;
+    nScreenHeight = height;
 
     _SetProjectionMatrix(nScreenWidth, nScreenHeight);
     _GfxRestore();
@@ -1495,24 +1496,24 @@ void HGE_Impl::_GfxDone()
 {
   //CRenderTargetList *target=pTargets;
 
-  while(textures) {
+  while (textures) {
     Texture_Free(textures->tex);
   }
 
-  while(pTargets) {
+  while (pTargets) {
     Target_Free(reinterpret_cast<HTARGET>(pTargets));
   }
 
-  textures=0;
-  pTargets=0;
+  textures = 0;
+  pTargets = 0;
 
   VertArray = 0;
   delete[] pVB;
-  pVB=0;
+  pVB = 0;
   delete[] pIB;
-  pIB=0;
+  pIB = 0;
 
-  if(pOpenGLDevice) {
+  if (pOpenGLDevice) {
     if (pOpenGLDevice->have_GL_ARB_vertex_buffer_object) {
       if (IndexBufferObject != 0) {
         pOpenGLDevice->glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER, 0);
@@ -1522,22 +1523,22 @@ void HGE_Impl::_GfxDone()
     }
 
     delete pOpenGLDevice;
-    pOpenGLDevice=0;
+    pOpenGLDevice = 0;
   }
 }
 
 
 bool HGE_Impl::_GfxRestore()
 {
-  if(!pOpenGLDevice) {
+  if (!pOpenGLDevice) {
     return false;
   }
 
   delete[] pVB;
-  pVB=0;
+  pVB = 0;
 
   delete[] pIB;
-  pIB=0;
+  pIB = 0;
 
   _UnloadOpenGLEntryPoints();
 
@@ -1545,11 +1546,11 @@ bool HGE_Impl::_GfxRestore()
     return false;
   }
 
-  if(!_init_lost()) {
+  if (!_init_lost()) {
     return false;
   }
 
-  if(procGfxRestoreFunc) {
+  if (procGfxRestoreFunc) {
     return procGfxRestoreFunc();
   }
 
@@ -1572,14 +1573,14 @@ bool HGE_Impl::_init_lost()
     t->name = 0;
   }
 
-  CRenderTargetList *target=pTargets;
+  CRenderTargetList *target = pTargets;
 
-  while(target) {
+  while (target) {
     gltexture *tex = reinterpret_cast<gltexture *>(target->tex);
     _BindTexture(tex);  // force texture recreation.
     _BindTexture(NULL);
     _BuildTarget(target, tex ? tex->name : 0, target->width, target->height, target->depth != 0);
-    target=target->next;
+    target = target->next;
   }
 
 // Create Vertex buffer
@@ -1597,18 +1598,18 @@ bool HGE_Impl::_init_lost()
   pVB = new hgeVertex[VERTEX_BUFFER_SIZE];
 
 // Create and setup Index buffer
-  pIB = new GLushort[VERTEX_BUFFER_SIZE*6/4];
+  pIB = new GLushort[VERTEX_BUFFER_SIZE * 6 / 4];
   GLushort *pIndices = pIB;
   int n = 0;
 
-  for(int i=0; i<VERTEX_BUFFER_SIZE/4; i++) {
+  for (int i = 0; i < VERTEX_BUFFER_SIZE / 4; i++) {
     *pIndices++ = static_cast<GLushort>(n);
-    *pIndices++ = static_cast<GLushort>(n+1);
-    *pIndices++ = static_cast<GLushort>(n+2);
-    *pIndices++ = static_cast<GLushort>(n+2);
-    *pIndices++ = static_cast<GLushort>(n+3);
+    *pIndices++ = static_cast<GLushort>(n + 1);
+    *pIndices++ = static_cast<GLushort>(n + 2);
+    *pIndices++ = static_cast<GLushort>(n + 2);
+    *pIndices++ = static_cast<GLushort>(n + 3);
     *pIndices++ = static_cast<GLushort>(n);
-    n+=4;
+    n += 4;
   }
 
 #if !DEBUG_VERTICES  // need pIB for DEBUG_VERTICES.
@@ -1618,9 +1619,9 @@ bool HGE_Impl::_init_lost()
     pOpenGLDevice->glGenBuffersARB(1, &IndexBufferObject);
     pOpenGLDevice->glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER, IndexBufferObject);
     pOpenGLDevice->glBufferDataARB(GL_ELEMENT_ARRAY_BUFFER,
-                                   sizeof (GLushort) * ((VERTEX_BUFFER_SIZE*6)/4), pIB, GL_STATIC_DRAW);
+                                   sizeof (GLushort) * ((VERTEX_BUFFER_SIZE * 6) / 4), pIB, GL_STATIC_DRAW);
     delete[] pIB;
-    pIB=0;
+    pIB = 0;
   }
 
 #endif
@@ -1675,8 +1676,8 @@ bool HGE_Impl::_init_lost()
   pOpenGLDevice->glTexParameteri(pOpenGLDevice->TextureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
   pOpenGLDevice->glTexParameteri(pOpenGLDevice->TextureTarget, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
 
-  nPrim=0;
-  CurPrimType=HGEPRIM_QUADS;
+  nPrim = 0;
+  CurPrimType = HGEPRIM_QUADS;
   CurBlendMode = BLEND_DEFAULT;
   CurTexture = 0;
 

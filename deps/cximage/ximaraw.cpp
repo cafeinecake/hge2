@@ -19,7 +19,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 bool CxImageRAW::Decode(CxFile *hFile)
 {
-  if (hFile==NULL) {
+  if (hFile == NULL) {
     return false;
   }
 
@@ -39,7 +39,7 @@ bool CxImageRAW::Decode(CxFile *hFile)
     // setup library options, see dcr_print_manual for the available switches
     // call dcr_parse_command_line_options(&dcr,0,0,0) to set default options
     // if (dcr_parse_command_line_options(&dcr,argc,argv,&arg))
-    if (dcr_parse_command_line_options(&dcr,0,0,0))
+    if (dcr_parse_command_line_options(&dcr, 0, 0, 0))
     {
       cx_throw("CxImageRAW: unknown option");
     }
@@ -51,12 +51,12 @@ bool CxImageRAW::Decode(CxFile *hFile)
     }
 
     // install file manager
-    CxFileRaw src(hFile,&dcr);
+    CxFileRaw src(hFile, &dcr);
 
     // check file header
     dcr_identify(&dcr);
 
-    if(!dcr.is_raw)
+    if (!dcr.is_raw)
     {
       cx_throw("CxImageRAW: not a raw image");
     }
@@ -76,7 +76,7 @@ bool CxImageRAW::Decode(CxFile *hFile)
     if (info.nEscape == -1)
     {
       head.biWidth = dcr.width;
-      head.biHeight= dcr.height;
+      head.biHeight = dcr.height;
       info.dwType = CXIMAGE_FORMAT_RAW;
       cx_throw("output dimensions returned");
     }
@@ -96,7 +96,7 @@ bool CxImageRAW::Decode(CxFile *hFile)
     }
 
     // allocate memory for the image
-    dcr.image = (ushort (*)[4]) calloc (dcr.iheight*dcr.iwidth, sizeof *dcr.image);
+    dcr.image = (ushort (*)[4]) calloc (dcr.iheight * dcr.iwidth, sizeof * dcr.image);
     dcr_merror (&dcr, dcr.image, szClass);
 
     if (dcr.meta_length)
@@ -115,11 +115,11 @@ bool CxImageRAW::Decode(CxFile *hFile)
       dcr_remove_zeroes(&dcr);
     }
 
-    dcr_bad_pixels(&dcr,dcr.opt.bpfile);
+    dcr_bad_pixels(&dcr, dcr.opt.bpfile);
 
     if (dcr.opt.dark_frame)
     {
-      dcr_subtract (&dcr,dcr.opt.dark_frame);
+      dcr_subtract (&dcr, dcr.opt.dark_frame);
     }
 
     dcr.quality = 2 + !dcr.fuji_width;
@@ -177,7 +177,7 @@ bool CxImageRAW::Decode(CxFile *hFile)
     {
       int32_t i;
 
-      for (dcr.colors=3, i=0; i < dcr.height*dcr.width; i++) {
+      for (dcr.colors = 3, i = 0; i < dcr.height * dcr.width; i++) {
         dcr.image[i][1] = (dcr.image[i][1] + dcr.image[i][3]) >> 1;
       }
     }
@@ -224,16 +224,16 @@ bool CxImageRAW::Decode(CxFile *hFile)
 
     if (dcr.flip & 4)
     {
-      SWAP(dcr.height,dcr.width);
+      SWAP(dcr.height, dcr.width);
     }
 
     // ready to transfer data from dcr.image
-    if (!Create(dcr.width,dcr.height,24,CXIMAGE_FORMAT_RAW))
+    if (!Create(dcr.width, dcr.height, 24, CXIMAGE_FORMAT_RAW))
     {
       cx_throw("");
     }
 
-    uchar  *ppm = (uchar *) calloc (dcr.width, dcr.colors*dcr.opt.output_bps/8);
+    uchar  *ppm = (uchar *) calloc (dcr.width, dcr.colors *dcr.opt.output_bps / 8);
     ushort *ppm2 = (ushort *) ppm;
     dcr_merror (&dcr, ppm, szClass);
 
@@ -249,30 +249,30 @@ bool CxImageRAW::Decode(CxFile *hFile)
     cstep = dcr_flip_index (&dcr, 0, 1) - soff;
     rstep = dcr_flip_index (&dcr, 1, 0) - dcr_flip_index (&dcr, 0, dcr.width);
 
-    for (row=0; row < dcr.height; row++, soff += rstep)
+    for (row = 0; row < dcr.height; row++, soff += rstep)
     {
-      for (col=0; col < dcr.width; col++, soff += cstep) {
+      for (col = 0; col < dcr.width; col++, soff += cstep) {
         if (dcr.opt.output_bps == 8)
-          for (c=0; c < dcr.colors; c++) {
-            ppm [col*dcr.colors+c] = lut[dcr.image[soff][c]];
+          for (c = 0; c < dcr.colors; c++) {
+            ppm [col * dcr.colors + c] = lut[dcr.image[soff][c]];
           }
         else
-          for (c=0; c < dcr.colors; c++) {
-            ppm2[col*dcr.colors+c] = dcr.image[soff][c];
+          for (c = 0; c < dcr.colors; c++) {
+            ppm2[col * dcr.colors + c] = dcr.image[soff][c];
           }
       }
 
       if (dcr.opt.output_bps == 16 && !dcr.opt.output_tiff && htons(0x55aa) != 0x55aa)
 #if defined(_LINUX) || defined(__APPLE__)
-        swab ((char*)ppm2, (char*)ppm2, dcr.width*dcr.colors*2);
+        swab ((char *)ppm2, (char *)ppm2, dcr.width * dcr.colors * 2);
 
 #else
-        _swab ((char*)ppm2, (char*)ppm2, dcr.width*dcr.colors*2);
+        _swab ((char *)ppm2, (char *)ppm2, dcr.width * dcr.colors * 2);
 #endif
 
-      uint32_t size = dcr.width * (dcr.colors*dcr.opt.output_bps/8);
-      RGBtoBGR(ppm,size);
-      memcpy(GetBits(dcr.height - 1 - row), ppm, min(size,GetEffWidth()));
+      uint32_t size = dcr.width * (dcr.colors * dcr.opt.output_bps / 8);
+      RGBtoBGR(ppm, size);
+      memcpy(GetBits(dcr.height - 1 - row), ppm, min(size, GetEffWidth()));
     }
 
     free (ppm);
@@ -284,9 +284,9 @@ bool CxImageRAW::Decode(CxFile *hFile)
 
     dcr_cleanup_dcraw(&dcr);
 
-    if (strcmp(message,""))
+    if (strcmp(message, ""))
     {
-      strncpy(info.szLastError,message,255);
+      strncpy(info.szLastError, message, 255);
     }
 
     if (info.nEscape == -1 && info.dwType == CXIMAGE_FORMAT_RAW)
@@ -325,7 +325,7 @@ bool CxImageRAW::GetExifThumbnail(const TCHAR *filename, const TCHAR *outname, i
     // setup library options, see dcr_print_manual for the available switches
     // call dcr_parse_command_line_options(&dcr,0,0,0) to set default options
     // if (dcr_parse_command_line_options(&dcr,argc,argv,&arg))
-    if (dcr_parse_command_line_options(&dcr,0,0,0))
+    if (dcr_parse_command_line_options(&dcr, 0, 0, 0))
     {
       cx_throw("CxImageRAW: unknown option");
     }
@@ -337,12 +337,12 @@ bool CxImageRAW::GetExifThumbnail(const TCHAR *filename, const TCHAR *outname, i
     }
 
     // install file manager
-    CxFileRaw src(&file,&dcr);
+    CxFileRaw src(&file, &dcr);
 
     // check file header
     dcr_identify(&dcr);
 
-    if(!dcr.is_raw)
+    if (!dcr.is_raw)
     {
       cx_throw("CxImageRAW: not a raw image");
     }
@@ -355,8 +355,8 @@ bool CxImageRAW::GetExifThumbnail(const TCHAR *filename, const TCHAR *outname, i
     // THUMB.
     if (dcr.thumb_offset != 0)
     {
-      FILE* file = _tfopen(outname, _T("wb"));
-      DCRAW* p = &dcr;
+      FILE *file = _tfopen(outname, _T("wb"));
+      DCRAW *p = &dcr;
       dcr_fseek(dcr.obj_, dcr.thumb_offset, SEEK_SET);
       dcr.write_thumb(&dcr, file);
       fclose(file);
@@ -390,9 +390,9 @@ bool CxImageRAW::GetExifThumbnail(const TCHAR *filename, const TCHAR *outname, i
 
     dcr_cleanup_dcraw(&dcr);
 
-    if (strcmp(message,""))
+    if (strcmp(message, ""))
     {
-      strncpy(info.szLastError,message,255);
+      strncpy(info.szLastError, message, 255);
     }
 
     if (info.nEscape == -1 && info.dwType == CXIMAGE_FORMAT_RAW)
@@ -412,7 +412,7 @@ bool CxImageRAW::GetExifThumbnail(const TCHAR *filename, const TCHAR *outname, i
 ////////////////////////////////////////////////////////////////////////////////
 #if CXIMAGE_SUPPORT_ENCODE
 ////////////////////////////////////////////////////////////////////////////////
-bool CxImageRAW::Encode(CxFile * hFile)
+bool CxImageRAW::Encode(CxFile *hFile)
 {
   if (hFile == NULL) {
     return false;

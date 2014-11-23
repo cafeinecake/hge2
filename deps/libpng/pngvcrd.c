@@ -28,7 +28,7 @@
 
 #if defined(PNG_ASSEMBLER_CODE_SUPPORTED) && defined(PNG_USE_PNGVCRD)
 
-static int mmx_supported=2;
+static int mmx_supported = 2;
 
 
 int PNGAPI
@@ -112,7 +112,7 @@ png_combine_row(png_structp png_ptr, png_bytep row, int mask)
   const int png_pass_inc[7] = {8, 8, 4, 4, 2, 2, 1};
 #endif
 
-  png_debug(1,"in png_combine_row_asm\n");
+  png_debug(1, "in png_combine_row_asm\n");
 
   if (mmx_supported == 2) {
 #if !defined(PNG_1_0_X)
@@ -298,7 +298,7 @@ png_combine_row(png_structp png_ptr, png_bytep row, int mask)
         int m;
         int diff, unmask;
 
-        __int64 mask0=0x0102040810204080;
+        __int64 mask0 = 0x0102040810204080;
 
 #if !defined(PNG_1_0_X)
 
@@ -312,54 +312,54 @@ png_combine_row(png_structp png_ptr, png_bytep row, int mask)
       dstptr = row;
       m = 0x80;
       unmask = ~mask;
-      len  = png_ptr->width &~7;  //reduce to multiple of 8
+      len  = png_ptr->width & ~7; //reduce to multiple of 8
       diff = png_ptr->width & 7;  //amount lost
 
       _asm {
         movd       mm7, unmask   //load bit pattern
-        psubb      mm6,mm6       //zero mm6
-        punpcklbw  mm7,mm7
-        punpcklwd  mm7,mm7
-        punpckldq  mm7,mm7       //fill register with 8 masks
+        psubb      mm6, mm6      //zero mm6
+        punpcklbw  mm7, mm7
+        punpcklwd  mm7, mm7
+        punpckldq  mm7, mm7      //fill register with 8 masks
 
-        movq       mm0,mask0
+        movq       mm0, mask0
 
-        pand       mm0,mm7       //nonzero if keep byte
-        pcmpeqb    mm0,mm6       //zeros->1s, v versa
+        pand       mm0, mm7      //nonzero if keep byte
+        pcmpeqb    mm0, mm6      //zeros->1s, v versa
 
-        mov        ecx,len       //load length of line (pixels)
-        mov        esi,srcptr    //load source
-        mov        ebx,dstptr    //load dest
-        cmp        ecx,0         //lcr
+        mov        ecx, len      //load length of line (pixels)
+        mov        esi, srcptr   //load source
+        mov        ebx, dstptr   //load dest
+        cmp        ecx, 0        //lcr
         je         mainloop8end
 
         mainloop8:
-        movq       mm4,[esi]
-          pand       mm4,mm0
-          movq       mm6,mm0
-          pandn      mm6,[ebx]
-          por        mm4,mm6
-          movq       [ebx],mm4
+        movq       mm4, [esi]
+          pand       mm4, mm0
+          movq       mm6, mm0
+          pandn      mm6, [ebx]
+          por        mm4, mm6
+          movq       [ebx], mm4
 
-          add        esi,8         //inc by 8 bytes processed
-          add        ebx,8
-          sub        ecx,8         //dec by 8 pixels processed
+          add        esi, 8        //inc by 8 bytes processed
+          add        ebx, 8
+          sub        ecx, 8        //dec by 8 pixels processed
 
           ja         mainloop8
           mainloop8end:
 
-          mov        ecx,diff
-          cmp        ecx,0
+          mov        ecx, diff
+          cmp        ecx, 0
           jz         end8
 
-          mov        edx,mask
-          sal        edx,24        //make low byte the high byte
+          mov        edx, mask
+          sal        edx, 24       //make low byte the high byte
 
           secondloop8:
-          sal        edx,1         //move high bit to CF
+          sal        edx, 1        //move high bit to CF
           jnc        skip8         //if CF = 0
-          mov        al,[esi]
-          mov        [ebx],al
+          mov        al, [esi]
+          mov        [ebx], al
           skip8:
           inc        esi
           inc        ebx
@@ -377,12 +377,12 @@ png_combine_row(png_structp png_ptr, png_bytep row, int mask)
         int offset_table[7] = {0, 4, 0, 2, 0, 1, 0};
 
         pixel_bytes = (png_ptr->row_info.pixel_depth >> 3);
-        srcptr = png_ptr->row_buf + 1 + offset_table[png_ptr->pass]*
+        srcptr = png_ptr->row_buf + 1 + offset_table[png_ptr->pass] *
                  pixel_bytes;
-        dstptr = row + offset_table[png_ptr->pass]*pixel_bytes;
-        initial_val = offset_table[png_ptr->pass]*pixel_bytes;
-        final_val = png_ptr->width*pixel_bytes;
-        incr1 = (disp)*pixel_bytes;
+        dstptr = row + offset_table[png_ptr->pass] * pixel_bytes;
+        initial_val = offset_table[png_ptr->pass] * pixel_bytes;
+        final_val = png_ptr->width * pixel_bytes;
+        incr1 = (disp) * pixel_bytes;
 
         for (i = initial_val; i < final_val; i += incr1) {
           png_memcpy(dstptr, srcptr, pixel_bytes);
@@ -399,8 +399,8 @@ png_combine_row(png_structp png_ptr, png_bytep row, int mask)
         png_bytep dstptr;
         png_uint_32 len;
         int unmask, diff;
-        __int64 mask1=0x0101020204040808,
-        mask0=0x1010202040408080;
+        __int64 mask1 = 0x0101020204040808,
+        mask0 = 0x1010202040408080;
 
 #if !defined(PNG_1_0_X)
 
@@ -414,68 +414,68 @@ png_combine_row(png_structp png_ptr, png_bytep row, int mask)
       dstptr = row;
 
       unmask = ~mask;
-      len     = (png_ptr->width)&~7;
-        diff = (png_ptr->width)&7;
+      len     = (png_ptr->width) & ~7;
+        diff = (png_ptr->width) & 7;
         _asm {
           movd       mm7, unmask       //load bit pattern
-          psubb      mm6,mm6           //zero mm6
-          punpcklbw  mm7,mm7
-          punpcklwd  mm7,mm7
-          punpckldq  mm7,mm7           //fill register with 8 masks
+          psubb      mm6, mm6          //zero mm6
+          punpcklbw  mm7, mm7
+          punpcklwd  mm7, mm7
+          punpckldq  mm7, mm7          //fill register with 8 masks
 
-          movq       mm0,mask0
-          movq       mm1,mask1
+          movq       mm0, mask0
+          movq       mm1, mask1
 
-          pand       mm0,mm7
-          pand       mm1,mm7
+          pand       mm0, mm7
+          pand       mm1, mm7
 
-          pcmpeqb    mm0,mm6
-          pcmpeqb    mm1,mm6
+          pcmpeqb    mm0, mm6
+          pcmpeqb    mm1, mm6
 
-          mov        ecx,len           //load length of line
-          mov        esi,srcptr        //load source
-          mov        ebx,dstptr        //load dest
-          cmp        ecx,0             //lcr
+          mov        ecx, len          //load length of line
+          mov        esi, srcptr       //load source
+          mov        ebx, dstptr       //load dest
+          cmp        ecx, 0            //lcr
           jz         mainloop16end
 
           mainloop16:
-          movq       mm4,[esi]
-          pand       mm4,mm0
-          movq       mm6,mm0
-          movq       mm7,[ebx]
-          pandn      mm6,mm7
-          por        mm4,mm6
-          movq       [ebx],mm4
+          movq       mm4, [esi]
+          pand       mm4, mm0
+          movq       mm6, mm0
+          movq       mm7, [ebx]
+          pandn      mm6, mm7
+          por        mm4, mm6
+          movq       [ebx], mm4
 
-          movq       mm5,[esi+8]
-          pand       mm5,mm1
-          movq       mm7,mm1
-          movq       mm6,[ebx+8]
-          pandn      mm7,mm6
-          por        mm5,mm7
-          movq       [ebx+8],mm5
+          movq       mm5, [esi+8]
+          pand       mm5, mm1
+          movq       mm7, mm1
+          movq       mm6, [ebx+8]
+          pandn      mm7, mm6
+          por        mm5, mm7
+          movq       [ebx+8], mm5
 
-          add        esi,16            //inc by 16 bytes processed
-          add        ebx,16
-          sub        ecx,8             //dec by 8 pixels processed
+          add        esi, 16           //inc by 16 bytes processed
+          add        ebx, 16
+          sub        ecx, 8            //dec by 8 pixels processed
 
           ja         mainloop16
 
           mainloop16end:
-          mov        ecx,diff
-          cmp        ecx,0
+          mov        ecx, diff
+          cmp        ecx, 0
           jz         end16
 
-          mov        edx,mask
-          sal        edx,24            //make low byte the high byte
+          mov        edx, mask
+          sal        edx, 24           //make low byte the high byte
           secondloop16:
-          sal        edx,1             //move high bit to CF
+          sal        edx, 1            //move high bit to CF
           jnc        skip16            //if CF = 0
-          mov        ax,[esi]
-          mov        [ebx],ax
+          mov        ax, [esi]
+          mov        [ebx], ax
           skip16:
-          add        esi,2
-          add        ebx,2
+          add        esi, 2
+          add        ebx, 2
 
           dec        ecx
           jnz        secondloop16
@@ -490,12 +490,12 @@ png_combine_row(png_structp png_ptr, png_bytep row, int mask)
         int offset_table[7] = {0, 4, 0, 2, 0, 1, 0};
 
         pixel_bytes = (png_ptr->row_info.pixel_depth >> 3);
-        srcptr = png_ptr->row_buf + 1 + offset_table[png_ptr->pass]*
+        srcptr = png_ptr->row_buf + 1 + offset_table[png_ptr->pass] *
                  pixel_bytes;
-        dstptr = row + offset_table[png_ptr->pass]*pixel_bytes;
-        initial_val = offset_table[png_ptr->pass]*pixel_bytes;
-        final_val = png_ptr->width*pixel_bytes;
-        incr1 = (disp)*pixel_bytes;
+        dstptr = row + offset_table[png_ptr->pass] * pixel_bytes;
+        initial_val = offset_table[png_ptr->pass] * pixel_bytes;
+        final_val = png_ptr->width * pixel_bytes;
+        incr1 = (disp) * pixel_bytes;
 
         for (i = initial_val; i < final_val; i += incr1) {
           png_memcpy(dstptr, srcptr, pixel_bytes);
@@ -513,16 +513,16 @@ png_combine_row(png_structp png_ptr, png_bytep row, int mask)
         png_uint_32 len;
         int unmask, diff;
 
-        __int64 mask2=0x0101010202020404,  //24bpp
-        mask1=0x0408080810101020,
-        mask0=0x2020404040808080;
+        __int64 mask2 = 0x0101010202020404, //24bpp
+        mask1 = 0x0408080810101020,
+        mask0 = 0x2020404040808080;
 
         srcptr = png_ptr->row_buf + 1;
         dstptr = row;
 
         unmask = ~mask;
-        len     = (png_ptr->width)&~7;
-        diff = (png_ptr->width)&7;
+        len     = (png_ptr->width) & ~7;
+        diff = (png_ptr->width) & 7;
 
 #if !defined(PNG_1_0_X)
 
@@ -534,79 +534,79 @@ png_combine_row(png_structp png_ptr, png_bytep row, int mask)
     {
       _asm {
         movd       mm7, unmask       //load bit pattern
-        psubb      mm6,mm6           //zero mm6
-        punpcklbw  mm7,mm7
-        punpcklwd  mm7,mm7
-        punpckldq  mm7,mm7           //fill register with 8 masks
+        psubb      mm6, mm6          //zero mm6
+        punpcklbw  mm7, mm7
+        punpcklwd  mm7, mm7
+        punpckldq  mm7, mm7          //fill register with 8 masks
 
-        movq       mm0,mask0
-        movq       mm1,mask1
-        movq       mm2,mask2
+        movq       mm0, mask0
+        movq       mm1, mask1
+        movq       mm2, mask2
 
-        pand       mm0,mm7
-        pand       mm1,mm7
-        pand       mm2,mm7
+        pand       mm0, mm7
+        pand       mm1, mm7
+        pand       mm2, mm7
 
-        pcmpeqb    mm0,mm6
-        pcmpeqb    mm1,mm6
-        pcmpeqb    mm2,mm6
+        pcmpeqb    mm0, mm6
+        pcmpeqb    mm1, mm6
+        pcmpeqb    mm2, mm6
 
-        mov        ecx,len           //load length of line
-        mov        esi,srcptr        //load source
-        mov        ebx,dstptr        //load dest
-        cmp        ecx,0
+        mov        ecx, len          //load length of line
+        mov        esi, srcptr       //load source
+        mov        ebx, dstptr       //load dest
+        cmp        ecx, 0
         jz         mainloop24end
 
         mainloop24:
-        movq       mm4,[esi]
-          pand       mm4,mm0
-          movq       mm6,mm0
-          movq       mm7,[ebx]
-          pandn      mm6,mm7
-          por        mm4,mm6
-          movq       [ebx],mm4
+        movq       mm4, [esi]
+          pand       mm4, mm0
+          movq       mm6, mm0
+          movq       mm7, [ebx]
+          pandn      mm6, mm7
+          por        mm4, mm6
+          movq       [ebx], mm4
 
 
-          movq       mm5,[esi+8]
-          pand       mm5,mm1
-          movq       mm7,mm1
-          movq       mm6,[ebx+8]
-          pandn      mm7,mm6
-          por        mm5,mm7
-          movq       [ebx+8],mm5
+          movq       mm5, [esi+8]
+          pand       mm5, mm1
+          movq       mm7, mm1
+          movq       mm6, [ebx+8]
+          pandn      mm7, mm6
+          por        mm5, mm7
+          movq       [ebx+8], mm5
 
-          movq       mm6,[esi+16]
-          pand       mm6,mm2
-          movq       mm4,mm2
-          movq       mm7,[ebx+16]
-          pandn      mm4,mm7
-          por        mm6,mm4
-          movq       [ebx+16],mm6
+          movq       mm6, [esi+16]
+          pand       mm6, mm2
+          movq       mm4, mm2
+          movq       mm7, [ebx+16]
+          pandn      mm4, mm7
+          por        mm6, mm4
+          movq       [ebx+16], mm6
 
-          add        esi,24            //inc by 24 bytes processed
-          add        ebx,24
-          sub        ecx,8             //dec by 8 pixels processed
+          add        esi, 24           //inc by 24 bytes processed
+          add        ebx, 24
+          sub        ecx, 8            //dec by 8 pixels processed
 
           ja         mainloop24
 
           mainloop24end:
-          mov        ecx,diff
-          cmp        ecx,0
+          mov        ecx, diff
+          cmp        ecx, 0
           jz         end24
 
-          mov        edx,mask
-          sal        edx,24            //make low byte the high byte
+          mov        edx, mask
+          sal        edx, 24           //make low byte the high byte
           secondloop24:
-          sal        edx,1             //move high bit to CF
+          sal        edx, 1            //move high bit to CF
           jnc        skip24            //if CF = 0
-          mov        ax,[esi]
-          mov        [ebx],ax
-          xor        eax,eax
-          mov        al,[esi+2]
-          mov        [ebx+2],al
+          mov        ax, [esi]
+          mov        [ebx], ax
+          xor        eax, eax
+          mov        al, [esi+2]
+          mov        [ebx+2], al
           skip24:
-          add        esi,3
-          add        ebx,3
+          add        esi, 3
+          add        ebx, 3
 
           dec        ecx
           jnz        secondloop24
@@ -622,12 +622,12 @@ png_combine_row(png_structp png_ptr, png_bytep row, int mask)
         int offset_table[7] = {0, 4, 0, 2, 0, 1, 0};
 
         pixel_bytes = (png_ptr->row_info.pixel_depth >> 3);
-        srcptr = png_ptr->row_buf + 1 + offset_table[png_ptr->pass]*
+        srcptr = png_ptr->row_buf + 1 + offset_table[png_ptr->pass] *
                  pixel_bytes;
-        dstptr = row + offset_table[png_ptr->pass]*pixel_bytes;
-        initial_val = offset_table[png_ptr->pass]*pixel_bytes;
-        final_val = png_ptr->width*pixel_bytes;
-        incr1 = (disp)*pixel_bytes;
+        dstptr = row + offset_table[png_ptr->pass] * pixel_bytes;
+        initial_val = offset_table[png_ptr->pass] * pixel_bytes;
+        final_val = png_ptr->width * pixel_bytes;
+        incr1 = (disp) * pixel_bytes;
 
         for (i = initial_val; i < final_val; i += incr1) {
           png_memcpy(dstptr, srcptr, pixel_bytes);
@@ -645,17 +645,17 @@ png_combine_row(png_structp png_ptr, png_bytep row, int mask)
         png_uint_32 len;
         int unmask, diff;
 
-        __int64 mask3=0x0101010102020202,  //32bpp
-        mask2=0x0404040408080808,
-        mask1=0x1010101020202020,
-        mask0=0x4040404080808080;
+        __int64 mask3 = 0x0101010102020202, //32bpp
+        mask2 = 0x0404040408080808,
+        mask1 = 0x1010101020202020,
+        mask0 = 0x4040404080808080;
 
         srcptr = png_ptr->row_buf + 1;
         dstptr = row;
 
         unmask = ~mask;
-        len     = (png_ptr->width)&~7;
-        diff = (png_ptr->width)&7;
+        len     = (png_ptr->width) & ~7;
+        diff = (png_ptr->width) & 7;
 
 #if !defined(PNG_1_0_X)
 
@@ -667,87 +667,87 @@ png_combine_row(png_structp png_ptr, png_bytep row, int mask)
     {
       _asm {
         movd       mm7, unmask       //load bit pattern
-        psubb      mm6,mm6           //zero mm6
-        punpcklbw  mm7,mm7
-        punpcklwd  mm7,mm7
-        punpckldq  mm7,mm7           //fill register with 8 masks
+        psubb      mm6, mm6          //zero mm6
+        punpcklbw  mm7, mm7
+        punpcklwd  mm7, mm7
+        punpckldq  mm7, mm7          //fill register with 8 masks
 
-        movq       mm0,mask0
-        movq       mm1,mask1
-        movq       mm2,mask2
-        movq       mm3,mask3
+        movq       mm0, mask0
+        movq       mm1, mask1
+        movq       mm2, mask2
+        movq       mm3, mask3
 
-        pand       mm0,mm7
-        pand       mm1,mm7
-        pand       mm2,mm7
-        pand       mm3,mm7
+        pand       mm0, mm7
+        pand       mm1, mm7
+        pand       mm2, mm7
+        pand       mm3, mm7
 
-        pcmpeqb    mm0,mm6
-        pcmpeqb    mm1,mm6
-        pcmpeqb    mm2,mm6
-        pcmpeqb    mm3,mm6
+        pcmpeqb    mm0, mm6
+        pcmpeqb    mm1, mm6
+        pcmpeqb    mm2, mm6
+        pcmpeqb    mm3, mm6
 
-        mov        ecx,len           //load length of line
-        mov        esi,srcptr        //load source
-        mov        ebx,dstptr        //load dest
+        mov        ecx, len          //load length of line
+        mov        esi, srcptr       //load source
+        mov        ebx, dstptr       //load dest
 
-        cmp        ecx,0             //lcr
+        cmp        ecx, 0            //lcr
         jz         mainloop32end
 
         mainloop32:
-        movq       mm4,[esi]
-          pand       mm4,mm0
-          movq       mm6,mm0
-          movq       mm7,[ebx]
-          pandn      mm6,mm7
-          por        mm4,mm6
-          movq       [ebx],mm4
+        movq       mm4, [esi]
+          pand       mm4, mm0
+          movq       mm6, mm0
+          movq       mm7, [ebx]
+          pandn      mm6, mm7
+          por        mm4, mm6
+          movq       [ebx], mm4
 
-          movq       mm5,[esi+8]
-          pand       mm5,mm1
-          movq       mm7,mm1
-          movq       mm6,[ebx+8]
-          pandn      mm7,mm6
-          por        mm5,mm7
-          movq       [ebx+8],mm5
+          movq       mm5, [esi+8]
+          pand       mm5, mm1
+          movq       mm7, mm1
+          movq       mm6, [ebx+8]
+          pandn      mm7, mm6
+          por        mm5, mm7
+          movq       [ebx+8], mm5
 
-          movq       mm6,[esi+16]
-          pand       mm6,mm2
-          movq       mm4,mm2
-          movq       mm7,[ebx+16]
-          pandn      mm4,mm7
-          por        mm6,mm4
-          movq       [ebx+16],mm6
+          movq       mm6, [esi+16]
+          pand       mm6, mm2
+          movq       mm4, mm2
+          movq       mm7, [ebx+16]
+          pandn      mm4, mm7
+          por        mm6, mm4
+          movq       [ebx+16], mm6
 
-          movq       mm7,[esi+24]
-          pand       mm7,mm3
-          movq       mm5,mm3
-          movq       mm4,[ebx+24]
-          pandn      mm5,mm4
-          por        mm7,mm5
-          movq       [ebx+24],mm7
+          movq       mm7, [esi+24]
+          pand       mm7, mm3
+          movq       mm5, mm3
+          movq       mm4, [ebx+24]
+          pandn      mm5, mm4
+          por        mm7, mm5
+          movq       [ebx+24], mm7
 
-          add        esi,32            //inc by 32 bytes processed
-          add        ebx,32
-          sub        ecx,8             //dec by 8 pixels processed
+          add        esi, 32           //inc by 32 bytes processed
+          add        ebx, 32
+          sub        ecx, 8            //dec by 8 pixels processed
 
           ja         mainloop32
 
           mainloop32end:
-          mov        ecx,diff
-          cmp        ecx,0
+          mov        ecx, diff
+          cmp        ecx, 0
           jz         end32
 
-          mov        edx,mask
-          sal        edx,24            //make low byte the high byte
+          mov        edx, mask
+          sal        edx, 24           //make low byte the high byte
           secondloop32:
-          sal        edx,1             //move high bit to CF
+          sal        edx, 1            //move high bit to CF
           jnc        skip32            //if CF = 0
-          mov        eax,[esi]
-          mov        [ebx],eax
+          mov        eax, [esi]
+          mov        [ebx], eax
           skip32:
-          add        esi,4
-          add        ebx,4
+          add        esi, 4
+          add        ebx, 4
 
           dec        ecx
           jnz        secondloop32
@@ -763,12 +763,12 @@ png_combine_row(png_structp png_ptr, png_bytep row, int mask)
         int offset_table[7] = {0, 4, 0, 2, 0, 1, 0};
 
         pixel_bytes = (png_ptr->row_info.pixel_depth >> 3);
-        srcptr = png_ptr->row_buf + 1 + offset_table[png_ptr->pass]*
+        srcptr = png_ptr->row_buf + 1 + offset_table[png_ptr->pass] *
                  pixel_bytes;
-        dstptr = row + offset_table[png_ptr->pass]*pixel_bytes;
-        initial_val = offset_table[png_ptr->pass]*pixel_bytes;
-        final_val = png_ptr->width*pixel_bytes;
-        incr1 = (disp)*pixel_bytes;
+        dstptr = row + offset_table[png_ptr->pass] * pixel_bytes;
+        initial_val = offset_table[png_ptr->pass] * pixel_bytes;
+        final_val = png_ptr->width * pixel_bytes;
+        incr1 = (disp) * pixel_bytes;
 
         for (i = initial_val; i < final_val; i += incr1) {
           png_memcpy(dstptr, srcptr, pixel_bytes);
@@ -786,12 +786,12 @@ png_combine_row(png_structp png_ptr, png_bytep row, int mask)
         png_uint_32 len;
         int unmask, diff;
 
-        __int64 mask5=0x0101010101010202,
-        mask4=0x0202020204040404,
-        mask3=0x0404080808080808,
-        mask2=0x1010101010102020,
-        mask1=0x2020202040404040,
-        mask0=0x4040808080808080;
+        __int64 mask5 = 0x0101010101010202,
+        mask4 = 0x0202020204040404,
+        mask3 = 0x0404080808080808,
+        mask2 = 0x1010101010102020,
+        mask1 = 0x2020202040404040,
+        mask0 = 0x4040808080808080;
 
 #if !defined(PNG_1_0_X)
 
@@ -805,108 +805,108 @@ png_combine_row(png_structp png_ptr, png_bytep row, int mask)
       dstptr = row;
 
       unmask = ~mask;
-      len     = (png_ptr->width)&~7;
-        diff = (png_ptr->width)&7;
+      len     = (png_ptr->width) & ~7;
+        diff = (png_ptr->width) & 7;
         _asm {
           movd       mm7, unmask       //load bit pattern
-          psubb      mm6,mm6           //zero mm6
-          punpcklbw  mm7,mm7
-          punpcklwd  mm7,mm7
-          punpckldq  mm7,mm7           //fill register with 8 masks
+          psubb      mm6, mm6          //zero mm6
+          punpcklbw  mm7, mm7
+          punpcklwd  mm7, mm7
+          punpckldq  mm7, mm7          //fill register with 8 masks
 
-          movq       mm0,mask0
-          movq       mm1,mask1
-          movq       mm2,mask2
-          movq       mm3,mask3
-          movq       mm4,mask4
-          movq       mm5,mask5
+          movq       mm0, mask0
+          movq       mm1, mask1
+          movq       mm2, mask2
+          movq       mm3, mask3
+          movq       mm4, mask4
+          movq       mm5, mask5
 
-          pand       mm0,mm7
-          pand       mm1,mm7
-          pand       mm2,mm7
-          pand       mm3,mm7
-          pand       mm4,mm7
-          pand       mm5,mm7
+          pand       mm0, mm7
+          pand       mm1, mm7
+          pand       mm2, mm7
+          pand       mm3, mm7
+          pand       mm4, mm7
+          pand       mm5, mm7
 
-          pcmpeqb    mm0,mm6
-          pcmpeqb    mm1,mm6
-          pcmpeqb    mm2,mm6
-          pcmpeqb    mm3,mm6
-          pcmpeqb    mm4,mm6
-          pcmpeqb    mm5,mm6
+          pcmpeqb    mm0, mm6
+          pcmpeqb    mm1, mm6
+          pcmpeqb    mm2, mm6
+          pcmpeqb    mm3, mm6
+          pcmpeqb    mm4, mm6
+          pcmpeqb    mm5, mm6
 
-          mov        ecx,len           //load length of line
-          mov        esi,srcptr        //load source
-          mov        ebx,dstptr        //load dest
+          mov        ecx, len          //load length of line
+          mov        esi, srcptr       //load source
+          mov        ebx, dstptr       //load dest
 
-          cmp        ecx,0
+          cmp        ecx, 0
           jz         mainloop48end
 
           mainloop48:
-          movq       mm7,[esi]
-          pand       mm7,mm0
-          movq       mm6,mm0
-          pandn      mm6,[ebx]
-          por        mm7,mm6
-          movq       [ebx],mm7
+          movq       mm7, [esi]
+          pand       mm7, mm0
+          movq       mm6, mm0
+          pandn      mm6, [ebx]
+          por        mm7, mm6
+          movq       [ebx], mm7
 
-          movq       mm6,[esi+8]
-          pand       mm6,mm1
-          movq       mm7,mm1
-          pandn      mm7,[ebx+8]
-          por        mm6,mm7
-          movq       [ebx+8],mm6
+          movq       mm6, [esi+8]
+          pand       mm6, mm1
+          movq       mm7, mm1
+          pandn      mm7, [ebx+8]
+          por        mm6, mm7
+          movq       [ebx+8], mm6
 
-          movq       mm6,[esi+16]
-          pand       mm6,mm2
-          movq       mm7,mm2
-          pandn      mm7,[ebx+16]
-          por        mm6,mm7
-          movq       [ebx+16],mm6
+          movq       mm6, [esi+16]
+          pand       mm6, mm2
+          movq       mm7, mm2
+          pandn      mm7, [ebx+16]
+          por        mm6, mm7
+          movq       [ebx+16], mm6
 
-          movq       mm7,[esi+24]
-          pand       mm7,mm3
-          movq       mm6,mm3
-          pandn      mm6,[ebx+24]
-          por        mm7,mm6
-          movq       [ebx+24],mm7
+          movq       mm7, [esi+24]
+          pand       mm7, mm3
+          movq       mm6, mm3
+          pandn      mm6, [ebx+24]
+          por        mm7, mm6
+          movq       [ebx+24], mm7
 
-          movq       mm6,[esi+32]
-          pand       mm6,mm4
-          movq       mm7,mm4
-          pandn      mm7,[ebx+32]
-          por        mm6,mm7
-          movq       [ebx+32],mm6
+          movq       mm6, [esi+32]
+          pand       mm6, mm4
+          movq       mm7, mm4
+          pandn      mm7, [ebx+32]
+          por        mm6, mm7
+          movq       [ebx+32], mm6
 
-          movq       mm7,[esi+40]
-          pand       mm7,mm5
-          movq       mm6,mm5
-          pandn      mm6,[ebx+40]
-          por        mm7,mm6
-          movq       [ebx+40],mm7
+          movq       mm7, [esi+40]
+          pand       mm7, mm5
+          movq       mm6, mm5
+          pandn      mm6, [ebx+40]
+          por        mm7, mm6
+          movq       [ebx+40], mm7
 
-          add        esi,48            //inc by 32 bytes processed
-          add        ebx,48
-          sub        ecx,8             //dec by 8 pixels processed
+          add        esi, 48           //inc by 32 bytes processed
+          add        ebx, 48
+          sub        ecx, 8            //dec by 8 pixels processed
 
           ja         mainloop48
           mainloop48end:
 
-          mov        ecx,diff
-          cmp        ecx,0
+          mov        ecx, diff
+          cmp        ecx, 0
           jz         end48
 
-          mov        edx,mask
-          sal        edx,24            //make low byte the high byte
+          mov        edx, mask
+          sal        edx, 24           //make low byte the high byte
 
           secondloop48:
-          sal        edx,1             //move high bit to CF
+          sal        edx, 1            //move high bit to CF
           jnc        skip48            //if CF = 0
-          mov        eax,[esi]
-          mov        [ebx],eax
+          mov        eax, [esi]
+          mov        [ebx], eax
           skip48:
-          add        esi,4
-          add        ebx,4
+          add        esi, 4
+          add        ebx, 4
 
           dec        ecx
           jnz        secondloop48
@@ -922,12 +922,12 @@ png_combine_row(png_structp png_ptr, png_bytep row, int mask)
         int offset_table[7] = {0, 4, 0, 2, 0, 1, 0};
 
         pixel_bytes = (png_ptr->row_info.pixel_depth >> 3);
-        srcptr = png_ptr->row_buf + 1 + offset_table[png_ptr->pass]*
+        srcptr = png_ptr->row_buf + 1 + offset_table[png_ptr->pass] *
                  pixel_bytes;
-        dstptr = row + offset_table[png_ptr->pass]*pixel_bytes;
-        initial_val = offset_table[png_ptr->pass]*pixel_bytes;
-        final_val = png_ptr->width*pixel_bytes;
-        incr1 = (disp)*pixel_bytes;
+        dstptr = row + offset_table[png_ptr->pass] * pixel_bytes;
+        initial_val = offset_table[png_ptr->pass] * pixel_bytes;
+        final_val = png_ptr->width * pixel_bytes;
+        incr1 = (disp) * pixel_bytes;
 
         for (i = initial_val; i < final_val; i += incr1) {
           png_memcpy(dstptr, srcptr, pixel_bytes);
@@ -949,12 +949,12 @@ png_combine_row(png_structp png_ptr, png_bytep row, int mask)
         register unsigned int incr1, initial_val, final_val;
 
         pixel_bytes = (png_ptr->row_info.pixel_depth >> 3);
-        sptr = png_ptr->row_buf + 1 + offset_table[png_ptr->pass]*
+        sptr = png_ptr->row_buf + 1 + offset_table[png_ptr->pass] *
                pixel_bytes;
-        dp = row + offset_table[png_ptr->pass]*pixel_bytes;
-        initial_val = offset_table[png_ptr->pass]*pixel_bytes;
-        final_val = png_ptr->width*pixel_bytes;
-        incr1 = (disp)*pixel_bytes;
+        dp = row + offset_table[png_ptr->pass] * pixel_bytes;
+        initial_val = offset_table[png_ptr->pass] * pixel_bytes;
+        final_val = png_ptr->width * pixel_bytes;
+        incr1 = (disp) * pixel_bytes;
 
       for (i = initial_val; i < final_val; i += incr1) {
       png_memcpy(dp, sptr, pixel_bytes);
@@ -983,7 +983,7 @@ png_do_read_interlace(png_structp png_ptr)
   const int png_pass_inc[7] = {8, 8, 4, 4, 2, 2, 1};
 #endif
 
-  png_debug(1,"in png_do_read_interlace\n");
+  png_debug(1, "in png_do_read_interlace\n");
 
   if (mmx_supported == 2) {
 #if !defined(PNG_1_0_X)
@@ -1560,7 +1560,7 @@ png_do_read_interlace(png_structp png_ptr)
             }
 
             sptr -= (width_mmx*2 - 2);            // sign fixed
-            dp -= (width_mmx*16 - 2);            // sign fixed
+            dp -= (width_mmx * 16 - 2);          // sign fixed
 
             for (i = width; i; i--) {
               png_byte v[8];
@@ -1607,7 +1607,7 @@ png_do_read_interlace(png_structp png_ptr)
             }
 
             sptr -= (width_mmx*2 - 2);            // sign fixed
-            dp -= (width_mmx*8 - 2);            // sign fixed
+            dp -= (width_mmx * 8 - 2);          // sign fixed
 
             for (i = width; i; i--) {
               png_byte v[8];
@@ -1646,7 +1646,7 @@ png_do_read_interlace(png_structp png_ptr)
             }
 
             sptr -= (width_mmx*2 - 2);            // sign fixed
-            dp -= (width_mmx*4 - 2);            // sign fixed
+            dp -= (width_mmx * 4 - 2);          // sign fixed
 
             for (i = width; i; i--) {
               png_byte v[8];
@@ -1700,7 +1700,7 @@ png_do_read_interlace(png_structp png_ptr)
             }
 
             sptr -= (width_mmx*4 - 4);            // sign fixed
-            dp -= (width_mmx*32 - 4);            // sign fixed
+            dp -= (width_mmx * 32 - 4);          // sign fixed
 
             for (i = width; i; i--) {
               png_byte v[8];
@@ -1746,7 +1746,7 @@ png_do_read_interlace(png_structp png_ptr)
             }
 
             sptr -= (width_mmx*4 - 4);            // sign fixed
-            dp -= (width_mmx*16 - 4);            // sign fixed
+            dp -= (width_mmx * 16 - 4);          // sign fixed
 
             for (i = width; i; i--) {
               png_byte v[8];
@@ -1790,7 +1790,7 @@ png_do_read_interlace(png_structp png_ptr)
             }
 
             sptr -= (width_mmx*4 - 4);          // sign fixed
-            dp -= (width_mmx*8 - 4);            // sign fixed
+            dp -= (width_mmx * 8 - 4);          // sign fixed
 
             for (i = width; i; i--) {
               png_byte v[8];
@@ -1833,13 +1833,13 @@ png_do_read_interlace(png_structp png_ptr)
               dp -= pixel_bytes;
             }
 
-            sptr-= pixel_bytes;
+            sptr -= pixel_bytes;
           }
         }
       } /* end of mmx_supported */
 
       else /* MMX not supported:  use modified C code - takes advantage
-              * of inlining of memcpy for a constant */
+            * of inlining of memcpy for a constant */
       {
         if (pixel_bytes == 1) {
           for (i = width; i; i--) {
@@ -1926,7 +1926,7 @@ png_do_read_interlace(png_structp png_ptr)
 
     row_info->width = final_width;
 
-    row_info->rowbytes = PNG_ROWBYTES(row_info->pixel_depth,final_width);
+    row_info->rowbytes = PNG_ROWBYTES(row_info->pixel_depth, final_width);
   }
 
 }
@@ -3707,22 +3707,22 @@ png_read_filter_row(png_structp png_ptr, png_row_infop row_info, png_bytep
 
   case 1:
       sprintf(filnm, "sub-%s",
-              (png_ptr->asm_flags & PNG_ASM_FLAG_MMX_READ_FILTER_SUB)? "MMX" : "x86");
+              (png_ptr->asm_flags & PNG_ASM_FLAG_MMX_READ_FILTER_SUB) ? "MMX" : "x86");
     break;
 
   case 2:
       sprintf(filnm, "up-%s",
-              (png_ptr->asm_flags & PNG_ASM_FLAG_MMX_READ_FILTER_UP)? "MMX" : "x86");
+              (png_ptr->asm_flags & PNG_ASM_FLAG_MMX_READ_FILTER_UP) ? "MMX" : "x86");
     break;
 
   case 3:
       sprintf(filnm, "avg-%s",
-              (png_ptr->asm_flags & PNG_ASM_FLAG_MMX_READ_FILTER_AVG)? "MMX" : "x86");
+              (png_ptr->asm_flags & PNG_ASM_FLAG_MMX_READ_FILTER_AVG) ? "MMX" : "x86");
     break;
 
   case 4:
       sprintf(filnm, "Paeth-%s",
-              (png_ptr->asm_flags & PNG_ASM_FLAG_MMX_READ_FILTER_PAETH)? "MMX":"x86");
+              (png_ptr->asm_flags & PNG_ASM_FLAG_MMX_READ_FILTER_PAETH) ? "MMX" : "x86");
     break;
 #else
 
@@ -3748,10 +3748,10 @@ png_read_filter_row(png_structp png_ptr, png_row_infop row_info, png_bytep
     break;
   }
 
-  png_debug2(0,"row=%5d, %s, ", png_ptr->row_number, filnm);
+  png_debug2(0, "row=%5d, %s, ", png_ptr->row_number, filnm);
   png_debug2(0, "pd=%2d, b=%d, ", (int)row_info->pixel_depth,
              (int)((row_info->pixel_depth + 7) >> 3));
-  png_debug1(0,"len=%8d, ", row_info->rowbytes);
+  png_debug1(0, "len=%8d, ", row_info->rowbytes);
 #endif /* PNG_DEBUG */
 
   switch (filter) {
@@ -3864,7 +3864,7 @@ png_read_filter_row(png_structp png_ptr, png_row_infop row_info, png_bytep
       png_bytep lp = row;
       png_bytep cp = prev_row;
       png_uint_32 bpp = (row_info->pixel_depth + 7) >> 3;
-      png_uint_32 istop=row_info->rowbytes - bpp;
+      png_uint_32 istop = row_info->rowbytes - bpp;
 
       for (i = 0; i < bpp; i++) {
         *rp = (png_byte)(((int)(*rp) + (int)(*pp++)) & 0xff);
@@ -3900,7 +3900,7 @@ png_read_filter_row(png_structp png_ptr, png_row_infop row_info, png_bytep
               p = c;
          */
 
-        p = (pa <= pb && pa <=pc) ? a : (pb <= pc) ? b : c;
+        p = (pa <= pb && pa <= pc) ? a : (pb <= pc) ? b : c;
 
         *rp = (png_byte)(((int)(*rp) + p) & 0xff);
         rp++;
@@ -3912,7 +3912,7 @@ png_read_filter_row(png_structp png_ptr, png_row_infop row_info, png_bytep
 
   default:
       png_warning(png_ptr, "Ignoring bad row filter type");
-    *row=0;
+    *row = 0;
     break;
   }
 }

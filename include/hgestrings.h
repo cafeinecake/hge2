@@ -35,7 +35,7 @@ public:
 
 private:
   hgeStringTable(const hgeStringTable &);
-  hgeStringTable& operator= (const hgeStringTable &);
+  hgeStringTable &operator= (const hgeStringTable &);
 
   NamedString   *strings;
 

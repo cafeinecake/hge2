@@ -15,9 +15,9 @@ png_uint_32 PNGAPI
 png_get_valid(png_structp png_ptr, png_infop info_ptr, png_uint_32 flag)
 {
   if (png_ptr != NULL && info_ptr != NULL) {
-    return(info_ptr->valid & flag);
+    return (info_ptr->valid & flag);
   } else {
-    return(0);
+    return (0);
   }
 }
 
@@ -25,9 +25,9 @@ png_uint_32 PNGAPI
 png_get_rowbytes(png_structp png_ptr, png_infop info_ptr)
 {
   if (png_ptr != NULL && info_ptr != NULL) {
-    return(info_ptr->rowbytes);
+    return (info_ptr->rowbytes);
   } else {
-    return(0);
+    return (0);
   }
 }
 
@@ -36,9 +36,9 @@ png_bytepp PNGAPI
 png_get_rows(png_structp png_ptr, png_infop info_ptr)
 {
   if (png_ptr != NULL && info_ptr != NULL) {
-    return(info_ptr->row_pointers);
+    return (info_ptr->row_pointers);
   } else {
-    return(0);
+    return (0);
   }
 }
 #endif
@@ -123,7 +123,7 @@ png_get_x_pixels_per_meter(png_structp png_ptr, png_infop info_ptr)
     if (info_ptr->valid & PNG_INFO_pHYs) {
       png_debug1(1, "in %s retrieval function\n", "png_get_x_pixels_per_meter");
 
-      if(info_ptr->phys_unit_type != PNG_RESOLUTION_METER) {
+      if (info_ptr->phys_unit_type != PNG_RESOLUTION_METER) {
         return (0);
       } else {
         return (info_ptr->x_pixels_per_unit);
@@ -144,7 +144,7 @@ png_get_y_pixels_per_meter(png_structp png_ptr, png_infop info_ptr)
     if (info_ptr->valid & PNG_INFO_pHYs) {
       png_debug1(1, "in %s retrieval function\n", "png_get_y_pixels_per_meter");
 
-      if(info_ptr->phys_unit_type != PNG_RESOLUTION_METER) {
+      if (info_ptr->phys_unit_type != PNG_RESOLUTION_METER) {
         return (0);
       } else {
         return (info_ptr->y_pixels_per_unit);
@@ -165,7 +165,7 @@ png_get_pixels_per_meter(png_structp png_ptr, png_infop info_ptr)
     if (info_ptr->valid & PNG_INFO_pHYs) {
       png_debug1(1, "in %s retrieval function\n", "png_get_pixels_per_meter");
 
-      if(info_ptr->phys_unit_type != PNG_RESOLUTION_METER ||
+      if (info_ptr->phys_unit_type != PNG_RESOLUTION_METER ||
           info_ptr->x_pixels_per_unit != info_ptr->y_pixels_per_unit) {
         return (0);
       } else {
@@ -192,7 +192,7 @@ png_get_pixel_aspect_ratio(png_structp png_ptr, png_infop info_ptr)
         return ((float)0.0);
       } else
         return (static_cast<float>((float)info_ptr->y_pixels_per_unit
-                                   /(float)info_ptr->x_pixels_per_unit));
+                                   / (float)info_ptr->x_pixels_per_unit));
     }
 
 #else
@@ -210,7 +210,7 @@ png_get_x_offset_microns(png_structp png_ptr, png_infop info_ptr)
     if (info_ptr->valid & PNG_INFO_oFFs) {
       png_debug1(1, "in %s retrieval function\n", "png_get_x_offset_microns");
 
-      if(info_ptr->offset_unit_type != PNG_OFFSET_MICROMETER) {
+      if (info_ptr->offset_unit_type != PNG_OFFSET_MICROMETER) {
         return (0);
       } else {
         return (info_ptr->x_offset);
@@ -231,7 +231,7 @@ png_get_y_offset_microns(png_structp png_ptr, png_infop info_ptr)
     if (info_ptr->valid & PNG_INFO_oFFs) {
       png_debug1(1, "in %s retrieval function\n", "png_get_y_offset_microns");
 
-      if(info_ptr->offset_unit_type != PNG_OFFSET_MICROMETER) {
+      if (info_ptr->offset_unit_type != PNG_OFFSET_MICROMETER) {
         return (0);
       } else {
         return (info_ptr->y_offset);
@@ -252,7 +252,7 @@ png_get_x_offset_pixels(png_structp png_ptr, png_infop info_ptr)
     if (info_ptr->valid & PNG_INFO_oFFs) {
       png_debug1(1, "in %s retrieval function\n", "png_get_x_offset_microns");
 
-      if(info_ptr->offset_unit_type != PNG_OFFSET_PIXEL) {
+      if (info_ptr->offset_unit_type != PNG_OFFSET_PIXEL) {
         return (0);
       } else {
         return (info_ptr->x_offset);
@@ -273,7 +273,7 @@ png_get_y_offset_pixels(png_structp png_ptr, png_infop info_ptr)
     if (info_ptr->valid & PNG_INFO_oFFs) {
       png_debug1(1, "in %s retrieval function\n", "png_get_y_offset_microns");
 
-      if(info_ptr->offset_unit_type != PNG_OFFSET_PIXEL) {
+      if (info_ptr->offset_unit_type != PNG_OFFSET_PIXEL) {
         return (0);
       } else {
         return (info_ptr->y_offset);
@@ -291,35 +291,35 @@ png_uint_32 PNGAPI
 png_get_pixels_per_inch(png_structp png_ptr, png_infop info_ptr)
 {
   return ((png_uint_32)((float)png_get_pixels_per_meter(png_ptr, info_ptr)
-                        *.0254 +.5));
+                        * .0254 + .5));
 }
 
 png_uint_32 PNGAPI
 png_get_x_pixels_per_inch(png_structp png_ptr, png_infop info_ptr)
 {
   return ((png_uint_32)((float)png_get_x_pixels_per_meter(png_ptr, info_ptr)
-                        *.0254 +.5));
+                        * .0254 + .5));
 }
 
 png_uint_32 PNGAPI
 png_get_y_pixels_per_inch(png_structp png_ptr, png_infop info_ptr)
 {
   return ((png_uint_32)((float)png_get_y_pixels_per_meter(png_ptr, info_ptr)
-                        *.0254 +.5));
+                        * .0254 + .5));
 }
 
 float PNGAPI
 png_get_x_offset_inches(png_structp png_ptr, png_infop info_ptr)
 {
   return ((float)png_get_x_offset_microns(png_ptr, info_ptr)
-          *.00003937);
+          * .00003937);
 }
 
 float PNGAPI
 png_get_y_offset_inches(png_structp png_ptr, png_infop info_ptr)
 {
   return ((float)png_get_y_offset_microns(png_ptr, info_ptr)
-          *.00003937);
+          * .00003937);
 }
 
 #if defined(PNG_pHYs_SUPPORTED)
@@ -346,7 +346,7 @@ png_get_pHYs_dpi(png_structp png_ptr, png_infop info_ptr,
       *unit_type = (int)info_ptr->phys_unit_type;
       retval |= PNG_INFO_pHYs;
 
-      if(*unit_type == 1) {
+      if (*unit_type == 1) {
         if (res_x != NULL) {
           *res_x = (png_uint_32)(*res_x * .0254 + .50);
         }
@@ -371,7 +371,7 @@ png_byte PNGAPI
 png_get_channels(png_structp png_ptr, png_infop info_ptr)
 {
   if (png_ptr != NULL && info_ptr != NULL) {
-    return(info_ptr->channels);
+    return (info_ptr->channels);
   } else {
     return (0);
   }
@@ -381,7 +381,7 @@ png_bytep PNGAPI
 png_get_signature(png_structp png_ptr, png_infop info_ptr)
 {
   if (png_ptr != NULL && info_ptr != NULL) {
-    return(info_ptr->signature);
+    return (info_ptr->signature);
   } else {
     return (NULL);
   }
@@ -647,7 +647,7 @@ png_get_IHDR(png_structp png_ptr, png_infop info_ptr,
                            >> 3)      /* 8-byte RGBA pixels */
         - 64       /* bigrowbuf hack */
         - 1        /* filter byte */
-        - 7*8      /* rounding of width to multiple of 8 pixels */
+        - 7 * 8    /* rounding of width to multiple of 8 pixels */
         - 8) {     /* extra max_pixel_depth pad */
       png_warning(png_ptr,
                   "Width too large for libpng to process image data.");
@@ -715,7 +715,7 @@ png_get_sCAL(png_structp png_ptr, png_infop info_ptr,
     return (PNG_INFO_sCAL);
   }
 
-  return(0);
+  return (0);
 }
 #else
 #ifdef PNG_FIXED_POINT_SUPPORTED
@@ -731,7 +731,7 @@ png_get_sCAL_s(png_structp png_ptr, png_infop info_ptr,
     return (PNG_INFO_sCAL);
   }
 
-  return(0);
+  return (0);
 }
 #endif
 #endif
@@ -824,7 +824,7 @@ png_get_text(png_structp png_ptr, png_infop info_ptr, png_textp *text_ptr,
     *num_text = 0;
   }
 
-  return(0);
+  return (0);
 }
 #endif
 
@@ -868,12 +868,12 @@ png_get_tRNS(png_structp png_ptr, png_infop info_ptr,
         retval |= PNG_INFO_tRNS;
       }
 
-      if(trans != NULL) {
+      if (trans != NULL) {
         *trans = NULL;
       }
     }
 
-    if(num_trans != NULL) {
+    if (num_trans != NULL) {
       *num_trans = info_ptr->num_trans;
       retval |= PNG_INFO_tRNS;
     }
@@ -900,7 +900,7 @@ png_get_unknown_chunks(png_structp png_ptr, png_infop info_ptr,
 png_byte PNGAPI
 png_get_rgb_to_gray_status (png_structp png_ptr)
 {
-  return (png_byte)(png_ptr? png_ptr->rgb_to_gray_status : 0);
+  return (png_byte)(png_ptr ? png_ptr->rgb_to_gray_status : 0);
 }
 #endif
 
@@ -908,7 +908,7 @@ png_get_rgb_to_gray_status (png_structp png_ptr)
 png_voidp PNGAPI
 png_get_user_chunk_ptr(png_structp png_ptr)
 {
-  return (png_ptr? png_ptr->user_chunk_ptr : NULL);
+  return (png_ptr ? png_ptr->user_chunk_ptr : NULL);
 }
 #endif
 
@@ -916,7 +916,7 @@ png_get_user_chunk_ptr(png_structp png_ptr)
 png_uint_32 PNGAPI
 png_get_compression_buffer_size(png_structp png_ptr)
 {
-  return (png_uint_32)(png_ptr? png_ptr->zbuf_size : 0L);
+  return (png_uint_32)(png_ptr ? png_ptr->zbuf_size : 0L);
 }
 #endif
 
@@ -926,7 +926,7 @@ png_get_compression_buffer_size(png_structp png_ptr)
 png_uint_32 PNGAPI
 png_get_asm_flags (png_structp png_ptr)
 {
-  return (png_uint_32)(png_ptr? png_ptr->asm_flags : 0L);
+  return (png_uint_32)(png_ptr ? png_ptr->asm_flags : 0L);
 }
 
 /* this function was added to libpng 1.2.0 and should exist by default */
@@ -1005,14 +1005,14 @@ png_get_mmx_flagmask (int flag_select, int *compilerID)
 png_byte PNGAPI
 png_get_mmx_bitdepth_threshold (png_structp png_ptr)
 {
-  return (png_byte)(png_ptr? png_ptr->mmx_bitdepth_threshold : 0);
+  return (png_byte)(png_ptr ? png_ptr->mmx_bitdepth_threshold : 0);
 }
 
 /* this function was added to libpng 1.2.0 */
 png_uint_32 PNGAPI
 png_get_mmx_rowbytes_threshold (png_structp png_ptr)
 {
-  return (png_uint_32)(png_ptr? png_ptr->mmx_rowbytes_threshold : 0L);
+  return (png_uint_32)(png_ptr ? png_ptr->mmx_rowbytes_threshold : 0L);
 }
 #endif /* ?PNG_ASSEMBLER_CODE_SUPPORTED */
 
@@ -1021,12 +1021,12 @@ png_get_mmx_rowbytes_threshold (png_structp png_ptr)
 png_uint_32 PNGAPI
 png_get_user_width_max (png_structp png_ptr)
 {
-  return (png_ptr? png_ptr->user_width_max : 0);
+  return (png_ptr ? png_ptr->user_width_max : 0);
 }
 png_uint_32 PNGAPI
 png_get_user_height_max (png_structp png_ptr)
 {
-  return (png_ptr? png_ptr->user_height_max : 0);
+  return (png_ptr ? png_ptr->user_height_max : 0);
 }
 #endif /* ?PNG_SET_USER_LIMITS_SUPPORTED */
 

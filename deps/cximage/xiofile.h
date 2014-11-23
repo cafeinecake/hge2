@@ -6,16 +6,16 @@
 
 class DLL_EXP CxIOFile : public CxFile {
 public:
-  CxIOFile(FILE* fp = NULL)
+  CxIOFile(FILE *fp = NULL)
   {
     m_fp = fp;
-    m_bCloseFile = (fp==0);
+    m_bCloseFile = (fp == 0);
   }
 
   virtual ~CxIOFile();
 
 //////////////////////////////////////////////////////////
-  bool Open(const TCHAR * filename, const TCHAR * mode)
+  bool Open(const TCHAR *filename, const TCHAR *mode)
   {
     if (m_fp) {
       return false;  // Can't re-open without closing first
@@ -41,7 +41,7 @@ public:
       m_fp = NULL;
     }
 
-    return (iErr==0);
+    return (iErr == 0);
   }
 //////////////////////////////////////////////////////////
   virtual size_t  Read(void *buffer, size_t size, size_t count)
@@ -86,11 +86,11 @@ public:
       return -1;
     }
 
-    int32_t pos,size;
+    int32_t pos, size;
     pos = static_cast<int32_t>(ftell(m_fp));
     fseek(m_fp, 0, SEEK_END);
     size = static_cast<int32_t>(ftell(m_fp));
-    fseek(m_fp, pos,SEEK_SET);
+    fseek(m_fp, pos, SEEK_SET);
     return size;
   }
 //////////////////////////////////////////////////////////
@@ -139,16 +139,16 @@ public:
     return getc(m_fp);
   }
 //////////////////////////////////////////////////////////
-  virtual char *  GetS(char *string, int32_t n)
+  virtual char   *GetS(char *string, int32_t n)
   {
     if (!m_fp) {
       return NULL;
     }
 
-    return fgets(string,n,m_fp);
+    return fgets(string, n, m_fp);
   }
 //////////////////////////////////////////////////////////
-  virtual int32_t Scanf(const char *format, void* output)
+  virtual int32_t Scanf(const char *format, void *output)
   {
     if (!m_fp) {
       return EOF;

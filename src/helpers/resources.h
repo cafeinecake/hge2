@@ -31,7 +31,7 @@
 
 
 void    AddRes(hgeResourceManager *rm, int type, IResource *resource);
-IResource*  FindRes(hgeResourceManager *rm, int type, const char *name);
+IResource  *FindRes(hgeResourceManager *rm, int type, const char *name);
 
 
 struct RScript : public IResource {
@@ -42,7 +42,7 @@ struct RScript : public IResource {
     return 0;
   }
   virtual void  Free();
-  virtual void copy_from(IResource * r);
+  virtual void copy_from(IResource *r);
 };
 
 struct RResource : public IResource {
@@ -52,7 +52,7 @@ struct RResource : public IResource {
                       const char *basename);
   virtual hgeResHandle Get(hgeResourceManager *rm);
   virtual void  Free();
-  virtual void copy_from(IResource * r);
+  virtual void copy_from(IResource *r);
 };
 
 struct RTexture : public IResource {
@@ -64,7 +64,7 @@ struct RTexture : public IResource {
   virtual hgeResHandle Get(hgeResourceManager *rm);
   virtual void  Free();
 
-  virtual void copy_from(IResource * r);
+  virtual void copy_from(IResource *r);
 };
 
 struct REffect : public IResource {
@@ -75,7 +75,7 @@ struct REffect : public IResource {
   virtual hgeResHandle Get(hgeResourceManager *rm);
   virtual void  Free();
 
-  virtual void copy_from(IResource * r);
+  virtual void copy_from(IResource *r);
 };
 
 struct RMusic : public IResource {
@@ -87,7 +87,7 @@ struct RMusic : public IResource {
   virtual hgeResHandle Get(hgeResourceManager *rm);
   virtual void  Free();
 
-  virtual void copy_from(IResource * r);
+  virtual void copy_from(IResource *r);
 };
 
 struct RStream : public IResource {
@@ -98,7 +98,7 @@ struct RStream : public IResource {
   virtual hgeResHandle Get(hgeResourceManager *rm);
   virtual void  Free();
 
-  virtual void copy_from(IResource * r);
+  virtual void copy_from(IResource *r);
 };
 
 struct RTarget : public IResource {
@@ -111,7 +111,7 @@ struct RTarget : public IResource {
   virtual hgeResHandle Get(hgeResourceManager *rm);
   virtual void  Free();
 
-  virtual void copy_from(IResource * r);
+  virtual void copy_from(IResource *r);
 
 };
 
@@ -133,7 +133,7 @@ struct RSprite : public IResource {
   virtual hgeResHandle Get(hgeResourceManager *rm);
   virtual void  Free();
 
-  virtual void copy_from(IResource * r);
+  virtual void copy_from(IResource *r);
 
 };
 
@@ -147,7 +147,7 @@ struct RAnimation : public RSprite {
   virtual hgeResHandle Get(hgeResourceManager *rm);
   virtual void  Free();
 
-  virtual void copy_from(IResource * r);
+  virtual void copy_from(IResource *r);
 };
 
 struct RFont : public IResource {
@@ -167,7 +167,7 @@ struct RFont : public IResource {
   virtual hgeResHandle Get(hgeResourceManager *rm);
   virtual void  Free();
 
-  virtual void copy_from(IResource * r);
+  virtual void copy_from(IResource *r);
 };
 
 struct RParticle : public IResource {
@@ -179,7 +179,7 @@ struct RParticle : public IResource {
   virtual hgeResHandle Get(hgeResourceManager *rm);
   virtual void  Free();
 
-  virtual void copy_from(IResource * r)
+  virtual void copy_from(IResource *r)
   {
     auto src = dynamic_cast<RParticle *>(r);
     memcpy(filename, src->filename, sizeof(filename));
@@ -201,7 +201,7 @@ struct RDistort : public IResource {
   virtual hgeResHandle Get(hgeResourceManager *rm);
   virtual void  Free();
 
-  virtual void copy_from(IResource * r);
+  virtual void copy_from(IResource *r);
 };
 
 
@@ -213,7 +213,7 @@ struct RStringTable : public IResource {
   virtual hgeResHandle Get(hgeResourceManager *rm);
   virtual void  Free();
 
-  virtual void copy_from(IResource * r);
+  virtual void copy_from(IResource *r);
 };
 
 #endif

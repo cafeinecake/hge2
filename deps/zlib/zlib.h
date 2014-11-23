@@ -213,7 +213,7 @@ typedef gz_header FAR *gz_headerp;
 
 /* basic functions */
 
-ZEXTERN const char * ZEXPORT zlibVersion OF((void));
+ZEXTERN const char *ZEXPORT zlibVersion OF((void));
 /* The application can compare zlibVersion and ZLIB_VERSION for consistency.
    If the first character differs, the library code actually used is not
    compatible with the zlib.h header file used by the application.  This check
@@ -967,7 +967,7 @@ ZEXTERN int ZEXPORT inflateBackInit OF((z_streamp strm, int windowBits,
    the version of the header file.
 */
 
-typedef unsigned (*in_func) OF((void FAR *, unsigned char FAR * FAR *));
+typedef unsigned (*in_func) OF((void FAR *, unsigned char FAR *FAR *));
 typedef int (*out_func) OF((void FAR *, unsigned char FAR *, unsigned));
 
 ZEXTERN int ZEXPORT inflateBack OF((z_streamp strm,
@@ -1279,7 +1279,7 @@ ZEXTERN int ZEXPORT gzputs OF((gzFile file, const char *s));
      gzputs returns the number of characters written, or -1 in case of error.
 */
 
-ZEXTERN char * ZEXPORT gzgets OF((gzFile file, char *buf, int len));
+ZEXTERN char *ZEXPORT gzgets OF((gzFile file, char *buf, int len));
 /*
      Reads bytes from the compressed file until len-1 characters are read, or a
    newline character is read and transferred to buf, or an end-of-file
@@ -1434,7 +1434,7 @@ ZEXTERN int ZEXPORT gzclose_w OF((gzFile file));
    zlib library.
 */
 
-ZEXTERN const char * ZEXPORT gzerror OF((gzFile file, int *errnum));
+ZEXTERN const char *ZEXPORT gzerror OF((gzFile file, int *errnum));
 /*
      Returns the error message for the last error which occurred on the given
    compressed file.  errnum is set to zlib error number.  If an error occurred
@@ -1603,9 +1603,9 @@ struct internal_state {
 #endif
 
 /* undocumented functions */
-ZEXTERN const char   * ZEXPORT zError           OF((int));
+ZEXTERN const char    *ZEXPORT zError           OF((int));
 ZEXTERN int            ZEXPORT inflateSyncPoint OF((z_streamp));
-ZEXTERN const uLongf * ZEXPORT get_crc_table    OF((void));
+ZEXTERN const uLongf *ZEXPORT get_crc_table    OF((void));
 ZEXTERN int            ZEXPORT inflateUndermine OF((z_streamp, int));
 
 #ifdef __cplusplus

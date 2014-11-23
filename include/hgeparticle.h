@@ -47,7 +47,7 @@ struct hgeParticle {
 };
 
 struct hgeParticleSystemInfo {
-  hgeSprite*  sprite;    // texture + blend mode
+  hgeSprite  *sprite;    // texture + blend mode
   int     nEmission; // particles per sec
   float   fLifetime;
 
@@ -89,31 +89,31 @@ class hgeParticleSystem {
 public:
   hgeParticleSystemInfo info;
 
-  hgeParticleSystem(const char *filename, hgeSprite *sprite, float fps=0.0f);
-  hgeParticleSystem(hgeParticleSystemInfo *psi, float fps=0.0f);
+  hgeParticleSystem(const char *filename, hgeSprite *sprite, float fps = 0.0f);
+  hgeParticleSystem(hgeParticleSystemInfo *psi, float fps = 0.0f);
   hgeParticleSystem(const hgeParticleSystem &ps);
   ~hgeParticleSystem()
   {
     hge->Release();
   }
 
-  hgeParticleSystem&  operator= (const hgeParticleSystem &ps);
+  hgeParticleSystem  &operator= (const hgeParticleSystem &ps);
 
 
   void        Render();
   void        FireAt(float x, float y);
   void        Fire();
-  void        Stop(bool bKillParticles=false);
+  void        Stop(bool bKillParticles = false);
   void        Update(float fDeltaTime);
-  void        MoveTo(float x, float y, bool bMoveParticles=false);
+  void        MoveTo(float x, float y, bool bMoveParticles = false);
   void        Transpose(float x, float y)
   {
-    fTx=x;
-    fTy=y;
+    fTx = x;
+    fTy = y;
   }
   void        TrackBoundingBox(bool bTrack)
   {
-    bUpdateBoundingBox=bTrack;
+    bUpdateBoundingBox = bTrack;
   }
 
   int         GetParticlesAlive() const
@@ -126,15 +126,15 @@ public:
   }
   void        GetPosition(float *x, float *y) const
   {
-    *x=vecLocation.x;
-    *y=vecLocation.y;
+    *x = vecLocation.x;
+    *y = vecLocation.y;
   }
   void        GetTransposition(float *x, float *y) const
   {
-    *x=fTx;
-    *y=fTy;
+    *x = fTx;
+    *y = fTy;
   }
-  hgeRect*      GetBoundingBox(hgeRect *rect) const
+  hgeRect      *GetBoundingBox(hgeRect *rect) const
   {
     memcpy(rect, &rectBoundingBox, sizeof(hgeRect));
     return rect;
@@ -165,32 +165,32 @@ private:
 
 class hgeParticleManager {
 public:
-  hgeParticleManager(float fps=0.0f);
+  hgeParticleManager(float fps = 0.0f);
   ~hgeParticleManager();
 
   void        Update(float dt);
   void        Render();
 
-  hgeParticleSystem*  SpawnPS(hgeParticleSystemInfo *psi, float x, float y);
+  hgeParticleSystem  *SpawnPS(hgeParticleSystemInfo *psi, float x, float y);
   bool        IsPSAlive(hgeParticleSystem *ps) const;
   void        Transpose(float x, float y);
   void        GetTransposition(float *dx, float *dy) const
   {
-    *dx=tX;
-    *dy=tY;
+    *dx = tX;
+    *dy = tY;
   }
   void        KillPS(hgeParticleSystem *ps);
   void        KillAll();
 
 private:
   hgeParticleManager(const hgeParticleManager &);
-  hgeParticleManager& operator= (const hgeParticleManager &);
+  hgeParticleManager &operator= (const hgeParticleManager &);
 
   float       fFPS;
   int         nPS;
   float       tX;
   float       tY;
-  hgeParticleSystem*  psList[MAX_PSYSTEMS];
+  hgeParticleSystem  *psList[MAX_PSYSTEMS];
 };
 
 

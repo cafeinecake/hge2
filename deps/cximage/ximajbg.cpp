@@ -28,7 +28,7 @@ bool CxImageJBG::Decode(CxFile *hFile)
 
   uint32_t len, cnt;
 
-  uint8_t *buffer=0,*p;
+  uint8_t *buffer = 0, *p;
 
   int32_t result;
 
@@ -36,7 +36,7 @@ bool CxImageJBG::Decode(CxFile *hFile)
     jbg_dec_init(&jbig_state);
     jbg_dec_maxsize(&jbig_state, xmax, ymax);
 
-    buffer = (uint8_t*)malloc(JBIG_BUFSIZE);
+    buffer = (uint8_t *)malloc(JBIG_BUFSIZE);
 
     if (!buffer)
     {
@@ -79,13 +79,13 @@ bool CxImageJBG::Decode(CxFile *hFile)
     w = jbg_dec_getwidth(&jbig_state);
     h = jbg_dec_getheight(&jbig_state);
     planes = jbg_dec_getplanes(&jbig_state);
-    bpp = (planes+7)>>3;
-    ew = (w + 7)>>3;
+    bpp = (planes + 7) >> 3;
+    ew = (w + 7) >> 3;
 
     if (info.nEscape == -1)
     {
       head.biWidth = w;
-      head.biHeight= h;
+      head.biHeight = h;
       info.dwType = CXIMAGE_FORMAT_JBG;
       cx_throw("output dimensions returned");
     }
@@ -93,20 +93,20 @@ bool CxImageJBG::Decode(CxFile *hFile)
     switch (planes)
     {
     case 1: {
-      uint8_t* binary_image = jbg_dec_getimage(&jbig_state, 0);
+      uint8_t *binary_image = jbg_dec_getimage(&jbig_state, 0);
 
-      if (!Create(w,h,1,CXIMAGE_FORMAT_JBG)) {
+      if (!Create(w, h, 1, CXIMAGE_FORMAT_JBG)) {
         cx_throw("");
       }
 
-      SetPaletteColor(0,255,255,255);
-      SetPaletteColor(1,0,0,0);
+      SetPaletteColor(0, 255, 255, 255);
+      SetPaletteColor(1, 0, 0, 0);
 
       CImageIterator iter(this);
       iter.Upset();
 
-      for (int32_t i=0; i<h; i++) {
-        iter.SetRow(binary_image+i*ew,ew);
+      for (int32_t i = 0; i < h; i++) {
+        iter.SetRow(binary_image + i * ew, ew);
         iter.PrevRow();
       }
 
@@ -128,9 +128,9 @@ bool CxImageJBG::Decode(CxFile *hFile)
       free(buffer);
     }
 
-    if (strcmp(message,""))
+    if (strcmp(message, ""))
     {
-      strncpy(info.szLastError,message,255);
+      strncpy(info.szLastError, message, 255);
     }
 
     if (info.nEscape == -1 && info.dwType == CXIMAGE_FORMAT_JBG)
@@ -145,14 +145,14 @@ bool CxImageJBG::Decode(CxFile *hFile)
 ////////////////////////////////////////////////////////////////////////////////
 #endif //CXIMAGE_SUPPORT_DECODE
 ////////////////////////////////////////////////////////////////////////////////
-bool CxImageJBG::Encode(CxFile * hFile)
+bool CxImageJBG::Encode(CxFile *hFile)
 {
   if (EncodeSafeCheck(hFile)) {
     return false;
   }
 
   if (head.biBitCount != 1) {
-    strcpy(info.szLastError,"JBG can save only 1-bpp images");
+    strcpy(info.szLastError, "JBG can save only 1-bpp images");
     return false;
   }
 
@@ -161,31 +161,31 @@ bool CxImageJBG::Encode(CxFile * hFile)
   w = head.biWidth;
   h = head.biHeight;
   planes = 1;
-  bpp = (planes+7)>>3;
-  ew = (w + 7)>>3;
+  bpp = (planes + 7) >> 3;
+  ew = (w + 7) >> 3;
 
   uint8_t mask;
   RGBQUAD *rgb = GetPalette();
 
-  if (CompareColors(&rgb[0],&rgb[1])<0) {
-    mask=255;
+  if (CompareColors(&rgb[0], &rgb[1]) < 0) {
+    mask = 255;
   } else {
-    mask=0;
+    mask = 0;
   }
 
-  uint8_t *buffer = (uint8_t*)malloc(ew*h*2);
+  uint8_t *buffer = (uint8_t *)malloc(ew * h * 2);
 
   if (!buffer) {
-    strcpy(info.szLastError,"Sorry, not enough memory available!");
+    strcpy(info.szLastError, "Sorry, not enough memory available!");
     return false;
   }
 
-  for (y=0; y<h; y++) {
-    i= y*ew;
-    j= (h-y-1)*info.dwEffWidth;
+  for (y = 0; y < h; y++) {
+    i = y * ew;
+    j = (h - y - 1) * info.dwEffWidth;
 
-    for (x=0; x<ew; x++) {
-      buffer[i + x]=info.pImage[j + x]^mask;
+    for (x = 0; x < ew; x++) {
+      buffer[i + x] = info.pImage[j + x] ^ mask;
     }
   }
 
@@ -216,7 +216,7 @@ bool CxImageJBG::Encode(CxFile * hFile)
   free(buffer);
 
   if (hFile->Error()) {
-    strcpy(info.szLastError,"Problem while writing JBG file");
+    strcpy(info.szLastError, "Problem while writing JBG file");
     return false;
   }
 

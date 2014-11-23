@@ -38,7 +38,7 @@ public:
   CxImageBMP(): CxImage(CXIMAGE_FORMAT_BMP) {}
   virtual ~CxImageBMP();
 
-  bool Decode(CxFile * hFile);
+  bool Decode(CxFile *hFile);
   bool Decode(FILE *hFile)
   {
     CxIOFile file(hFile);
@@ -46,7 +46,7 @@ public:
   }
 
 #if CXIMAGE_SUPPORT_ENCODE
-  bool Encode(CxFile * hFile);
+  bool Encode(CxFile *hFile);
   bool Encode(FILE *hFile)
   {
     CxIOFile file(hFile);
@@ -55,7 +55,7 @@ public:
 #endif // CXIMAGE_SUPPORT_ENCODE
 
 protected:
-  bool DibReadBitmapInfo(CxFile* fh, BITMAPINFOHEADER *pdib);
+  bool DibReadBitmapInfo(CxFile *fh, BITMAPINFOHEADER *pdib);
 };
 
 #define BFT_ICON   0x4349   /* 'IC' */
@@ -65,7 +65,7 @@ protected:
 //#ifndef WIDTHBYTES
 inline uint32_t WIDTHBYTES(uint32_t i)
 {
-  return (static_cast<uint32_t>((i+31) & static_cast<uint32_t>(~31))/8);  /* ULONG aligned ! */
+  return (static_cast<uint32_t>((i + 31) & static_cast<uint32_t>(~31)) / 8); /* ULONG aligned ! */
 }
 //#endif
 

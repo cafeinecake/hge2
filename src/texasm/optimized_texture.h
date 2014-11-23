@@ -1,6 +1,4 @@
-
-#ifndef OPTIMIZED_TEXTURE_H
-#define OPTIMIZED_TEXTURE_H
+#pragma once
 
 
 #include "texasm.h"
@@ -8,7 +6,7 @@
 #include "RectPlacement.h"
 
 
-bool Write32BitPNGWithPitch(FILE* fp, void* pBits, bool bNeedAlpha, int nWidth, int nHeight,
+bool Write32BitPNGWithPitch(FILE *fp, void *pBits, bool bNeedAlpha, int nWidth, int nHeight,
                             int nPitch);
 
 
@@ -42,7 +40,7 @@ public:
   void    AddNoTextureObject(CGfxObject *obj);
   int     GetNumPlaced()
   {
-    return obj_list.size();
+    return static_cast<int>(obj_list.size());
   }
 
   bool    Create();
@@ -65,6 +63,3 @@ private:
   int     pitch;
 };
 
-
-
-#endif

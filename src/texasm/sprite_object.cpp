@@ -1,5 +1,6 @@
 
 #include "sprite_object.h"
+#include "common/hge_utils.h"
 
 CSpriteObject::CSpriteObject(hgeSprite *_spr, char *_name, int _resgroup, bool _owned)
   : CGfxObject(_name, _resgroup)
@@ -10,7 +11,7 @@ CSpriteObject::CSpriteObject(hgeSprite *_spr, char *_name, int _resgroup, bool _
 
 CSpriteObject::~CSpriteObject()
 {
-  if(owned) {
+  if (owned) {
     hge->Texture_Free(GetTexture());
     delete[] name;
     delete spr;
@@ -34,7 +35,7 @@ bool CSpriteObject::SaveDescription(FILE *fp, char *texname)
   fprintf(fp, "Sprite %s\n", name);
   fprintf(fp, "{\n");
 
-  if(GetTexture() && texname) {
+  if (GetTexture() && texname) {
     fprintf(fp, " texture = %s\n", texname);
   }
 
@@ -43,50 +44,51 @@ bool CSpriteObject::SaveDescription(FILE *fp, char *texname)
   float HotX, HotY;
   spr->GetHotSpot(&HotX, &HotY);
 
-  if(HotX || HotY) {
+  if (hgeut::flt_not_equal(HotX, 0.f)
+      || hgeut::flt_not_equal(HotY, 0.f)) {
     fprintf(fp, " hotspot = %d,%d\n", int(HotX), int(HotY));
   }
 
   int BlendMode = spr->GetBlendMode();
 
-  if(BlendMode != BLEND_DEFAULT) {
+  if (BlendMode != BLEND_DEFAULT) {
     fprintf(fp, " blendmode = ");
 
-    if(BlendMode & BLEND_COLORADD) {
-      fprintf(fp,"COLORADD,");
+    if (BlendMode & BLEND_COLORADD) {
+      fprintf(fp, "COLORADD,");
     } else {
-      fprintf(fp,"COLORMUL,");
+      fprintf(fp, "COLORMUL,");
     }
 
-    if(BlendMode & BLEND_ALPHABLEND) {
-      fprintf(fp,"ALPHABLEND,");
+    if (BlendMode & BLEND_ALPHABLEND) {
+      fprintf(fp, "ALPHABLEND,");
     } else {
-      fprintf(fp,"ALPHAADD,");
+      fprintf(fp, "ALPHAADD,");
     }
 
-    if(BlendMode & BLEND_ZWRITE) {
-      fprintf(fp,"ZWRITE\n");
+    if (BlendMode & BLEND_ZWRITE) {
+      fprintf(fp, "ZWRITE\n");
     } else {
-      fprintf(fp,"NOZWRITE\n");
+      fprintf(fp, "NOZWRITE\n");
     }
   }
 
   uint32_t Color = spr->GetColor();
 
-  if(Color != 0xFFFFFFFF) {
+  if (Color != 0xFFFFFFFF) {
     fprintf(fp, " color = %08X\n", Color);
   }
 
   float ZOrder = spr->GetZ();
 
-  if(ZOrder != 0.5f) {
+  if (ZOrder != 0.5f) {
     fprintf(fp, " zorder = %03f\n", ZOrder);
   }
 
   bool FlipX, FlipY;
   spr->GetFlip(&FlipX, &FlipY);
 
-  if(FlipX || FlipY) {
+  if (FlipX || FlipY) {
     fprintf(fp, " flip = %s,%s\n", FlipX ? "true" : "false", FlipY ? "true" : "false");
   }
 

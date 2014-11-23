@@ -60,9 +60,9 @@ public:
   CxImageMNG();
   ~CxImageMNG();
 
-  bool Load(const TCHAR * imageFileName);
+  bool Load(const TCHAR *imageFileName);
 
-  bool Decode(CxFile * hFile);
+  bool Decode(CxFile *hFile);
   bool Decode(FILE *hFile)
   {
     CxIOFile file(hFile);
@@ -70,15 +70,15 @@ public:
   }
 
 #if CXIMAGE_SUPPORT_ENCODE
-  bool Encode(CxFile * hFile);
+  bool Encode(CxFile *hFile);
   bool Encode(FILE *hFile)
   {
     CxIOFile file(hFile);
     return Encode(&file);
   }
-  bool Save(const TCHAR * imageFileName)
+  bool Save(const TCHAR *imageFileName)
   {
-    return CxImage::Save(imageFileName,CXIMAGE_FORMAT_MNG);
+    return CxImage::Save(imageFileName, CXIMAGE_FORMAT_MNG);
   }
 #endif // CXIMAGE_SUPPORT_ENCODE
 

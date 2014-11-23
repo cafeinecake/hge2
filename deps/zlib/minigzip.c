@@ -356,10 +356,10 @@ char  *file;
 
   strcpy(buf, file);
 
-  if (len > SUFFIX_LEN && strcmp(file+len-SUFFIX_LEN, GZ_SUFFIX) == 0) {
+  if (len > SUFFIX_LEN && strcmp(file + len - SUFFIX_LEN, GZ_SUFFIX) == 0) {
     infile = file;
     outfile = buf;
-    outfile[len-3] = '\0';
+    outfile[len - 3] = '\0';
   } else {
     outfile = file;
     infile = buf;
@@ -490,7 +490,7 @@ char *argv[];
         }
       } else {
         if (copyout) {
-          FILE * in = fopen(*argv, "rb");
+          FILE *in = fopen(*argv, "rb");
 
           if (in == NULL) {
             perror(*argv);

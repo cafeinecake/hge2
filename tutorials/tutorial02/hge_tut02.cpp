@@ -15,39 +15,39 @@
 
 #include "../../include/hge.h"
 
-HGE *hge=0;
+static HGE *hge = 0;
 
 // Quad is the basic primitive in HGE
 // used for rendering graphics.
 // Quad contains 4 vertices, numbered
 // 0 to 3 clockwise.
-hgeQuad quad;
+static hgeQuad quad;
 
 // Handle for a sound effect
-HEFFECT snd;
+static HEFFECT snd;
 
 // Some "gameplay" variables and constants
-float x=100.0f, y=100.0f;
-float dx=0.0f, dy=0.0f;
+static float x = 100.0f, y = 100.0f;
+static float dx = 0.0f, dy = 0.0f;
 
-const float speed=90;
-const float friction=0.98f;
+const float speed = 90;
+const float friction = 0.98f;
 
 // This function plays collision sound with
 // parameters based on sprite position and speed
-void boom()
+static void boom()
 {
-  int pan=int((x-400)/4);
-  float pitch=(dx*dx+dy*dy)*0.0005f+0.2f;
-  hge->Effect_PlayEx(snd,100,pan,pitch);
+  int pan = int((x - 400) / 4);
+  float pitch = (dx * dx + dy * dy) * 0.0005f + 0.2f;
+  hge->Effect_PlayEx(snd, 100, pan, pitch);
 }
 
-bool FrameFunc()
+static bool FrameFunc()
 {
   // Get the time elapsed since last call of FrameFunc().
   // This will help us to synchronize on different
   // machines and video modes.
-  float dt=hge->Timer_GetDelta();
+  float dt = hge->Timer_GetDelta();
 
   // Process keys
   if (hge->Input_GetKeyState(HGEK_ESCAPE)) {
@@ -55,60 +55,60 @@ bool FrameFunc()
   }
 
   if (hge->Input_GetKeyState(HGEK_LEFT)) {
-    dx-=speed*dt;
+    dx -= speed * dt;
   }
 
   if (hge->Input_GetKeyState(HGEK_RIGHT)) {
-    dx+=speed*dt;
+    dx += speed * dt;
   }
 
   if (hge->Input_GetKeyState(HGEK_UP)) {
-    dy-=speed*dt;
+    dy -= speed * dt;
   }
 
   if (hge->Input_GetKeyState(HGEK_DOWN)) {
-    dy+=speed*dt;
+    dy += speed * dt;
   }
 
   // Do some movement calculations and collision detection
-  dx*=friction;
-  dy*=friction;
-  x+=dx;
-  y+=dy;
+  dx *= friction;
+  dy *= friction;
+  x += dx;
+  y += dy;
 
-  if(x>784) {
-    x=784-(x-784);
-    dx=-dx;
+  if (x > 784) {
+    x = 784 - (x - 784);
+    dx = -dx;
     boom();
   }
 
-  if(x<16) {
-    x=16+16-x;
-    dx=-dx;
+  if (x < 16) {
+    x = 16 + 16 - x;
+    dx = -dx;
     boom();
   }
 
-  if(y>584) {
-    y=584-(y-584);
-    dy=-dy;
+  if (y > 584) {
+    y = 584 - (y - 584);
+    dy = -dy;
     boom();
   }
 
-  if(y<16) {
-    y=16+16-y;
-    dy=-dy;
+  if (y < 16) {
+    y = 16 + 16 - y;
+    dy = -dy;
     boom();
   }
 
   // Set up quad's screen coordinates
-  quad.v[0].x=x-16;
-  quad.v[0].y=y-16;
-  quad.v[1].x=x+16;
-  quad.v[1].y=y-16;
-  quad.v[2].x=x+16;
-  quad.v[2].y=y+16;
-  quad.v[3].x=x-16;
-  quad.v[3].y=y+16;
+  quad.v[0].x = x - 16;
+  quad.v[0].y = y - 16;
+  quad.v[1].x = x + 16;
+  quad.v[1].y = y - 16;
+  quad.v[2].x = x + 16;
+  quad.v[2].y = y + 16;
+  quad.v[3].x = x - 16;
+  quad.v[3].y = y + 16;
 
   // Continue execution
   return false;
@@ -117,7 +117,7 @@ bool FrameFunc()
 // This function will be called by HGE when
 // the application window should be redrawn.
 // Put your rendering code here.
-bool RenderFunc()
+static bool RenderFunc()
 {
   // Begin rendering quads.
   // This function must be called
@@ -139,7 +139,7 @@ bool RenderFunc()
 }
 
 #ifdef PLATFORM_UNIX
-int main(int argc, char *argv[])
+int main(int /*argc*/, char * /*argv*/ [])
 #else
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 #endif
@@ -159,16 +159,16 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
   hge->System_SetState(HGE_SCREENHEIGHT, 600);
   hge->System_SetState(HGE_SCREENBPP, 32);
 
-  if(hge->System_Initiate()) {
+  if (hge->System_Initiate()) {
     // Load sound and texture
 #ifdef PLATFORM_UNIX
-    snd=hge->Effect_Load("menu.ogg");
+    snd = hge->Effect_Load("menu.ogg");
 #else
-    snd=hge->Effect_Load("menu.wav");
+    snd = hge->Effect_Load("menu.wav");
 #endif
-    quad.tex=hge->Texture_Load("particles.png");
+    quad.tex = hge->Texture_Load("particles.png");
 
-    if(!snd || !quad.tex) {
+    if (!snd || !quad.tex) {
       // If one of the data files is not found, display
       // an error message and shutdown.
 #ifdef PLATFORM_UNIX
@@ -183,26 +183,26 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
     }
 
     // Set up quad which we will use for rendering sprite
-    quad.blend=BLEND_ALPHAADD | BLEND_COLORMUL | BLEND_ZWRITE;
+    quad.blend = BLEND_ALPHAADD | BLEND_COLORMUL | BLEND_ZWRITE;
 
-    for(int i=0; i<4; i++) {
+    for (int i = 0; i < 4; i++) {
       // Set up z-coordinate of vertices
-      quad.v[i].z=0.5f;
+      quad.v[i].z = 0.5f;
       // Set up color. The format of DWORD col is 0xAARRGGBB
-      quad.v[i].col=0xFFFFA000;
+      quad.v[i].col = 0xFFFFA000;
     }
 
     // Set up quad's texture coordinates.
     // 0,0 means top left corner and 1,1 -
     // bottom right corner of the texture.
-    quad.v[0].tx=96.0/128.0;
-    quad.v[0].ty=64.0/128.0;
-    quad.v[1].tx=128.0/128.0;
-    quad.v[1].ty=64.0/128.0;
-    quad.v[2].tx=128.0/128.0;
-    quad.v[2].ty=96.0/128.0;
-    quad.v[3].tx=96.0/128.0;
-    quad.v[3].ty=96.0/128.0;
+    quad.v[0].tx = 96.0 / 128.0;
+    quad.v[0].ty = 64.0 / 128.0;
+    quad.v[1].tx = 128.0 / 128.0;
+    quad.v[1].ty = 64.0 / 128.0;
+    quad.v[2].tx = 128.0 / 128.0;
+    quad.v[2].ty = 96.0 / 128.0;
+    quad.v[3].tx = 96.0 / 128.0;
+    quad.v[3].ty = 96.0 / 128.0;
 
     // Let's rock now!
     hge->System_Start();

@@ -17,20 +17,20 @@ public:
 
   hgeRect(float _x1, float _y1, float _x2, float _y2)
   {
-    x1=_x1;
-    y1=_y1;
-    x2=_x2;
-    y2=_y2;
-    bClean=false;
+    x1 = _x1;
+    y1 = _y1;
+    x2 = _x2;
+    y2 = _y2;
+    bClean = false;
   }
   hgeRect()
   {
-    bClean=true;
+    bClean = true;
   }
 
   void    Clear()
   {
-    bClean=true;
+    bClean = true;
   }
   bool    IsClean() const
   {
@@ -38,19 +38,19 @@ public:
   }
   void  Set(float _x1, float _y1, float _x2, float _y2)
   {
-    x1=_x1;
-    x2=_x2;
-    y1=_y1;
-    y2=_y2;
-    bClean=false;
+    x1 = _x1;
+    x2 = _x2;
+    y1 = _y1;
+    y2 = _y2;
+    bClean = false;
   }
   void  SetRadius(float x, float y, float r)
   {
-    x1=x-r;
-    x2=x+r;
-    y1=y-r;
-    y2=y+r;
-    bClean=false;
+    x1 = x - r;
+    x2 = x + r;
+    y1 = y - r;
+    y2 = y + r;
+    bClean = false;
   }
   void  Encapsulate(float x, float y);
   bool  TestPoint(float x, float y) const;

@@ -22,7 +22,7 @@
 struct jpg_error_mgr {
   struct jpeg_error_mgr pub;  /* "public" fields */
   jmp_buf setjmp_buffer;    /* for return to caller */
-  char* buffer;       /* error message <CSC>*/
+  char *buffer;       /* error message <CSC>*/
 };
 typedef jpg_error_mgr *jpg_error_ptr;
 
@@ -61,14 +61,14 @@ CxImageJPG::~CxImageJPG()
 }
 ////////////////////////////////////////////////////////////////////////////////
 #if CXIMAGEJPG_SUPPORT_EXIF
-bool CxImageJPG::DecodeExif(CxFile * hFile)
+bool CxImageJPG::DecodeExif(CxFile *hFile)
 {
   m_exif = new CxExifInfo(&info.ExifInfo);
 
   if (m_exif) {
-    int32_t pos=hFile->Tell();
+    int32_t pos = hFile->Tell();
     m_exif->DecodeExif(hFile);
-    hFile->Seek(pos,SEEK_SET);
+    hFile->Seek(pos, SEEK_SET);
     return m_exif->m_exifinfo->IsExif;
   } else {
     return false;
@@ -122,7 +122,7 @@ bool CxImageJPG::GetExifThumbnail(const TCHAR *filename, const TCHAR *outname, i
 ////////////////////////////////////////////////////////////////////////////////
 #if CXIMAGE_SUPPORT_DECODE
 ////////////////////////////////////////////////////////////////////////////////
-bool CxImageJPG::Decode(CxFile * hFile)
+bool CxImageJPG::Decode(CxFile *hFile)
 {
 
   bool is_exif = false;
@@ -137,7 +137,7 @@ bool CxImageJPG::Decode(CxFile * hFile)
   struct jpeg_decompress_struct cinfo;
   /* We use our private extension JPEG error handler. <CSC> */
   struct jpg_error_mgr jerr;
-  jerr.buffer=info.szLastError;
+  jerr.buffer = info.szLastError;
   /* More stuff */
   JSAMPARRAY buffer;  /* Output row buffer */
   int32_t row_stride;   /* physical row width in output buffer */
@@ -232,7 +232,7 @@ bool CxImageJPG::Decode(CxFile * hFile)
   //Create the image using output dimensions <ignacio>
   //Create(cinfo.image_width, cinfo.image_height, 8*cinfo.output_components, CXIMAGE_FORMAT_JPG);
   Create(cinfo.output_width, cinfo.output_height,
-         static_cast<uint32_t>(8*cinfo.output_components),
+         static_cast<uint32_t>(8 * cinfo.output_components),
          CXIMAGE_FORMAT_JPG);
 
   if (!pDib) {
@@ -243,19 +243,19 @@ bool CxImageJPG::Decode(CxFile * hFile)
 #if CXIMAGEJPG_SUPPORT_EXIF
 
     if ((info.ExifInfo.Xresolution != 0.0) && (info.ExifInfo.ResolutionUnit != 0)) {
-      SetXDPI(static_cast<int32_t>(info.ExifInfo.Xresolution/info.ExifInfo.ResolutionUnit));
+      SetXDPI(static_cast<int32_t>(info.ExifInfo.Xresolution / info.ExifInfo.ResolutionUnit));
     }
 
     if ((info.ExifInfo.Yresolution != 0.0) && (info.ExifInfo.ResolutionUnit != 0)) {
-      SetYDPI(static_cast<int32_t>(info.ExifInfo.Yresolution/info.ExifInfo.ResolutionUnit));
+      SetYDPI(static_cast<int32_t>(info.ExifInfo.Yresolution / info.ExifInfo.ResolutionUnit));
     }
 
 #endif
   } else {
     switch (cinfo.density_unit) {
     case 0: // [andy] fix for aspect ratio...
-      if((cinfo.Y_density > 0) && (cinfo.X_density > 0)) {
-        SetYDPI(static_cast<int32_t>(GetXDPI()*(float(cinfo.Y_density)/float(cinfo.X_density))));
+      if ((cinfo.Y_density > 0) && (cinfo.X_density > 0)) {
+        SetYDPI(static_cast<int32_t>(GetXDPI() * (float(cinfo.Y_density) / float(cinfo.X_density))));
       }
 
       break;
@@ -271,16 +271,16 @@ bool CxImageJPG::Decode(CxFile * hFile)
     }
   }
 
-  if (cinfo.out_color_space==JCS_GRAYSCALE) {
+  if (cinfo.out_color_space == JCS_GRAYSCALE) {
     SetGrayPalette();
-    head.biClrUsed =256;
+    head.biClrUsed = 256;
   } else {
     if (cinfo.quantize_colors) {
       SetPalette(static_cast<uint32_t>(cinfo.actual_number_of_colors),
                  cinfo.colormap[0], cinfo.colormap[1], cinfo.colormap[2]);
       head.biClrUsed = static_cast<uint32_t>(cinfo.actual_number_of_colors);
     } else {
-      head.biClrUsed=0;
+      head.biClrUsed = 0;
     }
   }
 
@@ -312,18 +312,18 @@ bool CxImageJPG::Decode(CxFile * hFile)
 
     // info.nProgress = static_cast<int32_t>(100*cinfo.output_scanline/cinfo.output_height);
     //<DP> Step 6a: CMYK->RGB */
-    if ((cinfo.num_components==4)&&(cinfo.quantize_colors==FALSE)) {
-      uint8_t k,*dst,*src1;
-      dst=iter.GetRow();
-      src1=buffer[0];
+    if ((cinfo.num_components == 4) && (cinfo.quantize_colors == FALSE)) {
+      uint8_t k, *dst, *src1;
+      dst = iter.GetRow();
+      src1 = buffer[0];
 
-      for(int32_t x3=0,x4=0;
-          x3 < static_cast<int32_t>(info.dwEffWidth) && x4<row_stride;
-          x3+=3, x4+=4) {
-        k=src1[x4+3];
-        dst[x3]  =static_cast<uint8_t>((k * src1[x4+2])/255);
-        dst[x3+1]=static_cast<uint8_t>((k * src1[x4+1])/255);
-        dst[x3+2]=static_cast<uint8_t>((k * src1[x4+0])/255);
+      for (int32_t x3 = 0, x4 = 0;
+           x3 < static_cast<int32_t>(info.dwEffWidth) && x4 < row_stride;
+           x3 += 3, x4 += 4) {
+        k = src1[x4 + 3];
+        dst[x3]  = static_cast<uint8_t>((k * src1[x4 + 2]) / 255);
+        dst[x3 + 1] = static_cast<uint8_t>((k * src1[x4 + 1]) / 255);
+        dst[x3 + 2] = static_cast<uint8_t>((k * src1[x4 + 0]) / 255);
       }
     } else {
       /* Assume put_scanline_someplace wants a pointer and sample count. */
@@ -341,16 +341,16 @@ bool CxImageJPG::Decode(CxFile * hFile)
 
   //<DP> Step 7A: Swap red and blue components
   // not necessary if swapped red and blue definition in jmorecfg.h;ln322 <W. Morrison>
-  if ((cinfo.num_components==3)&&(cinfo.quantize_colors==FALSE)) {
-    uint8_t* r0=GetBits();
+  if ((cinfo.num_components == 3) && (cinfo.quantize_colors == FALSE)) {
+    uint8_t *r0 = GetBits();
 
-    for(int32_t y=0; y<head.biHeight; y++) {
+    for (int32_t y = 0; y < head.biHeight; y++) {
       if (info.nEscape) {
         longjmp(jerr.setjmp_buffer, 1);  // <vho> - cancel decoding
       }
 
-      RGBtoBGR(r0,3*head.biWidth);
-      r0+=info.dwEffWidth;
+      RGBtoBGR(r0, 3 * head.biWidth);
+      r0 += info.dwEffWidth;
     }
   }
 
@@ -370,19 +370,19 @@ bool CxImageJPG::Decode(CxFile * hFile)
 ////////////////////////////////////////////////////////////////////////////////
 #if CXIMAGE_SUPPORT_ENCODE
 ////////////////////////////////////////////////////////////////////////////////
-bool CxImageJPG::Encode(CxFile * hFile)
+bool CxImageJPG::Encode(CxFile *hFile)
 {
   if (EncodeSafeCheck(hFile)) {
     return false;
   }
 
-  if (head.biClrUsed!=0 && !IsGrayScale()) {
-    strcpy(info.szLastError,"JPEG can save only RGB or GreyScale images");
+  if (head.biClrUsed != 0 && !IsGrayScale()) {
+    strcpy(info.szLastError, "JPEG can save only RGB or GreyScale images");
     return false;
   }
 
   // necessary for EXIF, and for roll backs
-  int32_t pos=hFile->Tell();
+  int32_t pos = hFile->Tell();
 
   /* This struct contains the JPEG compression parameters and pointers to
   * working space (which is allocated as needed by the JPEG library).
@@ -402,7 +402,7 @@ bool CxImageJPG::Encode(CxFile * hFile)
   //struct jpeg_error_mgr jerr;
   /* We use our private extension JPEG error handler. <CSC> */
   struct jpg_error_mgr jerr;
-  jerr.buffer=info.szLastError;
+  jerr.buffer = info.szLastError;
   /* More stuff */
   int32_t row_stride;   /* physical row width in image buffer */
   JSAMPARRAY buffer;    /* Output row buffer */
@@ -537,9 +537,9 @@ bool CxImageJPG::Encode(CxFile * hFile)
     cinfo.comp_info[2].v_samp_factor = 1;
   }
 
-  cinfo.density_unit=1;
-  cinfo.X_density=(uint16_t)GetXDPI();
-  cinfo.Y_density=(uint16_t)GetYDPI();
+  cinfo.density_unit = 1;
+  cinfo.X_density = (uint16_t)GetXDPI();
+  cinfo.Y_density = (uint16_t)GetYDPI();
 
   /* Step 4: Start compressor */
   /* TRUE ensures that we will write a complete interchange-JPEG file.
@@ -558,7 +558,7 @@ bool CxImageJPG::Encode(CxFile * hFile)
 
   //<DP> "8+row_stride" fix heap deallocation problem during debug???
   buffer = (*cinfo.mem->alloc_sarray)
-           ((j_common_ptr) &cinfo, JPOOL_IMAGE, 8+row_stride, 1);
+           ((j_common_ptr) &cinfo, JPOOL_IMAGE, 8 + row_stride, 1);
 
   CImageIterator iter(this);
 
@@ -569,7 +569,7 @@ bool CxImageJPG::Encode(CxFile * hFile)
     iter.GetRow(buffer[0], row_stride);
 
     // not necessary if swapped red and blue definition in jmorecfg.h;ln322 <W. Morrison>
-    if (head.biClrUsed==0) {       // swap R & B for RGB images
+    if (head.biClrUsed == 0) {     // swap R & B for RGB images
       RGBtoBGR(buffer[0], row_stride); // Lance : 1998/09/01 : Bug ID: EXP-2.1.1-9
     }
 
@@ -591,10 +591,10 @@ bool CxImageJPG::Encode(CxFile * hFile)
     // discard useless sections (if any) read from original image
     m_exif->DiscardAllButExif();
     // read new created image, to split the sections
-    hFile->Seek(pos,SEEK_SET);
-    m_exif->DecodeExif(hFile,EXIF_READ_IMAGE);
+    hFile->Seek(pos, SEEK_SET);
+    m_exif->DecodeExif(hFile, EXIF_READ_IMAGE);
     // save back the image, adding EXIF section
-    hFile->Seek(pos,SEEK_SET);
+    hFile->Seek(pos, SEEK_SET);
     m_exif->EncodeExif(hFile);
   }
 

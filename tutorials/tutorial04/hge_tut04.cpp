@@ -20,41 +20,41 @@
 #include "../../include/hgeparticle.h"
 
 
-HGE *hge=0;
+static HGE *hge = 0;
 
 
-hgeSprite*      spr;
-hgeSprite*      spt;
-hgeSprite*      tar;
-hgeFont*      fnt;
-hgeParticleSystem*  par;
+static hgeSprite      *spr;
+static hgeSprite      *spt;
+static hgeSprite      *tar;
+static hgeFont      *fnt;
+static hgeParticleSystem  *par;
 
-HTEXTURE      tex;
-HEFFECT       snd;
+static HTEXTURE      tex;
+static HEFFECT       snd;
 
 // HGE render target handle
-HTARGET       target;
+static HTARGET       target;
 
-float x=100.0f, y=100.0f;
-float dx=0.0f, dy=0.0f;
+static float x = 100.0f, y = 100.0f;
+static float dx = 0.0f, dy = 0.0f;
 
-const float speed=90;
-const float friction=0.98f;
+const float speed = 90;
+const float friction = 0.98f;
 
-void boom()
+static void boom()
 {
-  int pan=int((x-256)/2.56f);
-  float pitch=(dx*dx+dy*dy)*0.0005f+0.2f;
-  hge->Effect_PlayEx(snd,100,pan,pitch);
+  int pan = int((x - 256) / 2.56f);
+  float pitch = (dx * dx + dy * dy) * 0.0005f + 0.2f;
+  hge->Effect_PlayEx(snd, 100, pan, pitch);
 }
 
 // This function will be called by HGE when
 // render targets were lost and have been just created
 // again. We use it here to update the render
 // target's texture handle that changes during recreation.
-bool GfxRestoreFunc()
+static bool GfxRestoreFunc()
 {
-  if(tar && target) {
+  if (tar && target) {
     tar->SetTexture(hge->Target_GetTexture(target));
   }
 
@@ -62,9 +62,9 @@ bool GfxRestoreFunc()
 }
 
 
-bool FrameFunc()
+static bool FrameFunc()
 {
-  float dt=hge->Timer_GetDelta();
+  float dt = hge->Timer_GetDelta();
 
   // Process keys
   if (hge->Input_GetKeyState(HGEK_ESCAPE)) {
@@ -72,61 +72,61 @@ bool FrameFunc()
   }
 
   if (hge->Input_GetKeyState(HGEK_LEFT)) {
-    dx-=speed*dt;
+    dx -= speed * dt;
   }
 
   if (hge->Input_GetKeyState(HGEK_RIGHT)) {
-    dx+=speed*dt;
+    dx += speed * dt;
   }
 
   if (hge->Input_GetKeyState(HGEK_UP)) {
-    dy-=speed*dt;
+    dy -= speed * dt;
   }
 
   if (hge->Input_GetKeyState(HGEK_DOWN)) {
-    dy+=speed*dt;
+    dy += speed * dt;
   }
 
   // Do some movement calculations and collision detection
-  dx*=friction;
-  dy*=friction;
-  x+=dx;
-  y+=dy;
+  dx *= friction;
+  dy *= friction;
+  x += dx;
+  y += dy;
 
-  if(x>496) {
-    x=496-(x-496);
-    dx=-dx;
+  if (x > 496) {
+    x = 496 - (x - 496);
+    dx = -dx;
     boom();
   }
 
-  if(x<16) {
-    x=16+16-x;
-    dx=-dx;
+  if (x < 16) {
+    x = 16 + 16 - x;
+    dx = -dx;
     boom();
   }
 
-  if(y>496) {
-    y=496-(y-496);
-    dy=-dy;
+  if (y > 496) {
+    y = 496 - (y - 496);
+    dy = -dy;
     boom();
   }
 
-  if(y<16) {
-    y=16+16-y;
-    dy=-dy;
+  if (y < 16) {
+    y = 16 + 16 - y;
+    dy = -dy;
     boom();
   }
 
   // Update particle system
-  par->info.nEmission=(int)(dx*dx+dy*dy);
-  par->MoveTo(x,y);
+  par->info.nEmission = static_cast<int>(dx * dx + dy * dy);
+  par->MoveTo(x, y);
   par->Update(dt);
 
   return false;
 }
 
 
-bool RenderFunc()
+static bool RenderFunc()
 {
   int i;
 
@@ -141,9 +141,9 @@ bool RenderFunc()
   hge->Gfx_BeginScene();
   hge->Gfx_Clear(0);
 
-  for(i=0; i<6; i++) {
-    tar->SetColor(0xFFFFFF | (((5-i)*40+55)<<24));
-    tar->RenderEx(i*100.0f, i*50.0f, i*M_PI/8, 1.0f-i*0.1f);
+  for (i = 0; i < 6; i++) {
+    tar->SetColor(0xFFFFFF | static_cast<uint32_t>(((5 - i) * 40 + 55) << 24));
+    tar->RenderEx(i * 100.0f, i * 50.0f, static_cast<float>(i * M_PI) / 8, 1.0f - i * 0.1f);
   }
 
   fnt->printf(5, 5, HGETEXT_LEFT, "dt:%.3f\nFPS:%d (constant)", hge->Timer_GetDelta(),
@@ -155,7 +155,7 @@ bool RenderFunc()
 
 
 #ifdef PLATFORM_UNIX
-int main(int argc, char *argv[])
+int main(int /*argc*/, char * /*argv*/ [])
 #else
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 #endif
@@ -173,18 +173,18 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
   hge->System_SetState(HGE_SCREENHEIGHT, 600);
   hge->System_SetState(HGE_SCREENBPP, 32);
 
-  tar=0;
-  target=0;
+  tar = 0;
+  target = 0;
 
-  if(hge->System_Initiate()) {
+  if (hge->System_Initiate()) {
 #ifdef PLATFORM_UNIX
-    snd=hge->Effect_Load("menu.ogg");
+    snd = hge->Effect_Load("menu.ogg");
 #else
-    snd=hge->Effect_Load("menu.wav");
+    snd = hge->Effect_Load("menu.wav");
 #endif
-    tex=hge->Texture_Load("particles.png");
+    tex = hge->Texture_Load("particles.png");
 
-    if(!snd || !tex) {
+    if (!snd || !tex) {
       // If one of the data files is not found, display
       // an error message and shutdown.
 #ifdef PLATFORM_UNIX
@@ -200,21 +200,21 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
       return 0;
     }
 
-    spr=new hgeSprite(tex, 96, 64, 32, 32);
+    spr = new hgeSprite(tex, 96, 64, 32, 32);
     spr->SetColor(0xFFFFA000);
-    spr->SetHotSpot(16,16);
+    spr->SetHotSpot(16, 16);
 
-    fnt=new hgeFont("font1.fnt");
+    fnt = new hgeFont("font1.fnt");
 
-    spt=new hgeSprite(tex, 32, 32, 32, 32);
+    spt = new hgeSprite(tex, 32, 32, 32, 32);
     spt->SetBlendMode(BLEND_COLORMUL | BLEND_ALPHAADD | BLEND_NOZWRITE);
-    spt->SetHotSpot(16,16);
-    par=new hgeParticleSystem("trail.psi",spt);
+    spt->SetHotSpot(16, 16);
+    par = new hgeParticleSystem("trail.psi", spt);
     par->Fire();
 
     // Create a render target and a sprite for it
-    target=hge->Target_Create(512,512,false);
-    tar=new hgeSprite(hge->Target_GetTexture(target),0,0,512,512);
+    target = hge->Target_Create(512, 512, false);
+    tar = new hgeSprite(hge->Target_GetTexture(target), 0, 0, 512, 512);
     tar->SetBlendMode(BLEND_COLORMUL | BLEND_ALPHAADD | BLEND_NOZWRITE);
 
     // Let's rock now!

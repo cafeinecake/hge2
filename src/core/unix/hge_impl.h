@@ -65,31 +65,31 @@ struct CRenderTargetList {
   HTEXTURE      tex;
   GLuint        depth;
   GLuint        frame;
-  CRenderTargetList*  next;
+  CRenderTargetList  *next;
 };
 
 struct CTextureList {
   HTEXTURE      tex;
   int         width;
   int         height;
-  CTextureList*   next;
+  CTextureList   *next;
 };
 
 struct CResourceList {
   char        filename[_MAX_PATH];
   char        password[64];
-  CResourceList*    next;
+  CResourceList    *next;
 };
 
 struct CStreamList {
   HSTREAM       hstream;
-  void*       data;
-  CStreamList*    next;
+  void       *data;
+  CStreamList    *next;
 };
 
 struct CInputEventList {
   hgeInputEvent   event;
-  CInputEventList*  next;
+  CInputEventList  *next;
 };
 
 
@@ -117,29 +117,29 @@ public:
   virtual hgeCallback CALL  System_GetStateFunc  (hgeFuncState  );
   virtual HWND    CALL  System_GetStateHwnd  (hgeHwndState  );
   virtual int     CALL  System_GetStateInt   (hgeIntState   );
-  virtual const char* CALL  System_GetStateString(hgeStringState);
-  virtual const char* CALL  System_GetErrorMessage();
+  virtual const char *CALL  System_GetStateString(hgeStringState);
+  virtual const char *CALL  System_GetErrorMessage();
   virtual void    CALL  System_Log(const char *format, ...);
   virtual bool    CALL  System_Launch(const char *url);
-  virtual void    CALL  System_Snapshot(const char *filename=0);
+  virtual void    CALL  System_Snapshot(const char *filename = 0);
 
-  virtual void*   CALL  Resource_Load(const char *filename, uint32_t *size=0);
+  virtual void   *CALL  Resource_Load(const char *filename, uint32_t *size = 0);
   virtual void    CALL  Resource_Free(void *res);
-  virtual bool    CALL  Resource_AttachPack(const char *filename, const char *password=0);
+  virtual bool    CALL  Resource_AttachPack(const char *filename, const char *password = 0);
   virtual void    CALL  Resource_RemovePack(const char *filename);
   virtual void    CALL  Resource_RemoveAllPacks();
-  virtual char*   CALL  Resource_MakePath(const char *filename=0);
-  virtual char*   CALL  Resource_EnumFiles(const char *wildcard=0);
-  virtual char*   CALL  Resource_EnumFolders(const char *wildcard=0);
+  virtual char   *CALL  Resource_MakePath(const char *filename = 0);
+  virtual char   *CALL  Resource_EnumFiles(const char *wildcard = 0);
+  virtual char   *CALL  Resource_EnumFolders(const char *wildcard = 0);
 
   virtual void    CALL  Ini_SetInt(const char *section, const char *name, int value);
   virtual int     CALL  Ini_GetInt(const char *section, const char *name, int def_val);
   virtual void    CALL  Ini_SetFloat(const char *section, const char *name, float value);
   virtual float   CALL  Ini_GetFloat(const char *section, const char *name, float def_val);
   virtual void    CALL  Ini_SetString(const char *section, const char *name, const char *value);
-  virtual char*   CALL  Ini_GetString(const char *section, const char *name, const char *def_val);
+  virtual char   *CALL  Ini_GetString(const char *section, const char *name, const char *def_val);
 
-  virtual void    CALL  Random_Seed(int seed=0);
+  virtual void    CALL  Random_Seed(int seed = 0);
   virtual int     CALL  Random_Int(int min, int max);
   virtual float   CALL  Random_Float(float min, float max);
 
@@ -147,13 +147,14 @@ public:
   virtual float   CALL  Timer_GetDelta();
   virtual int     CALL  Timer_GetFPS();
 
-  virtual HEFFECT   CALL  Effect_Load(const char *filename, uint32_t size=0);
+  virtual HEFFECT   CALL  Effect_Load(const char *filename, uint32_t size = 0);
   virtual void    CALL  Effect_Free(HEFFECT eff);
   virtual HCHANNEL  CALL  Effect_Play(HEFFECT eff);
-  virtual HCHANNEL  CALL  Effect_PlayEx(HEFFECT eff, int volume=100, int pan=0, float pitch=1.0f,
-                                        bool loop=false);
+  virtual HCHANNEL  CALL  Effect_PlayEx(HEFFECT eff, int volume = 100, int pan = 0,
+                                        float pitch = 1.0f,
+                                        bool loop = false);
 
-  virtual HMUSIC    CALL  Music_Load(const char *filename, uint32_t size=0);
+  virtual HMUSIC    CALL  Music_Load(const char *filename, uint32_t size = 0);
   virtual void    CALL  Music_Free(HMUSIC mus);
   virtual HCHANNEL  CALL  Music_Play(HMUSIC mus, bool loop, int volume = 100, int order = 0,
                                      int row = 0);
@@ -167,7 +168,7 @@ public:
   virtual void    CALL  Music_SetChannelVolume(HMUSIC music, int channel, int volume);
   virtual int     CALL  Music_GetChannelVolume(HMUSIC music, int channel);
 
-  virtual HSTREAM   CALL  Stream_Load(const char *filename, uint32_t size=0);
+  virtual HSTREAM   CALL  Stream_Load(const char *filename, uint32_t size = 0);
   virtual void    CALL  Stream_Free(HSTREAM stream);
   virtual HCHANNEL  CALL  Stream_Play(HSTREAM stream, bool loop, int volume = 100);
 
@@ -195,42 +196,44 @@ public:
   virtual bool    CALL  Input_KeyDown(int key);
   virtual bool    CALL  Input_KeyUp(int key);
   virtual bool    CALL  Input_GetKeyState(int key);
-  virtual const  char*    CALL  Input_GetKeyName(int key);
+  virtual const  char    *CALL  Input_GetKeyName(int key);
   virtual int     CALL  Input_GetKey();
   virtual int     CALL  Input_GetChar();
   virtual bool    CALL  Input_GetEvent(hgeInputEvent *event);
 
-  virtual bool    CALL  Gfx_BeginScene(HTARGET target=0);
+  virtual bool    CALL  Gfx_BeginScene(HTARGET target = 0);
   virtual void    CALL  Gfx_EndScene();
   virtual void    CALL  Gfx_Clear(uint32_t color);
   virtual void    CALL  Gfx_RenderLine(float x1, float y1, float x2, float y2,
-                                       uint32_t color=0xFFFFFFFF,
-                                       float z=0.5f);
+                                       uint32_t color = 0xFFFFFFFF,
+                                       float z = 0.5f);
   virtual void    CALL  Gfx_RenderTriple(const hgeTriple *triple);
   virtual void    CALL  Gfx_RenderQuad(const hgeQuad *quad);
-  virtual hgeVertex*  CALL  Gfx_StartBatch(int prim_type, HTEXTURE tex, int blend, int *max_prim);
+  virtual hgeVertex  *CALL  Gfx_StartBatch(int prim_type, HTEXTURE tex, int blend, int *max_prim);
   virtual void    CALL  Gfx_FinishBatch(int nprim);
-  virtual void    CALL  Gfx_SetClipping(int x=0, int y=0, int w=0, int h=0);
-  virtual void    CALL  Gfx_SetTransform(float x=0, float y=0, float dx=0, float dy=0, float rot=0,
-                                         float hscale=0, float vscale=0);
+  virtual void    CALL  Gfx_SetClipping(int x = 0, int y = 0, int w = 0, int h = 0);
+  virtual void    CALL  Gfx_SetTransform(float x = 0, float y = 0, float dx = 0, float dy = 0,
+                                         float rot = 0,
+                                         float hscale = 0, float vscale = 0);
 
   virtual HTARGET   CALL  Target_Create(int width, int height, bool zbuffer);
   virtual void    CALL  Target_Free(HTARGET target);
   virtual HTEXTURE  CALL  Target_GetTexture(HTARGET target);
 
   virtual HTEXTURE  CALL  Texture_Create(int width, int height);
-  virtual HTEXTURE  CALL  Texture_Load(const char *filename, uint32_t size=0, bool bMipmap=false);
+  virtual HTEXTURE  CALL  Texture_Load(const char *filename, uint32_t size = 0, bool bMipmap = false);
   virtual void    CALL  Texture_Free(HTEXTURE tex);
-  virtual int     CALL  Texture_GetWidth(HTEXTURE tex, bool bOriginal=false);
-  virtual int     CALL  Texture_GetHeight(HTEXTURE tex, bool bOriginal=false);
-  virtual uint32_t*    CALL  Texture_Lock(HTEXTURE tex, bool bReadOnly=true, int left=0, int top=0,
-                                          int width=0, int height=0);
+  virtual int     CALL  Texture_GetWidth(HTEXTURE tex, bool bOriginal = false);
+  virtual int     CALL  Texture_GetHeight(HTEXTURE tex, bool bOriginal = false);
+  virtual uint32_t    *CALL  Texture_Lock(HTEXTURE tex, bool bReadOnly = true, int left = 0,
+                                          int top = 0,
+                                          int width = 0, int height = 0);
   virtual void    CALL  Texture_Unlock(HTEXTURE tex);
 
   bool CALL HGEEXT_Texture_PushYUV422(HTEXTURE tex, const uint8_t *yuv);
 
   //////// Implementation ////////
-  static HGE_Impl*  _Interface_Get();
+  static HGE_Impl  *_Interface_Get();
 
 private:
   void        _FocusChange(bool bAct);
@@ -238,7 +241,7 @@ private:
 
   // ini ...
   void        _LoadIniFile(const char *fname);
-  const char*     _BuildProfilePath(const char *section, const char *name, const char *szIniFile);
+  const char     *_BuildProfilePath(const char *section, const char *name, const char *szIniFile);
   bool        _WritePrivateProfileString(const char *section, const char *name, const char *buf,
                                          const char *szIniFile);
   bool        _GetPrivateProfileString(const char *section, const char *name, const char *deflt,
@@ -259,7 +262,7 @@ private:
   bool        (*procFocusGainFunc)();
   bool        (*procGfxRestoreFunc)();
   bool        (*procExitFunc)();
-  const char*     szIcon;
+  const char     *szIcon;
   char        szWinTitle[256];
   int         nScreenWidth;
   int         nScreenHeight;
@@ -305,18 +308,18 @@ private:
 
 
   // Graphics
-  COpenGLDevice*      pOpenGLDevice;  // GL entry points, dynamically loaded.
-  hgeVertex*        pVB;  // vertex buffer is a client-side array in the OpenGL renderer.
-  GLushort*       pIB;  // index buffer is a client-side array in the OpenGL renderer.
+  COpenGLDevice      *pOpenGLDevice;  // GL entry points, dynamically loaded.
+  hgeVertex        *pVB;  // vertex buffer is a client-side array in the OpenGL renderer.
+  GLushort       *pIB;  // index buffer is a client-side array in the OpenGL renderer.
 
-  CRenderTargetList*  pTargets;
-  CRenderTargetList*  pCurTarget;
+  CRenderTargetList  *pTargets;
+  CRenderTargetList  *pCurTarget;
 
   //D3DXMATRIX      matView;
   //D3DXMATRIX      matProj;
 
-  CTextureList*   textures;
-  hgeVertex*      VertArray;
+  CTextureList   *textures;
+  hgeVertex      *VertArray;
 
   int         nPrim;
   int         CurPrimType;
@@ -333,7 +336,7 @@ private:
   void        _AdjustWindow();
   void        _Resize(int width, int height);
   bool        _init_lost();
-  void        _render_batch(bool bEndScene=false);
+  void        _render_batch(bool bEndScene = false);
   void        _SetTextureFilter();
   void        _ConfigureTexture(gltexture *t, int width, int height, uint32_t *pixels);
   void        _BindTexture(gltexture *t);
@@ -346,10 +349,10 @@ private:
 
 
   // Audio
-  void*       hBass;
-  void*       hOpenAL;
+  void       *hBass;
+  void       *hOpenAL;
   bool        bSilent;
-  CStreamList*    streams;
+  CStreamList    *streams;
   bool        _SoundInit();
   void        _SoundDone();
   void        _SetMusVolume(int vol);
@@ -367,7 +370,7 @@ private:
   bool        bMouseOver;
   bool        bCaptured;
   char        keyz[256];
-  CInputEventList*  queue;
+  CInputEventList  *queue;
   void        _UpdateMouse();
   void        _InputInit();
   void        _ClearQueue();
@@ -376,12 +379,12 @@ private:
 
   // Resources
   char        szTmpFilename[_MAX_PATH];
-  CResourceList*    res;
+  CResourceList    *res;
 
   bool        _WildcardMatch(const char *str, const char *wildcard);
   bool        _PrepareFileEnum(const char *wildcard);
-  char*       _DoEnumIteration(const bool wantdir);
-  DIR*        hSearch;
+  char       *_DoEnumIteration(const bool wantdir);
+  DIR        *hSearch;
   char        szSearchDir[_MAX_PATH];
   char        szSearchWildcard[_MAX_PATH];
   char        szSearchResult[_MAX_PATH];
@@ -405,7 +408,7 @@ private:
 #endif
 };
 
-extern HGE_Impl*    pHGE;
+extern HGE_Impl    *pHGE;
 
 #endif  // include-once blocker
 

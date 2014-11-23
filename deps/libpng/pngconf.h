@@ -1127,43 +1127,43 @@ typedef size_t png_size_t;
 typedef png_int_32 png_fixed_point;
 
 /* Add typedefs for pointers */
-typedef void            FAR * png_voidp;
-typedef png_byte        FAR * png_bytep;
-typedef png_uint_32     FAR * png_uint_32p;
-typedef png_int_32      FAR * png_int_32p;
-typedef png_uint_16     FAR * png_uint_16p;
-typedef png_int_16      FAR * png_int_16p;
-typedef PNG_CONST char  FAR * png_const_charp;
-typedef char            FAR * png_charp;
-typedef png_fixed_point FAR * png_fixed_point_p;
+typedef void            FAR *png_voidp;
+typedef png_byte        FAR *png_bytep;
+typedef png_uint_32     FAR *png_uint_32p;
+typedef png_int_32      FAR *png_int_32p;
+typedef png_uint_16     FAR *png_uint_16p;
+typedef png_int_16      FAR *png_int_16p;
+typedef PNG_CONST char  FAR *png_const_charp;
+typedef char            FAR *png_charp;
+typedef png_fixed_point FAR *png_fixed_point_p;
 
 #ifndef PNG_NO_STDIO
 #if defined(_WIN32_WCE)
 typedef HANDLE                png_FILE_p;
 #else
-typedef FILE                * png_FILE_p;
+typedef FILE                 *png_FILE_p;
 #endif
 #endif
 
 #ifdef PNG_FLOATING_POINT_SUPPORTED
-typedef double          FAR * png_doublep;
+typedef double          FAR *png_doublep;
 #endif
 
 /* Pointers to pointers; i.e. arrays */
-typedef png_byte        FAR * FAR * png_bytepp;
-typedef png_uint_32     FAR * FAR * png_uint_32pp;
-typedef png_int_32      FAR * FAR * png_int_32pp;
-typedef png_uint_16     FAR * FAR * png_uint_16pp;
-typedef png_int_16      FAR * FAR * png_int_16pp;
-typedef PNG_CONST char  FAR * FAR * png_const_charpp;
-typedef char            FAR * FAR * png_charpp;
-typedef png_fixed_point FAR * FAR * png_fixed_point_pp;
+typedef png_byte        FAR *FAR *png_bytepp;
+typedef png_uint_32     FAR *FAR *png_uint_32pp;
+typedef png_int_32      FAR *FAR *png_int_32pp;
+typedef png_uint_16     FAR *FAR *png_uint_16pp;
+typedef png_int_16      FAR *FAR *png_int_16pp;
+typedef PNG_CONST char  FAR *FAR *png_const_charpp;
+typedef char            FAR *FAR *png_charpp;
+typedef png_fixed_point FAR *FAR *png_fixed_point_pp;
 #ifdef PNG_FLOATING_POINT_SUPPORTED
-typedef double          FAR * FAR * png_doublepp;
+typedef double          FAR *FAR *png_doublepp;
 #endif
 
 /* Pointers to pointers to pointers; i.e., pointer to array */
-typedef char            FAR * FAR * FAR * png_charppp;
+typedef char            FAR *FAR *FAR *png_charppp;
 
 #if defined(PNG_1_0_X) || defined(PNG_1_2_X)
 /* SPC -  Is this stuff deprecated? */
@@ -1172,9 +1172,9 @@ typedef char            FAR * FAR * FAR * png_charppp;
  * or another compression library is used, then change these.
  * Eliminates need to change all the source files.
  */
-typedef charf *         png_zcharp;
-typedef charf * FAR *   png_zcharpp;
-typedef z_stream FAR *  png_zstreamp;
+typedef charf          *png_zcharp;
+typedef charf *FAR    *png_zcharpp;
+typedef z_stream FAR   *png_zstreamp;
 #endif /* (PNG_1_0_X) || defined(PNG_1_2_X) */
 
 /*

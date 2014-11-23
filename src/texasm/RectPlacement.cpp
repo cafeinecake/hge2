@@ -105,7 +105,7 @@ void CRectPlacement::AddPosition    (const TPos &p)
   for (it = m_vPositions.begin();
        !bFound && it != m_vPositions.end();
        ++it) {
-    if (p.x+p.y < it->x+it->y) {
+    if (p.x + p.y < it->x + it->y) {
       bFound = true;
     }
   }
@@ -126,11 +126,11 @@ void CRectPlacement::AddPosition    (const TPos &p)
 void CRectPlacement::AddRect  (const TRect &r)
 {
   m_vRects.push_back(r);
-  m_area += r.w*r.h;
+  m_area += r.w * r.h;
 
   // Add two new anchor points
-  AddPosition(TPos(r.x, r.y+r.h+m_margin));
-  AddPosition(TPos(r.x+r.w+m_margin, r.y));
+  AddPosition(TPos(r.x, r.y + r.h + m_margin));
+  AddPosition(TPos(r.x + r.w + m_margin, r.y));
 }
 
 // --------------------------------------------------------------------------------
@@ -164,7 +164,7 @@ bool CRectPlacement::AddAtEmptySpot   (TRect &r)
     // due to irregular sizes of the subrects.
     // So, try to adjut it up & left as much as possible.
 
-    int x,y;
+    int x, y;
 
     for (x = 1; x <= r.x; x++)
       if (!IsFree(TRect(r.x - x, r.y, r.w, r.h))) {
@@ -177,11 +177,11 @@ bool CRectPlacement::AddAtEmptySpot   (TRect &r)
       }
 
     if (y > x) {
-      r.y -= y-1;
+      r.y -= y - 1;
     } else
 
     {
-      r.x -= x-1;
+      r.x -= x - 1;
     }
 
     AddRect(r);
@@ -221,9 +221,9 @@ bool CRectPlacement::AddAtEmptySpotAutoGrow   (TRect *pRect, int maxW, int maxH)
 
     // Try growing the smallest dim
     if (pw < maxW && (pw < ph || ((pw == ph) && (pRect->w >= pRect->h)))) {
-      m_size.w = pw*2;
+      m_size.w = pw * 2;
     } else {
-      m_size.h = ph*2;
+      m_size.h = ph * 2;
     }
 
     if (AddAtEmptySpot(*pRect)) {
@@ -235,13 +235,13 @@ bool CRectPlacement::AddAtEmptySpotAutoGrow   (TRect *pRect, int maxW, int maxH)
       m_size.w = pw;
 
       if (ph < maxW) {
-        m_size.h = ph*2;
+        m_size.h = ph * 2;
       }
     } else {
       m_size.h = ph;
 
       if (pw < maxW) {
-        m_size.w = pw*2;
+        m_size.w = pw * 2;
       }
     }
 
@@ -255,11 +255,11 @@ bool CRectPlacement::AddAtEmptySpotAutoGrow   (TRect *pRect, int maxW, int maxH)
     m_size.h = ph;
 
     if (pw < maxW) {
-      m_size.w = pw*2;
+      m_size.w = pw * 2;
     }
 
     if (ph < maxH) {
-      m_size.h = ph*2;
+      m_size.h = ph * 2;
     }
   }
 

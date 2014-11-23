@@ -14,7 +14,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 #if CXIMAGE_SUPPORT_ENCODE
 ////////////////////////////////////////////////////////////////////////////////
-bool CxImageBMP::Encode(CxFile * hFile)
+bool CxImageBMP::Encode(CxFile *hFile)
 {
 
   if (EncodeSafeCheck(hFile)) {
@@ -34,10 +34,10 @@ bool CxImageBMP::Encode(CxFile * hFile)
 
 #if CXIMAGE_SUPPORT_ALPHA
 
-  if (GetNumColors()==0 && AlphaIsValid()) {
+  if (GetNumColors() == 0 && AlphaIsValid()) {
 
     BITMAPINFOHEADER  infohdr;
-    memcpy(&infohdr,&head,sizeof(BITMAPINFOHEADER));
+    memcpy(&infohdr, &head, sizeof(BITMAPINFOHEADER));
     infohdr.biCompression = BI_RGB;
     infohdr.biBitCount = 32;
     uint32_t dwEffWidth = ((((infohdr.biBitCount * infohdr.biWidth) + 31) / 32) * 4);
@@ -49,17 +49,17 @@ bool CxImageBMP::Encode(CxFile * hFile)
     bihtoh(&infohdr);
 
     // Write the file header
-    hFile->Write(&hdr,min(14,sizeof(BITMAPFILEHEADER)),1);
-    hFile->Write(&infohdr,sizeof(BITMAPINFOHEADER),1);
+    hFile->Write(&hdr, min(14, sizeof(BITMAPFILEHEADER)), 1);
+    hFile->Write(&infohdr, sizeof(BITMAPINFOHEADER), 1);
     //and DIB+ALPHA interlaced
     uint8_t *srcalpha = AlphaGetPointer();
 
-    for(int32_t y = 0; y < infohdr.biHeight; ++y) {
+    for (int32_t y = 0; y < infohdr.biHeight; ++y) {
       uint8_t *srcdib = GetBits(y);
 
-      for(int32_t x = 0; x < infohdr.biWidth; ++x) {
-        hFile->Write(srcdib,3,1);
-        hFile->Write(srcalpha,1,1);
+      for (int32_t x = 0; x < infohdr.biWidth; ++x) {
+        hFile->Write(srcdib, 3, 1);
+        hFile->Write(srcalpha, 1, 1);
         srcdib += 3;
         ++srcalpha;
       }
@@ -69,13 +69,13 @@ bool CxImageBMP::Encode(CxFile * hFile)
 #endif //CXIMAGE_SUPPORT_ALPHA
   {
     // Write the file header
-    hFile->Write(&hdr,min(14,sizeof(BITMAPFILEHEADER)),1);
+    hFile->Write(&hdr, min(14, sizeof(BITMAPFILEHEADER)), 1);
     //copy attributes
-    memcpy(pDib,&head,sizeof(BITMAPINFOHEADER));
-    bihtoh((BITMAPINFOHEADER*)pDib);
+    memcpy(pDib, &head, sizeof(BITMAPINFOHEADER));
+    bihtoh((BITMAPINFOHEADER *)pDib);
     // Write the DIB header and the pixels
-    hFile->Write(pDib,GetSize(),1);
-    bihtoh((BITMAPINFOHEADER*)pDib);
+    hFile->Write(pDib, GetSize(), 1);
+    bihtoh((BITMAPINFOHEADER *)pDib);
   }
 
   return true;
@@ -87,7 +87,7 @@ bool CxImageBMP::Encode(CxFile * hFile)
 ////////////////////////////////////////////////////////////////////////////////
 CxImageBMP::~CxImageBMP() {}
 
-bool CxImageBMP::Decode(CxFile * hFile)
+bool CxImageBMP::Decode(CxFile *hFile)
 {
   if (hFile == NULL) {
     return false;
@@ -96,7 +96,7 @@ bool CxImageBMP::Decode(CxFile * hFile)
   BITMAPFILEHEADER   bf;
   uint32_t off = static_cast<uint32_t>(hFile->Tell()); //<CSC>
   cx_try {
-    if (hFile->Read(&bf, std::min(14ul,sizeof(bf)),1)==0)
+    if (hFile->Read(&bf, std::min(14ul, sizeof(bf)), 1) == 0)
     {
       cx_throw("Not a BMP");
     }
@@ -112,20 +112,20 @@ bool CxImageBMP::Decode(CxFile * hFile)
 
     BITMAPINFOHEADER bmpHeader;
 
-    if (!DibReadBitmapInfo(hFile,&bmpHeader))
+    if (!DibReadBitmapInfo(hFile, &bmpHeader))
     {
       cx_throw("Error reading BMP info");
     }
 
-    uint32_t dwCompression=bmpHeader.biCompression;
-    uint32_t dwBitCount=bmpHeader.biBitCount; //preserve for BI_BITFIELDS compression <Thomas Ernst>
+    uint32_t dwCompression = bmpHeader.biCompression;
+    uint32_t dwBitCount = bmpHeader.biBitCount; //preserve for BI_BITFIELDS compression <Thomas Ernst>
     bool bIsOldBmp = bmpHeader.biSize == sizeof(BITMAPCOREHEADER);
 
-    bool bTopDownDib = bmpHeader.biHeight<0; //<Flanders> check if it's a top-down bitmap
+    bool bTopDownDib = bmpHeader.biHeight < 0; //<Flanders> check if it's a top-down bitmap
 
     if (bTopDownDib)
     {
-      bmpHeader.biHeight=-bmpHeader.biHeight;
+      bmpHeader.biHeight = -bmpHeader.biHeight;
     }
 
     if (info.nEscape == -1)
@@ -162,22 +162,22 @@ bool CxImageBMP::Decode(CxFile * hFile)
       if (bIsOldBmp) {
         // convert a old color table (3 byte entries) to a new
         // color table (4 byte entries)
-        hFile->Read(static_cast<void*>(pRgb),
-        static_cast<size_t>(DibNumColors(&bmpHeader)) * sizeof(RGBTRIPLE),1);
+        hFile->Read(static_cast<void *>(pRgb),
+        static_cast<size_t>(DibNumColors(&bmpHeader)) * sizeof(RGBTRIPLE), 1);
 
-        for (int32_t i = static_cast<int32_t>(DibNumColors(&head))-1; i>=0; i--) {
+        for (int32_t i = static_cast<int32_t>(DibNumColors(&head)) - 1; i >= 0; i--) {
           pRgb[i].rgbRed      = reinterpret_cast<RGBTRIPLE *>(pRgb)[i].rgbtRed;
           pRgb[i].rgbBlue     = reinterpret_cast<RGBTRIPLE *>(pRgb)[i].rgbtBlue;
           pRgb[i].rgbGreen    = reinterpret_cast<RGBTRIPLE *>(pRgb)[i].rgbtGreen;
           pRgb[i].rgbReserved = 0;
         }
       } else {
-        hFile->Read(reinterpret_cast<void*>(pRgb),
-                    static_cast<size_t>(DibNumColors(&bmpHeader)) * sizeof(RGBQUAD),1);
+        hFile->Read(reinterpret_cast<void *>(pRgb),
+                    static_cast<size_t>(DibNumColors(&bmpHeader)) * sizeof(RGBQUAD), 1);
 
         //force rgbReserved=0, to avoid problems with some WinXp bitmaps
-        for (uint32_t i=0; i<head.biClrUsed; i++) {
-          pRgb[i].rgbReserved=0;
+        for (uint32_t i = 0; i < head.biClrUsed; i++) {
+          pRgb[i].rgbReserved = 0;
         }
       }
     }
@@ -195,9 +195,9 @@ bool CxImageBMP::Decode(CxFile * hFile)
       if (dwCompression == BI_BITFIELDS) {
         hFile->Read(bfmask, 12, 1);
       } else {
-        bfmask[0]=0x00FF0000;
-        bfmask[1]=0x0000FF00;
-        bfmask[2]=0x000000FF;
+        bfmask[0] = 0x00FF0000;
+        bfmask[1] = 0x0000FF00;
+        bfmask[2] = 0x000000FF;
       }
 
       if (bf.bfOffBits != 0L) {
@@ -205,8 +205,8 @@ bool CxImageBMP::Decode(CxFile * hFile)
       }
 
       if (dwCompression == BI_BITFIELDS || dwCompression == BI_RGB) {
-        int32_t imagesize=4*head.biHeight*head.biWidth;
-        uint8_t* buff32 = new uint8_t [imagesize];
+        int32_t imagesize = 4 * head.biHeight * head.biWidth;
+        uint8_t *buff32 = new uint8_t [imagesize];
 
         if (buff32) {
           hFile->Read(buff32,
@@ -220,18 +220,18 @@ bool CxImageBMP::Decode(CxFile * hFile)
 
             if (AlphaIsValid()) {
               bool bAlphaOk = false;
-              uint8_t* p;
+              uint8_t *p;
 
-              for (int32_t y=0; y<head.biHeight; y++) {
+              for (int32_t y = 0; y < head.biHeight; y++) {
                 p = buff32 + 3 + head.biWidth * 4 * y;
 
-                for (int32_t x=0; x<head.biWidth; x++) {
+                for (int32_t x = 0; x < head.biWidth; x++) {
                   if (*p) {
                     bAlphaOk = true;
                   }
 
-                  AlphaSet(x,y,*p);
-                  p+=4;
+                  AlphaSet(x, y, *p);
+                  p += 4;
                 }
               }
 
@@ -244,7 +244,7 @@ bool CxImageBMP::Decode(CxFile * hFile)
 
 #endif //CXIMAGE_SUPPORT_ALPHA
 
-          Bitfield2RGB(buff32,bfmask[0],bfmask[1],bfmask[2],32);
+          Bitfield2RGB(buff32, bfmask[0], bfmask[1], bfmask[2], 32);
           free(buff32);
         } else {
           cx_throw("can't allocate memory");
@@ -257,11 +257,11 @@ bool CxImageBMP::Decode(CxFile * hFile)
 
     case 24 :
       if (bf.bfOffBits != 0L) {
-        hFile->Seek(static_cast<int32_t>(off + bf.bfOffBits),SEEK_SET);
+        hFile->Seek(static_cast<int32_t>(off + bf.bfOffBits), SEEK_SET);
       }
 
       if (dwCompression == BI_RGB) {
-        hFile->Read(info.pImage, head.biSizeImage,1); // read in the pixels
+        hFile->Read(info.pImage, head.biSizeImage, 1); // read in the pixels
       } else {
         cx_throw("unknown compression");
       }
@@ -274,22 +274,22 @@ bool CxImageBMP::Decode(CxFile * hFile)
       if (dwCompression == BI_BITFIELDS) {
         hFile->Read(bfmask1, 12, 1);
       } else {
-        bfmask1[0]=0x7C00;
-        bfmask1[1]=0x3E0;
-        bfmask1[2]=0x1F; //RGB555
+        bfmask1[0] = 0x7C00;
+        bfmask1[1] = 0x3E0;
+        bfmask1[2] = 0x1F; //RGB555
       }
 
       // bf.bfOffBits required after the bitfield mask <Cui Ying Jie>
       if (bf.bfOffBits != 0L) {
-        hFile->Seek(static_cast<int32_t>(off + bf.bfOffBits),SEEK_SET);
+        hFile->Seek(static_cast<int32_t>(off + bf.bfOffBits), SEEK_SET);
       }
 
       // read in the pixels
       hFile->Read(info.pImage,
-                  static_cast<size_t>(head.biHeight*((head.biWidth+1)/2)*4),
+                  static_cast<size_t>(head.biHeight * ((head.biWidth + 1) / 2) * 4),
                   1);
       // transform into RGB
-      Bitfield2RGB(info.pImage,bfmask1[0],bfmask1[1],bfmask1[2],16);
+      Bitfield2RGB(info.pImage, bfmask1[0], bfmask1[1], bfmask1[2], 16);
       break;
     }
 
@@ -297,12 +297,12 @@ bool CxImageBMP::Decode(CxFile * hFile)
     case 4 :
     case 1 :
       if (bf.bfOffBits != 0L) {
-        hFile->Seek(static_cast<int32_t>(off + bf.bfOffBits),SEEK_SET);
+        hFile->Seek(static_cast<int32_t>(off + bf.bfOffBits), SEEK_SET);
       }
 
       switch (dwCompression) {
       case BI_RGB :
-        hFile->Read(info.pImage, head.biSizeImage,1); // read in the pixels
+        hFile->Read(info.pImage, head.biSizeImage, 1); // read in the pixels
         break;
 
       case BI_RLE4 : {
@@ -327,7 +327,7 @@ bool CxImageBMP::Decode(CxFile * hFile)
               break;
 
             case RLE_ENDOFBITMAP :
-              bContinue=FALSE;
+              bContinue = FALSE;
               break;
 
             case RLE_DELTA : {
@@ -347,19 +347,19 @@ bool CxImageBMP::Decode(CxFile * hFile)
               uint8_t *sline = iter.GetRow(scanline);
 
               for (int32_t i = 0; i < status_byte; i++) {
-                if (static_cast<uint8_t*>(sline+bits) <
-                    static_cast<uint8_t*>(info.pImage+head.biSizeImage)) {
+                if (static_cast<uint8_t *>(sline + bits) <
+                    static_cast<uint8_t *>(info.pImage + head.biSizeImage)) {
                   if (low_nibble) {
-                    if (i&1) {
+                    if (i & 1) {
                       *(sline + bits) |= (second_byte & 0x0f);
                     } else {
-                      *(sline + bits) |= (second_byte & 0xf0)>>4;
+                      *(sline + bits) |= (second_byte & 0xf0) >> 4;
                     }
 
                     bits++;
                   } else {
-                    if (i&1) {
-                      *(sline + bits) = static_cast<uint8_t>((second_byte & 0x0f)<<4);
+                    if (i & 1) {
+                      *(sline + bits) = static_cast<uint8_t>((second_byte & 0x0f) << 4);
                     } else {
                       *(sline + bits) = static_cast<uint8_t>(second_byte & 0xf0);
                     }
@@ -373,7 +373,7 @@ bool CxImageBMP::Decode(CxFile * hFile)
                 low_nibble = !low_nibble;
               }
 
-              if ((((status_byte+1) >> 1) & 1 ) == 1) {
+              if ((((status_byte + 1) >> 1) & 1 ) == 1) {
                 hFile->Read(&second_byte, sizeof(uint8_t), 1);
               }
 
@@ -387,19 +387,19 @@ bool CxImageBMP::Decode(CxFile * hFile)
             hFile->Read(&second_byte, sizeof(uint8_t), 1);
 
             for (unsigned i = 0; i < status_byte; i++) {
-              if (static_cast<uint8_t*>(sline+bits) <
-                  static_cast<uint8_t*>(info.pImage+head.biSizeImage)) {
+              if (static_cast<uint8_t *>(sline + bits) <
+                  static_cast<uint8_t *>(info.pImage + head.biSizeImage)) {
                 if (low_nibble) {
-                  if (i&1) {
+                  if (i & 1) {
                     *(sline + bits) |= (second_byte & 0x0f);
                   } else {
-                    *(sline + bits) |= (second_byte & 0xf0)>>4;
+                    *(sline + bits) |= (second_byte & 0xf0) >> 4;
                   }
 
                   bits++;
                 } else {
-                  if (i&1) {
-                    *(sline + bits) = static_cast<uint8_t>((second_byte & 0x0f)<<4);
+                  if (i & 1) {
+                    *(sline + bits) = static_cast<uint8_t>((second_byte & 0x0f) << 4);
                   } else {
                     *(sline + bits) = static_cast<uint8_t>(second_byte & 0xf0);
                   }
@@ -435,7 +435,7 @@ bool CxImageBMP::Decode(CxFile * hFile)
               break;
 
             case RLE_ENDOFBITMAP :
-              bContinue=FALSE;
+              bContinue = FALSE;
               break;
 
             case RLE_DELTA : {
@@ -470,8 +470,8 @@ bool CxImageBMP::Decode(CxFile * hFile)
             hFile->Read(&second_byte, sizeof(uint8_t), 1);
 
             for (unsigned i = 0; i < status_byte; i++) {
-              if (static_cast<uint8_t*>(sline+bits) <
-                  static_cast<uint8_t*>(info.pImage+head.biSizeImage)) {
+              if (static_cast<uint8_t *>(sline + bits) <
+                  static_cast<uint8_t *>(info.pImage + head.biSizeImage)) {
                 *(sline + bits) = second_byte;
                 bits++;
               } else {
@@ -497,9 +497,9 @@ bool CxImageBMP::Decode(CxFile * hFile)
     }
 
   } cx_catch {
-    if (strcmp(message,""))
+    if (strcmp(message, ""))
     {
-      strncpy(info.szLastError,message,255);
+      strncpy(info.szLastError, message, 255);
     }
 
     if (info.nEscape == -1 && info.dwType == CXIMAGE_FORMAT_BMP)
@@ -518,13 +518,13 @@ bool CxImageBMP::Decode(CxFile * hFile)
  *  BITMAPINFO.  This function will work with both "old" and "new"
  *  bitmap formats, but will always return a "new" BITMAPINFO.
  */
-bool CxImageBMP::DibReadBitmapInfo(CxFile* fh, BITMAPINFOHEADER *pdib)
+bool CxImageBMP::DibReadBitmapInfo(CxFile *fh, BITMAPINFOHEADER *pdib)
 {
-  if ((fh==NULL)||(pdib==NULL)) {
+  if ((fh == NULL) || (pdib == NULL)) {
     return false;
   }
 
-  if (fh->Read(pdib,sizeof(BITMAPINFOHEADER),1)==0) {
+  if (fh->Read(pdib, sizeof(BITMAPINFOHEADER), 1) == 0) {
     return false;
   }
 
@@ -535,15 +535,15 @@ bool CxImageBMP::DibReadBitmapInfo(CxFile* fh, BITMAPINFOHEADER *pdib)
     break;
 
   case 64: //sizeof(OS2_BMP_HEADER):
-    fh->Seek(static_cast<int32_t>(64 - sizeof(BITMAPINFOHEADER)),SEEK_CUR);
+    fh->Seek(static_cast<int32_t>(64 - sizeof(BITMAPINFOHEADER)), SEEK_CUR);
     break;
 
   case 124: //sizeof(BITMAPV5HEADER):
-    fh->Seek(static_cast<long>(124-sizeof(BITMAPINFOHEADER)), SEEK_CUR);
+    fh->Seek(static_cast<long>(124 - sizeof(BITMAPINFOHEADER)), SEEK_CUR);
     break;
 
   case sizeof(BITMAPCOREHEADER): {
-    BITMAPCOREHEADER bc = *reinterpret_cast<BITMAPCOREHEADER*>(pdib);
+    BITMAPCOREHEADER bc = *reinterpret_cast<BITMAPCOREHEADER *>(pdib);
     pdib->biSize               = bc.bcSize;
     pdib->biWidth              = static_cast<int32_t>(bc.bcWidth);
     pdib->biHeight             = static_cast<int32_t>(bc.bcHeight);
@@ -556,7 +556,7 @@ bool CxImageBMP::DibReadBitmapInfo(CxFile* fh, BITMAPINFOHEADER *pdib)
     pdib->biClrUsed            = 0;
     pdib->biClrImportant       = 0;
 
-    fh->Seek(static_cast<int32_t>(sizeof(BITMAPCOREHEADER)-sizeof(BITMAPINFOHEADER)),
+    fh->Seek(static_cast<int32_t>(sizeof(BITMAPCOREHEADER) - sizeof(BITMAPINFOHEADER)),
              SEEK_CUR);
   }
   break;
@@ -564,11 +564,11 @@ bool CxImageBMP::DibReadBitmapInfo(CxFile* fh, BITMAPINFOHEADER *pdib)
   default:
 
     //give a last chance
-    if (pdib->biSize>(sizeof(BITMAPINFOHEADER))&&
+    if (pdib->biSize > (sizeof(BITMAPINFOHEADER)) &&
         (pdib->biSizeImage >= static_cast<uint32_t>(
-           pdib->biHeight*((((pdib->biBitCount*pdib->biWidth)+31)/32)*4)))&&
-        (pdib->biPlanes==1)&&(pdib->biClrUsed==0)) {
-      if (pdib->biCompression==BI_RGB) {
+           pdib->biHeight * ((((pdib->biBitCount * pdib->biWidth) + 31) / 32) * 4))) &&
+        (pdib->biPlanes == 1) && (pdib->biClrUsed == 0)) {
+      if (pdib->biCompression == BI_RGB) {
         fh->Seek(static_cast<int32_t>(pdib->biSize - sizeof(BITMAPINFOHEADER)),
                  SEEK_CUR);
       }

@@ -30,7 +30,7 @@ uLong sourceLen;
   z_stream stream;
   int err;
 
-  stream.next_in = (Bytef*)source;
+  stream.next_in = (Bytef *)source;
   stream.avail_in = (uInt)sourceLen;
 
   /* Check for source > 64K on 16-bit machine: */
@@ -39,7 +39,7 @@ uLong sourceLen;
   }
 
   stream.next_out = dest;
-  stream.avail_out = (uInt)*destLen;
+  stream.avail_out = (uInt) * destLen;
 
   if ((uLong)stream.avail_out != *destLen) {
     return Z_BUF_ERROR;

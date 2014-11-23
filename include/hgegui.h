@@ -30,8 +30,8 @@ class hgeGUIObject {
 public:
   hgeGUIObject()
   {
-    hge=hgeCreate(HGE_VERSION);
-    color=0xFFFFFFFF;
+    hge = hgeCreate(HGE_VERSION);
+    color = 0xFFFFFFFF;
   }
   virtual ~hgeGUIObject();
 
@@ -71,7 +71,7 @@ public:
 
   virtual void  SetColor(uint32_t _color)
   {
-    color=_color;
+    color = _color;
   }
 
   int       id;
@@ -87,7 +87,7 @@ public:
 
 protected:
   hgeGUIObject(const hgeGUIObject &go);
-  hgeGUIObject& operator= (const hgeGUIObject &go);
+  hgeGUIObject &operator= (const hgeGUIObject &go);
 
   static HGE    *hge;
 };
@@ -103,7 +103,7 @@ public:
 
   void      AddCtrl(hgeGUIObject *ctrl);
   void      DelCtrl(int id);
-  hgeGUIObject* GetCtrl(int id) const;
+  hgeGUIObject *GetCtrl(int id) const;
 
   void      MoveCtrl(int id, float x, float y);
   void      ShowCtrl(int id, bool bVisible);
@@ -125,7 +125,7 @@ public:
 
 private:
   hgeGUI(const hgeGUI &);
-  hgeGUI&     operator= (const hgeGUI&);
+  hgeGUI     &operator= (const hgeGUI &);
   bool      ProcessCtrl(hgeGUIObject *ctrl);
 
   static HGE    *hge;
@@ -139,7 +139,7 @@ private:
   int       nEnterLeave;
   hgeSprite   *sprCursor;
 
-  float     mx,my;
+  float     mx, my;
   int       nWheel;
   bool      bLPressed, bLReleased;
   bool      bRPressed, bRReleased;

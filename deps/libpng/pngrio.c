@@ -26,7 +26,7 @@
 void /* PRIVATE */
 png_read_data(png_structp png_ptr, png_bytep data, png_size_t length)
 {
-  png_debug1(4,"reading %d bytes\n", (int)length);
+  png_debug1(4, "reading %d bytes\n", (int)length);
 
   if (png_ptr->read_data_fn != NULL) {
     (*(png_ptr->read_data_fn))(png_ptr, data, length);
@@ -113,7 +113,7 @@ png_default_read_data(png_structp png_ptr, png_bytep data, png_size_t length)
 #endif
       png_memcpy(data, buf, read); /* copy far buffer to near buffer */
 
-      if(err != read) {
+      if (err != read) {
         break;
       } else {
         check += err;

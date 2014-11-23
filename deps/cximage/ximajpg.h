@@ -45,7 +45,7 @@ public:
 
 //  bool Load(const TCHAR * imageFileName){ return CxImage::Load(imageFileName,CXIMAGE_FORMAT_JPG);}
 //  bool Save(const TCHAR * imageFileName){ return CxImage::Save(imageFileName,CXIMAGE_FORMAT_JPG);}
-  bool Decode(CxFile * hFile);
+  bool Decode(CxFile *hFile);
   bool Decode(FILE *hFile)
   {
     CxIOFile file(hFile);
@@ -53,7 +53,7 @@ public:
   }
 
 #if CXIMAGE_SUPPORT_ENCODE
-  bool Encode(CxFile * hFile);
+  bool Encode(CxFile *hFile);
   bool Encode(FILE *hFile)
   {
     CxIOFile file(hFile);
@@ -102,31 +102,31 @@ public:
   class DLL_EXP CxExifInfo {
 
     typedef struct tag_Section_t {
-      uint8_t*    Data;
+      uint8_t    *Data;
       int32_t      Type;
       unsigned Size;
     } Section_t;
 
   public:
-    EXIFINFO* m_exifinfo;
+    EXIFINFO *m_exifinfo;
     char m_szLastError[256];
-    CxExifInfo(EXIFINFO* info = NULL);
+    CxExifInfo(EXIFINFO *info = NULL);
     ~CxExifInfo();
-    bool DecodeExif(CxFile * hFile, int32_t nReadMode = EXIF_READ_EXIF);
-    bool EncodeExif(CxFile * hFile);
+    bool DecodeExif(CxFile *hFile, int32_t nReadMode = EXIF_READ_EXIF);
+    bool EncodeExif(CxFile *hFile);
     void DiscardAllButExif();
   protected:
-    bool process_EXIF(uint8_t * CharBuf, uint32_t length);
-    void process_COM (const uint8_t * Data, int32_t length);
-    void process_SOFn (const uint8_t * Data, int32_t marker);
-    int32_t Get16u(void * Short);
-    int32_t Get16m(void * Short);
-    int32_t Get32s(void * Long);
-    uint32_t Get32u(void * Long);
-    double ConvertAnyFormat(void * ValuePtr, int32_t Format);
-    void* FindSection(int32_t SectionType);
-    bool ProcessExifDir(uint8_t * DirStart, uint8_t * OffsetBase, unsigned ExifLength,
-                        EXIFINFO * const pInfo, uint8_t ** const LastExifRefdP, int32_t NestingLevel=0);
+    bool process_EXIF(uint8_t *CharBuf, uint32_t length);
+    void process_COM (const uint8_t *Data, int32_t length);
+    void process_SOFn (const uint8_t *Data, int32_t marker);
+    int32_t Get16u(void *Short);
+    int32_t Get16m(void *Short);
+    int32_t Get32s(void *Long);
+    uint32_t Get32u(void *Long);
+    double ConvertAnyFormat(void *ValuePtr, int32_t Format);
+    void *FindSection(int32_t SectionType);
+    bool ProcessExifDir(uint8_t *DirStart, uint8_t *OffsetBase, unsigned ExifLength,
+                        EXIFINFO *const pInfo, uint8_t **const LastExifRefdP, int32_t NestingLevel = 0);
     int32_t ExifImageWidth;
     int32_t MotorolaOrder;
     Section_t Sections[MAX_SECTIONS];
@@ -134,9 +134,9 @@ public:
     bool freeinfo;
   };
 
-  CxExifInfo* m_exif;
-  bool DecodeExif(CxFile * hFile);
-  bool DecodeExif(FILE * hFile)
+  CxExifInfo *m_exif;
+  bool DecodeExif(CxFile *hFile);
+  bool DecodeExif(FILE *hFile)
   {
     CxIOFile file(hFile);
     return DecodeExif(&file);
@@ -154,7 +154,7 @@ public:
   public:
     enum { eBufSize = 4096 };
 
-    CxFileJpg(CxFile* pFile)
+    CxFileJpg(CxFile *pFile)
     {
       m_pFile = pFile;
 
@@ -179,16 +179,16 @@ public:
 
     static void InitDestination(j_compress_ptr cinfo)
     {
-      CxFileJpg* pDest = reinterpret_cast<CxFileJpg*>(cinfo->dest);
+      CxFileJpg *pDest = reinterpret_cast<CxFileJpg *>(cinfo->dest);
       pDest->next_output_byte = pDest->m_pBuffer;
       pDest->free_in_buffer = eBufSize;
     }
 
     static boolean EmptyOutputBuffer(j_compress_ptr cinfo)
     {
-      CxFileJpg* pDest = reinterpret_cast<CxFileJpg*>(cinfo->dest);
+      CxFileJpg *pDest = reinterpret_cast<CxFileJpg *>(cinfo->dest);
 
-      if (pDest->m_pFile->Write(pDest->m_pBuffer,1,eBufSize)
+      if (pDest->m_pFile->Write(pDest->m_pBuffer, 1, eBufSize)
           != static_cast<size_t>(eBufSize)) {
         ERREXIT(cinfo, JERR_FILE_WRITE);
       }
@@ -200,12 +200,12 @@ public:
 
     static void TermDestination(j_compress_ptr cinfo)
     {
-      CxFileJpg* pDest = reinterpret_cast<CxFileJpg*>(cinfo->dest);
+      CxFileJpg *pDest = reinterpret_cast<CxFileJpg *>(cinfo->dest);
       size_t datacount = eBufSize - pDest->free_in_buffer;
 
       /* Write any data remaining in the buffer */
       if (datacount > 0) {
-        if (!pDest->m_pFile->Write(pDest->m_pBuffer,1,datacount)) {
+        if (!pDest->m_pFile->Write(pDest->m_pBuffer, 1, datacount)) {
           ERREXIT(cinfo, JERR_FILE_WRITE);
         }
       }
@@ -222,15 +222,15 @@ public:
 
     static void InitSource(j_decompress_ptr cinfo)
     {
-      CxFileJpg* pSource = static_cast<CxFileJpg*>(cinfo->src);
+      CxFileJpg *pSource = static_cast<CxFileJpg *>(cinfo->src);
       pSource->m_bStartOfFile = TRUE;
     }
 
     static boolean FillInputBuffer(j_decompress_ptr cinfo)
     {
       size_t nbytes;
-      CxFileJpg* pSource = static_cast<CxFileJpg*>(cinfo->src);
-      nbytes = pSource->m_pFile->Read(pSource->m_pBuffer,1,eBufSize);
+      CxFileJpg *pSource = static_cast<CxFileJpg *>(cinfo->src);
+      nbytes = pSource->m_pFile->Read(pSource->m_pBuffer, 1, eBufSize);
 
       if (nbytes <= 0) {
         if (pSource->m_bStartOfFile) { //* Treat empty input file as fatal error
@@ -252,7 +252,7 @@ public:
 
     static void SkipInputData(j_decompress_ptr cinfo, long num_bytes)
     {
-      CxFileJpg* pSource = static_cast<CxFileJpg*>(cinfo->src);
+      CxFileJpg *pSource = static_cast<CxFileJpg *>(cinfo->src);
 
       if (num_bytes > 0) {
         while (num_bytes > static_cast<int32_t>(pSource->bytes_in_buffer)) {

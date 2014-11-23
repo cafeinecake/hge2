@@ -112,7 +112,7 @@ local void make_crc_table()
   unsigned long poly;                 /* polynomial exclusive-or pattern */
   /* terms of polynomial defining this crc (except x^32): */
   static volatile int first = 1;      /* flag to limit concurrent making */
-  static const unsigned char p[] = {0,1,2,4,5,7,8,10,11,12,16,22,23,26};
+  static const unsigned char p[] = {0, 1, 2, 4, 5, 7, 8, 10, 11, 12, 16, 22, 23, 26};
 
   /* See if another task is already doing this (not thread-safe, but better
      than nothing -- significantly reduces duration of vulnerability in
@@ -123,7 +123,7 @@ local void make_crc_table()
     /* make exclusive-or pattern from polynomial (0xedb88320UL) */
     poly = 0UL;
 
-    for (n = 0; n < sizeof(p)/sizeof(unsigned char); n++) {
+    for (n = 0; n < sizeof(p) / sizeof(unsigned char); n++) {
       poly |= 1UL << (31 - p[n]);
     }
 
@@ -217,7 +217,7 @@ const unsigned long FAR *table;
 /* =========================================================================
  * This function can be used by asm versions of crc32()
  */
-const unsigned long FAR * ZEXPORT get_crc_table()
+const unsigned long FAR *ZEXPORT get_crc_table()
 {
 #ifdef DYNAMIC_CRC_TABLE
 

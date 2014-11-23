@@ -195,9 +195,9 @@ png_do_invert(png_row_infop row_info, png_bytep row)
     png_uint_32 i;
     png_uint_32 istop = row_info->rowbytes;
 
-    for (i = 0; i < istop; i+=2) {
+    for (i = 0; i < istop; i += 2) {
       *rp = (png_byte)(~(*rp));
-      rp+=2;
+      rp += 2;
     }
   } else if (row_info->color_type == PNG_COLOR_TYPE_GRAY_ALPHA &&
              row_info->bit_depth == 16) {
@@ -205,10 +205,10 @@ png_do_invert(png_row_infop row_info, png_bytep row)
     png_uint_32 i;
     png_uint_32 istop = row_info->rowbytes;
 
-    for (i = 0; i < istop; i+=4) {
+    for (i = 0; i < istop; i += 4) {
       *rp = (png_byte)(~(*rp));
-      *(rp+1) = (png_byte)(~(*(rp+1)));
-      rp+=4;
+      *(rp + 1) = (png_byte)(~(*(rp + 1)));
+      rp += 4;
     }
   }
 }
@@ -228,7 +228,7 @@ png_do_swap(png_row_infop row_info, png_bytep row)
     row_info->bit_depth == 16) {
     png_bytep rp = row;
     png_uint_32 i;
-    png_uint_32 istop= row_info->width * row_info->channels;
+    png_uint_32 istop = row_info->width * row_info->channels;
 
     for (i = 0; i < istop; i++, rp += 2) {
       png_byte t = *rp;
@@ -389,9 +389,9 @@ png_do_strip_filler(png_row_infop row_info, png_bytep row, png_uint_32 flags)
   if (row != NULL && row_info != NULL)
 #endif
   {
-    png_bytep sp=row;
-    png_bytep dp=row;
-    png_uint_32 row_width=row_info->width;
+    png_bytep sp = row;
+    png_bytep dp = row;
+    png_uint_32 row_width = row_info->width;
     png_uint_32 i;
 
     if ((row_info->color_type == PNG_COLOR_TYPE_RGB ||
@@ -401,8 +401,8 @@ png_do_strip_filler(png_row_infop row_info, png_bytep row, png_uint_32 flags)
       if (row_info->bit_depth == 8) {
         /* This converts from RGBX or RGBA to RGB */
         if (flags & PNG_FLAG_FILLER_AFTER) {
-          dp+=3;
-          sp+=4;
+          dp += 3;
+          sp += 4;
 
           for (i = 1; i < row_width; i++) {
             *dp++ = *sp++;
@@ -453,7 +453,7 @@ png_do_strip_filler(png_row_infop row_info, png_bytep row, png_uint_32 flags)
             dp += 6;
             */
 
-            sp+=2;
+            sp += 2;
             *dp++ = *sp++;
             *dp++ = *sp++;
             *dp++ = *sp++;
@@ -603,7 +603,7 @@ png_set_user_transform_info(png_structp png_ptr, png_voidp
   png_ptr->user_transform_channels = (png_byte)user_transform_channels;
 #else
 
-  if(user_transform_ptr || user_transform_depth || user_transform_channels)
+  if (user_transform_ptr || user_transform_depth || user_transform_channels)
     png_warning(png_ptr,
                 "This version of libpng does not support user transform info");
 
@@ -623,7 +623,7 @@ png_get_user_transform_ptr(png_structp png_ptr)
   return ((png_voidp)png_ptr->user_transform_ptr);
 #else
 
-  if(png_ptr) {
+  if (png_ptr) {
     return (NULL);
   }
 

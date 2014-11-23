@@ -1,5 +1,4 @@
-#ifndef SPRITE_OBJECT_H
-#define SPRITE_OBJECT_H
+#pragma once
 
 
 #include "gfx_object.h"
@@ -30,6 +29,3 @@ private:
   hgeSprite *spr;
   bool    owned;
 };
-
-
-#endif

@@ -13,7 +13,7 @@ public:
   float Distance(CxPoint2 const p2);
   float Distance(float const x_, float const y_);
 
-  float x,y;
+  float x, y;
 };
 
 //and simple rectangle

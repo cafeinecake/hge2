@@ -30,7 +30,7 @@
 */
 class hgeFont {
 public:
-  hgeFont(const char *filename, bool bMipmap=false);
+  hgeFont(const char *filename, bool bMipmap = false);
   ~hgeFont();
 
   void    Render(float x, float y, int align, const char *string);
@@ -42,23 +42,23 @@ public:
   void    SetBlendMode(int blend);
   void    SetScale(float scale)
   {
-    fScale=scale;
+    fScale = scale;
   }
   void    SetProportion(float prop)
   {
-    fProportion=prop;
+    fProportion = prop;
   }
   void    SetRotation(float rot)
   {
-    fRot=rot;
+    fRot = rot;
   }
   void    SetTracking(float tracking)
   {
-    fTracking=tracking;
+    fTracking = tracking;
   }
   void    SetSpacing(float spacing)
   {
-    fSpacing=spacing;
+    fSpacing = spacing;
   }
 
   uint32_t   GetColor() const
@@ -94,7 +94,7 @@ public:
     return fSpacing;
   }
 
-  hgeSprite* GetSprite(char chr) const
+  hgeSprite *GetSprite(char chr) const
   {
     return letters[static_cast<uint8_t>(chr)];
   }
@@ -110,21 +110,21 @@ public:
   {
     return fHeight;
   }
-  float GetStringWidth(const char *string, bool bMultiline=true) const;
+  float GetStringWidth(const char *string, bool bMultiline = true) const;
 
 private:
   hgeFont();
   hgeFont(const hgeFont &fnt);
-  hgeFont&  operator= (const hgeFont &fnt);
+  hgeFont  &operator= (const hgeFont &fnt);
 
-  char*   _get_line(char *file, char *line);
+  char   *_get_line(char *file, char *line);
 
   static HGE  *hge;
 
   static char buffer[1024];
 
   HTEXTURE  hTexture;
-  hgeSprite*  letters[256];
+  hgeSprite  *letters[256];
   float   pre[256];
   float   post[256];
   float   fHeight;

@@ -57,9 +57,9 @@
 inline uint8_t RGB2GRAY(uint8_t r, uint8_t g, uint8_t b)
 {
   return static_cast<uint8_t>(
-           (static_cast<uint32_t>(b)*117 +
-            static_cast<uint32_t>(g)*601 +
-            static_cast<uint32_t>(r)*306) >> 10
+           (static_cast<uint32_t>(b) * 117 +
+            static_cast<uint32_t>(g) * 601 +
+            static_cast<uint32_t>(r) * 306) >> 10
          );
 }
 

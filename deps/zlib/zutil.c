@@ -13,7 +13,7 @@ struct internal_state      {
 }; /* for buggy compilers */
 #endif
 
-const char * const z_errmsg[10] = {
+const char *const z_errmsg[10] = {
   "need dictionary",     /* Z_NEED_DICT       2  */
   "stream end",          /* Z_STREAM_END      1  */
   "",                    /* Z_OK              0  */
@@ -27,7 +27,7 @@ const char * const z_errmsg[10] = {
 };
 
 
-const char * ZEXPORT zlibVersion()
+const char *ZEXPORT zlibVersion()
 {
   return ZLIB_VERSION;
 }
@@ -174,7 +174,7 @@ char *m;
 /* exported to allow conversion of error code to string for compress() and
  * uncompress()
  */
-const char * ZEXPORT zError(err)
+const char *ZEXPORT zError(err)
 int err;
 {
   return ERR_MSG(err);
@@ -191,8 +191,8 @@ int errno = 0;
 #ifndef HAVE_MEMCPY
 
 void ZLIB_INTERNAL zmemcpy(dest, source, len)
-Bytef* dest;
-const Bytef* source;
+Bytef *dest;
+const Bytef *source;
 uInt  len;
 {
   if (len == 0) {
@@ -205,15 +205,15 @@ uInt  len;
 }
 
 int ZLIB_INTERNAL zmemcmp(s1, s2, len)
-const Bytef* s1;
-const Bytef* s2;
+const Bytef *s1;
+const Bytef *s2;
 uInt  len;
 {
   uInt j;
 
   for (j = 0; j < len; j++) {
     if (s1[j] != s2[j]) {
-      return 2*(s1[j] > s2[j])-1;
+      return 2 * (s1[j] > s2[j]) - 1;
     }
   }
 
@@ -221,7 +221,7 @@ uInt  len;
 }
 
 void ZLIB_INTERNAL zmemzero(dest, len)
-Bytef* dest;
+Bytef *dest;
 uInt  len;
 {
   if (len == 0) {
@@ -269,7 +269,7 @@ local ptr_table table[MAX_PTR];
 voidpf ZLIB_INTERNAL zcalloc (voidpf opaque, unsigned items, unsigned size)
 {
   voidpf buf = opaque; /* just to make some compilers happy */
-  ulg bsize = (ulg)items*size;
+  ulg bsize = (ulg)items * size;
 
   /* If we allocate less than 65520 bytes, we assume that farmalloc
    * will return a usable pointer which doesn't have to be normalized.
@@ -277,7 +277,7 @@ voidpf ZLIB_INTERNAL zcalloc (voidpf opaque, unsigned items, unsigned size)
   if (bsize < 65520L) {
     buf = farmalloc(bsize);
 
-    if (*(ush*)&buf != 0) {
+    if (*(ush *)&buf != 0) {
       return buf;
     }
   } else {
@@ -291,8 +291,8 @@ voidpf ZLIB_INTERNAL zcalloc (voidpf opaque, unsigned items, unsigned size)
   table[next_ptr].org_ptr = buf;
 
   /* Normalize the pointer to seg:0 */
-  *((ush*)&buf+1) += ((ush)((uch*)buf-0) + 15) >> 4;
-  *(ush*)&buf = 0;
+  *((ush *)&buf + 1) += ((ush)((uch *)buf - 0) + 15) >> 4;
+  *(ush *)&buf = 0;
   table[next_ptr++].new_ptr = buf;
   return buf;
 }
@@ -301,7 +301,7 @@ void ZLIB_INTERNAL zcfree (voidpf opaque, voidpf ptr)
 {
   int n;
 
-  if (*(ush*)&ptr != 0) { /* object < 64K */
+  if (*(ush *)&ptr != 0) { /* object < 64K */
     farfree(ptr);
     return;
   }
@@ -315,7 +315,7 @@ void ZLIB_INTERNAL zcfree (voidpf opaque, voidpf ptr)
     farfree(table[n].org_ptr);
 
     while (++n < next_ptr) {
-      table[n-1] = table[n];
+      table[n - 1] = table[n];
     }
 
     next_ptr--;

@@ -43,9 +43,9 @@ bool CxImageWBMP::Decode(CxFile *hFile)
     }
 
     head.biWidth = wbmpHead.ImageWidth;
-    head.biHeight= wbmpHead.ImageHeight;
+    head.biHeight = wbmpHead.ImageHeight;
 
-    if (head.biWidth<=0 || head.biHeight<=0)
+    if (head.biWidth <= 0 || head.biHeight <= 0)
     {
       cx_throw("Corrupted WBMP");
     }
@@ -65,20 +65,20 @@ bool CxImageWBMP::Decode(CxFile *hFile)
 
     SetGrayPalette();
 
-    int32_t linewidth=(head.biWidth+7)/8;
+    int32_t linewidth = (head.biWidth + 7) / 8;
     CImageIterator iter(this);
     iter.Upset();
 
-    for (int32_t y=0; y < head.biHeight; y++)
+    for (int32_t y = 0; y < head.biHeight; y++)
     {
-      hFile->Read(iter.GetRow(),linewidth,1);
+      hFile->Read(iter.GetRow(), linewidth, 1);
       iter.PrevRow();
     }
 
   } cx_catch {
-    if (strcmp(message,""))
+    if (strcmp(message, ""))
     {
-      strncpy(info.szLastError,message,255);
+      strncpy(info.szLastError, message, 255);
     }
 
     return FALSE;
@@ -86,7 +86,7 @@ bool CxImageWBMP::Decode(CxFile *hFile)
   return true;
 }
 ////////////////////////////////////////////////////////////////////////////////
-bool CxImageWBMP::ReadOctet(CxFile * hFile, uint32_t *data)
+bool CxImageWBMP::ReadOctet(CxFile *hFile, uint32_t *data)
 {
   uint8_t c;
   *data = 0;
@@ -99,7 +99,7 @@ bool CxImageWBMP::ReadOctet(CxFile * hFile, uint32_t *data)
     c = (uint8_t)hFile->GetC();
     *data <<= 7;
     *data |= (c & 0x7F);
-  } while ((c&0x80)!=0);
+  } while ((c & 0x80) != 0);
 
   return true;
 }
@@ -108,56 +108,56 @@ bool CxImageWBMP::ReadOctet(CxFile * hFile, uint32_t *data)
 ////////////////////////////////////////////////////////////////////////////////
 #if CXIMAGE_SUPPORT_ENCODE
 ////////////////////////////////////////////////////////////////////////////////
-bool CxImageWBMP::Encode(CxFile * hFile)
+bool CxImageWBMP::Encode(CxFile *hFile)
 {
   if (EncodeSafeCheck(hFile)) {
     return false;
   }
 
   //check format limits
-  if (head.biBitCount!=1) {
-    strcpy(info.szLastError,"Can't save this image as WBMP");
+  if (head.biBitCount != 1) {
+    strcpy(info.szLastError, "Can't save this image as WBMP");
     return false;
   }
 
   WBMPHEADER wbmpHead;
-  wbmpHead.Type=0;
-  wbmpHead.FixHeader=0;
-  wbmpHead.ImageWidth=head.biWidth;
-  wbmpHead.ImageHeight=head.biHeight;
+  wbmpHead.Type = 0;
+  wbmpHead.FixHeader = 0;
+  wbmpHead.ImageWidth = head.biWidth;
+  wbmpHead.ImageHeight = head.biHeight;
 
   // Write the file header
   hFile->PutC('\0');
   hFile->PutC('\0');
-  WriteOctet(hFile,wbmpHead.ImageWidth);
-  WriteOctet(hFile,wbmpHead.ImageHeight);
+  WriteOctet(hFile, wbmpHead.ImageWidth);
+  WriteOctet(hFile, wbmpHead.ImageHeight);
   // Write the pixels
-  int32_t linewidth=(wbmpHead.ImageWidth+7)/8;
+  int32_t linewidth = (wbmpHead.ImageWidth + 7) / 8;
   CImageIterator iter(this);
   iter.Upset();
 
-  for (uint32_t y=0; y < wbmpHead.ImageHeight; y++) {
-    hFile->Write(iter.GetRow(),linewidth,1);
+  for (uint32_t y = 0; y < wbmpHead.ImageHeight; y++) {
+    hFile->Write(iter.GetRow(), linewidth, 1);
     iter.PrevRow();
   }
 
   return true;
 }
 ////////////////////////////////////////////////////////////////////////////////
-bool CxImageWBMP::WriteOctet(CxFile * hFile, const uint32_t data)
+bool CxImageWBMP::WriteOctet(CxFile *hFile, const uint32_t data)
 {
   int32_t ns = 0;
 
-  while (data>>(ns+7)) {
-    ns+=7;
+  while (data >> (ns + 7)) {
+    ns += 7;
   }
 
-  while (ns>0) {
-    if (!hFile->PutC(0x80 | static_cast<uint8_t>(data>>ns))) {
+  while (ns > 0) {
+    if (!hFile->PutC(0x80 | static_cast<uint8_t>(data >> ns))) {
       return false;
     }
 
-    ns-=7;
+    ns -= 7;
   }
 
   if (!(hFile->PutC(static_cast<uint8_t>(0x7F & data)))) {

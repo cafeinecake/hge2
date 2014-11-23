@@ -78,7 +78,7 @@
 #ifndef _COMPLEX_DEFINED
 
 typedef struct tagcomplex {
-  double x,y;
+  double x, y;
 } _complex;
 
 #endif
@@ -99,8 +99,8 @@ typedef struct tagcomplex {
 #include <ctype.h>
 
 typedef uint32_t   COLORREF;
-typedef void*      HANDLE;
-typedef void*      HRGN;
+typedef void      *HANDLE;
+typedef void      *HRGN;
 
 #ifndef BOOL
 #define BOOL bool
@@ -193,19 +193,19 @@ inline uint8_t GetGValue(uint32_t rgb)
 }
 inline uint8_t GetBValue(uint32_t rgb)
 {
-  return static_cast<uint8_t>(rgb>>16);
+  return static_cast<uint8_t>(rgb >> 16);
 }
 inline uint32_t RGB(uint8_t r, uint8_t g, uint8_t b)
 {
   return static_cast<COLORREF>(
-           (r | (static_cast<uint16_t>(g<<8)) | (static_cast<uint32_t>(b)<<16))
+           (r | (static_cast<uint16_t>(g << 8)) | (static_cast<uint32_t>(b) << 16))
          );
 }
 
 #ifndef _COMPLEX_DEFINED
 
 typedef struct tagcomplex {
-  double x,y;
+  double x, y;
 } _complex;
 
 #endif

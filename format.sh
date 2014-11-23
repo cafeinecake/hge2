@@ -7,5 +7,8 @@ for wild in "*.cpp" "*.h" "*.c" ; do
 	--max-code-length=100 \
 	--break-blocks \
 	--convert-tabs \
+	--align-pointer=name \
+	--pad-oper \
+	--pad-header \
 	-r "$wild"
 done

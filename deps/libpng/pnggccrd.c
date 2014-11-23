@@ -427,9 +427,9 @@ png_combine_row(png_structp png_ptr, png_bytep row, int mask)
 #endif
 
   if (mask == 0xff) {
-    png_debug(2,"mask == 0xff:  doing single png_memcpy()\n");
+    png_debug(2, "mask == 0xff:  doing single png_memcpy()\n");
     png_memcpy(row, png_ptr->row_buf + 1,
-               (png_size_t)PNG_ROWBYTES(png_ptr->row_info.pixel_depth,png_ptr->width));
+               (png_size_t)PNG_ROWBYTES(png_ptr->row_info.pixel_depth, png_ptr->width));
   } else { /* (png_combine_row() is never called with mask == 0) */
     switch (png_ptr->row_info.pixel_depth) {
     case 1: {      /* png_ptr->row_info.pixel_depth */
@@ -615,7 +615,7 @@ png_combine_row(png_structp png_ptr, png_bytep row, int mask)
         _unmask = ~mask;            // global variable for -fPIC version
         srcptr = png_ptr->row_buf + 1;
         dstptr = row;
-        len  = png_ptr->width &~7;  // reduce to multiple of 8
+        len  = png_ptr->width & ~7; // reduce to multiple of 8
         diff = (int) (png_ptr->width & 7);  // amount lost
 
         __asm__ __volatile__ (
@@ -698,7 +698,7 @@ png_combine_row(png_structp png_ptr, png_bytep row, int mask)
         /* png.c:  png_pass_inc[] = {8, 8, 4, 4, 2, 2, 1}; */
         register int rep_bytes = png_pass_width[png_ptr->pass];
         /* png.c:  png_pass_width[] = {8, 4, 4, 2, 2, 1, 1}; */
-        png_uint_32 len = png_ptr->width &~7;  /* reduce to mult. of 8 */
+        png_uint_32 len = png_ptr->width & ~7; /* reduce to mult. of 8 */
         int diff = (int) (png_ptr->width & 7); /* amount lost */
         register png_uint_32 final_val = len;  /* GRR bugfix */
 
@@ -712,11 +712,11 @@ png_combine_row(png_structp png_ptr, png_bytep row, int mask)
         }
 
         if (diff) { /* number of leftover pixels:  3 for pngtest */
-          final_val+=diff /* *BPP1 */ ;
+          final_val += diff /* *BPP1 */ ;
 
           for (; i < final_val; i += stride) {
-            if (rep_bytes > (int)(final_val-i)) {
-              rep_bytes = (int)(final_val-i);
+            if (rep_bytes > (int)(final_val - i)) {
+              rep_bytes = (int)(final_val - i);
             }
 
             png_memcpy(dstptr, srcptr, rep_bytes);
@@ -753,7 +753,7 @@ png_combine_row(png_structp png_ptr, png_bytep row, int mask)
         _unmask = ~mask;            // global variable for -fPIC version
         srcptr = png_ptr->row_buf + 1;
         dstptr = row;
-        len  = png_ptr->width &~7;  // reduce to multiple of 8
+        len  = png_ptr->width & ~7; // reduce to multiple of 8
         diff = (int) (png_ptr->width & 7); // amount lost //
 
         __asm__ __volatile__ (
@@ -852,7 +852,7 @@ png_combine_row(png_structp png_ptr, png_bytep row, int mask)
         /* png.c:  png_pass_inc[] = {8, 8, 4, 4, 2, 2, 1}; */
         register int rep_bytes = BPP2 * png_pass_width[png_ptr->pass];
         /* png.c:  png_pass_width[] = {8, 4, 4, 2, 2, 1, 1}; */
-        png_uint_32 len = png_ptr->width &~7;  /* reduce to mult. of 8 */
+        png_uint_32 len = png_ptr->width & ~7; /* reduce to mult. of 8 */
         int diff = (int) (png_ptr->width & 7); /* amount lost */
         register png_uint_32 final_val = BPP2 * len;   /* GRR bugfix */
 
@@ -866,11 +866,11 @@ png_combine_row(png_structp png_ptr, png_bytep row, int mask)
         }
 
         if (diff) { /* number of leftover pixels:  3 for pngtest */
-          final_val+=diff*BPP2;
+          final_val += diff * BPP2;
 
           for (; i < final_val; i += stride) {
-            if (rep_bytes > (int)(final_val-i)) {
-              rep_bytes = (int)(final_val-i);
+            if (rep_bytes > (int)(final_val - i)) {
+              rep_bytes = (int)(final_val - i);
             }
 
             png_memcpy(dstptr, srcptr, rep_bytes);
@@ -906,7 +906,7 @@ png_combine_row(png_structp png_ptr, png_bytep row, int mask)
         _unmask = ~mask;            // global variable for -fPIC version
         srcptr = png_ptr->row_buf + 1;
         dstptr = row;
-        len  = png_ptr->width &~7;  // reduce to multiple of 8
+        len  = png_ptr->width & ~7; // reduce to multiple of 8
         diff = (int) (png_ptr->width & 7); // amount lost //
 
         __asm__ __volatile__ (
@@ -1020,7 +1020,7 @@ png_combine_row(png_structp png_ptr, png_bytep row, int mask)
         /* png.c:  png_pass_inc[] = {8, 8, 4, 4, 2, 2, 1}; */
         register int rep_bytes = BPP3 * png_pass_width[png_ptr->pass];
         /* png.c:  png_pass_width[] = {8, 4, 4, 2, 2, 1, 1}; */
-        png_uint_32 len = png_ptr->width &~7;  /* reduce to mult. of 8 */
+        png_uint_32 len = png_ptr->width & ~7; /* reduce to mult. of 8 */
         int diff = (int) (png_ptr->width & 7); /* amount lost */
         register png_uint_32 final_val = BPP3 * len;   /* GRR bugfix */
 
@@ -1034,11 +1034,11 @@ png_combine_row(png_structp png_ptr, png_bytep row, int mask)
         }
 
         if (diff) { /* number of leftover pixels:  3 for pngtest */
-          final_val+=diff*BPP3;
+          final_val += diff * BPP3;
 
           for (; i < final_val; i += stride) {
-            if (rep_bytes > (int)(final_val-i)) {
-              rep_bytes = (int)(final_val-i);
+            if (rep_bytes > (int)(final_val - i)) {
+              rep_bytes = (int)(final_val - i);
             }
 
             png_memcpy(dstptr, srcptr, rep_bytes);
@@ -1074,7 +1074,7 @@ png_combine_row(png_structp png_ptr, png_bytep row, int mask)
         _unmask = ~mask;            // global variable for -fPIC version
         srcptr = png_ptr->row_buf + 1;
         dstptr = row;
-        len  = png_ptr->width &~7;  // reduce to multiple of 8
+        len  = png_ptr->width & ~7; // reduce to multiple of 8
         diff = (int) (png_ptr->width & 7); // amount lost //
 
         __asm__ __volatile__ (
@@ -1195,7 +1195,7 @@ png_combine_row(png_structp png_ptr, png_bytep row, int mask)
         /* png.c:  png_pass_inc[] = {8, 8, 4, 4, 2, 2, 1}; */
         register int rep_bytes = BPP4 * png_pass_width[png_ptr->pass];
         /* png.c:  png_pass_width[] = {8, 4, 4, 2, 2, 1, 1}; */
-        png_uint_32 len = png_ptr->width &~7;  /* reduce to mult. of 8 */
+        png_uint_32 len = png_ptr->width & ~7; /* reduce to mult. of 8 */
         int diff = (int) (png_ptr->width & 7); /* amount lost */
         register png_uint_32 final_val = BPP4 * len;   /* GRR bugfix */
 
@@ -1209,11 +1209,11 @@ png_combine_row(png_structp png_ptr, png_bytep row, int mask)
         }
 
         if (diff) { /* number of leftover pixels:  3 for pngtest */
-          final_val+=diff*BPP4;
+          final_val += diff * BPP4;
 
           for (; i < final_val; i += stride) {
-            if (rep_bytes > (int)(final_val-i)) {
-              rep_bytes = (int)(final_val-i);
+            if (rep_bytes > (int)(final_val - i)) {
+              rep_bytes = (int)(final_val - i);
             }
 
             png_memcpy(dstptr, srcptr, rep_bytes);
@@ -1249,7 +1249,7 @@ png_combine_row(png_structp png_ptr, png_bytep row, int mask)
         _unmask = ~mask;            // global variable for -fPIC version
         srcptr = png_ptr->row_buf + 1;
         dstptr = row;
-        len  = png_ptr->width &~7;  // reduce to multiple of 8
+        len  = png_ptr->width & ~7; // reduce to multiple of 8
         diff = (int) (png_ptr->width & 7); // amount lost //
 
         __asm__ __volatile__ (
@@ -1387,7 +1387,7 @@ png_combine_row(png_structp png_ptr, png_bytep row, int mask)
         /* png.c:  png_pass_inc[] = {8, 8, 4, 4, 2, 2, 1}; */
         register int rep_bytes = BPP6 * png_pass_width[png_ptr->pass];
         /* png.c:  png_pass_width[] = {8, 4, 4, 2, 2, 1, 1}; */
-        png_uint_32 len = png_ptr->width &~7;  /* reduce to mult. of 8 */
+        png_uint_32 len = png_ptr->width & ~7; /* reduce to mult. of 8 */
         int diff = (int) (png_ptr->width & 7); /* amount lost */
         register png_uint_32 final_val = BPP6 * len;   /* GRR bugfix */
 
@@ -1401,11 +1401,11 @@ png_combine_row(png_structp png_ptr, png_bytep row, int mask)
         }
 
         if (diff) { /* number of leftover pixels:  3 for pngtest */
-          final_val+=diff*BPP6;
+          final_val += diff * BPP6;
 
           for (; i < final_val; i += stride) {
-            if (rep_bytes > (int)(final_val-i)) {
-              rep_bytes = (int)(final_val-i);
+            if (rep_bytes > (int)(final_val - i)) {
+              rep_bytes = (int)(final_val - i);
             }
 
             png_memcpy(dstptr, srcptr, rep_bytes);
@@ -1428,7 +1428,7 @@ png_combine_row(png_structp png_ptr, png_bytep row, int mask)
       /* png.c:  png_pass_inc[] = {8, 8, 4, 4, 2, 2, 1}; */
       register int rep_bytes = BPP8 * png_pass_width[png_ptr->pass];
       /* png.c:  png_pass_width[] = {8, 4, 4, 2, 2, 1, 1}; */
-      png_uint_32 len = png_ptr->width &~7;  /* reduce to mult. of 8 */
+      png_uint_32 len = png_ptr->width & ~7; /* reduce to mult. of 8 */
       int diff = (int) (png_ptr->width & 7); /* amount lost */
       register png_uint_32 final_val = BPP8 * len;   /* GRR bugfix */
 
@@ -1442,11 +1442,11 @@ png_combine_row(png_structp png_ptr, png_bytep row, int mask)
       }
 
       if (diff) { /* number of leftover pixels:  3 for pngtest */
-        final_val+=diff*BPP8;
+        final_val += diff * BPP8;
 
         for (; i < final_val; i += stride) {
-          if (rep_bytes > (int)(final_val-i)) {
-            rep_bytes = (int)(final_val-i);
+          if (rep_bytes > (int)(final_val - i)) {
+            rep_bytes = (int)(final_val - i);
           }
 
           png_memcpy(dstptr, srcptr, rep_bytes);
@@ -1865,8 +1865,8 @@ png_do_read_interlace(png_structp png_ptr)
               );
             }
 
-            sptr -= width_mmx*3;
-            dp -= width_mmx*6;
+            sptr -= width_mmx * 3;
+            dp -= width_mmx * 6;
 
             for (i = width; i; i--) {
               png_byte v[8];
@@ -1938,7 +1938,7 @@ png_do_read_interlace(png_structp png_ptr)
             }
 
             sptr -= width_mmx;
-            dp -= width_mmx*8;
+            dp -= width_mmx * 8;
 
             for (i = width; i; i--) {
               int j;
@@ -2009,7 +2009,7 @@ png_do_read_interlace(png_structp png_ptr)
             }
 
             sptr -= width_mmx;
-            dp -= width_mmx*4;
+            dp -= width_mmx * 4;
 
             for (i = width; i; i--) {
               int j;
@@ -2061,7 +2061,7 @@ png_do_read_interlace(png_structp png_ptr)
             }
 
             sptr -= width_mmx;
-            dp -= width_mmx*2;
+            dp -= width_mmx * 2;
 
             for (i = width; i; i--) {
               int j;
@@ -2120,8 +2120,8 @@ png_do_read_interlace(png_structp png_ptr)
               );
             }
 
-            sptr -= (width_mmx*2 - 2); // sign fixed
-            dp -= (width_mmx*16 - 2);  // sign fixed
+            sptr -= (width_mmx * 2 - 2); // sign fixed
+            dp -= (width_mmx * 16 - 2); // sign fixed
 
             for (i = width; i; i--) {
               png_byte v[8];
@@ -2175,8 +2175,8 @@ png_do_read_interlace(png_structp png_ptr)
               );
             }
 
-            sptr -= (width_mmx*2 - 2); // sign fixed
-            dp -= (width_mmx*8 - 2);   // sign fixed
+            sptr -= (width_mmx * 2 - 2); // sign fixed
+            dp -= (width_mmx * 8 - 2); // sign fixed
 
             for (i = width; i; i--) {
               png_byte v[8];
@@ -2226,8 +2226,8 @@ png_do_read_interlace(png_structp png_ptr)
               );
             }
 
-            sptr -= (width_mmx*2 - 2); // sign fixed
-            dp -= (width_mmx*4 - 2);   // sign fixed
+            sptr -= (width_mmx * 2 - 2); // sign fixed
+            dp -= (width_mmx * 4 - 2); // sign fixed
 
             for (i = width; i; i--) {
               png_byte v[8];
@@ -2291,8 +2291,8 @@ png_do_read_interlace(png_structp png_ptr)
               );
             }
 
-            sptr -= (width_mmx*4 - 4); // sign fixed
-            dp -= (width_mmx*32 - 4);  // sign fixed
+            sptr -= (width_mmx * 4 - 4); // sign fixed
+            dp -= (width_mmx * 32 - 4); // sign fixed
 
             for (i = width; i; i--) {
               png_byte v[8];
@@ -2347,8 +2347,8 @@ png_do_read_interlace(png_structp png_ptr)
               );
             }
 
-            sptr -= (width_mmx*4 - 4); // sign fixed
-            dp -= (width_mmx*16 - 4);  // sign fixed
+            sptr -= (width_mmx * 4 - 4); // sign fixed
+            dp -= (width_mmx * 16 - 4); // sign fixed
 
             for (i = width; i; i--) {
               png_byte v[8];
@@ -2401,8 +2401,8 @@ png_do_read_interlace(png_structp png_ptr)
               );
             }
 
-            sptr -= (width_mmx*4 - 4); // sign fixed
-            dp -= (width_mmx*8 - 4);   // sign fixed
+            sptr -= (width_mmx * 4 - 4); // sign fixed
+            dp -= (width_mmx * 8 - 4); // sign fixed
 
             for (i = width; i; i--) {
               png_byte v[8];
@@ -2564,13 +2564,13 @@ png_do_read_interlace(png_structp png_ptr)
               dp -= pixel_bytes;
             }
 
-            sptr-= pixel_bytes;
+            sptr -= pixel_bytes;
           }
         }
       } // end of _mmx_supported ========================================
 
       else /* MMX not supported:  use modified C code - takes advantage
-              *   of inlining of png_memcpy for a constant */
+            *   of inlining of png_memcpy for a constant */
         /* GRR 19991007:  does it?  or should pixel_bytes in each
          *   block be replaced with immediate value (e.g., 1)? */
         /* GRR 19991017:  replaced with constants in each case */
@@ -2621,10 +2621,10 @@ png_do_read_interlace(png_structp png_ptr)
             for (j = 0; j < png_pass_inc[pass]; j++) {
 #ifdef PNG_DEBUG
 
-              if (dp < row || dp+3 > row+png_ptr->row_buf_size) {
+              if (dp < row || dp + 3 > row + png_ptr->row_buf_size) {
                 printf("dp out of bounds: row=%d, dp=%d, rp=%d\n",
-                       row, dp, row+png_ptr->row_buf_size);
-                printf("row_buf=%d\n",png_ptr->row_buf_size);
+                       row, dp, row + png_ptr->row_buf_size);
+                printf("row_buf=%d\n", png_ptr->row_buf_size);
               }
 
 #endif
@@ -2683,7 +2683,7 @@ png_do_read_interlace(png_structp png_ptr)
 
     row_info->width = final_width;
 
-    row_info->rowbytes = PNG_ROWBYTES(row_info->pixel_depth,final_width);
+    row_info->rowbytes = PNG_ROWBYTES(row_info->pixel_depth, final_width);
   }
 
 } /* end png_do_read_interlace() */
@@ -5038,7 +5038,7 @@ png_read_filter_row(png_structp png_ptr, png_row_infop row_info, png_bytep
     sprintf(filnm, "sub-%s",
 #if defined(PNG_ASSEMBLER_CODE_SUPPORTED) && defined(PNG_THREAD_UNSAFE_OK)
 #if !defined(PNG_1_0_X)
-            (png_ptr->asm_flags & PNG_ASM_FLAG_MMX_READ_FILTER_SUB)? "MMX" :
+            (png_ptr->asm_flags & PNG_ASM_FLAG_MMX_READ_FILTER_SUB) ? "MMX" :
 #endif
 #endif
             "x86");
@@ -5048,7 +5048,7 @@ png_read_filter_row(png_structp png_ptr, png_row_infop row_info, png_bytep
     sprintf(filnm, "up-%s",
 #ifdef PNG_ASSEMBLER_CODE_SUPPORTED
 #if !defined(PNG_1_0_X)
-            (png_ptr->asm_flags & PNG_ASM_FLAG_MMX_READ_FILTER_UP)? "MMX" :
+            (png_ptr->asm_flags & PNG_ASM_FLAG_MMX_READ_FILTER_UP) ? "MMX" :
 #endif
 #endif
             "x86");
@@ -5058,7 +5058,7 @@ png_read_filter_row(png_structp png_ptr, png_row_infop row_info, png_bytep
     sprintf(filnm, "avg-%s",
 #if defined(PNG_ASSEMBLER_CODE_SUPPORTED) && defined(PNG_THREAD_UNSAFE_OK)
 #if !defined(PNG_1_0_X)
-            (png_ptr->asm_flags & PNG_ASM_FLAG_MMX_READ_FILTER_AVG)? "MMX" :
+            (png_ptr->asm_flags & PNG_ASM_FLAG_MMX_READ_FILTER_AVG) ? "MMX" :
 #endif
 #endif
             "x86");
@@ -5068,7 +5068,7 @@ png_read_filter_row(png_structp png_ptr, png_row_infop row_info, png_bytep
     sprintf(filnm, "Paeth-%s",
 #if defined(PNG_ASSEMBLER_CODE_SUPPORTED) && defined(PNG_THREAD_UNSAFE_OK)
 #if !defined(PNG_1_0_X)
-            (png_ptr->asm_flags & PNG_ASM_FLAG_MMX_READ_FILTER_PAETH)? "MMX":
+            (png_ptr->asm_flags & PNG_ASM_FLAG_MMX_READ_FILTER_PAETH) ? "MMX" :
 #endif
 #endif
             "x86");
@@ -5083,7 +5083,7 @@ png_read_filter_row(png_structp png_ptr, png_row_infop row_info, png_bytep
   png_debug1(0, "row=0x%08lx, ", (unsigned long)row);
   png_debug2(0, "pixdepth=%2d, bytes=%d, ", (int)row_info->pixel_depth,
              (int)((row_info->pixel_depth + 7) >> 3));
-  png_debug1(0,"rowbytes=%8ld\n", row_info->rowbytes);
+  png_debug1(0, "rowbytes=%8ld\n", row_info->rowbytes);
 #endif /* PNG_DEBUG */
 
   switch (filter) {
@@ -5248,7 +5248,7 @@ png_read_filter_row(png_structp png_ptr, png_row_infop row_info, png_bytep
 
   default:
     png_warning(png_ptr, "Ignoring bad row-filter type");
-    *row=0;
+    *row = 0;
     break;
   }
 }

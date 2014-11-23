@@ -8,8 +8,7 @@
 // (C) Copyright 2008 by Haaf
 // --------------------------------------------------------------------------------
 
-#ifndef RECT_PLACEMENT_HEADER
-#define RECT_PLACEMENT_HEADER
+#pragma once
 
 #include <vector>
 
@@ -35,23 +34,23 @@ public:
     int w, h;
 
     TRect() { }
-    TRect(int _x, int _y, int _w, int _h): TPos(_x, _y), w(_w > 0? _w : 0), h(_h > 0? _h : 0) { }
+    TRect(int _x, int _y, int _w, int _h): TPos(_x, _y), w(_w > 0 ? _w : 0), h(_h > 0 ? _h : 0) { }
 
     bool Contains   (const TPos &p)  const
     {
       return (p.x >= x && p.y >= y &&
-              p.x < (x+w) && p.y < (y+h));
+              p.x < (x + w) && p.y < (y + h));
     }
     bool Contains   (const TRect &r) const
     {
-      return (r.x-m_margin >= x && r.y-m_margin >= y &&
-              (r.x+r.w+m_margin) <= (x+w) && (r.y+r.h+m_margin) <= (y+h));
+      return (r.x - m_margin >= x && r.y - m_margin >= y &&
+              (r.x + r.w + m_margin) <= (x + w) && (r.y + r.h + m_margin) <= (y + h));
     }
     bool Intersects (const TRect &r) const
     {
       return w > 0 && h > 0 && r.w > 0 && r.h > 0 &&
-             ((r.x+r.w+m_margin) > x && (r.x-m_margin) < (x+w) &&
-              (r.y+r.h+m_margin) > y && (r.y-m_margin) < (y+h));
+             ((r.x + r.w + m_margin) > x && (r.x - m_margin) < (x + w) &&
+              (r.y + r.h + m_margin) > y && (r.y - m_margin) < (y + h));
     }
 
     //  Greater rect area. Not as good as the next heuristic
@@ -74,7 +73,7 @@ public:
 
   CRectPlacement()
   {
-    m_margin=1;
+    m_margin = 1;
     Init();
   }
   ~CRectPlacement()
@@ -108,7 +107,7 @@ public:
   }
   long      GetTotalArea ()                 const
   {
-    return m_size.w*m_size.h;
+    return m_size.w * m_size.h;
   }
 
   bool AddAtEmptySpotAutoGrow (TRect *pRect, int maxW, int maxH);
@@ -129,8 +128,3 @@ private:
   bool AddAtEmptySpot         (TRect &r);
 };
 // --------------------------------------------------------------------------------
-
-
-
-
-#endif // RECT_PLACEMENT_HEADER

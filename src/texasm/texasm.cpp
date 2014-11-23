@@ -17,18 +17,20 @@
 
 HGE *hge = 0;
 
+CGfxObject::~CGfxObject() {}
+
 void SysLog(const char *format, ...);
 bool ParseTask(char *task, int *resgroup, char *mask, bool *inclusive);
 
 
-int main(int argc, char* argv[])
+int main(int argc, char *argv[])
 {
   hgeResourceManager *rm;
   CTextureAssembler  *ta;
   char         cwd[MAX_PATH];
 
 
-  hge=hgeCreate(HGE_VERSION);
+  hge = hgeCreate(HGE_VERSION);
   hge->System_SetState(HGE_SHOWSPLASH, false);
   hge->System_SetState(HGE_USESOUND, false);
   hge->System_SetState(HGE_WINDOWED, true);
@@ -38,7 +40,7 @@ int main(int argc, char* argv[])
 
   // try to initiate HGE
 
-  if(!hge->System_Initiate()) {
+  if (!hge->System_Initiate()) {
     SysLog("Can't initiate HGE.\n");
     hge->System_Shutdown();
     hge->Release();
@@ -49,7 +51,7 @@ int main(int argc, char* argv[])
 
   // check for args count and display help
 
-  if(argc != 3 && argc != 4) {
+  if (argc != 3 && argc != 4) {
     SysLog("Usage: TEXASM.EXE <res-file>|<wildcard> <output-wildcard> [<task>]\n\n\n");
 
     SysLog("<res-file> - resource script to process.\n");
@@ -94,7 +96,7 @@ int main(int argc, char* argv[])
 
   void *script = hge->Resource_Load(argv[1]);
 
-  if(script) {
+  if (script) {
     bScript = true;
   } else {
     bScript = false;
@@ -108,8 +110,8 @@ int main(int argc, char* argv[])
   bool inclusive = true;
   char mask[256] = "";
 
-  if(argc == 4)
-    if(!ParseTask(argv[3], &resgroup, mask, &inclusive)) {
+  if (argc == 4)
+    if (!ParseTask(argv[3], &resgroup, mask, &inclusive)) {
       SysLog("Invalid task: %s\n", argv[3]);
       hge->System_Shutdown();
       hge->Release();
@@ -136,7 +138,7 @@ int main(int argc, char* argv[])
   // Add a task into texture assembler. There may be more than one
   // call to AccumulateRMResources() and/or AccumulateFileResources().
 
-  if(bScript) {
+  if (bScript) {
     rm->ChangeScript(argv[1]);
     ta->AccumulateRMResources(rm, resgroup, mask, inclusive);
   } else {
@@ -159,7 +161,7 @@ int main(int argc, char* argv[])
   delete ta;
   delete rm;
 
-  if(success) {
+  if (success) {
     SysLog("\nSuccess.\n");
   } else {
     SysLog("\nAborted.\n");
@@ -167,7 +169,7 @@ int main(int argc, char* argv[])
 
   hge->System_Shutdown();
   hge->Release();
-  return (int)success;
+  return static_cast<int>(success);
 }
 
 
@@ -181,7 +183,7 @@ void SysLog(const char *format, ...)
   vsprintf(buf, format, ap);
   va_end(ap);
 
-  printf(buf);
+  puts(buf);
   hge->System_Log(buf);
 }
 
@@ -196,29 +198,29 @@ bool ParseTask(char *task, int *resgroup, char *mask, bool *inclusive)
 
   // parse resgroup
 
-  while(isdigit(*p)) {
+  while (isdigit(*p)) {
     *resgroup *= 10;
     *resgroup += *p - '0';
     p++;
   }
 
-  if(!*p) {
+  if (!*p) {
     return true;
   }
 
   // parse inclusiveness
 
-  if(*p == '-') {
+  if (*p == '-') {
     *inclusive = false;
   } else {
-    if(*p != '+') {
+    if (*p != '+') {
       return false;
     }
   }
 
   p++;
 
-  if(!*p) {
+  if (!*p) {
     return false;
   }
 
@@ -227,8 +229,8 @@ bool ParseTask(char *task, int *resgroup, char *mask, bool *inclusive)
   strcpy(mask, p);
   p = mask;
 
-  while(*p) {
-    if(*p == '\\' || *p == '/') {
+  while (*p) {
+    if (*p == '\\' || *p == '/') {
       *p = 0;
     }
 

@@ -29,7 +29,7 @@ int level;
   z_stream stream;
   int err;
 
-  stream.next_in = (Bytef*)source;
+  stream.next_in = (Bytef *)source;
   stream.avail_in = (uInt)sourceLen;
 #ifdef MAXSEG_64K
 
@@ -40,7 +40,7 @@ int level;
 
 #endif
   stream.next_out = dest;
-  stream.avail_out = (uInt)*destLen;
+  stream.avail_out = (uInt) * destLen;
 
   if ((uLong)stream.avail_out != *destLen) {
     return Z_BUF_ERROR;

@@ -18,10 +18,10 @@ bool CxImageJAS::Decode(CxFile *hFile, uint32_t imagetype)
     return false;
   }
 
-  jas_image_t *image=0;
-  jas_stream_t *in=0;
-  jas_matrix_t **bufs=0;
-  int32_t i,error=0;
+  jas_image_t *image = 0;
+  jas_stream_t *in = 0;
+  jas_matrix_t **bufs = 0;
+  int32_t i, error = 0;
   int32_t fmt;
   //jas_setdbglevel(0);
 
@@ -38,11 +38,11 @@ bool CxImageJAS::Decode(CxFile *hFile, uint32_t imagetype)
       cx_throw("error: cannot open standard input");
     }
 
-    CxFileJas src(hFile,in);
+    CxFileJas src(hFile, in);
 
     fmt = jas_image_getfmt(in);
 
-    if (fmt<0)
+    if (fmt < 0)
     {
       cx_throw("error: unknowm format");
     }
@@ -57,13 +57,13 @@ bool CxImageJAS::Decode(CxFile *hFile, uint32_t imagetype)
 
     char szfmt[4];
     *szfmt = '\0';
-    strncpy(szfmt,jas_image_fmttostr(fmt),3);
+    strncpy(szfmt, jas_image_fmttostr(fmt), 3);
     szfmt[3] = '\0';
 
     fmt = -1;
 #if CXIMAGE_SUPPORT_JP2
 
-    if (strcmp(szfmt,"jp2")==0)
+    if (strcmp(szfmt, "jp2") == 0)
     {
       fmt = CXIMAGE_FORMAT_JP2;
     }
@@ -71,7 +71,7 @@ bool CxImageJAS::Decode(CxFile *hFile, uint32_t imagetype)
 #endif
 #if CXIMAGE_SUPPORT_JPC
 
-    if (strcmp(szfmt,"jpc")==0)
+    if (strcmp(szfmt, "jpc") == 0)
     {
       fmt = CXIMAGE_FORMAT_JPC;
     }
@@ -79,7 +79,7 @@ bool CxImageJAS::Decode(CxFile *hFile, uint32_t imagetype)
 #endif
 #if CXIMAGE_SUPPORT_RAS
 
-    if (strcmp(szfmt,"ras")==0)
+    if (strcmp(szfmt, "ras") == 0)
     {
       fmt = CXIMAGE_FORMAT_RAS;
     }
@@ -87,7 +87,7 @@ bool CxImageJAS::Decode(CxFile *hFile, uint32_t imagetype)
 #endif
 #if CXIMAGE_SUPPORT_PNM
 
-    if (strcmp(szfmt,"pnm")==0)
+    if (strcmp(szfmt, "pnm") == 0)
     {
       fmt = CXIMAGE_FORMAT_PNM;
     }
@@ -95,7 +95,7 @@ bool CxImageJAS::Decode(CxFile *hFile, uint32_t imagetype)
 #endif
 #if CXIMAGE_SUPPORT_PGX
 
-    if (strcmp(szfmt,"pgx")==0)
+    if (strcmp(szfmt, "pgx") == 0)
     {
       fmt = CXIMAGE_FORMAT_PGX;
     }
@@ -105,17 +105,17 @@ bool CxImageJAS::Decode(CxFile *hFile, uint32_t imagetype)
     //if (fmt<0)
     //  cx_throw("error: unknowm format");
 
-    int32_t x,y,w,h,depth,cmptno;
+    int32_t x, y, w, h, depth, cmptno;
 
-    w = jas_image_cmptwidth(image,0);
-    h = jas_image_cmptheight(image,0);
-    depth = jas_image_cmptprec(image,0);
+    w = jas_image_cmptwidth(image, 0);
+    h = jas_image_cmptheight(image, 0);
+    depth = jas_image_cmptprec(image, 0);
 
     if (info.nEscape == -1)
     {
       head.biWidth = w;
-      head.biHeight= h;
-      info.dwType = fmt<0 ? 0 : fmt;
+      head.biHeight = h;
+      info.dwType = fmt < 0 ? 0 : fmt;
       cx_throw("output dimensions returned");
     }
 
@@ -126,7 +126,7 @@ bool CxImageJAS::Decode(CxFile *hFile, uint32_t imagetype)
 
     // <LD> 01/Jan/2005: Always force conversion to sRGB. Seems to be required for many types of JPEG2000 file.
     // if (depth!=1 && depth!=4 && depth!=8)
-    if (image->numcmpts_>=3 && depth <=8)
+    if (image->numcmpts_ >= 3 && depth <= 8)
     {
       jas_image_t *newimage;
       jas_cmprof_t *outprof;
@@ -149,7 +149,7 @@ bool CxImageJAS::Decode(CxFile *hFile, uint32_t imagetype)
       image = newimage;
     }
 
-    bufs = (jas_matrix_t **)calloc(image->numcmpts_, sizeof(jas_matrix_t**));
+    bufs = (jas_matrix_t **)calloc(image->numcmpts_, sizeof(jas_matrix_t **));
 
     for (i = 0; i < image->numcmpts_; ++i)
     {
@@ -160,9 +160,9 @@ bool CxImageJAS::Decode(CxFile *hFile, uint32_t imagetype)
       }
     }
 
-    int32_t nshift = (depth>8) ? (depth-8) : 0;
+    int32_t nshift = (depth > 8) ? (depth - 8) : 0;
 
-    if (image->numcmpts_==3 &&
+    if (image->numcmpts_ == 3 &&
         image->cmpts_[0]->width_ == image->cmpts_[1]->width_ &&
         image->cmpts_[1]->width_ == image->cmpts_[2]->width_ &&
         image->cmpts_[0]->height_ == image->cmpts_[1]->height_ &&
@@ -171,53 +171,53 @@ bool CxImageJAS::Decode(CxFile *hFile, uint32_t imagetype)
         image->cmpts_[1]->prec_ == image->cmpts_[2]->prec_ )
     {
 
-      if(!Create(w,h,24,fmt)) {
+      if (!Create(w, h, 24, fmt)) {
         cx_throw("");
       }
 
       RGBQUAD c;
 
-      for (y=0; y<h; y++) {
+      for (y = 0; y < h; y++) {
         for (cmptno = 0; cmptno < image->numcmpts_; ++cmptno) {
           jas_image_readcmpt(image, cmptno, 0, y, w, 1, bufs[cmptno]);
         }
 
-        for (x=0; x<w; x++) {
-          c.rgbRed   = static_cast<uint8_t>((jas_matrix_getv(bufs[0], x)>>nshift));
-          c.rgbGreen = static_cast<uint8_t>((jas_matrix_getv(bufs[1], x)>>nshift));
-          c.rgbBlue  = static_cast<uint8_t>((jas_matrix_getv(bufs[2], x)>>nshift));
-          SetPixelColor(x,h-1-y,c);
+        for (x = 0; x < w; x++) {
+          c.rgbRed   = static_cast<uint8_t>((jas_matrix_getv(bufs[0], x) >> nshift));
+          c.rgbGreen = static_cast<uint8_t>((jas_matrix_getv(bufs[1], x) >> nshift));
+          c.rgbBlue  = static_cast<uint8_t>((jas_matrix_getv(bufs[2], x) >> nshift));
+          SetPixelColor(x, h - 1 - y, c);
         }
       }
     } else {
       info.nNumFrames = image->numcmpts_;
 
-      if ((info.nFrame<0)||(info.nFrame>=info.nNumFrames))
+      if ((info.nFrame < 0) || (info.nFrame >= info.nNumFrames))
       {
         cx_throw("wrong frame!");
       }
 
-      for (cmptno=0; cmptno<=info.nFrame; cmptno++)
+      for (cmptno = 0; cmptno <= info.nFrame; cmptno++)
       {
-        w = jas_image_cmptwidth(image,cmptno);
-        h = jas_image_cmptheight(image,cmptno);
-        depth = jas_image_cmptprec(image,cmptno);
+        w = jas_image_cmptwidth(image, cmptno);
+        h = jas_image_cmptheight(image, cmptno);
+        depth = jas_image_cmptprec(image, cmptno);
 
-        if (depth>8) {
-          depth=8;
+        if (depth > 8) {
+          depth = 8;
         }
 
-        if(!Create(w,h,depth,imagetype)) {
+        if (!Create(w, h, depth, imagetype)) {
           cx_throw("");
         }
 
         SetGrayPalette();
 
-        for (y=0; y<h; y++) {
+        for (y = 0; y < h; y++) {
           jas_image_readcmpt(image, cmptno, 0, y, w, 1, bufs[0]);
 
-          for (x=0; x<w; x++) {
-            SetPixelIndex(x,h-1-y,static_cast<uint8_t>((jas_matrix_getv(bufs[0], x)>>nshift)));
+          for (x = 0; x < w; x++) {
+            SetPixelIndex(x, h - 1 - y, static_cast<uint8_t>((jas_matrix_getv(bufs[0], x) >> nshift)));
           }
         }
       }
@@ -225,12 +225,12 @@ bool CxImageJAS::Decode(CxFile *hFile, uint32_t imagetype)
 
 
   } cx_catch {
-    if (strcmp(message,""))
+    if (strcmp(message, ""))
     {
-      strncpy(info.szLastError,message,255);
+      strncpy(info.szLastError, message, 255);
     }
 
-    if (info.nEscape == -1 && fmt>0)
+    if (info.nEscape == -1 && fmt > 0)
     {
       error = 0;
     } else {
@@ -258,29 +258,29 @@ bool CxImageJAS::Decode(CxFile *hFile, uint32_t imagetype)
     jas_stream_close(in);
   }
 
-  return (error==0);
+  return (error == 0);
 }
 ////////////////////////////////////////////////////////////////////////////////
 #endif //CXIMAGE_SUPPORT_DECODE
 ////////////////////////////////////////////////////////////////////////////////
 #if CXIMAGE_SUPPORT_ENCODE
 ////////////////////////////////////////////////////////////////////////////////
-bool CxImageJAS::Encode(CxFile * hFile, uint32_t imagetype)
+bool CxImageJAS::Encode(CxFile *hFile, uint32_t imagetype)
 {
   if (EncodeSafeCheck(hFile)) {
     return false;
   }
 
-  if (head.biClrUsed!=0 && !IsGrayScale()) {
-    strcpy(info.szLastError,"JasPer can save only RGB or GrayScale images");
+  if (head.biClrUsed != 0 && !IsGrayScale()) {
+    strcpy(info.szLastError, "JasPer can save only RGB or GrayScale images");
     return false;
   }
 
-  jas_image_t *image=0;
-  jas_stream_t *out=0;
+  jas_image_t *image = 0;
+  jas_stream_t *out = 0;
   jas_matrix_t *cmpts[3];
-  int32_t x,y,yflip,error=0;
-  uint_fast16_t cmptno, numcmpts=0;
+  int32_t x, y, yflip, error = 0;
+  uint_fast16_t cmptno, numcmpts = 0;
   jas_image_cmptparm_t cmptparms[3], *cmptparm;
 
   cx_try {
@@ -297,9 +297,9 @@ bool CxImageJAS::Encode(CxFile * hFile, uint32_t imagetype)
       cx_throw("error: cannot open standard output");
     }
 
-    CxFileJas src(hFile,out);
+    CxFileJas src(hFile, out);
 
-    numcmpts = head.biClrUsed==0 ? 3 : 1;
+    numcmpts = head.biClrUsed == 0 ? 3 : 1;
 
     for (cmptno = 0, cmptparm = cmptparms; cmptno < numcmpts; ++cmptno, ++cmptparm)
     {
@@ -357,13 +357,13 @@ bool CxImageJAS::Encode(CxFile * hFile, uint32_t imagetype)
     for (y = 0; y < head.biHeight; ++y)
     {
       for (x = 0; x < head.biWidth; ++x) {
-        if (head.biClrUsed==0) {
-          c = GetPixelColor(x,y);
+        if (head.biClrUsed == 0) {
+          c = GetPixelColor(x, y);
           jas_matrix_setv(cmpts[0], x, c.rgbRed);
           jas_matrix_setv(cmpts[1], x, c.rgbGreen);
           jas_matrix_setv(cmpts[2], x, c.rgbBlue);
         } else {
-          jas_matrix_setv(cmpts[0], x, GetPixelIndex(x,y));
+          jas_matrix_setv(cmpts[0], x, GetPixelIndex(x, y));
         }
       }
 
@@ -382,7 +382,7 @@ bool CxImageJAS::Encode(CxFile * hFile, uint32_t imagetype)
 
     if (imagetype == CXIMAGE_FORMAT_JP2)
     {
-      strcpy(szfmt,"jp2");
+      strcpy(szfmt, "jp2");
     }
 
 #endif
@@ -390,7 +390,7 @@ bool CxImageJAS::Encode(CxFile * hFile, uint32_t imagetype)
 
     if (imagetype == CXIMAGE_FORMAT_JPC)
     {
-      strcpy(szfmt,"jpc");
+      strcpy(szfmt, "jpc");
     }
 
 #endif
@@ -398,7 +398,7 @@ bool CxImageJAS::Encode(CxFile * hFile, uint32_t imagetype)
 
     if (imagetype == CXIMAGE_FORMAT_RAS)
     {
-      strcpy(szfmt,"ras");
+      strcpy(szfmt, "ras");
     }
 
 #endif
@@ -406,7 +406,7 @@ bool CxImageJAS::Encode(CxFile * hFile, uint32_t imagetype)
 
     if (imagetype == CXIMAGE_FORMAT_PNM)
     {
-      strcpy(szfmt,"pnm");
+      strcpy(szfmt, "pnm");
     }
 
 #endif
@@ -414,9 +414,9 @@ bool CxImageJAS::Encode(CxFile * hFile, uint32_t imagetype)
 
     if (imagetype == CXIMAGE_FORMAT_PGX)
     {
-      strcpy(szfmt,"pgx");
+      strcpy(szfmt, "pgx");
 
-      if (head.biClrUsed==0) {
+      if (head.biClrUsed == 0) {
         cx_throw("PGX can save only GrayScale images");
       }
     }
@@ -425,7 +425,7 @@ bool CxImageJAS::Encode(CxFile * hFile, uint32_t imagetype)
     int32_t outfmt = jas_image_strtofmt(szfmt);
 
     char szoutopts[32];
-    sprintf(szoutopts,"rate=%.3f", info.fQuality/100.0f);
+    sprintf(szoutopts, "rate=%.3f", info.fQuality / 100.0f);
 
     if (jas_image_encode(image, out, outfmt, szoutopts))
     {
@@ -435,9 +435,9 @@ bool CxImageJAS::Encode(CxFile * hFile, uint32_t imagetype)
     jas_stream_flush(out);
 
   } cx_catch {
-    if (strcmp(message,""))
+    if (strcmp(message, ""))
     {
-      strncpy(info.szLastError,message,255);
+      strncpy(info.szLastError, message, 255);
     }
 
     error = 1;
@@ -459,7 +459,7 @@ bool CxImageJAS::Encode(CxFile * hFile, uint32_t imagetype)
     jas_stream_close(out);
   }
 
-  return (error==0);
+  return (error == 0);
 }
 ////////////////////////////////////////////////////////////////////////////////
 #endif // CXIMAGE_SUPPORT_ENCODE

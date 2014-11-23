@@ -28,26 +28,26 @@ public:
 
 //  bool Load(const TCHAR * imageFileName){ return CxImage::Load(imageFileName,0);}
 //  bool Save(const TCHAR * imageFileName){ return CxImage::Save(imageFileName,0);}
-  bool Decode(CxFile * hFile, uint32_t imagetype = 0);
+  bool Decode(CxFile *hFile, uint32_t imagetype = 0);
   bool Decode(FILE *hFile, uint32_t imagetype = 0)
   {
     CxIOFile file(hFile);
-    return Decode(&file,imagetype);
+    return Decode(&file, imagetype);
   }
 
 #if CXIMAGE_SUPPORT_ENCODE
-  bool Encode(CxFile * hFile, uint32_t imagetype = 0);
+  bool Encode(CxFile *hFile, uint32_t imagetype = 0);
   bool Encode(FILE *hFile, uint32_t imagetype = 0)
   {
     CxIOFile file(hFile);
-    return Encode(&file,imagetype);
+    return Encode(&file, imagetype);
   }
 #endif // CXIMAGE_SUPPORT_ENCODE
 protected:
 
   class CxFileJas {
   public:
-    CxFileJas(CxFile* pFile,jas_stream_t *stream)
+    CxFileJas(CxFile *pFile, jas_stream_t *stream)
     {
       if (stream->obj_) {
         jas_free(stream->obj_);
@@ -76,15 +76,15 @@ protected:
     }
     static int32_t JasRead(jas_stream_obj_t *obj, char *buf, int32_t cnt)
     {
-      return ((CxFile*)obj)->Read(buf,1,cnt);
+      return ((CxFile *)obj)->Read(buf, 1, cnt);
     }
     static int32_t JasWrite(jas_stream_obj_t *obj, char *buf, int32_t cnt)
     {
-      return ((CxFile*)obj)->Write(buf,1,cnt);
+      return ((CxFile *)obj)->Write(buf, 1, cnt);
     }
     static long JasSeek(jas_stream_obj_t *obj, long offset, int32_t origin)
     {
-      return ((CxFile*)obj)->Seek(offset,origin);
+      return ((CxFile *)obj)->Seek(offset, origin);
     }
     static int32_t JasClose(jas_stream_obj_t * /*obj*/)
     {

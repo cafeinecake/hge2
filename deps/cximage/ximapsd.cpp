@@ -69,7 +69,7 @@ class CPSD {
 
   struct COLOUR_MODE_DATA {
     int nLength;
-    unsigned char* ColourData;
+    unsigned char *ColourData;
     COLOUR_MODE_DATA();
   };
 
@@ -89,7 +89,7 @@ class CPSD {
     int nLength;
     char OSType[4];
     short nID;
-    unsigned char* Name;
+    unsigned char *Name;
     int nSize;
     IMAGE_RESOURCE();
     void Reset();
@@ -183,7 +183,7 @@ class CPSD {
     int   nCompressedSize;
     short nBitPerPixel;
     short nPlanes;
-    unsigned char* Data;
+    unsigned char *Data;
     THUMBNAIL();
   };
 
@@ -214,22 +214,22 @@ class CPSD {
 
   bool  mbCopyright;
 
-  int Calculate(unsigned char* c, int nDigits);
+  int Calculate(unsigned char *c, int nDigits);
   void XYZToRGB(const double X, const double Y, const double Z, int &R, int &G, int &B);
   void LabToRGB(const int L, const int a, const int b, int &R, int &G, int &B );
   void CMYKToRGB(const double C, const double M, const double Y, const double K, int &R, int &G,
                  int &B);
 
-  bool ReadHeader(CxFile &f, HEADER_INFO& header_info);
-  bool ReadColourModeData(CxFile &f, COLOUR_MODE_DATA& colour_mode_data);
-  bool ReadImageResource(CxFile &f, IMAGE_RESOURCE& image_resource);
+  bool ReadHeader(CxFile &f, HEADER_INFO &header_info);
+  bool ReadColourModeData(CxFile &f, COLOUR_MODE_DATA &colour_mode_data);
+  bool ReadImageResource(CxFile &f, IMAGE_RESOURCE &image_resource);
   bool ReadLayerAndMaskInfoSection(CxFile &f); // Actually ignore it
   int ReadImageData(CxFile &f);
 
   int DecodeRawData(CxFile &pFile);
   int DecodeRLEData(CxFile &pFile);
 
-  void ProccessBuffer(unsigned char* pData = 0);
+  void ProccessBuffer(unsigned char *pData = 0);
 
 public:
   CPSD(CxImage &image);
@@ -275,7 +275,7 @@ public:
 
 inline int dti(double value)
 {
-  return (int)floor(value+.5f);
+  return (int)floor(value + .5f);
 }
 
 #define assert(a)
@@ -312,12 +312,12 @@ CPSD::~CPSD()
   image_resource.Name = 0;
 }
 
-int CPSD::Calculate(unsigned char* c, int nDigits)
+int CPSD::Calculate(unsigned char *c, int nDigits)
 {
   int nValue = 0;
 
-  for(int n = 0; n < nDigits; ++n) {
-    nValue = ( nValue << 8 ) | *(c+n);
+  for (int n = 0; n < nDigits; ++n) {
+    nValue = ( nValue << 8 ) | *(c + n);
   }
 
   return nValue;
@@ -340,19 +340,19 @@ void CPSD::XYZToRGB(const double X, const double Y, const double Z, int &R, int 
   double var_B = var_X * 0.0557 + var_Y * (-0.2040) + var_Z * 1.0570;
 
   if ( var_R > 0.0031308 ) {
-    var_R = 1.055 * ( pow(var_R, 1/2.4) ) - 0.055;
+    var_R = 1.055 * ( pow(var_R, 1 / 2.4) ) - 0.055;
   } else {
     var_R = 12.92 * var_R;
   }
 
   if ( var_G > 0.0031308 ) {
-    var_G = 1.055 * ( pow(var_G, 1/2.4) ) - 0.055;
+    var_G = 1.055 * ( pow(var_G, 1 / 2.4) ) - 0.055;
   } else {
     var_G = 12.92 * var_G;
   }
 
   if ( var_B > 0.0031308 ) {
-    var_B = 1.055 * ( pow(var_B, 1/2.4) )- 0.055;
+    var_B = 1.055 * ( pow(var_B, 1 / 2.4) ) - 0.055;
   } else {
     var_B = 12.92 * var_B;
   }
@@ -403,9 +403,9 @@ void CPSD::LabToRGB(const int L, const int a, const int b, int &R, int &G, int &
 void CPSD::CMYKToRGB(const double C, const double M, const double Y, const double K, int &R, int &G,
                      int &B )
 {
-  R = dti( ( 1.0f - ( C *( 1.0f - K ) + K ) ) * 255.0f );
-  G = dti( ( 1.0f - ( M *( 1.0f - K ) + K ) ) * 255.0f );
-  B = dti( ( 1.0f - ( Y *( 1.0f - K ) + K ) ) * 255.0f );
+  R = dti( ( 1.0f - ( C * ( 1.0f - K ) + K ) ) * 255.0f );
+  G = dti( ( 1.0f - ( M * ( 1.0f - K ) + K ) ) * 255.0f );
+  B = dti( ( 1.0f - ( Y * ( 1.0f - K ) + K ) ) * 255.0f );
 };
 
 bool CPSD::ReadLayerAndMaskInfoSection(CxFile &pFile) // Actually ignore it
@@ -420,7 +420,7 @@ bool CPSD::ReadLayerAndMaskInfoSection(CxFile &pFile) // Actually ignore it
 
   unsigned char data[1];
 
-  while( !mypsd_feof( pFile ) && ( nBytesRead < nTotalBytes ) ) {
+  while ( !mypsd_feof( pFile ) && ( nBytesRead < nTotalBytes ) ) {
     data[0] = '\0';
     nItemsRead = (int)(int)mypsd_fread(&data, sizeof(data), 1, pFile);
     nBytesRead += nItemsRead * sizeof(data);
@@ -434,7 +434,7 @@ bool CPSD::ReadLayerAndMaskInfoSection(CxFile &pFile) // Actually ignore it
 
   return bSuccess;
 }
-bool CPSD::ReadImageResource(CxFile &pFile, IMAGE_RESOURCE& image_resource)
+bool CPSD::ReadImageResource(CxFile &pFile, IMAGE_RESOURCE &image_resource)
 {
   bool bSuccess = false;
 
@@ -446,7 +446,7 @@ bool CPSD::ReadImageResource(CxFile &pFile, IMAGE_RESOURCE& image_resource)
   int nBytesRead = 0;
   int nTotalBytes = image_resource.nLength;
 
-  while( !mypsd_feof( pFile ) && ( nBytesRead < nTotalBytes ) ) {
+  while ( !mypsd_feof( pFile ) && ( nBytesRead < nTotalBytes ) ) {
     nItemsRead = 0;
     image_resource.Reset();
 
@@ -493,7 +493,7 @@ bool CPSD::ReadImageResource(CxFile &pFile, IMAGE_RESOURCE& image_resource)
         unsigned char IntValue[4];
         unsigned char ShortValue[2];
 
-        switch( image_resource.nID ) {
+        switch ( image_resource.nID ) {
         case 1000: {
           // Obsolete - Photoshop 2.0
           mbResolutionInfoFilled_v2 = true;
@@ -616,18 +616,18 @@ bool CPSD::ReadImageResource(CxFile &pFile, IMAGE_RESOURCE& image_resource)
           thumbnail.nPlanes = (short)Calculate(ShortValue, sizeof(thumbnail.nPlanes) );
 
           int nTotalData = image_resource.nSize - 28; // header
-          unsigned char* buffer = new unsigned char[nTotalData];
+          unsigned char *buffer = new unsigned char[nTotalData];
           unsigned char c[1];
 
           if ( 1033 == image_resource.nID ) {
             // In BGR format
-            for (int n = 0; n < nTotalData; n = n +3 ) {
+            for (int n = 0; n < nTotalData; n = n + 3 ) {
               nItemsRead = (int)mypsd_fread(&c, sizeof(unsigned char), 1, pFile);
               nBytesRead += nItemsRead * sizeof(unsigned char);
-              buffer[n+2] = (unsigned char)Calculate(c, sizeof(unsigned char) );
+              buffer[n + 2] = (unsigned char)Calculate(c, sizeof(unsigned char) );
               nItemsRead = (int)mypsd_fread(&c, sizeof(unsigned char), 1, pFile);
               nBytesRead += nItemsRead * sizeof(unsigned char);
-              buffer[n+1] = (unsigned char)Calculate(c, sizeof(BYTE) );
+              buffer[n + 1] = (unsigned char)Calculate(c, sizeof(BYTE) );
               nItemsRead = (int)mypsd_fread(&c, sizeof(unsigned char), 1, pFile);
               nBytesRead += nItemsRead * sizeof(unsigned char);
               buffer[n] = (unsigned char)Calculate(c, sizeof(unsigned char) );
@@ -684,7 +684,7 @@ bool CPSD::ReadImageResource(CxFile &pFile, IMAGE_RESOURCE& image_resource)
 
   return bSuccess;
 }
-bool CPSD::ReadColourModeData(CxFile &pFile, COLOUR_MODE_DATA& colour_mode_data)
+bool CPSD::ReadColourModeData(CxFile &pFile, COLOUR_MODE_DATA &colour_mode_data)
 {
   // Only indexed colour and duotone have colour mode data,
   // for all other modes this section is 4 bytes length, the length field is set to zero
@@ -722,7 +722,7 @@ bool CPSD::ReadColourModeData(CxFile &pFile, COLOUR_MODE_DATA& colour_mode_data)
   return true;
 }
 
-bool CPSD::ReadHeader(CxFile &pFile, HEADER_INFO& header_info)
+bool CPSD::ReadHeader(CxFile &pFile, HEADER_INFO &header_info)
 {
   bool bSuccess = false;
 
@@ -776,7 +776,7 @@ bool CPSD::ReadHeader(CxFile &pFile, HEADER_INFO& header_info)
 }
 
 
-void CPSD::ProccessBuffer(unsigned char* pData )
+void CPSD::ProccessBuffer(unsigned char *pData )
 {
   if (!pData) {
     return;
@@ -1057,7 +1057,7 @@ int CPSD::DecodeRawData( CxFile &pFile)
   int nPixels = nWidth * nHeight;
   int nTotalBytes = 0;
 
-  byte* pData = NULL;
+  byte *pData = NULL;
 
   switch ( header_info.nColourMode ) {
   case 1: // Grayscale
@@ -1119,7 +1119,7 @@ int CPSD::DecodeRawData( CxFile &pFile)
 }
 
 
-int CPSD::DecodeRLEData(CxFile & pFile)
+int CPSD::DecodeRLEData(CxFile &pFile)
 {
   if (header_info.nBitsPerPixel != 8) {
     return -7;  // can't read this
@@ -1158,7 +1158,7 @@ int CPSD::DecodeRLEData(CxFile & pFile)
   // allocate buffer for raw data (RRRRRRR...RRRGGGGG...GGGGGGBBBBB...BBBBBAAAAA....AAAAA) it has the same size as the final buffer
   // and the perform RLE-decoding
   int nTotalBytes = nPixels * header_info.nChannels;
-  byte* pRawData = new byte[nTotalBytes];
+  byte *pRawData = new byte[nTotalBytes];
   byte *pRLESource = pRLEData, *pRLEDest = pRawData;
 
   for (int channel = 0; channel < header_info.nChannels; channel++) {
@@ -1195,7 +1195,7 @@ int CPSD::DecodeRLEData(CxFile & pFile)
   byte *pData = new byte[nTotalBytes];
   int nPixelCounter = 0;
 
-  for( int nColour = 0; nColour < header_info.nChannels; ++nColour ) {
+  for ( int nColour = 0; nColour < header_info.nChannels; ++nColour ) {
     nPixelCounter = nColour;
 
     for (int nPos = 0; nPos < nPixels; nPos++, pRawSource++) {
@@ -1356,12 +1356,12 @@ CPSD::THUMBNAIL::THUMBNAIL()
 ////////////////////////////////////////////////////////////////////////////////
 bool CxImagePSD::Decode(CxFile *hFile)
 {
-  if (hFile==NULL) {
+  if (hFile == NULL) {
     return false;
   }
 
 #if CXIMAGE_USE_LIBPSD
-  psd_context* context = NULL;
+  psd_context *context = NULL;
 #endif
 
   cx_try {
@@ -1371,7 +1371,7 @@ bool CxImagePSD::Decode(CxFile *hFile)
 
     context = (psd_context *)malloc(sizeof(psd_context));
 
-    if(context == NULL)
+    if (context == NULL)
     {
       cx_throw("CxImagePSD: psd_status_malloc_failed");
     }
@@ -1379,26 +1379,26 @@ bool CxImagePSD::Decode(CxFile *hFile)
     memset(context, 0, sizeof(psd_context));
 
     // install file manager
-    CxFilePsd src(hFile,context);
+    CxFilePsd src(hFile, context);
 
     context->state = PSD_FILE_HEADER;
     context->stream.file_length = hFile->Size();
     context->load_tag = psd_load_tag_all;
     status = psd_main_loop(context);
 
-    if(status != psd_status_done)
+    if (status != psd_status_done)
     {
       cx_throw("CxImagePSD: psd_main_loop failed");
     }
 
-    Create(context->width,context->height,24,CXIMAGE_FORMAT_PSD);
+    Create(context->width, context->height, 24, CXIMAGE_FORMAT_PSD);
 
-    uint8_t* rgba = (uint8_t*)context->merged_image_data;
-    uint8_t* alpha = NULL;
+    uint8_t *rgba = (uint8_t *)context->merged_image_data;
+    uint8_t *alpha = NULL;
 
     if (context->alpha_channel_info)
     {
-      alpha = (uint8_t*)context->alpha_channel_info->channel_data;
+      alpha = (uint8_t *)context->alpha_channel_info->channel_data;
     }
 
     if (alpha)
@@ -1406,23 +1406,23 @@ bool CxImagePSD::Decode(CxFile *hFile)
       AlphaCreate();
     }
 
-    int32_t x,y;
+    int32_t x, y;
     RGBQUAD c;
     c.rgbReserved = 0;
 
     if (rgba)
     {
-      for(y =context->height-1; y--;) {
-        for (x=0; x<context->width; x++) {
+      for (y = context->height - 1; y--;) {
+        for (x = 0; x < context->width; x++) {
           c.rgbBlue  = *rgba++;
           c.rgbGreen = *rgba++;
           c.rgbRed   = *rgba++;
           rgba++;
-          SetPixelColor(x,y,c);
+          SetPixelColor(x, y, c);
 #if CXIMAGE_SUPPORT_ALPHA
 
           if (alpha) {
-            AlphaSet(x,y,*alpha++);
+            AlphaSet(x, y, *alpha++);
           }
 
 #endif //CXIMAGE_SUPPORT_ALPHA
@@ -1457,9 +1457,9 @@ bool CxImagePSD::Decode(CxFile *hFile)
 
 #endif //CXIMAGE_USE_LIBPSD
 
-    if (strcmp(message,""))
+    if (strcmp(message, ""))
     {
-      strncpy(info.szLastError,message,255);
+      strncpy(info.szLastError, message, 255);
     }
 
     if (info.nEscape == -1 && info.dwType == CXIMAGE_FORMAT_PSD)
@@ -1478,7 +1478,7 @@ bool CxImagePSD::Decode(CxFile *hFile)
 ////////////////////////////////////////////////////////////////////////////////
 #if CXIMAGE_SUPPORT_ENCODE
 ////////////////////////////////////////////////////////////////////////////////
-bool CxImagePSD::Encode(CxFile * hFile)
+bool CxImagePSD::Encode(CxFile *hFile)
 {
   if (hFile == NULL) {
     return false;

@@ -6,9 +6,7 @@
 ** Bitmap Font Builder
 */
 
-
-#ifndef HGEGUIRANGE_H
-#define HGEGUIRANGE_H
+#pragma once
 
 #include "../../include/hgegui.h"
 #include "../../include/hgesprite.h"
@@ -32,12 +30,9 @@ public:
 private:
   int       calc_point(float x, float y);
 
-  hgeSprite*    spr;
+  hgeSprite    *spr;
   int       nrows, ncols;
   int       nfirst, nlast;
   float     mx, my;
   bool      bPressed;
 };
-
-
-#endif //HGEGUIRANGE_H

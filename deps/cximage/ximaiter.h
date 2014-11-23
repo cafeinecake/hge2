@@ -38,13 +38,13 @@ class CImageIterator {
 protected:
   int32_t Itx, Ity;   // Counters
   int32_t Stepx, Stepy;
-  uint8_t* IterImage; //  Image pointer
+  uint8_t *IterImage; //  Image pointer
   CxImage *ima;
 public:
   // Constructors
   CImageIterator ( void );
   CImageIterator ( CxImage *image );
-  operator CxImage* ();
+  operator CxImage *();
 
   // Iterators
   BOOL ItOK ();
@@ -60,14 +60,14 @@ public:
   {
     IterImage[Itx] = b;
   }
-  uint8_t* GetRow(void);
-  uint8_t* GetRow(int32_t n);
+  uint8_t *GetRow(void);
+  uint8_t *GetRow(int32_t n);
   BOOL NextRow();
   BOOL PrevRow();
   BOOL NextByte();
   BOOL PrevByte();
 
-  void SetSteps(int32_t x, int32_t y=0)
+  void SetSteps(int32_t x, int32_t y = 0)
   {
     Stepx = x;
     Stepy = y;
@@ -85,8 +85,8 @@ public:
   {
     return Ity;
   }
-  BOOL GetCol(uint8_t* pCol, uint32_t x);
-  BOOL SetCol(uint8_t* pCol, uint32_t x);
+  BOOL GetCol(uint8_t *pCol, uint32_t x);
+  BOOL SetCol(uint8_t *pCol, uint32_t x);
 };
 
 /////////////////////////////////////////////////////////////////////
@@ -111,7 +111,7 @@ CImageIterator::CImageIterator(CxImage *imageImpl): ima(imageImpl)
 }
 /////////////////////////////////////////////////////////////////////
 inline
-CImageIterator::operator CxImage* ()
+CImageIterator::operator CxImage *()
 {
   return ima;
 }
@@ -130,7 +130,7 @@ inline void CImageIterator::Reset()
   if (ima) {
     IterImage = ima->GetBits();
   } else {
-    IterImage=0;
+    IterImage = 0;
   }
 
   Itx = Ity = 0;
@@ -139,8 +139,8 @@ inline void CImageIterator::Reset()
 inline void CImageIterator::Upset()
 {
   Itx = 0;
-  Ity = static_cast<int32_t>(ima->GetHeight()-1);
-  IterImage = ima->GetBits() + ima->GetEffWidth()*(ima->GetHeight()-1);
+  Ity = static_cast<int32_t>(ima->GetHeight() - 1);
+  IterImage = ima->GetBits() + ima->GetEffWidth() * (ima->GetHeight() - 1);
 }
 /////////////////////////////////////////////////////////////////////
 inline BOOL CImageIterator::NextRow()
@@ -175,20 +175,20 @@ inline void CImageIterator::SetY(int32_t y)
 /////////////////////////////////////////////////////////////////////
 inline void CImageIterator::SetRow(uint8_t *buf, int32_t n)
 {
-  if (n<0) {
+  if (n < 0) {
     n = static_cast<int32_t>(ima->GetEffWidth());
   } else {
     n = std::min(n, static_cast<int32_t>(ima->GetEffWidth()));
   }
 
-  if ((IterImage!=NULL)&&(buf!=NULL)&&(n>0)) {
+  if ((IterImage != NULL) && (buf != NULL) && (n > 0)) {
     memcpy(IterImage, buf, static_cast<size_t>(n));
   }
 }
 /////////////////////////////////////////////////////////////////////
 inline void CImageIterator::GetRow(uint8_t *buf, int32_t n)
 {
-  if ((IterImage!=NULL)&&(buf!=NULL)&&(n>0)) {
+  if ((IterImage != NULL) && (buf != NULL) && (n > 0)) {
     memcpy(buf,
            IterImage,
            std::min(static_cast<uint32_t>(n),
@@ -197,12 +197,12 @@ inline void CImageIterator::GetRow(uint8_t *buf, int32_t n)
   }
 }
 /////////////////////////////////////////////////////////////////////
-inline uint8_t* CImageIterator::GetRow()
+inline uint8_t *CImageIterator::GetRow()
 {
   return IterImage;
 }
 /////////////////////////////////////////////////////////////////////
-inline uint8_t* CImageIterator::GetRow(int32_t n)
+inline uint8_t *CImageIterator::GetRow(int32_t n)
 {
   SetY(n);
   return IterImage;
@@ -272,44 +272,44 @@ inline BOOL CImageIterator::PrevStep()
   }
 }
 /////////////////////////////////////////////////////////////////////
-inline BOOL CImageIterator::GetCol(uint8_t* pCol, uint32_t x)
+inline BOOL CImageIterator::GetCol(uint8_t *pCol, uint32_t x)
 {
-  if ((pCol==0)||(ima->GetBpp()<8)||(x>=ima->GetWidth())) {
+  if ((pCol == 0) || (ima->GetBpp() < 8) || (x >= ima->GetWidth())) {
     return 0;
   }
 
   uint32_t h = ima->GetHeight();
   //uint32_t line = ima->GetEffWidth();
-  uint8_t bytes = static_cast<uint8_t>(ima->GetBpp()>>3);
-  uint8_t* pSrc;
+  uint8_t bytes = static_cast<uint8_t>(ima->GetBpp() >> 3);
+  uint8_t *pSrc;
 
-  for (uint32_t y=0; y<h; y++) {
-    pSrc = ima->GetBits(y) + x*bytes;
+  for (uint32_t y = 0; y < h; y++) {
+    pSrc = ima->GetBits(y) + x * bytes;
 
-    for (uint8_t w=0; w<bytes; w++) {
-      *pCol++=*pSrc++;
+    for (uint8_t w = 0; w < bytes; w++) {
+      *pCol++ = *pSrc++;
     }
   }
 
   return 1;
 }
 /////////////////////////////////////////////////////////////////////
-inline BOOL CImageIterator::SetCol(uint8_t* pCol, uint32_t x)
+inline BOOL CImageIterator::SetCol(uint8_t *pCol, uint32_t x)
 {
-  if ((pCol==0)||(ima->GetBpp()<8)||(x>=ima->GetWidth())) {
+  if ((pCol == 0) || (ima->GetBpp() < 8) || (x >= ima->GetWidth())) {
     return 0;
   }
 
   uint32_t h = ima->GetHeight();
   //uint32_t line = ima->GetEffWidth();
-  uint8_t bytes = static_cast<uint8_t>(ima->GetBpp()>>3);
-  uint8_t* pSrc;
+  uint8_t bytes = static_cast<uint8_t>(ima->GetBpp() >> 3);
+  uint8_t *pSrc;
 
-  for (uint32_t y=0; y<h; y++) {
-    pSrc = ima->GetBits(y) + x*bytes;
+  for (uint32_t y = 0; y < h; y++) {
+    pSrc = ima->GetBits(y) + x * bytes;
 
-    for (uint8_t w=0; w<bytes; w++) {
-      *pSrc++=*pCol++;
+    for (uint8_t w = 0; w < bytes; w++) {
+      *pSrc++ = *pCol++;
     }
   }
 

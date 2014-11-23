@@ -1,25 +1,23 @@
-
-
 #include "texasm.h"
 #include <libpng/png.h>
 
 class PNGError {};
 
-void WarningCallback(png_structp png_ptr,
+static void WarningCallback(png_structp /*png_ptr*/,
                      png_const_charp msg)
 {
   SysLog("LIBPNG Warning: %s\n", msg);
 }
 
-void ErrorCallback(png_structp png_ptr,
-                   png_const_charp msg)
+static void HGE_NORETURN ErrorCallback(png_structp /*png_ptr*/,
+                                       png_const_charp msg)
 {
   SysLog("LIBPNG Error: %s\n", msg);
   throw PNGError();
 }
 
-bool Write32BitPNGWithPitch(FILE* fp, void* pBits, bool bNeedAlpha, int nWidth, int nHeight,
-                            int nPitch)
+bool Write32BitPNGWithPitch(FILE *fp, void *pBits, bool bNeedAlpha,
+                            int nWidth, int nHeight, int nPitch)
 {
   png_structp png_ptr = 0;
   png_infop info_ptr = 0;
@@ -45,13 +43,17 @@ bool Write32BitPNGWithPitch(FILE* fp, void* pBits, bool bNeedAlpha, int nWidth, 
 
     //  setup params
     if ( bNeedAlpha ) {
-      png_set_IHDR( png_ptr, info_ptr, nWidth, nHeight,
+      png_set_IHDR( png_ptr, info_ptr,
+                    static_cast<uint32_t>(nWidth),
+                    static_cast<uint32_t>(nHeight),
                     8,
                     PNG_COLOR_TYPE_RGB_ALPHA,
                     PNG_INTERLACE_NONE,
                     PNG_COMPRESSION_TYPE_DEFAULT, PNG_FILTER_TYPE_DEFAULT);
     } else {
-      png_set_IHDR( png_ptr, info_ptr, nWidth, nHeight,
+      png_set_IHDR( png_ptr, info_ptr,
+                    static_cast<uint32_t>(nWidth),
+                    static_cast<uint32_t>(nHeight),
                     8,
                     PNG_COLOR_TYPE_RGB,
                     PNG_INTERLACE_NONE,
@@ -67,14 +69,14 @@ bool Write32BitPNGWithPitch(FILE* fp, void* pBits, bool bNeedAlpha, int nWidth, 
     png_set_bgr(png_ptr); //  switch to little-endian notation
 
     //  writing
-    unsigned char* pSrc = (unsigned char*)pBits;
+    unsigned char *pSrc = reinterpret_cast<unsigned char *>(pBits);
 
-    for ( int i = 0; i < nHeight; i++, pSrc += nPitch*4 ) {
+    for ( int i = 0; i < nHeight; i++, pSrc += nPitch * 4 ) {
       png_write_row( png_ptr, pSrc );
     }
 
     png_write_end(png_ptr, info_ptr);
-  } catch(PNGError) {
+  } catch (PNGError) {
     png_destroy_write_struct(&png_ptr, (info_ptr == 0) ? NULL : &info_ptr);
     return false;
   }

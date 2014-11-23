@@ -127,7 +127,7 @@ public:
 //  bool Load(const TCHAR * imageFileName){ return CxImage::Load(imageFileName,CXIMAGE_FORMAT_GIF);}
 //  bool Save(const TCHAR * imageFileName){ return CxImage::Save(imageFileName,CXIMAGE_FORMAT_GIF);}
 
-  bool Decode(CxFile * fp);
+  bool Decode(CxFile *fp);
   bool Decode(FILE *fp)
   {
     CxIOFile file(fp);
@@ -135,15 +135,15 @@ public:
   }
 
 #if CXIMAGE_SUPPORT_ENCODE
-  bool Encode(CxFile * fp);
-  bool Encode(CxFile * fp, CxImage ** pImages, int32_t pagecount, bool bLocalColorMap = false,
+  bool Encode(CxFile *fp);
+  bool Encode(CxFile *fp, CxImage **pImages, int32_t pagecount, bool bLocalColorMap = false,
               bool bLocalDispMeth = false);
   bool Encode(FILE *fp)
   {
     CxIOFile file(fp);
     return Encode(&file);
   }
-  bool Encode(FILE *fp, CxImage ** pImages, int32_t pagecount, bool bLocalColorMap = false)
+  bool Encode(FILE *fp, CxImage **pImages, int32_t pagecount, bool bLocalColorMap = false)
   {
     CxIOFile file(fp);
     return Encode(&file, pImages, pagecount, bLocalColorMap);
@@ -152,8 +152,8 @@ public:
 
   void SetLoops(int32_t loops);
   int32_t GetLoops();
-  void SetComment(const char* sz_comment_in);
-  void GetComment(char* sz_comment_out);
+  void SetComment(const char *sz_comment_in);
+  void GetComment(char *sz_comment_out);
 
 protected:
   bool DecodeExtension(CxFile *fp);
@@ -163,7 +163,7 @@ protected:
   void EncodeBody(CxFile *fp, bool bLocalColorMap = false);
   void EncodeComment(CxFile *fp);
   bool EncodeRGB(CxFile *fp);
-  void GifMix(CxImage & imgsrc2, struct_image & imgdesc);
+  void GifMix(CxImage &imgsrc2, struct_image &imgdesc);
 
   struct_gifgce gifgce;
 
@@ -174,23 +174,23 @@ protected:
   int32_t interlaced, iypos, istep, iheight, ipass;
   int32_t ibf;
   int32_t ibfmax;
-  uint8_t * m_buf;
+  uint8_t *m_buf;
 // Implementation
   int32_t GifNextPixel ();
-  void Putword (int32_t w, CxFile* fp );
-  void compressNONE (int32_t init_bits, CxFile* outfile);
-  void compressLZW (int32_t init_bits, CxFile* outfile);
+  void Putword (int32_t w, CxFile *fp );
+  void compressNONE (int32_t init_bits, CxFile *outfile);
+  void compressLZW (int32_t init_bits, CxFile *outfile);
   void output (code_int code );
   void cl_hash (int32_t hsize);
   void char_out (int32_t c);
   void flush_char ();
   int16_t init_exp(int16_t size);
-  int16_t get_next_code(CxFile*);
-  int16_t decoder(CxFile*, CImageIterator* iter, int16_t linewidth, int32_t &bad_code_count);
-  int32_t get_byte(CxFile*);
-  int32_t out_line(CImageIterator* iter, uint8_t *pixels, int32_t linelen);
-  int32_t get_num_frames(CxFile *f,struct_TabCol* TabColSrc,struct_dscgif* dscgif);
-  int32_t seek_next_image(CxFile* fp, int32_t position);
+  int16_t get_next_code(CxFile *);
+  int16_t decoder(CxFile *, CImageIterator *iter, int16_t linewidth, int32_t &bad_code_count);
+  int32_t get_byte(CxFile *);
+  int32_t out_line(CImageIterator *iter, uint8_t *pixels, int32_t linelen);
+  int32_t get_num_frames(CxFile *f, struct_TabCol *TabColSrc, struct_dscgif *dscgif);
+  int32_t seek_next_image(CxFile *fp, int32_t position);
 
   int16_t curr_size;                     /* The current code size */
   int16_t clear;                         /* Value for a clear code */
@@ -204,7 +204,7 @@ protected:
   int16_t navail_bytes;              /* # bytes left in block */
   int16_t nbits_left;                /* # bits left in current uint8_t */
   uint8_t b1;                           /* Current uint8_t */
-  uint8_t * byte_buff;               /* Current block */
+  uint8_t *byte_buff;                /* Current block */
   uint8_t *pbytes;                      /* Pointer to next uint8_t in block */
   /* The reason we have these seperated like this instead of using
   * a structure like the original Wilhite code did, is because this
@@ -213,44 +213,44 @@ protected:
   * C for speed or for space optomisation, see Efficient C by Tom Plum,
   * published by Plum-Hall Associates...)
   */
-  uint8_t * stack;            /* Stack for storing pixels */
-  uint8_t * suffix;           /* Suffix table */
-  uint16_t * prefix;           /* Prefix linked list */
+  uint8_t *stack;             /* Stack for storing pixels */
+  uint8_t *suffix;            /* Suffix table */
+  uint16_t *prefix;            /* Prefix linked list */
 
 //LZW GIF Image compression routines
-  int32_t * htab;
-  uint16_t * codetab;
+  int32_t *htab;
+  uint16_t *codetab;
   int32_t n_bits;       /* number of bits/code */
   code_int maxcode;   /* maximum code, given n_bits */
   code_int free_ent;    /* first unused entry */
   int32_t clear_flg;
   int32_t g_init_bits;
-  CxFile* g_outfile;
+  CxFile *g_outfile;
   int32_t ClearCode;
   int32_t EOFCode;
 
   int32_t a_count;
-  char * accum;
+  char *accum;
 
-  char * m_comment;
+  char *m_comment;
   int32_t m_loops;
 
 //RLE compression routines
-  void compressRLE( int32_t init_bits, CxFile* outfile);
-  void rle_clear(struct_RLE* rle);
-  void rle_flush(struct_RLE* rle);
-  void rle_flush_withtable(int32_t count, struct_RLE* rle);
-  void rle_flush_clearorrep(int32_t count, struct_RLE* rle);
-  void rle_flush_fromclear(int32_t count,struct_RLE* rle);
-  void rle_output_plain(int32_t c,struct_RLE* rle);
-  void rle_reset_out_clear(struct_RLE* rle);
+  void compressRLE( int32_t init_bits, CxFile *outfile);
+  void rle_clear(struct_RLE *rle);
+  void rle_flush(struct_RLE *rle);
+  void rle_flush_withtable(int32_t count, struct_RLE *rle);
+  void rle_flush_clearorrep(int32_t count, struct_RLE *rle);
+  void rle_flush_fromclear(int32_t count, struct_RLE *rle);
+  void rle_output_plain(int32_t c, struct_RLE *rle);
+  void rle_reset_out_clear(struct_RLE *rle);
   uint32_t rle_compute_triangle_count(uint32_t count, uint32_t nrepcodes);
   uint32_t rle_isqrt(uint32_t x);
-  void rle_write_block(struct_RLE* rle);
-  void rle_block_out(uint8_t c, struct_RLE* rle);
-  void rle_block_flush(struct_RLE* rle);
-  void rle_output(int32_t val, struct_RLE* rle);
-  void rle_output_flush(struct_RLE* rle);
+  void rle_write_block(struct_RLE *rle);
+  void rle_block_out(uint8_t c, struct_RLE *rle);
+  void rle_block_flush(struct_RLE *rle);
+  void rle_output(int32_t val, struct_RLE *rle);
+  void rle_output_flush(struct_RLE *rle);
 };
 
 #endif

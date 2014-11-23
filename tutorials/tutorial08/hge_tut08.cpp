@@ -27,8 +27,8 @@
 
 // Pointer to the HGE interface (helper classes require this to work)
 
-HGE     *hge=0;
-hgeFont   *fnt=0;
+static HGE     *hge = 0;
+static hgeFont   *fnt = 0;
 
 // Simulation constants
 
@@ -41,57 +41,59 @@ hgeFont   *fnt=0;
 #define STARS_HEIGHT  (SKY_HEIGHT*0.9f)
 #define ORBITS_RADIUS (SCREEN_WIDTH*0.43f)
 
-uint32_t skyTopColors[] = {0xFF15092A, 0xFF6C6480, 0xFF89B9D0};
-uint32_t skyBtmColors[] = {0xFF303E57, 0xFFAC7963, 0xFFCAD7DB};
-uint32_t seaTopColors[] = {0xFF3D546B, 0xFF927E76, 0xFF86A2AD};
-uint32_t seaBtmColors[] = {0xFF1E394C, 0xFF2F4E64, 0xFF2F4E64};
+static uint32_t skyTopColors[] = {0xFF15092A, 0xFF6C6480, 0xFF89B9D0};
+static uint32_t skyBtmColors[] = {0xFF303E57, 0xFFAC7963, 0xFFCAD7DB};
+static uint32_t seaTopColors[] = {0xFF3D546B, 0xFF927E76, 0xFF86A2AD};
+static uint32_t seaBtmColors[] = {0xFF1E394C, 0xFF2F4E64, 0xFF2F4E64};
 
-int seq[]= {0, 0, 1, 2, 2, 2, 1, 0, 0};
+static int seq[] = {0, 0, 1, 2, 2, 2, 1, 0, 0};
 
 // Simulation resource handles
 
-HTEXTURE  texObjects;
+static HTEXTURE  texObjects;
 
-hgeSprite *sky;
-hgeSprite *sun;
-hgeSprite *moon;
-hgeSprite *glow;
-hgeSprite *seaglow;
-hgeSprite *star;
+static hgeSprite *sky;
+static hgeSprite *sun;
+static hgeSprite *moon;
+static hgeSprite *glow;
+static hgeSprite *seaglow;
+static hgeSprite *star;
 
-hgeDistortionMesh *sea;
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wglobal-constructors"
+static hgeColor colWhite;
+static hgeColor colSkyTop;
+static hgeColor colSkyBtm;
+static hgeColor colSeaTop;
+static hgeColor colSeaBtm;
 
-hgeColor  colWhite;
+static hgeColor colSun;
+static hgeColor colSunGlow;
+static hgeColor colMoon;
+static hgeColor colMoonGlow;
+static hgeColor colSeaGlow;
+#pragma clang diagnostic pop
+
+static hgeDistortionMesh *sea;
 
 // Simulation state variables
 
-float timet;    // 0-24 hrs
-float speed;  // hrs per second
+static float timet;    // 0-24 hrs
+static float speed;  // hrs per second
 
-int   seq_id;
-float seq_residue;
+static int   seq_id;
+static float seq_residue;
 
-float starX[NUM_STARS];  // x
-float starY[NUM_STARS];  // y
-float starS[NUM_STARS];  // scale
-float starA[NUM_STARS];  // alpha
+static float starX[NUM_STARS];  // x
+static float starY[NUM_STARS];  // y
+static float starS[NUM_STARS];  // scale
+static float starA[NUM_STARS];  // alpha
 
-float seaP[SEA_SUBDIVISION]; // phase shift array
+static float seaP[SEA_SUBDIVISION]; // phase shift array
 
-hgeColor colSkyTop;
-hgeColor colSkyBtm;
-hgeColor colSeaTop;
-hgeColor colSeaBtm;
-
-hgeColor colSun;
-hgeColor colSunGlow;
-hgeColor colMoon;
-hgeColor colMoonGlow;
-hgeColor colSeaGlow;
-
-float sunX, sunY, sunS, sunGlowS;
-float moonX, moonY, moonS, moonGlowS;
-float seaGlowX, seaGlowSX, seaGlowSY;
+static float sunX, sunY, sunS, sunGlowS;
+static float moonX, moonY, moonS, moonGlowS;
+static float seaGlowX, seaGlowSX, seaGlowSY;
 
 // Simulation methods
 
@@ -104,49 +106,49 @@ void RenderSimulation();
 ///////////////////////// Implementation ///////////////////////////
 
 
-bool FrameFunc()
+static bool FrameFunc()
 {
   // Process keys
 
-  switch(hge->Input_GetKey()) {
+  switch (hge->Input_GetKey()) {
   case HGEK_0:
-    speed=0.0f;
+    speed = 0.0f;
     break;
 
   case HGEK_1:
-    speed=0.1f;
+    speed = 0.1f;
     break;
 
   case HGEK_2:
-    speed=0.2f;
+    speed = 0.2f;
     break;
 
   case HGEK_3:
-    speed=0.4f;
+    speed = 0.4f;
     break;
 
   case HGEK_4:
-    speed=0.8f;
+    speed = 0.8f;
     break;
 
   case HGEK_5:
-    speed=1.6f;
+    speed = 1.6f;
     break;
 
   case HGEK_6:
-    speed=3.2f;
+    speed = 3.2f;
     break;
 
   case HGEK_7:
-    speed=6.4f;
+    speed = 6.4f;
     break;
 
   case HGEK_8:
-    speed=12.8f;
+    speed = 12.8f;
     break;
 
   case HGEK_9:
-    speed=25.6f;
+    speed = 25.6f;
     break;
 
   case HGEK_ESCAPE:
@@ -161,17 +163,17 @@ bool FrameFunc()
 }
 
 
-bool RenderFunc()
+static bool RenderFunc()
 {
   int hrs, mins, secs;
   float tmp;
 
   // Calculate display time
 
-  hrs=(int)floorf(timet);
-  tmp=(timet-hrs)*60.0f;
-  mins=(int)floorf(tmp);
-  secs=(int)floorf((tmp-mins)*60.0f);
+  hrs = static_cast<int>(floorf(timet));
+  tmp = (timet - hrs) * 60.0f;
+  mins = static_cast<int>(floorf(tmp));
+  secs = static_cast<int>(floorf((tmp - mins) * 60.0f));
 
   // Render scene
 
@@ -179,7 +181,7 @@ bool RenderFunc()
   RenderSimulation();
   fnt->printf(7, 7, HGETEXT_LEFT, "Keys 1-9 to adjust simulation speed, 0 - real time\nFPS: %d",
               hge->Timer_GetFPS());
-  fnt->printf(SCREEN_WIDTH-50, 7, HGETEXT_LEFT, "%02d:%02d:%02d", hrs, mins, secs);
+  fnt->printf(SCREEN_WIDTH - 50, 7, HGETEXT_LEFT, "%02d:%02d:%02d", hrs, mins, secs);
   hge->Gfx_EndScene();
 
   return false;
@@ -187,7 +189,7 @@ bool RenderFunc()
 
 
 #ifdef PLATFORM_UNIX
-int main(int argc, char *argv[])
+int main(int /*argc*/, char * /*argv*/ [])
 #else
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 #endif
@@ -206,10 +208,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
   hge->System_SetState(HGE_SCREENHEIGHT, SCREEN_HEIGHT);
   hge->System_SetState(HGE_SCREENBPP, 32);
 
-  if(hge->System_Initiate()) {
-    fnt=new hgeFont("font2.fnt");
+  if (hge->System_Initiate()) {
+    fnt = new hgeFont("font2.fnt");
 
-    if(!InitSimulation()) {
+    if (!InitSimulation()) {
       // If one of the data files is not found, display an error message and shutdown
 #ifdef PLATFORM_UNIX
       fprintf(stderr, "Error: Can't load resources. See log for details.\n");
@@ -234,18 +236,18 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 }
 
 
-float GetTime()
+static float GetTime()
 {
 #ifdef PLATFORM_UNIX
   struct tm *t = 0;
-  time_t tt= time(NULL);
+  time_t tt = time(NULL);
   t = localtime(&tt);
   float tmp = 0;
 
-  if(t) {
-    tmp=t->tm_sec;
-    tmp=t->tm_min+tmp/60.0f;
-    tmp=t->tm_hour+tmp/60.0f;
+  if (t) {
+    tmp = t->tm_sec;
+    tmp = t->tm_min + tmp / 60.0f;
+    tmp = t->tm_hour + tmp / 60.0f;
   }
 
 #else
@@ -253,9 +255,9 @@ float GetTime()
   float tmp;
 
   GetLocalTime(&SysTime);
-  tmp=SysTime.wSecond;
-  tmp=SysTime.wMinute+tmp/60.0f;
-  tmp=SysTime.wHour+tmp/60.0f;
+  tmp = SysTime.wSecond;
+  tmp = SysTime.wMinute + tmp / 60.0f;
+  tmp = SysTime.wHour + tmp / 60.0f;
 #endif
 
   return tmp;
@@ -266,46 +268,45 @@ bool InitSimulation()
 {
   // Load texture
 
-  texObjects=hge->Texture_Load("objects.png");
+  texObjects = hge->Texture_Load("objects.png");
 
-  if(!texObjects) {
+  if (!texObjects) {
     return false;
   }
 
   // Create sprites
 
-  sky=new hgeSprite(0, 0, 0, SCREEN_WIDTH, SKY_HEIGHT);
-  sea=new hgeDistortionMesh(SEA_SUBDIVISION, SEA_SUBDIVISION);
-  sea->SetTextureRect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT-SKY_HEIGHT);
+  sky = new hgeSprite(0, 0, 0, SCREEN_WIDTH, SKY_HEIGHT);
+  sea = new hgeDistortionMesh(SEA_SUBDIVISION, SEA_SUBDIVISION);
+  sea->SetTextureRect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT - SKY_HEIGHT);
 
-  sun=new hgeSprite(texObjects,81,0,114,114);
-  sun->SetHotSpot(57,57);
-  moon=new hgeSprite(texObjects,0,0,81,81);
-  moon->SetHotSpot(40,40);
-  star=new hgeSprite(texObjects,72,81,9,9);
-  star->SetHotSpot(5,5);
+  sun = new hgeSprite(texObjects, 81, 0, 114, 114);
+  sun->SetHotSpot(57, 57);
+  moon = new hgeSprite(texObjects, 0, 0, 81, 81);
+  moon->SetHotSpot(40, 40);
+  star = new hgeSprite(texObjects, 72, 81, 9, 9);
+  star->SetHotSpot(5, 5);
 
-  glow=new hgeSprite(texObjects,128,128,128,128);
-  glow->SetHotSpot(64,64);
+  glow = new hgeSprite(texObjects, 128, 128, 128, 128);
+  glow->SetHotSpot(64, 64);
   glow->SetBlendMode(BLEND_COLORADD | BLEND_ALPHABLEND | BLEND_NOZWRITE);
-  seaglow=new hgeSprite(texObjects,128,224,128,32);
-  seaglow->SetHotSpot(64,0);
+  seaglow = new hgeSprite(texObjects, 128, 224, 128, 32);
+  seaglow->SetHotSpot(64, 0);
   seaglow->SetBlendMode(BLEND_COLORADD | BLEND_ALPHAADD | BLEND_NOZWRITE);
 
   // Initialize simulation state
-
   colWhite.SetHWColor(0xFFFFFFFF);
-  timet=GetTime();
-  speed=0.0f;
+  timet = GetTime();
+  speed = 0.0f;
 
-  for(int i=0; i<NUM_STARS; i++) { // star positions
-    starX[i]=hge->Random_Float(0, SCREEN_WIDTH);
-    starY[i]=hge->Random_Float(0, STARS_HEIGHT);
-    starS[i]=hge->Random_Float(0.1f, 0.7f);
+  for (int i = 0; i < NUM_STARS; i++) { // star positions
+    starX[i] = hge->Random_Float(0, SCREEN_WIDTH);
+    starY[i] = hge->Random_Float(0, STARS_HEIGHT);
+    starS[i] = hge->Random_Float(0.1f, 0.7f);
   }
 
-  for(int i=0; i<SEA_SUBDIVISION; i++) { // sea waves phase shifts
-    seaP[i]=i+hge->Random_Float(-15.0f, 15.0f);
+  for (int i = 0; i < SEA_SUBDIVISION; i++) { // sea waves phase shifts
+    seaP[i] = i + hge->Random_Float(-15.0f, 15.0f);
   }
 
   // Systems are ready now!
@@ -337,222 +338,222 @@ void UpdateSimulation()
 {
   int i, j, k;
   float zenith, a, dy, fTime;
-  float posX, s1, s2;
-  const float cellw=SCREEN_WIDTH/(SEA_SUBDIVISION-1);
+  float posX = 0.f, s1, s2;
+  const float cellw = SCREEN_WIDTH / (SEA_SUBDIVISION - 1);
   hgeColor col1, col2;
   uint32_t dwCol1, dwCol2;
 
   // Update time of day
 
-  if(speed==0.0f) {
-    timet=GetTime();
+  if (speed == 0.0f) {
+    timet = GetTime();
   } else {
-    timet+=hge->Timer_GetDelta()*speed;
+    timet += hge->Timer_GetDelta() * speed;
 
-    if(timet>=24.0f) {
-      timet-=24.0f;
+    if (timet >= 24.0f) {
+      timet -= 24.0f;
     }
   }
 
-  seq_id=(int)(timet/3);
-  seq_residue=timet/3-seq_id;
-  zenith=-(timet/12.0f*M_PI-M_PI_2);
+  seq_id = static_cast<int>(timet / 3);
+  seq_residue = timet / 3 - seq_id;
+  zenith = -static_cast<float>(timet / 12.0f * M_PI - M_PI_2);
 
   // Interpolate sea and sky colors
-
   col1.SetHWColor(skyTopColors[seq[seq_id]]);
-  col2.SetHWColor(skyTopColors[seq[seq_id+1]]);
-  colSkyTop=col2*seq_residue + col1*(1.0f-seq_residue);
+  col2.SetHWColor(skyTopColors[seq[seq_id + 1]]);
+  colSkyTop = col2 * seq_residue + col1 * (1.0f - seq_residue);
 
   col1.SetHWColor(skyBtmColors[seq[seq_id]]);
-  col2.SetHWColor(skyBtmColors[seq[seq_id+1]]);
-  colSkyBtm=col2*seq_residue + col1*(1.0f-seq_residue);
+  col2.SetHWColor(skyBtmColors[seq[seq_id + 1]]);
+  colSkyBtm = col2 * seq_residue + col1 * (1.0f - seq_residue);
 
   col1.SetHWColor(seaTopColors[seq[seq_id]]);
-  col2.SetHWColor(seaTopColors[seq[seq_id+1]]);
-  colSeaTop=col2*seq_residue + col1*(1.0f-seq_residue);
+  col2.SetHWColor(seaTopColors[seq[seq_id + 1]]);
+  colSeaTop = col2 * seq_residue + col1 * (1.0f - seq_residue);
 
   col1.SetHWColor(seaBtmColors[seq[seq_id]]);
-  col2.SetHWColor(seaBtmColors[seq[seq_id+1]]);
-  colSeaBtm=col2*seq_residue + col1*(1.0f-seq_residue);
+  col2.SetHWColor(seaBtmColors[seq[seq_id + 1]]);
+  colSeaBtm = col2 * seq_residue + col1 * (1.0f - seq_residue);
 
   // Update stars
 
-  if(seq_id>=6 || seq_id<2)
-    for(int i=0; i<NUM_STARS; i++) {
-      a=1.0f-starY[i]/STARS_HEIGHT;
-      a*=hge->Random_Float(0.6f, 1.0f);
+  if (seq_id >= 6 || seq_id < 2)
+    for (int i1 = 0; i1 < NUM_STARS; i1++) {
+      a = 1.0f - starY[i1] / STARS_HEIGHT;
+      a *= hge->Random_Float(0.6f, 1.0f);
 
-      if(seq_id>=6) {
-        a*=sinf((timet-18.0f)/6.0f*M_PI_2);
+      if (seq_id >= 6) {
+        a *= sinf((timet - 18.0f) / 6.0f * static_cast<float>(M_PI_2));
       } else {
-        a*=sinf((1.0f-timet/6.0f)*M_PI_2);
+        a *= sinf((1.0f - timet / 6.0f) * static_cast<float>(M_PI_2));
       }
 
-      starA[i]=a;
+      starA[i1] = a;
     }
 
   // Calculate sun position, scale and colors
 
-  if(seq_id==2) {
-    a=sinf(seq_residue*M_PI_2);
-  } else if(seq_id==5) {
-    a=cosf(seq_residue*M_PI_2);
-  } else if(seq_id>2 && seq_id<5) {
-    a=1.0f;
+  if (seq_id == 2) {
+    a = sinf(seq_residue * static_cast<float>(M_PI_2));
+  } else if (seq_id == 5) {
+    a = cosf(seq_residue * static_cast<float>(M_PI_2));
+  } else if (seq_id > 2 && seq_id < 5) {
+    a = 1.0f;
   } else {
-    a=0.0f;
+    a = 0.0f;
   }
 
   colSun.SetHWColor(0xFFEAE1BE);
-  colSun=colSun*(1-a)+colWhite*a;
+  colSun = colSun * (1 - a) + colWhite * a;
 
-  a=(cosf(timet/6.0f*M_PI)+1.0f)/2.0f;
+  a = (cosf(timet / 6.0f * static_cast<float>(M_PI)) + 1.0f) / 2.0f;
 
-  if(seq_id>=2 && seq_id<=6) {
-    colSunGlow=colWhite*a;
-    colSunGlow.a=1.0f;
+  if (seq_id >= 2 && seq_id <= 6) {
+    colSunGlow = colWhite * a;
+    colSunGlow.a = 1.0f;
   } else {
     colSunGlow.SetHWColor(0xFF000000);
   }
 
-  sunX=SCREEN_WIDTH*0.5f+cosf(zenith)*ORBITS_RADIUS;
-  sunY=SKY_HEIGHT*1.2f+sinf(zenith)*ORBITS_RADIUS;
-  sunS=1.0f-0.3f*sinf((timet-6.0f)/12.0f*M_PI);
-  sunGlowS=3.0f*(1.0f-a)+3.0f;
+  sunX = SCREEN_WIDTH * 0.5f + cosf(zenith) * ORBITS_RADIUS;
+  sunY = SKY_HEIGHT * 1.2f + sinf(zenith) * ORBITS_RADIUS;
+  sunS = 1.0f - 0.3f * sinf((timet - 6.0f) / 12.0f * static_cast<float>(M_PI));
+  sunGlowS = 3.0f * (1.0f - a) + 3.0f;
 
   // Calculate moon position, scale and colors
 
-  if(seq_id>=6) {
-    a=sinf((timet-18.0f)/6.0f*M_PI_2);
+  if (seq_id >= 6) {
+    a = sinf((timet - 18.0f) / 6.0f * static_cast<float>(M_PI_2));
   } else {
-    a=sinf((1.0f-timet/6.0f)*M_PI_2);
+    a = sinf((1.0f - timet / 6.0f) * static_cast<float>(M_PI_2));
   }
 
   colMoon.SetHWColor(0x20FFFFFF);
-  colMoon=colMoon*(1-a)+colWhite*a;
+  colMoon = colMoon * (1 - a) + colWhite * a;
 
-  colMoonGlow=colWhite;
-  colMoonGlow.a=0.5f*a;
+  colMoonGlow = colWhite;
+  colMoonGlow.a = 0.5f * a;
 
-  moonX=SCREEN_WIDTH*0.5f+cosf(zenith-M_PI)*ORBITS_RADIUS;
-  moonY=SKY_HEIGHT*1.2f+sinf(zenith-M_PI)*ORBITS_RADIUS;
-  moonS=1.0f-0.3f*sinf((timet+6.0f)/12.0f*M_PI);
-  moonGlowS=a*0.4f+0.5f;
+  moonX = SCREEN_WIDTH * 0.5f + cosf(zenith - static_cast<float>(M_PI)) * ORBITS_RADIUS;
+  moonY = SKY_HEIGHT * 1.2f + sinf(zenith - static_cast<float>(M_PI)) * ORBITS_RADIUS;
+  moonS = 1.0f - 0.3f * sinf((timet + 6.0f) / 12.0f * static_cast<float>(M_PI));
+  moonGlowS = a * 0.4f + 0.5f;
 
   // Calculate sea glow
 
-  if(timet>19.0f || timet<4.5f) { // moon
-    a=0.2f; // intensity
+  if (timet > 19.0f || timet < 4.5f) { // moon
+    a = 0.2f; // intensity
 
-    if(timet>19.0f && timet<20.0f) {
-      a*=(timet-19.0f);
-    } else if(timet>3.5f && timet<4.5f) {
-      a*=1.0f-(timet-3.5f);
+    if (timet > 19.0f && timet < 20.0f) {
+      a *= (timet - 19.0f);
+    } else if (timet > 3.5f && timet < 4.5f) {
+      a *= 1.0f - (timet - 3.5f);
     }
 
-    colSeaGlow=colMoonGlow;
-    colSeaGlow.a=a;
-    seaGlowX=moonX;
-    seaGlowSX=moonGlowS*3.0f;
-    seaGlowSY=moonGlowS*2.0f;
-  } else if(timet>6.5f && timet<19.0f) { // sun
-    a=0.3f; // intensity
+    colSeaGlow = colMoonGlow;
+    colSeaGlow.a = a;
+    seaGlowX = moonX;
+    seaGlowSX = moonGlowS * 3.0f;
+    seaGlowSY = moonGlowS * 2.0f;
+  } else if (timet > 6.5f && timet < 19.0f) { // sun
+    a = 0.3f; // intensity
 
-    if(timet<7.5f) {
-      a*=(timet-6.5f);
-    } else if(timet>18.0f) {
-      a*=1.0f-(timet-18.0f);
+    if (timet < 7.5f) {
+      a *= (timet - 6.5f);
+    } else if (timet > 18.0f) {
+      a *= 1.0f - (timet - 18.0f);
     }
 
-    colSeaGlow=colSunGlow;
-    colSeaGlow.a=a;
-    seaGlowX=sunX;
-    seaGlowSX=sunGlowS;
-    seaGlowSY=sunGlowS*0.6f;
+    colSeaGlow = colSunGlow;
+    colSeaGlow.a = a;
+    seaGlowX = sunX;
+    seaGlowSX = sunGlowS;
+    seaGlowSY = sunGlowS * 0.6f;
   } else {
-    colSeaGlow.a=0.0f;
+    colSeaGlow.a = 0.0f;
   }
 
   // Move waves and update sea color
 
-  for(i=1; i<SEA_SUBDIVISION-1; i++) {
-    a=float(i)/(SEA_SUBDIVISION-1);
-    col1=colSeaTop*(1-a)+colSeaBtm*a;
-    dwCol1=col1.GetHWColor();
-    fTime=2.0f*hge->Timer_GetTime();
-    a*=20;
+  for (i = 1; i < SEA_SUBDIVISION - 1; i++) {
+    a = float(i) / (SEA_SUBDIVISION - 1);
+    col1 = colSeaTop * (1 - a) + colSeaBtm * a;
+    dwCol1 = col1.GetHWColor();
+    fTime = 2.0f * hge->Timer_GetTime();
+    a *= 20;
 
-    for(j=0; j<SEA_SUBDIVISION; j++) {
+    for (j = 0; j < SEA_SUBDIVISION; j++) {
       sea->SetColor(j, i, dwCol1);
 
-      dy=a*sinf(seaP[i]+(float(j)/(SEA_SUBDIVISION-1)-0.5f)*M_PI*16.0f-fTime);
+      dy = a * sinf(seaP[i] + (float(j) / (SEA_SUBDIVISION - 1) - 0.5f)
+                    * static_cast<float>(M_PI) * 16.0f - fTime);
       sea->SetDisplacement(j, i, 0.0f, dy, HGEDISP_NODE);
     }
   }
 
-  dwCol1=colSeaTop.GetHWColor();
-  dwCol2=colSeaBtm.GetHWColor();
+  dwCol1 = colSeaTop.GetHWColor();
+  dwCol2 = colSeaBtm.GetHWColor();
 
-  for(j=0; j<SEA_SUBDIVISION; j++) {
+  for (j = 0; j < SEA_SUBDIVISION; j++) {
     sea->SetColor(j, 0, dwCol1);
-    sea->SetColor(j, SEA_SUBDIVISION-1, dwCol2);
+    sea->SetColor(j, SEA_SUBDIVISION - 1, dwCol2);
   }
 
   // Calculate light path
 
-  if(timet>19.0f || timet<5.0f) { // moon
-    a=0.12f; // intensity
+  if (timet > 19.0f || timet < 5.0f) { // moon
+    a = 0.12f; // intensity
 
-    if(timet>19.0f && timet<20.0f) {
-      a*=(timet-19.0f);
-    } else if(timet>4.0f && timet<5.0f) {
-      a*=1.0f-(timet-4.0f);
+    if (timet > 19.0f && timet < 20.0f) {
+      a *= (timet - 19.0f);
+    } else if (timet > 4.0f && timet < 5.0f) {
+      a *= 1.0f - (timet - 4.0f);
     }
 
-    posX=moonX;
-  } else if(timet>7.0f && timet<17.0f) { // sun
-    a=0.14f; // intensity
+    posX = moonX;
+  } else if (timet > 7.0f && timet < 17.0f) { // sun
+    a = 0.14f; // intensity
 
-    if(timet<8.0f) {
-      a*=(timet-7.0f);
-    } else if(timet>16.0f) {
-      a*=1.0f-(timet-16.0f);
+    if (timet < 8.0f) {
+      a *= (timet - 7.0f);
+    } else if (timet > 16.0f) {
+      a *= 1.0f - (timet - 16.0f);
     }
 
-    posX=sunX;
+    posX = sunX;
   } else {
-    a=0.0f;
+    a = 0.0f;
   }
 
-  if(a!=0.0f) {
-    k=(int)floorf(posX/cellw);
-    s1=(1.0f-(posX-k*cellw)/cellw);
-    s2=(1.0f-((k+1)*cellw-posX)/cellw);
+  if (a != 0.0f) {
+    k = static_cast<int>(floorf(posX / cellw));
+    s1 = (1.0f - (posX - k * cellw) / cellw);
+    s2 = (1.0f - ((k + 1) * cellw - posX) / cellw);
 
-    if(s1>0.7f) {
-      s1=0.7f;
+    if (s1 > 0.7f) {
+      s1 = 0.7f;
     }
 
-    if(s2>0.7f) {
-      s2=0.7f;
+    if (s2 > 0.7f) {
+      s2 = 0.7f;
     }
 
-    s1*=a;
-    s2*=a;
+    s1 *= a;
+    s2 *= a;
 
-    for(i=0; i<SEA_SUBDIVISION; i+=2) {
-      a=sinf(float(i)/(SEA_SUBDIVISION-1)*M_PI_2);
+    for (i = 0; i < SEA_SUBDIVISION; i += 2) {
+      a = sinf(float(i) / (SEA_SUBDIVISION - 1) * static_cast<float>(M_PI_2));
 
-      col1.SetHWColor(sea->GetColor(k,i));
-      col1+=colSun*s1*(1-a);
+      col1.SetHWColor(sea->GetColor(k, i));
+      col1 += colSun * s1 * (1 - a);
       col1.Clamp();
       sea->SetColor(k, i, col1.GetHWColor());
 
-      col1.SetHWColor(sea->GetColor(k+1,i));
-      col1+=colSun*s2*(1-a);
+      col1.SetHWColor(sea->GetColor(k + 1, i));
+      col1 += colSun * s2 * (1 - a);
       col1.Clamp();
-      sea->SetColor(k+1, i, col1.GetHWColor());
+      sea->SetColor(k + 1, i, col1.GetHWColor());
     }
   }
 }
@@ -570,9 +571,9 @@ void RenderSimulation()
 
   // Render stars
 
-  if(seq_id>=6 || seq_id<2)
-    for(int i=0; i<NUM_STARS; i++) {
-      star->SetColor((uint32_t(starA[i]*255.0f)<<24) | 0xFFFFFF);
+  if (seq_id >= 6 || seq_id < 2)
+    for (int i = 0; i < NUM_STARS; i++) {
+      star->SetColor((uint32_t(starA[i] * 255.0f) << 24) | 0xFFFFFF);
       star->RenderEx(starX[i], starY[i], 0.0f, starS[i]);
     }
 

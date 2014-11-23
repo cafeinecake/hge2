@@ -15,8 +15,8 @@
 
 CFontList::CFontList()
 {
-  nFonts=0;
-  pFonts=0;
+  nFonts = 0;
+  pFonts = 0;
 }
 
 CFontList::~CFontList()
@@ -30,9 +30,9 @@ void CFontList::BuildList()
 #else
   HDC hdc = CreateCompatibleDC(0);
   LOGFONT lf;
-  lf.lfCharSet=DEFAULT_CHARSET;
-  lf.lfFaceName[0]='\0';
-  lf.lfPitchAndFamily=0;
+  lf.lfCharSet = DEFAULT_CHARSET;
+  lf.lfFaceName[0] = '\0';
+  lf.lfPitchAndFamily = 0;
 
   EnumFontFamiliesEx(hdc, &lf, (FONTENUMPROC)EnumFontFamExProc, (LPARAM)this, 0);
   DeleteDC(hdc);
@@ -41,28 +41,28 @@ void CFontList::BuildList()
 
 void CFontList::ClearList()
 {
-  CFontListItem *pItem=pFonts, *pNext;
+  CFontListItem *pItem = pFonts, *pNext;
 
-  while(pItem) {
-    pNext=pItem->next;
+  while (pItem) {
+    pNext = pItem->next;
     delete pItem;
-    pItem=pNext;
+    pItem = pNext;
   }
 
-  nFonts=0;
+  nFonts = 0;
 }
 
 char *CFontList::GetFontByIdx(int n)
 {
   int i;
-  CFontListItem *pItem=pFonts;
+  CFontListItem *pItem = pFonts;
 
-  if(n<0 || n>=GetNumFonts()) {
+  if (n < 0 || n >= GetNumFonts()) {
     return 0;
   }
 
-  for(i=0; i<n; i++) {
-    pItem=pItem->next;
+  for (i = 0; i < n; i++) {
+    pItem = pItem->next;
   }
 
   return pItem->family;
@@ -71,49 +71,50 @@ char *CFontList::GetFontByIdx(int n)
 void CFontList::FindSortAdd(char *family)
 {
   int cmp;
-  CFontListItem *pItem=pFonts, *pPrev=0, *pNew;
+  CFontListItem *pItem = pFonts, *pPrev = 0, *pNew;
 
-  while(pItem) {
-    cmp=strcmp(pItem->family, family);
+  while (pItem) {
+    cmp = strcmp(pItem->family, family);
 
-    if(!cmp) {
+    if (!cmp) {
       return;
     }
 
-    if(cmp>0) {
+    if (cmp > 0) {
       pNew = new CFontListItem;
       strcpy(pNew->family, family);
-      pNew->next=pItem;
+      pNew->next = pItem;
 
-      if(pPrev) {
-        pPrev->next=pNew;
+      if (pPrev) {
+        pPrev->next = pNew;
       } else {
-        pFonts=pNew;
+        pFonts = pNew;
       }
 
       nFonts++;
       return;
     }
 
-    pPrev=pItem;
-    pItem=pItem->next;
+    pPrev = pItem;
+    pItem = pItem->next;
   }
 
   pNew = new CFontListItem;
   strcpy(pNew->family, family);
-  pNew->next=pItem;
+  pNew->next = pItem;
 
-  if(pPrev) {
-    pPrev->next=pNew;
+  if (pPrev) {
+    pPrev->next = pNew;
   } else {
-    pFonts=pNew;
+    pFonts = pNew;
   }
 
   nFonts++;
 }
 
 #ifdef PLATFORM_UNIX
-int EnumFontFamiliesEx(int *lpelfe, int *lpntme, uint32_t FontType, void *lParam)
+int EnumFontFamiliesEx(int * /*lpelfe*/, int * /*lpntme*/, uint32_t /*FontType*/,
+                       void * /*lParam*/)
 {
   assert(true && "write me");
   return 1;

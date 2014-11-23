@@ -95,15 +95,15 @@ class CxImageWMF: public CxImage {
 public:
   CxImageWMF(): CxImage(CXIMAGE_FORMAT_WMF) { }
 
-  bool Decode(CxFile * hFile, int32_t nForceWidth=0, int32_t nForceHeight=0);
-  bool Decode(FILE *hFile, int32_t nForceWidth=0, int32_t nForceHeight=0)
+  bool Decode(CxFile *hFile, int32_t nForceWidth = 0, int32_t nForceHeight = 0);
+  bool Decode(FILE *hFile, int32_t nForceWidth = 0, int32_t nForceHeight = 0)
   {
     CxIOFile file(hFile);
-    return Decode(&file,nForceWidth,nForceHeight);
+    return Decode(&file, nForceWidth, nForceHeight);
   }
 
 #if CXIMAGE_SUPPORT_ENCODE
-  bool Encode(CxFile * hFile);
+  bool Encode(CxFile *hFile);
   bool Encode(FILE *hFile)
   {
     CxIOFile file(hFile);

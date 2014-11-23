@@ -361,10 +361,10 @@ bool CALL HGE_Impl::Input_GetEvent(hgeInputEvent *event)
 {
   CInputEventList *eptr;
 
-  if(queue) {
-    eptr=queue;
+  if (queue) {
+    eptr = queue;
     memcpy(event, &eptr->event, sizeof(hgeInputEvent));
-    queue=eptr->next;
+    queue = eptr->next;
     delete eptr;
     return true;
   }
@@ -374,8 +374,8 @@ bool CALL HGE_Impl::Input_GetEvent(hgeInputEvent *event)
 
 void CALL HGE_Impl::Input_GetMousePos(float *x, float *y)
 {
-  *x=Xpos;
-  *y=Ypos;
+  *x = Xpos;
+  *y = Ypos;
 }
 
 
@@ -410,7 +410,7 @@ bool CALL HGE_Impl::Input_KeyUp(int key)
   return (keyz[key] & 2) != 0;
 }
 
-const char* CALL HGE_Impl::Input_GetKeyName(int key)
+const char *CALL HGE_Impl::Input_GetKeyName(int key)
 {
   return KeyNames[key];
 }
@@ -444,14 +444,14 @@ void HGE_Impl::_UpdateMouse()
 
 void HGE_Impl::_BuildEvent(int type, int key, int /*scan*/, int flags, int x, int y)
 {
-  CInputEventList *last, *eptr=new CInputEventList;
+  CInputEventList *last, *eptr = new CInputEventList;
 
-  eptr->event.type=type;
-  eptr->event.chr=0;
-  int ptx=x;
-  int pty=y;
+  eptr->event.type = type;
+  eptr->event.chr = 0;
+  int ptx = x;
+  int pty = y;
 
-  if(type==INPUT_KEYDOWN) {
+  if (type == INPUT_KEYDOWN) {
     key = SDLKeyToHGEKey(key);
 
     if ( (key < 0) || (key > static_cast<int>(sizeof (keyz) / sizeof (keyz[0]))) ) {
@@ -460,7 +460,7 @@ void HGE_Impl::_BuildEvent(int type, int key, int /*scan*/, int flags, int x, in
 
     keyz[key] |= 4;
 
-    if((flags & HGEINP_REPEAT) == 0) {
+    if ((flags & HGEINP_REPEAT) == 0) {
       keyz[key] |= 1;
     }
 
@@ -468,7 +468,7 @@ void HGE_Impl::_BuildEvent(int type, int key, int /*scan*/, int flags, int x, in
     // these map to ASCII in sdl.
   }
 
-  if(type==INPUT_KEYUP) {
+  if (type == INPUT_KEYUP) {
     key = SDLKeyToHGEKey(key);
 
     if ( (key < 0) || (key > static_cast<int>(sizeof (keyz) / sizeof (keyz[0]))) ) {
@@ -481,123 +481,123 @@ void HGE_Impl::_BuildEvent(int type, int key, int /*scan*/, int flags, int x, in
     // these map to ASCII in sdl.
   }
 
-  if(type==INPUT_MOUSEWHEEL) {
-    eptr->event.key=0;
-    eptr->event.wheel=key;
+  if (type == INPUT_MOUSEWHEEL) {
+    eptr->event.key = 0;
+    eptr->event.wheel = key;
   } else {
-    eptr->event.key=key;
-    eptr->event.wheel=0;
+    eptr->event.key = key;
+    eptr->event.wheel = 0;
   }
 
-  if(type==INPUT_MBUTTONDOWN) {
+  if (type == INPUT_MBUTTONDOWN) {
     keyz[key] |= 1;
     keyz[key] |= 4;
     //SetCapture(hwnd);
-    bCaptured=true;
+    bCaptured = true;
   }
 
-  if(type==INPUT_MBUTTONUP) {
+  if (type == INPUT_MBUTTONUP) {
     keyz[key] |= 2;
     keyz[key] &= ~4;
     //ReleaseCapture();
     //Input_SetMousePos(Xpos, Ypos);
     ptx = static_cast<int>(Xpos);
     pty = static_cast<int>(Ypos);
-    bCaptured=false;
+    bCaptured = false;
   }
 
-  if(keymods & KMOD_SHIFT) {
-    flags|=HGEINP_SHIFT;
+  if (keymods & KMOD_SHIFT) {
+    flags |= HGEINP_SHIFT;
   }
 
-  if(keymods & KMOD_CTRL) {
-    flags|=HGEINP_CTRL;
+  if (keymods & KMOD_CTRL) {
+    flags |= HGEINP_CTRL;
   }
 
-  if(keymods & KMOD_ALT) {
-    flags|=HGEINP_ALT;
+  if (keymods & KMOD_ALT) {
+    flags |= HGEINP_ALT;
   }
 
-  if(keymods & KMOD_CAPS) {
-    flags|=HGEINP_CAPSLOCK;
+  if (keymods & KMOD_CAPS) {
+    flags |= HGEINP_CAPSLOCK;
   }
 
-  if(keymods & KMOD_MODE) {
-    flags|=HGEINP_SCROLLLOCK;
+  if (keymods & KMOD_MODE) {
+    flags |= HGEINP_SCROLLLOCK;
   }
 
-  if(keymods & KMOD_NUM) {
-    flags|=HGEINP_NUMLOCK;
+  if (keymods & KMOD_NUM) {
+    flags |= HGEINP_NUMLOCK;
   }
 
-  eptr->event.flags=flags;
+  eptr->event.flags = flags;
 
-  if(ptx==-1) {
-    eptr->event.x=Xpos;
-    eptr->event.y=Ypos;
+  if (ptx == -1) {
+    eptr->event.x = Xpos;
+    eptr->event.y = Ypos;
   } else {
-    if(ptx<0) {
-      ptx=0;
+    if (ptx < 0) {
+      ptx = 0;
     }
 
-    if(pty<0) {
-      pty=0;
+    if (pty < 0) {
+      pty = 0;
     }
 
-    if(ptx>=nScreenWidth) {
-      ptx=nScreenWidth-1;
+    if (ptx >= nScreenWidth) {
+      ptx = nScreenWidth - 1;
     }
 
-    if(pty>=nScreenHeight) {
-      pty=nScreenHeight-1;
+    if (pty >= nScreenHeight) {
+      pty = nScreenHeight - 1;
     }
 
-    eptr->event.x=static_cast<float>(ptx);
-    eptr->event.y=static_cast<float>(pty);
+    eptr->event.x = static_cast<float>(ptx);
+    eptr->event.y = static_cast<float>(pty);
   }
 
-  eptr->next=0;
+  eptr->next = 0;
 
-  if(!queue) {
-    queue=eptr;
+  if (!queue) {
+    queue = eptr;
   } else {
-    last=queue;
+    last = queue;
 
-    while(last->next) {
-      last=last->next;
+    while (last->next) {
+      last = last->next;
     }
 
-    last->next=eptr;
+    last->next = eptr;
   }
 
-  if(eptr->event.type==INPUT_KEYDOWN || eptr->event.type==INPUT_MBUTTONDOWN) {
-    VKey=eptr->event.key;
-    Char=eptr->event.chr;
-  } else if(eptr->event.type==INPUT_MOUSEMOVE) {
-    Xpos=eptr->event.x;
-    Ypos=eptr->event.y;
-  } else if(eptr->event.type==INPUT_MOUSEWHEEL) {
-    Zpos+=eptr->event.wheel;
+  if (eptr->event.type == INPUT_KEYDOWN || eptr->event.type == INPUT_MBUTTONDOWN) {
+    VKey = eptr->event.key;
+    Char = eptr->event.chr;
+  } else if (eptr->event.type == INPUT_MOUSEMOVE) {
+    Xpos = eptr->event.x;
+    Ypos = eptr->event.y;
+  } else if (eptr->event.type == INPUT_MOUSEWHEEL) {
+    Zpos += eptr->event.wheel;
   }
 }
 
 void HGE_Impl::_ClearQueue()
 {
-  CInputEventList *nexteptr, *eptr=queue;
+  CInputEventList *nexteptr, *eptr = queue;
 
   //memset(&keyz, 0, sizeof(keyz));
   for (int i = 0; i < static_cast<int>(sizeof (keyz) / sizeof (keyz[0])); i++) {
     keyz[i] &= ~3;  // only reset some of the bits.
   }
 
-  while(eptr) {
-    nexteptr=eptr->next;
+  while (eptr) {
+    nexteptr = eptr->next;
     delete eptr;
-    eptr=nexteptr;
+    eptr = nexteptr;
   }
 
-  queue=0;
-  VKey=0;
-  Char=0;
-  Zpos=0;
+  queue = 0;
+  VKey = 0;
+  Char = 0;
+  Zpos = 0;
 }

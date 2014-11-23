@@ -45,9 +45,9 @@ void hgeColorHSV::SetHWColor(uint32_t col)
   float minv, maxv, delta;
   float del_R, del_G, del_B;
 
-  a = (col>>24) / 255.0f;
-  r = ((col>>16) & 0xFF) / 255.0f;
-  g = ((col>>8)  & 0xFF) / 255.0f;
+  a = (col >> 24) / 255.0f;
+  r = ((col >> 16) & 0xFF) / 255.0f;
+  g = ((col >> 8)  & 0xFF) / 255.0f;
   b = (col       & 0xFF) / 255.0f;
 
   minv = min(min(r, g), b);
@@ -95,8 +95,8 @@ uint32_t hgeColorHSV::GetHWColor() const
   } else {
     xh = h * 6;
 
-    if(flt_equal(xh, 6)) {
-      xh=0;
+    if (flt_equal(xh, 6)) {
+      xh = 0;
     }
 
     i = floorf(xh);
@@ -131,8 +131,9 @@ uint32_t hgeColorHSV::GetHWColor() const
     }
   }
 
-  return (uint32_t(a*255.0f)<<24) + (uint32_t(r*255.0f)<<16) + (uint32_t(g*255.0f)<<8) + uint32_t(
-           b*255.0f);
+  return (uint32_t(a * 255.0f) << 24) + (uint32_t(r * 255.0f) << 16) + (uint32_t(
+           g * 255.0f) << 8) + uint32_t(
+           b * 255.0f);
 }
 
 

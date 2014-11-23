@@ -66,7 +66,7 @@ gz_statep state;
 
   if (state->eof == 0) {
     if (gz_load(state, state->in, state->size,
-                (unsigned *)&(strm->avail_in)) == -1) {
+                (unsigned *) & (strm->avail_in)) == -1) {
       return -1;
     }
 
@@ -624,7 +624,7 @@ gzFile file;
 }
 
 /* -- see zlib.h -- */
-char * ZEXPORT gzgets(file, buf, len)
+char *ZEXPORT gzgets(file, buf, len)
 gzFile file;
 char *buf;
 int len;

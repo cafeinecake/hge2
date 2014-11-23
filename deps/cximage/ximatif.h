@@ -29,18 +29,18 @@ class DLL_EXP CxImageTIF: public CxImage {
 public:
   CxImageTIF(): CxImage(CXIMAGE_FORMAT_TIF)
   {
-    m_tif2=NULL;
-    m_multipage=false;
-    m_pages=0;
+    m_tif2 = NULL;
+    m_multipage = false;
+    m_pages = 0;
   }
   ~CxImageTIF();
 
-  TIFF* TIFFOpenEx(CxFile * hFile);
-  void  TIFFCloseEx(TIFF* tif);
+  TIFF *TIFFOpenEx(CxFile *hFile);
+  void  TIFFCloseEx(TIFF *tif);
 
 //  bool Load(const TCHAR * imageFileName){ return CxImage::Load(imageFileName,CXIMAGE_FORMAT_TIF);}
 //  bool Save(const TCHAR * imageFileName){ return CxImage::Save(imageFileName,CXIMAGE_FORMAT_TIF);}
-  bool Decode(CxFile * hFile);
+  bool Decode(CxFile *hFile);
   bool Decode(FILE *hFile)
   {
     CxIOFile file(hFile);
@@ -48,14 +48,14 @@ public:
   }
 
 #if CXIMAGE_SUPPORT_ENCODE
-  bool Encode(CxFile * hFile, bool bAppend=false);
-  bool Encode(CxFile * hFile, CxImage ** pImages, int32_t pagecount);
-  bool Encode(FILE *hFile, bool bAppend=false)
+  bool Encode(CxFile *hFile, bool bAppend = false);
+  bool Encode(CxFile *hFile, CxImage **pImages, int32_t pagecount);
+  bool Encode(FILE *hFile, bool bAppend = false)
   {
     CxIOFile file(hFile);
-    return Encode(&file,bAppend);
+    return Encode(&file, bAppend);
   }
-  bool Encode(FILE *hFile, CxImage ** pImages, int32_t pagecount)
+  bool Encode(FILE *hFile, CxImage **pImages, int32_t pagecount)
   {
     CxIOFile file(hFile);
     return Encode(&file, pImages, pagecount);
@@ -63,13 +63,13 @@ public:
 #endif // CXIMAGE_SUPPORT_ENCODE
 
 protected:
-  void TileToStrip(uint8* out, uint8* in, uint32 rows, uint32 cols, int32_t outskew, int32_t inskew);
-  bool EncodeBody(TIFF *m_tif, bool multipage=false, int32_t page=0, int32_t pagecount=0);
+  void TileToStrip(uint8 *out, uint8 *in, uint32 rows, uint32 cols, int32_t outskew, int32_t inskew);
+  bool EncodeBody(TIFF *m_tif, bool multipage = false, int32_t page = 0, int32_t pagecount = 0);
   TIFF *m_tif2;
   bool m_multipage;
   int32_t  m_pages;
-  void MoveBits( uint8_t* dest, uint8_t* from, int32_t count, int32_t bpp );
-  void MoveBitsPal( uint8_t* dest, uint8_t*from, int32_t count, int32_t bpp, RGBQUAD* pal );
+  void MoveBits( uint8_t *dest, uint8_t *from, int32_t count, int32_t bpp );
+  void MoveBitsPal( uint8_t *dest, uint8_t *from, int32_t count, int32_t bpp, RGBQUAD *pal );
 };
 
 #endif

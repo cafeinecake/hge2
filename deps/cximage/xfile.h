@@ -71,8 +71,8 @@ public:
     return nWrote == 1;
   }
   virtual int32_t GetC() = 0;
-  virtual char *  GetS(char *string, int32_t n) = 0;
-  virtual int32_t Scanf(const char *format, void* output) = 0;
+  virtual char   *GetS(char *string, int32_t n) = 0;
+  virtual int32_t Scanf(const char *format, void *output) = 0;
 };
 
 #endif //__xfile_h

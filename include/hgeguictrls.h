@@ -18,12 +18,12 @@
 #include "hgegui.h"
 
 
-#define hgeButtonGetState(gui,id)   ((hgeGUIButton*)gui->GetCtrl(id))->GetState()
-#define hgeButtonSetState(gui,id,b)   ((hgeGUIButton*)gui->GetCtrl(id))->SetState(b)
-#define hgeSliderGetValue(gui,id)   ((hgeGUISlider*)gui->GetCtrl(id))->GetValue()
-#define hgeSliderSetValue(gui,id,f)   ((hgeGUISlider*)gui->GetCtrl(id))->SetValue(f)
-#define hgeGetTextCtrl(gui,id)      ((hgeGUIText*)gui->GetCtrl(id))
-#define hgeGetListboxCtrl(gui,id)   ((hgeGUIListbox*)gui->GetCtrl(id))
+#define hgeButtonGetState(gui,id)   (reinterpret_cast<hgeGUIButton*>(gui->GetCtrl(id)))->GetState()
+#define hgeButtonSetState(gui,id,b) (reinterpret_cast<hgeGUIButton*>(gui->GetCtrl(id)))->SetState(b)
+#define hgeSliderGetValue(gui,id)   (reinterpret_cast<hgeGUISlider*>(gui->GetCtrl(id)))->GetValue()
+#define hgeSliderSetValue(gui,id,f) (reinterpret_cast<hgeGUISlider*>(gui->GetCtrl(id)))->SetValue(f)
+#define hgeGetTextCtrl(gui,id)      (reinterpret_cast<hgeGUIText*>(gui->GetCtrl(id)))
+#define hgeGetListboxCtrl(gui,id)   (reinterpret_cast<hgeGUIListbox*>(gui->GetCtrl(id)))
 
 
 /*
@@ -40,7 +40,7 @@ public:
   virtual void  Render();
 
 private:
-  hgeFont*    font;
+  hgeFont    *font;
   float     tx, ty;
   int       align;
   char      text[256];
@@ -57,11 +57,11 @@ public:
 
   void      SetMode(bool _bTrigger)
   {
-    bTrigger=_bTrigger;
+    bTrigger = _bTrigger;
   }
   void      SetState(bool _bPressed)
   {
-    bPressed=_bPressed;
+    bPressed = _bPressed;
   }
   bool      GetState() const
   {
@@ -89,14 +89,14 @@ private:
 class hgeGUISlider : public hgeGUIObject {
 public:
   hgeGUISlider(int id, float x, float y, float w, float h, HTEXTURE tex, float tx, float ty, float sw,
-               float sh, bool vertical=false);
+               float sh, bool vertical = false);
   virtual     ~hgeGUISlider();
 
   void      SetMode(float _fMin, float _fMax, int _mode)
   {
-    fMin=_fMin;
-    fMax=_fMax;
-    mode=_mode;
+    fMin = _fMin;
+    fMax = _fMax;
+    mode = _mode;
   }
   void      SetValue(float _fVal);
   float     GetValue() const
@@ -141,8 +141,8 @@ public:
   }
   void      SetSelectedItem(int n)
   {
-    if(n>=0 && n<GetNumItems()) {
-      nSelectedItem=n;
+    if (n >= 0 && n < GetNumItems()) {
+      nSelectedItem = n;
     }
   }
   int       GetTopItem()
@@ -151,8 +151,8 @@ public:
   }
   void      SetTopItem(int n)
   {
-    if(n>=0 && n<=GetNumItems()-GetNumRows()) {
-      nTopItem=n;
+    if (n >= 0 && n <= GetNumItems() - GetNumRows()) {
+      nTopItem = n;
     }
   }
 
@@ -163,15 +163,15 @@ public:
   }
   int       GetNumRows()
   {
-    return int((rect.y2-rect.y1)/font->GetHeight());
+    return int((rect.y2 - rect.y1) / font->GetHeight());
   }
   void      Clear();
 
   virtual void  Render();
   virtual bool  MouseMove(float x, float y)
   {
-    mx=x;
-    my=y;
+    mx = x;
+    my = y;
     return false;
   }
   virtual bool  MouseLButton(bool bDown);

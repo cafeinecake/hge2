@@ -37,7 +37,7 @@ public:
 
 //  bool Load(const TCHAR * imageFileName){ return CxImage::Load(imageFileName,CXIMAGE_FORMAT_PNG);}
 //  bool Save(const TCHAR * imageFileName){ return CxImage::Save(imageFileName,CXIMAGE_FORMAT_PNG);}
-  bool Decode(CxFile * hFile);
+  bool Decode(CxFile *hFile);
   bool Decode(FILE *hFile)
   {
     CxIOFile file(hFile);
@@ -45,7 +45,7 @@ public:
   }
 
 #if CXIMAGE_SUPPORT_ENCODE
-  bool Encode(CxFile * hFile);
+  bool Encode(CxFile *hFile);
   bool Encode(FILE *hFile)
   {
     CxIOFile file(hFile);
@@ -65,39 +65,39 @@ public:
 
 protected:
   void ima_png_error(png_struct *png_ptr, char *message);
-  void expand2to4bpp(uint8_t* prow);
+  void expand2to4bpp(uint8_t *prow);
 
   static void PNGAPI user_read_data(png_structp png_ptr, png_bytep data, png_size_t length)
   {
-    CxFile* hFile = static_cast<CxFile*>(png_get_io_ptr(png_ptr));
+    CxFile *hFile = static_cast<CxFile *>(png_get_io_ptr(png_ptr));
 
-    if (hFile == NULL || hFile->Read(data,1,length) != length) {
+    if (hFile == NULL || hFile->Read(data, 1, length) != length) {
       png_error(png_ptr, "Read Error");
     }
   }
 
   static void PNGAPI user_write_data(png_structp png_ptr, png_bytep data, png_size_t length)
   {
-    CxFile* hFile = static_cast<CxFile*>(png_get_io_ptr(png_ptr));
+    CxFile *hFile = static_cast<CxFile *>(png_get_io_ptr(png_ptr));
 
-    if (hFile == NULL || hFile->Write(data,1,length) != length) {
+    if (hFile == NULL || hFile->Write(data, 1, length) != length) {
       png_error(png_ptr, "Write Error");
     }
   }
 
   static void PNGAPI user_flush_data(png_structp png_ptr)
   {
-    CxFile* hFile = static_cast<CxFile*>(png_get_io_ptr(png_ptr));
+    CxFile *hFile = static_cast<CxFile *>(png_get_io_ptr(png_ptr));
 
     if (hFile == NULL || !hFile->Flush()) {
       png_error(png_ptr, "Flush Error");
     }
   }
 
-  static void PNGAPI user_error_fn(png_structp png_ptr,png_const_charp error_msg)
+  static void PNGAPI user_error_fn(png_structp png_ptr, png_const_charp error_msg)
   __attribute__((__noreturn__))
   {
-    strncpy(static_cast<char*>(png_ptr->error_ptr), error_msg, 255);
+    strncpy(static_cast<char *>(png_ptr->error_ptr), error_msg, 255);
     longjmp(png_ptr->jmpbuf, 1);
   }
 };

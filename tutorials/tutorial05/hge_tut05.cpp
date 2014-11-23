@@ -23,43 +23,44 @@
 
 // Pointer to the HGE interface.
 // Helper classes require this to work.
-HGE *hge=0;
+static HGE *hge = 0;
 
-HTEXTURE      tex;
+static HTEXTURE      tex;
 
 // Pointers to the HGE objects we will use
-hgeDistortionMesh*  dis;
-hgeFont*      fnt;
+static hgeDistortionMesh  *dis;
+static hgeFont      *fnt;
 
 // Some "gameplay" variables
-const int nRows=16;
-const int nCols=16;
-const float cellw=512.0f/(nCols-1);
-const float cellh=512.0f/(nRows-1);
+const int nRows = 16;
+const int nCols = 16;
+const float cellw = 512.0f / (nCols - 1);
+const float cellh = 512.0f / (nRows - 1);
 
-const float meshx=144;
-const float meshy=44;
+const float meshx = 144;
+const float meshy = 44;
 
 
-bool FrameFunc()
+static bool FrameFunc()
 {
-  float dt=hge->Timer_GetDelta();
-  static float t=0.0f;
-  static int trans=0;
+  float dt = hge->Timer_GetDelta();
+  static float t = 0.0f;
+  static int trans = 0;
 
-  int i, j, col;
+  int i, j;
+  uint32_t col;
   float r, a, dx, dy;
 
-  t+=dt;
+  t += dt;
 
   // Process keys
-  switch(hge->Input_GetKey()) {
+  switch (hge->Input_GetKey()) {
   case HGEK_ESCAPE:
     return true;
 
   case HGEK_SPACE:
-    if(++trans > 2) {
-      trans=0;
+    if (++trans > 2) {
+      trans = 0;
     }
 
     dis->Clear(0xFF000000);
@@ -67,35 +68,37 @@ bool FrameFunc()
   }
 
   // Calculate new displacements and coloring for one of the three effects
-  switch(trans) {
+  switch (trans) {
   case 0:
-    for(i=1; i<nRows-1; i++)
-      for(j=1; j<nCols-1; j++) {
-        dis->SetDisplacement(j,i,cosf(t*10+(i+j)/2)*5,sinf(t*10+(i+j)/2)*5,HGEDISP_NODE);
+    for (i = 1; i < nRows - 1; i++)
+      for (j = 1; j < nCols - 1; j++) {
+        dis->SetDisplacement(j, i, cosf(t * 10 + (i + j) / 2) * 5, sinf(t * 10 + (i + j) / 2) * 5,
+                             HGEDISP_NODE);
       }
 
     break;
 
   case 1:
-    for(i=0; i<nRows; i++)
-      for(j=1; j<nCols-1; j++) {
-        dis->SetDisplacement(j,i,cosf(t*5+j/2)*15,0,HGEDISP_NODE);
-        col=int((cosf(t*5+(i+j)/2)+1)*35);
-        dis->SetColor(j,i,0xFF<<24 | col<<16 | col<<8 | col);
+    for (i = 0; i < nRows; i++)
+      for (j = 1; j < nCols - 1; j++) {
+        dis->SetDisplacement(j, i, cosf(t * 5 + j / 2) * 15, 0, HGEDISP_NODE);
+        col = static_cast<uint32_t>((cosf(t * 5 + (i + j) / 2) + 1) * 35);
+        dis->SetColor(j, i, 0xFFu << 24 | col << 16 | col << 8 | col);
       }
 
     break;
 
   case 2:
-    for(i=0; i<nRows; i++)
-      for(j=0; j<nCols; j++) {
-        r=sqrtf(powf(j-(float)nCols/2,2)+powf(i-(float)nRows/2,2));
-        a=r*cosf(t*2)*0.1f;
-        dx=sinf(a)*(i*cellh-256)+cosf(a)*(j*cellw-256);
-        dy=cosf(a)*(i*cellh-256)-sinf(a)*(j*cellw-256);
-        dis->SetDisplacement(j,i,dx,dy,HGEDISP_CENTER);
-        col=int((cos(r+t*4)+1)*40);
-        dis->SetColor(j,i,0xFF<<24 | col<<16 | (col/2)<<8);
+    for (i = 0; i < nRows; i++)
+      for (j = 0; j < nCols; j++) {
+        r = sqrtf(powf(j - static_cast<float>(nCols) / 2, 2)
+                  + powf(i - static_cast<float>(nRows) / 2, 2));
+        a = r * cosf(t * 2) * 0.1f;
+        dx = sinf(a) * (i * cellh - 256) + cosf(a) * (j * cellw - 256);
+        dy = cosf(a) * (i * cellh - 256) - sinf(a) * (j * cellw - 256);
+        dis->SetDisplacement(j, i, dx, dy, HGEDISP_CENTER);
+        col = static_cast<uint32_t>((cos(r + t * 4) + 1) * 40);
+        dis->SetColor(j, i, 0xFFu << 24 | col << 16 | (col / 2) << 8);
       }
 
     break;
@@ -105,7 +108,7 @@ bool FrameFunc()
 }
 
 
-bool RenderFunc()
+static bool RenderFunc()
 {
   // Render graphics
   hge->Gfx_BeginScene();
@@ -120,7 +123,7 @@ bool RenderFunc()
 
 
 #ifdef PLATFORM_UNIX
-int main(int argc, char *argv[])
+int main(int /*argc*/, char * /*argv*/ [])
 #else
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 #endif
@@ -137,12 +140,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
   hge->System_SetState(HGE_SCREENBPP, 32);
   hge->System_SetState(HGE_USESOUND, false);
 
-  if(hge->System_Initiate()) {
+  if (hge->System_Initiate()) {
 
     // Load sound and texture
-    tex=hge->Texture_Load("texture.jpg");
+    tex = hge->Texture_Load("texture.jpg");
 
-    if(!tex) {
+    if (!tex) {
       // If one of the data files is not found, display
       // an error message and shutdown.
 #ifdef PLATFORM_UNIX
@@ -156,14 +159,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
     }
 
     // Create a distortion mesh
-    dis=new hgeDistortionMesh(nCols, nRows);
+    dis = new hgeDistortionMesh(nCols, nRows);
     dis->SetTexture(tex);
-    dis->SetTextureRect(0,0,512,512);
+    dis->SetTextureRect(0, 0, 512, 512);
     dis->SetBlendMode(BLEND_COLORADD | BLEND_ALPHABLEND | BLEND_ZWRITE);
     dis->Clear(0xFF000000);
 
     // Load a font
-    fnt=new hgeFont("font1.fnt");
+    fnt = new hgeFont("font1.fnt");
 
     // Let's rock now!
     hge->System_Start();

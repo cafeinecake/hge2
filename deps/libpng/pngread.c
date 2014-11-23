@@ -63,8 +63,8 @@ png_create_read_struct_2(png_const_charp user_png_ver, png_voidp error_ptr,
 
   /* added at libpng-1.2.6 */
 #ifdef PNG_SET_USER_LIMITS_SUPPORTED
-  png_ptr->user_width_max=PNG_USER_WIDTH_MAX;
-  png_ptr->user_height_max=PNG_USER_HEIGHT_MAX;
+  png_ptr->user_width_max = PNG_USER_WIDTH_MAX;
+  png_ptr->user_height_max = PNG_USER_HEIGHT_MAX;
 #endif
 
 #ifdef PNG_SETJMP_SUPPORTED
@@ -76,7 +76,7 @@ png_create_read_struct_2(png_const_charp user_png_ver, png_voidp error_ptr,
 #endif
   {
     png_free(png_ptr, png_ptr->zbuf);
-    png_ptr->zbuf=NULL;
+    png_ptr->zbuf = NULL;
 #ifdef PNG_USER_MEM_SUPPORTED
     png_destroy_struct_2((png_voidp)png_ptr,
                          (png_free_ptr)free_fn, (png_voidp)mem_ptr);
@@ -87,7 +87,7 @@ png_create_read_struct_2(png_const_charp user_png_ver, png_voidp error_ptr,
   }
 
 #ifdef USE_FAR_KEYWORD
-  png_memcpy(png_ptr->jmpbuf,jmpbuf,png_sizeof(jmp_buf));
+  png_memcpy(png_ptr->jmpbuf, jmpbuf, png_sizeof(jmp_buf));
 #endif
 #endif
 
@@ -97,10 +97,10 @@ png_create_read_struct_2(png_const_charp user_png_ver, png_voidp error_ptr,
 
   png_set_error_fn(png_ptr, error_ptr, error_fn, warn_fn);
 
-  i=0;
+  i = 0;
 
   do {
-    if(user_png_ver[i] != png_libpng_ver[i]) {
+    if (user_png_ver[i] != png_libpng_ver[i]) {
       png_ptr->flags |= PNG_FLAG_LIBRARY_MISMATCH;
     }
   } while (png_libpng_ver[i++]);
@@ -128,7 +128,7 @@ png_create_read_struct_2(png_const_charp user_png_ver, png_voidp error_ptr,
       png_warning(png_ptr, msg);
 #endif
 #ifdef PNG_ERROR_NUMBERS_SUPPORTED
-      png_ptr->flags=0;
+      png_ptr->flags = 0;
 #endif
       png_error(png_ptr,
                 "Incompatible libpng version in application and library");
@@ -175,7 +175,7 @@ png_create_read_struct_2(png_const_charp user_png_ver, png_voidp error_ptr,
     PNG_ABORT();
   }
 
-  png_memcpy(png_ptr->jmpbuf,jmpbuf,png_sizeof(jmp_buf));
+  png_memcpy(png_ptr->jmpbuf, jmpbuf, png_sizeof(jmp_buf));
 #else
 
   if (setjmp(png_ptr->jmpbuf)) {
@@ -206,10 +206,10 @@ png_read_init_2(png_structp png_ptr, png_const_charp user_png_ver,
 {
   /* We only come here via pre-1.0.12-compiled applications */
 #if !defined(PNG_NO_STDIO) && !defined(_WIN32_WCE)
-  if(png_sizeof(png_struct) > png_struct_size ||
+  if (png_sizeof(png_struct) > png_struct_size ||
       png_sizeof(png_info) > png_info_size) {
     char msg[80];
-    png_ptr->warning_fn=NULL;
+    png_ptr->warning_fn = NULL;
 
     if (user_png_ver) {
       sprintf(msg, "Application was compiled with png.h from libpng-%.20s",
@@ -224,19 +224,19 @@ png_read_init_2(png_structp png_ptr, png_const_charp user_png_ver,
 
 #endif
 
-  if(png_sizeof(png_struct) > png_struct_size) {
-    png_ptr->error_fn=NULL;
+  if (png_sizeof(png_struct) > png_struct_size) {
+    png_ptr->error_fn = NULL;
 #ifdef PNG_ERROR_NUMBERS_SUPPORTED
-    png_ptr->flags=0;
+    png_ptr->flags = 0;
 #endif
     png_error(png_ptr,
               "The png struct allocated by the application for reading is too small.");
   }
 
-  if(png_sizeof(png_info) > png_info_size) {
-    png_ptr->error_fn=NULL;
+  if (png_sizeof(png_info) > png_info_size) {
+    png_ptr->error_fn = NULL;
 #ifdef PNG_ERROR_NUMBERS_SUPPORTED
-    png_ptr->flags=0;
+    png_ptr->flags = 0;
 #endif
     png_error(png_ptr,
               "The info struct allocated by application for reading is too small.");
@@ -253,16 +253,16 @@ png_read_init_3(png_structpp ptr_ptr, png_const_charp user_png_ver,
   jmp_buf tmp_jmp;  /* to save current jump buffer */
 #endif
 
-  int i=0;
+  int i = 0;
 
-  png_structp png_ptr=*ptr_ptr;
+  png_structp png_ptr = *ptr_ptr;
 
   do {
-    if(user_png_ver[i] != png_libpng_ver[i]) {
+    if (user_png_ver[i] != png_libpng_ver[i]) {
 #ifdef PNG_LEGACY_SUPPORTED
       png_ptr->flags |= PNG_FLAG_LIBRARY_MISMATCH;
 #else
-      png_ptr->warning_fn=NULL;
+      png_ptr->warning_fn = NULL;
       png_warning(png_ptr,
                   "Application uses deprecated png_read_init() and should be recompiled.");
       break;
@@ -277,7 +277,7 @@ png_read_init_3(png_structpp ptr_ptr, png_const_charp user_png_ver,
   png_memcpy(tmp_jmp, png_ptr->jmpbuf, png_sizeof (jmp_buf));
 #endif
 
-  if(png_sizeof(png_struct) > png_struct_size) {
+  if (png_sizeof(png_struct) > png_struct_size) {
     png_destroy_struct(png_ptr);
     *ptr_ptr = (png_structp)png_create_struct(PNG_STRUCT_PNG);
     png_ptr = *ptr_ptr;
@@ -293,8 +293,8 @@ png_read_init_3(png_structpp ptr_ptr, png_const_charp user_png_ver,
 
   /* added at libpng-1.2.6 */
 #ifdef PNG_SET_USER_LIMITS_SUPPORTED
-  png_ptr->user_width_max=PNG_USER_WIDTH_MAX;
-  png_ptr->user_height_max=PNG_USER_HEIGHT_MAX;
+  png_ptr->user_width_max = PNG_USER_WIDTH_MAX;
+  png_ptr->user_height_max = PNG_USER_HEIGHT_MAX;
 #endif
 
   /* initialize zbuf - compression buffer */
@@ -364,7 +364,7 @@ png_read_info(png_structp png_ptr, png_infop info_ptr)
     }
   }
 
-  for(;;) {
+  for (;;) {
 #ifdef PNG_USE_LOCAL_ARRAYS
     PNG_IHDR;
     PNG_IDAT;
@@ -426,7 +426,7 @@ png_read_info(png_structp png_ptr, png_infop info_ptr)
     png_uint_32 length;
 
     png_read_data(png_ptr, chunk_length, 4);
-    length = png_get_uint_31(png_ptr,chunk_length);
+    length = png_get_uint_31(png_ptr, chunk_length);
 
     png_reset_crc(png_ptr);
     png_crc_read(png_ptr, png_ptr->chunk_name, 4);
@@ -795,7 +795,7 @@ png_read_row(png_structp png_ptr, png_bytep row, png_bytep dsp_row)
         png_crc_finish(png_ptr, 0);
 
         png_read_data(png_ptr, chunk_length, 4);
-        png_ptr->idat_size = png_get_uint_31(png_ptr,chunk_length);
+        png_ptr->idat_size = png_get_uint_31(png_ptr, chunk_length);
 
         png_reset_crc(png_ptr);
         png_crc_read(png_ptr, png_ptr->chunk_name, 4);
@@ -844,7 +844,7 @@ png_read_row(png_structp png_ptr, png_bytep row, png_bytep dsp_row)
   png_ptr->row_info.rowbytes = PNG_ROWBYTES(png_ptr->row_info.pixel_depth,
                                png_ptr->row_info.width);
 
-  if(png_ptr->row_buf[0])
+  if (png_ptr->row_buf[0])
     png_read_filter_row(png_ptr, &(png_ptr->row_info),
                         png_ptr->row_buf + 1, png_ptr->prev_row + 1,
                         (int)(png_ptr->row_buf[0]));
@@ -854,7 +854,7 @@ png_read_row(png_structp png_ptr, png_bytep row, png_bytep dsp_row)
 
 #if defined(PNG_MNG_FEATURES_SUPPORTED)
 
-  if((png_ptr->mng_features_permitted & PNG_FLAG_MNG_FILTER_64) &&
+  if ((png_ptr->mng_features_permitted & PNG_FLAG_MNG_FILTER_64) &&
       (png_ptr->filter_type == PNG_INTRAPIXEL_DIFFERENCING)) {
     /* Intrapixel differencing */
     png_do_read_intrapixel(&(png_ptr->row_info), png_ptr->row_buf + 1);
@@ -863,7 +863,7 @@ png_read_row(png_structp png_ptr, png_bytep row, png_bytep dsp_row)
 #endif
 
 
-  if (png_ptr->transformations || (png_ptr->flags&PNG_FLAG_STRIP_ALPHA)) {
+  if (png_ptr->transformations || (png_ptr->flags & PNG_FLAG_STRIP_ALPHA)) {
     png_do_read_transformations(png_ptr);
   }
 
@@ -952,13 +952,13 @@ png_read_rows(png_structp png_ptr, png_bytepp row,
 
       png_read_row(png_ptr, rptr, dptr);
     }
-  else if(rp != NULL)
+  else if (rp != NULL)
     for (i = 0; i < num_rows; i++) {
       png_bytep rptr = *rp;
       png_read_row(png_ptr, rptr, png_bytep_NULL);
       rp++;
     }
-  else if(dp != NULL)
+  else if (dp != NULL)
     for (i = 0; i < num_rows; i++) {
       png_bytep dptr = *dp;
       png_read_row(png_ptr, png_bytep_NULL, dptr);
@@ -983,7 +983,7 @@ png_read_rows(png_structp png_ptr, png_bytepp row,
 void PNGAPI
 png_read_image(png_structp png_ptr, png_bytepp image)
 {
-  png_uint_32 i,image_height;
+  png_uint_32 i, image_height;
   int pass, j;
   png_bytepp rp;
 
@@ -1001,7 +1001,7 @@ png_read_image(png_structp png_ptr, png_bytepp image)
 #endif
 
 
-  image_height=png_ptr->height;
+  image_height = png_ptr->height;
   png_ptr->num_rows = image_height; /* Make sure this is set correctly */
 
   for (j = 0; j < pass; j++) {
@@ -1089,7 +1089,7 @@ png_read_end(png_structp png_ptr, png_infop info_ptr)
 #endif /* PNG_USE_LOCAL_ARRAYS */
 
     png_read_data(png_ptr, chunk_length, 4);
-    length = png_get_uint_31(png_ptr,chunk_length);
+    length = png_get_uint_31(png_ptr, chunk_length);
 
     png_reset_crc(png_ptr);
     png_crc_read(png_ptr, png_ptr->chunk_name, 4);
@@ -1515,8 +1515,8 @@ png_read_png(png_structp png_ptr, png_infop info_ptr,
    */
   png_read_info(png_ptr, info_ptr);
 
-  if (info_ptr->height > PNG_UINT_32_MAX/png_sizeof(png_bytep)) {
-    png_error(png_ptr,"Image is too high to process with png_read_png()");
+  if (info_ptr->height > PNG_UINT_32_MAX / png_sizeof(png_bytep)) {
+    png_error(png_ptr, "Image is too high to process with png_read_png()");
   }
 
   /* -------------- image transformations start here ------------------- */
@@ -1653,7 +1653,7 @@ png_read_png(png_structp png_ptr, png_infop info_ptr,
   png_free_data(png_ptr, info_ptr, PNG_FREE_ROWS, 0);
 #endif
 
-  if(info_ptr->row_pointers == NULL) {
+  if (info_ptr->row_pointers == NULL) {
     info_ptr->row_pointers = (png_bytepp)png_malloc(png_ptr,
                              info_ptr->height * png_sizeof(png_bytep));
 #ifdef PNG_FREE_ME_SUPPORTED
@@ -1672,7 +1672,7 @@ png_read_png(png_structp png_ptr, png_infop info_ptr,
   /* read rest of file, and get additional chunks in info_ptr - REQUIRED */
   png_read_end(png_ptr, info_ptr);
 
-  if(transforms == 0 || params == NULL)
+  if (transforms == 0 || params == NULL)
     /* quiet compiler warnings */ {
     return;
   }

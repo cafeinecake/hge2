@@ -33,7 +33,7 @@ int ZLIB_INTERNAL inflate_table(type, lens, codes, table, bits, work)
 codetype type;
 unsigned short FAR *lens;
 unsigned codes;
-code FAR * FAR *table;
+code FAR *FAR *table;
 unsigned FAR *bits;
 unsigned short FAR *work;
 {
@@ -55,8 +55,8 @@ unsigned short FAR *work;
   const unsigned short FAR *base;     /* base value table to use */
   const unsigned short FAR *extra;    /* extra bits table to use */
   int end;                    /* use base and extra for symbol > end */
-  unsigned short count[MAXBITS+1];    /* number of codes of each length */
-  unsigned short offs[MAXBITS+1];     /* offsets in table for each length */
+  unsigned short count[MAXBITS + 1];  /* number of codes of each length */
+  unsigned short offs[MAXBITS + 1];   /* offsets in table for each length */
   static const unsigned short lbase[31] = { /* Length codes 257..285 base */
     3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 15, 17, 19, 23, 27, 31,
     35, 43, 51, 59, 67, 83, 99, 115, 131, 163, 195, 227, 258, 0, 0

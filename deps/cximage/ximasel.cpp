@@ -11,7 +11,7 @@
  */
 bool CxImage::SelectionIsValid()
 {
-  return pSelection!=0;
+  return pSelection != 0;
 }
 
 #if CXIMAGE_SUPPORT_SELECTION
@@ -20,9 +20,9 @@ bool CxImage::SelectionIsValid()
 /**
  * Gets the smallest rectangle that contains the selection
  */
-void CxImage::SelectionGetBox(RECT& r)
+void CxImage::SelectionGetBox(RECT &r)
 {
-  memcpy(&r,&info.rSelectionBox,sizeof(RECT));
+  memcpy(&r, &info.rSelectionBox, sizeof(RECT));
 }
 ////////////////////////////////////////////////////////////////////////////////
 /**
@@ -31,13 +31,13 @@ void CxImage::SelectionGetBox(RECT& r)
 bool CxImage::SelectionClear(uint8_t level)
 {
   if (pSelection) {
-    if (level==0) {
-      memset(pSelection,0,head.biWidth * head.biHeight);
+    if (level == 0) {
+      memset(pSelection, 0, head.biWidth * head.biHeight);
       info.rSelectionBox.left = head.biWidth;
       info.rSelectionBox.bottom = head.biHeight;
       info.rSelectionBox.right = info.rSelectionBox.top = 0;
     } else {
-      memset(pSelection,level,head.biWidth * head.biHeight);
+      memset(pSelection, level, head.biWidth * head.biHeight);
       info.rSelectionBox.right = head.biWidth;
       info.rSelectionBox.top = head.biHeight;
       info.rSelectionBox.left = info.rSelectionBox.bottom = 0;
@@ -55,8 +55,8 @@ bool CxImage::SelectionClear(uint8_t level)
 bool CxImage::SelectionCreate()
 {
   SelectionDelete();
-  pSelection = (uint8_t*)calloc(head.biWidth * head.biHeight, 1);
-  return (pSelection!=0);
+  pSelection = (uint8_t *)calloc(head.biWidth * head.biHeight, 1);
+  return (pSelection != 0);
 }
 ////////////////////////////////////////////////////////////////////////////////
 /**
@@ -66,7 +66,7 @@ bool CxImage::SelectionDelete()
 {
   if (pSelection) {
     free(pSelection);
-    pSelection=NULL;
+    pSelection = NULL;
   }
 
   info.rSelectionBox.left = head.biWidth;
@@ -80,12 +80,12 @@ bool CxImage::SelectionDelete()
  */
 bool CxImage::SelectionIsInside(int32_t x, int32_t y)
 {
-  if (IsInside(x,y)) {
-    if (pSelection==NULL) {
+  if (IsInside(x, y)) {
+    if (pSelection == NULL) {
       return true;
     }
 
-    return pSelection[x+y*head.biWidth]!=0;
+    return pSelection[x + y * head.biWidth] != 0;
   }
 
   return false;
@@ -99,7 +99,7 @@ bool CxImage::BlindSelectionIsInside(int32_t x, int32_t y)
 {
 #ifdef _DEBUG
 
-  if (!IsInside(x,y))
+  if (!IsInside(x, y))
 #if CXIMAGE_SUPPORT_EXCEPTION_HANDLING
     throw 0;
 
@@ -108,11 +108,11 @@ bool CxImage::BlindSelectionIsInside(int32_t x, int32_t y)
 #endif
 #endif
 
-  if (pSelection==NULL) {
+  if (pSelection == NULL) {
     return true;
   }
 
-  return pSelection[x+y*head.biWidth]!=0;
+  return pSelection[x + y * head.biWidth] != 0;
 }
 ////////////////////////////////////////////////////////////////////////////////
 /**
@@ -120,55 +120,55 @@ bool CxImage::BlindSelectionIsInside(int32_t x, int32_t y)
  */
 bool CxImage::SelectionAddRect(RECT r, uint8_t level)
 {
-  if (pSelection==NULL) {
+  if (pSelection == NULL) {
     SelectionCreate();
   }
 
-  if (pSelection==NULL) {
+  if (pSelection == NULL) {
     return false;
   }
 
   RECT r2;
 
-  if (r.left<r.right) {
-    r2.left=r.left;
-    r2.right=r.right;
+  if (r.left < r.right) {
+    r2.left = r.left;
+    r2.right = r.right;
   } else {
-    r2.left=r.right ;
-    r2.right=r.left;
+    r2.left = r.right ;
+    r2.right = r.left;
   }
 
-  if (r.bottom<r.top) {
-    r2.bottom=r.bottom;
-    r2.top=r.top;
+  if (r.bottom < r.top) {
+    r2.bottom = r.bottom;
+    r2.top = r.top;
   } else {
-    r2.bottom=r.top ;
-    r2.top=r.bottom;
+    r2.bottom = r.top ;
+    r2.top = r.bottom;
   }
 
   if (info.rSelectionBox.top <= r2.top) {
-    info.rSelectionBox.top = max(0L,min(head.biHeight,r2.top+1));
+    info.rSelectionBox.top = max(0L, min(head.biHeight, r2.top + 1));
   }
 
   if (info.rSelectionBox.left > r2.left) {
-    info.rSelectionBox.left = max(0L,min(head.biWidth,r2.left));
+    info.rSelectionBox.left = max(0L, min(head.biWidth, r2.left));
   }
 
   if (info.rSelectionBox.right <= r2.right) {
-    info.rSelectionBox.right = max(0L,min(head.biWidth,r2.right+1));
+    info.rSelectionBox.right = max(0L, min(head.biWidth, r2.right + 1));
   }
 
   if (info.rSelectionBox.bottom > r2.bottom) {
-    info.rSelectionBox.bottom = max(0L,min(head.biHeight,r2.bottom));
+    info.rSelectionBox.bottom = max(0L, min(head.biHeight, r2.bottom));
   }
 
-  int32_t ymin = max(0L,min(head.biHeight,r2.bottom));
-  int32_t ymax = max(0L,min(head.biHeight,r2.top+1));
-  int32_t xmin = max(0L,min(head.biWidth,r2.left));
-  int32_t xmax = max(0L,min(head.biWidth,r2.right+1));
+  int32_t ymin = max(0L, min(head.biHeight, r2.bottom));
+  int32_t ymax = max(0L, min(head.biHeight, r2.top + 1));
+  int32_t xmin = max(0L, min(head.biWidth, r2.left));
+  int32_t xmax = max(0L, min(head.biWidth, r2.right + 1));
 
-  for (int32_t y=ymin; y<ymax; y++) {
-    memset(pSelection + xmin + y * head.biWidth, level, xmax-xmin);
+  for (int32_t y = ymin; y < ymax; y++) {
+    memset(pSelection + xmin + y * head.biWidth, level, xmax - xmin);
   }
 
   return true;
@@ -179,64 +179,64 @@ bool CxImage::SelectionAddRect(RECT r, uint8_t level)
  */
 bool CxImage::SelectionAddEllipse(RECT r, uint8_t level)
 {
-  if (pSelection==NULL) {
+  if (pSelection == NULL) {
     SelectionCreate();
   }
 
-  if (pSelection==NULL) {
+  if (pSelection == NULL) {
     return false;
   }
 
-  int32_t xradius = abs(r.right - r.left)/2;
-  int32_t yradius = abs(r.top - r.bottom)/2;
+  int32_t xradius = abs(r.right - r.left) / 2;
+  int32_t yradius = abs(r.top - r.bottom) / 2;
 
-  if (xradius==0 || yradius==0) {
+  if (xradius == 0 || yradius == 0) {
     return false;
   }
 
-  int32_t xcenter = (r.right + r.left)/2;
-  int32_t ycenter = (r.top + r.bottom)/2;
+  int32_t xcenter = (r.right + r.left) / 2;
+  int32_t ycenter = (r.top + r.bottom) / 2;
 
   if (info.rSelectionBox.left > (xcenter - xradius)) {
-    info.rSelectionBox.left = max(0L,min(head.biWidth,(xcenter - xradius)));
+    info.rSelectionBox.left = max(0L, min(head.biWidth, (xcenter - xradius)));
   }
 
   if (info.rSelectionBox.right <= (xcenter + xradius)) {
-    info.rSelectionBox.right = max(0L,min(head.biWidth,(xcenter + xradius + 1)));
+    info.rSelectionBox.right = max(0L, min(head.biWidth, (xcenter + xradius + 1)));
   }
 
   if (info.rSelectionBox.bottom > (ycenter - yradius)) {
-    info.rSelectionBox.bottom = max(0L,min(head.biHeight,(ycenter - yradius)));
+    info.rSelectionBox.bottom = max(0L, min(head.biHeight, (ycenter - yradius)));
   }
 
   if (info.rSelectionBox.top <= (ycenter + yradius)) {
-    info.rSelectionBox.top = max(0L,min(head.biHeight,(ycenter + yradius + 1)));
+    info.rSelectionBox.top = max(0L, min(head.biHeight, (ycenter + yradius + 1)));
   }
 
-  int32_t xmin = max(0L,min(head.biWidth,xcenter - xradius));
-  int32_t xmax = max(0L,min(head.biWidth,xcenter + xradius + 1));
-  int32_t ymin = max(0L,min(head.biHeight,ycenter - yradius));
-  int32_t ymax = max(0L,min(head.biHeight,ycenter + yradius + 1));
+  int32_t xmin = max(0L, min(head.biWidth, xcenter - xradius));
+  int32_t xmax = max(0L, min(head.biWidth, xcenter + xradius + 1));
+  int32_t ymin = max(0L, min(head.biHeight, ycenter - yradius));
+  int32_t ymax = max(0L, min(head.biHeight, ycenter + yradius + 1));
 
-  int32_t y,yo;
+  int32_t y, yo;
 
-  for (y=ymin; y<min(ycenter,ymax); y++) {
-    for (int32_t x=xmin; x<xmax; x++) {
-      yo = static_cast<int32_t>(ycenter - yradius * sqrt(1-pow(static_cast<float>(x - xcenter)/
-                                (float)xradius,2)));
+  for (y = ymin; y < min(ycenter, ymax); y++) {
+    for (int32_t x = xmin; x < xmax; x++) {
+      yo = static_cast<int32_t>(ycenter - yradius * sqrt(1 - pow(static_cast<float>(x - xcenter) /
+                                (float)xradius, 2)));
 
-      if (yo<y) {
+      if (yo < y) {
         pSelection[x + y * head.biWidth] = level;
       }
     }
   }
 
-  for (y=ycenter; y<ymax; y++) {
-    for (int32_t x=xmin; x<xmax; x++) {
-      yo = static_cast<int32_t>(ycenter + yradius * sqrt(1-pow(static_cast<float>(x - xcenter)/
-                                (float)xradius,2)));
+  for (y = ycenter; y < ymax; y++) {
+    for (int32_t x = xmin; x < xmax; x++) {
+      yo = static_cast<int32_t>(ycenter + yradius * sqrt(1 - pow(static_cast<float>(x - xcenter) /
+                                (float)xradius, 2)));
 
-      if (yo>y) {
+      if (yo > y) {
         pSelection[x + y * head.biWidth] = level;
       }
     }
@@ -252,11 +252,11 @@ bool CxImage::SelectionAddEllipse(RECT r, uint8_t level)
 bool CxImage::SelectionInvert()
 {
   if (pSelection) {
-    uint8_t *iSrc=pSelection;
-    int32_t n=head.biHeight*head.biWidth;
+    uint8_t *iSrc = pSelection;
+    int32_t n = head.biHeight * head.biWidth;
 
-    for(int32_t i=0; i < n; i++) {
-      *iSrc=(uint8_t)~(*(iSrc));
+    for (int32_t i = 0; i < n; i++) {
+      *iSrc = (uint8_t)~(*(iSrc));
       iSrc++;
     }
 
@@ -278,16 +278,16 @@ bool CxImage::SelectionCopy(CxImage &from)
     return false;
   }
 
-  if (pSelection==NULL) {
-    pSelection = (uint8_t*)malloc(head.biWidth * head.biHeight);
+  if (pSelection == NULL) {
+    pSelection = (uint8_t *)malloc(head.biWidth * head.biHeight);
   }
 
-  if (pSelection==NULL) {
+  if (pSelection == NULL) {
     return false;
   }
 
-  memcpy(pSelection,from.pSelection,head.biWidth * head.biHeight);
-  memcpy(&info.rSelectionBox,&from.info.rSelectionBox,sizeof(RECT));
+  memcpy(pSelection, from.pSelection, head.biWidth * head.biHeight);
+  memcpy(&info.rSelectionBox, &from.info.rSelectionBox, sizeof(RECT));
   return true;
 }
 ////////////////////////////////////////////////////////////////////////////////
@@ -298,22 +298,22 @@ bool CxImage::SelectionCopy(CxImage &from)
  */
 bool CxImage::SelectionAddPolygon(POINT *points, int32_t npoints, uint8_t level)
 {
-  if (points==NULL || npoints<3) {
+  if (points == NULL || npoints < 3) {
     return false;
   }
 
-  if (pSelection==NULL) {
+  if (pSelection == NULL) {
     SelectionCreate();
   }
 
-  if (pSelection==NULL) {
+  if (pSelection == NULL) {
     return false;
   }
 
-  uint8_t* plocal = (uint8_t*)calloc(head.biWidth*head.biHeight, 1);
-  RECT localbox = {head.biWidth,0,0,head.biHeight};
+  uint8_t *plocal = (uint8_t *)calloc(head.biWidth * head.biHeight, 1);
+  RECT localbox = {head.biWidth, 0, 0, head.biHeight};
 
-  int32_t x,y,i=0;
+  int32_t x, y, i = 0;
   POINT *current;
   POINT *next = NULL;
   POINT *start = NULL;
@@ -322,35 +322,35 @@ bool CxImage::SelectionAddPolygon(POINT *points, int32_t npoints, uint8_t level)
   while (i < npoints) {
     current = &points[i];
 
-    if (current->x!=-1) {
-      if (i==0 || (i>0 && points[i-1].x==-1)) {
+    if (current->x != -1) {
+      if (i == 0 || (i > 0 && points[i - 1].x == -1)) {
         start = &points[i];
       }
 
-      if ((i+1)==npoints || points[i+1].x==-1) {
+      if ((i + 1) == npoints || points[i + 1].x == -1) {
         next = start;
       } else {
-        next = &points[i+1];
+        next = &points[i + 1];
       }
 
       float beta;
 
       if (current->x != next->x) {
-        beta = static_cast<float>(next->y - current->y)/static_cast<float>(next->x - current->x);
+        beta = static_cast<float>(next->y - current->y) / static_cast<float>(next->x - current->x);
 
         if (current->x < next->x) {
-          for (x=current->x; x<=next->x; x++) {
+          for (x = current->x; x <= next->x; x++) {
             y = static_cast<int32_t>(current->y + (x - current->x) * beta);
 
-            if (IsInside(x,y)) {
+            if (IsInside(x, y)) {
               plocal[x + y * head.biWidth] = 255;
             }
           }
         } else {
-          for (x=current->x; x>=next->x; x--) {
+          for (x = current->x; x >= next->x; x--) {
             y = static_cast<int32_t>(current->y + (x - current->x) * beta);
 
-            if (IsInside(x,y)) {
+            if (IsInside(x, y)) {
               plocal[x + y * head.biWidth] = 255;
             }
           }
@@ -358,21 +358,21 @@ bool CxImage::SelectionAddPolygon(POINT *points, int32_t npoints, uint8_t level)
       }
 
       if (current->y != next->y) {
-        beta = static_cast<float>(next->x - current->x)/static_cast<float>(next->y - current->y);
+        beta = static_cast<float>(next->x - current->x) / static_cast<float>(next->y - current->y);
 
         if (current->y < next->y) {
-          for (y=current->y; y<=next->y; y++) {
+          for (y = current->y; y <= next->y; y++) {
             x = static_cast<int32_t>(current->x + (y - current->y) * beta);
 
-            if (IsInside(x,y)) {
+            if (IsInside(x, y)) {
               plocal[x + y * head.biWidth] = 255;
             }
           }
         } else {
-          for (y=current->y; y>=next->y; y--) {
+          for (y = current->y; y >= next->y; y--) {
             x = static_cast<int32_t>(current->x + (y - current->y) * beta);
 
-            if (IsInside(x,y)) {
+            if (IsInside(x, y)) {
               plocal[x + y * head.biWidth] = 255;
             }
           }
@@ -383,101 +383,101 @@ bool CxImage::SelectionAddPolygon(POINT *points, int32_t npoints, uint8_t level)
     RECT r2;
 
     if (current->x < next->x) {
-      r2.left=current->x;
-      r2.right=next->x;
+      r2.left = current->x;
+      r2.right = next->x;
     } else {
-      r2.left=next->x ;
-      r2.right=current->x;
+      r2.left = next->x ;
+      r2.right = current->x;
     }
 
     if (current->y < next->y) {
-      r2.bottom=current->y;
-      r2.top=next->y;
+      r2.bottom = current->y;
+      r2.top = next->y;
     } else {
-      r2.bottom=next->y ;
-      r2.top=current->y;
+      r2.bottom = next->y ;
+      r2.top = current->y;
     }
 
     if (localbox.top < r2.top) {
-      localbox.top = max(0L,min(head.biHeight-1,r2.top+1));
+      localbox.top = max(0L, min(head.biHeight - 1, r2.top + 1));
     }
 
     if (localbox.left > r2.left) {
-      localbox.left = max(0L,min(head.biWidth-1,r2.left-1));
+      localbox.left = max(0L, min(head.biWidth - 1, r2.left - 1));
     }
 
     if (localbox.right < r2.right) {
-      localbox.right = max(0L,min(head.biWidth-1,r2.right+1));
+      localbox.right = max(0L, min(head.biWidth - 1, r2.right + 1));
     }
 
     if (localbox.bottom > r2.bottom) {
-      localbox.bottom = max(0L,min(head.biHeight-1,r2.bottom-1));
+      localbox.bottom = max(0L, min(head.biHeight - 1, r2.bottom - 1));
     }
 
     i++;
   }
 
   //fill the outer region
-  int32_t npix=(localbox.right - localbox.left)*(localbox.top - localbox.bottom);
-  POINT* pix = (POINT*)calloc(npix,sizeof(POINT));
-  uint8_t back=0, mark=1;
+  int32_t npix = (localbox.right - localbox.left) * (localbox.top - localbox.bottom);
+  POINT *pix = (POINT *)calloc(npix, sizeof(POINT));
+  uint8_t back = 0, mark = 1;
   int32_t fx, fy, fxx, fyy, first, last;
   int32_t xmin = 0;
   int32_t xmax = 0;
   int32_t ymin = 0;
   int32_t ymax = 0;
 
-  for (int32_t side=0; side<4; side++) {
-    switch(side) {
+  for (int32_t side = 0; side < 4; side++) {
+    switch (side) {
     case 0:
-      xmin=localbox.left;
-      xmax=localbox.right+1;
-      ymin=localbox.bottom;
-      ymax=localbox.bottom+1;
+      xmin = localbox.left;
+      xmax = localbox.right + 1;
+      ymin = localbox.bottom;
+      ymax = localbox.bottom + 1;
       break;
 
     case 1:
-      xmin=localbox.right;
-      xmax=localbox.right+1;
-      ymin=localbox.bottom;
-      ymax=localbox.top+1;
+      xmin = localbox.right;
+      xmax = localbox.right + 1;
+      ymin = localbox.bottom;
+      ymax = localbox.top + 1;
       break;
 
     case 2:
-      xmin=localbox.left;
-      xmax=localbox.right+1;
-      ymin=localbox.top;
-      ymax=localbox.top+1;
+      xmin = localbox.left;
+      xmax = localbox.right + 1;
+      ymin = localbox.top;
+      ymax = localbox.top + 1;
       break;
 
     case 3:
-      xmin=localbox.left;
-      xmax=localbox.left+1;
-      ymin=localbox.bottom;
-      ymax=localbox.top+1;
+      xmin = localbox.left;
+      xmax = localbox.left + 1;
+      ymin = localbox.bottom;
+      ymax = localbox.top + 1;
       break;
     }
 
     //fill from the border points
-    for(y=ymin; y<ymax; y++) {
-      for(x=xmin; x<xmax; x++) {
-        if (plocal[x+y*head.biWidth]==0) {
+    for (y = ymin; y < ymax; y++) {
+      for (x = xmin; x < xmax; x++) {
+        if (plocal[x + y * head.biWidth] == 0) {
           // Subject: FLOOD FILL ROUTINE              Date: 12-23-97 (00:57)
           // Author:  Petter Holmberg                 Code: QB, QBasic, PDS
           // Origin:  petter.holmberg@usa.net         Packet: GRAPHICS.ABC
-          first=0;
-          last=1;
+          first = 0;
+          last = 1;
 
-          while(first!=last) {
+          while (first != last) {
             fx = pix[first].x;
             fy = pix[first].y;
             fxx = fx + x;
             fyy = fy + y;
 
-            for(;;) {
-              if ((plocal[fxx + fyy*head.biWidth] == back) &&
-                  fxx>=localbox.left && fxx<=localbox.right && fyy>=localbox.bottom && fyy<=localbox.top ) {
-                plocal[fxx + fyy*head.biWidth] = mark;
+            for (;;) {
+              if ((plocal[fxx + fyy * head.biWidth] == back) &&
+                  fxx >= localbox.left && fxx <= localbox.right && fyy >= localbox.bottom && fyy <= localbox.top ) {
+                plocal[fxx + fyy * head.biWidth] = mark;
 
                 if (fyy > 0 && plocal[fxx + (fyy - 1)*head.biWidth] == back) {
                   pix[last].x = fx;
@@ -489,7 +489,7 @@ bool CxImage::SelectionAddPolygon(POINT *points, int32_t npoints, uint8_t level)
                   }
                 }
 
-                if ((fyy + 1)<head.biHeight && plocal[fxx + (fyy + 1)*head.biWidth] == back) {
+                if ((fyy + 1) < head.biHeight && plocal[fxx + (fyy + 1)*head.biWidth] == back) {
                   pix[last].x = fx;
                   pix[last].y = fy + 1;
                   last++;
@@ -514,9 +514,9 @@ bool CxImage::SelectionAddPolygon(POINT *points, int32_t npoints, uint8_t level)
 
             fyy = fy + y;
 
-            for( ;; ) {
-              if ((plocal[fxx + fyy*head.biWidth] == back) &&
-                  fxx>=localbox.left && fxx<=localbox.right && fyy>=localbox.bottom && fyy<=localbox.top ) {
+            for ( ;; ) {
+              if ((plocal[fxx + fyy * head.biWidth] == back) &&
+                  fxx >= localbox.left && fxx <= localbox.right && fyy >= localbox.bottom && fyy <= localbox.top ) {
                 plocal[fxx + (y + fy)*head.biWidth] = mark;
 
                 if (fyy > 0 && plocal[fxx + (fyy - 1)*head.biWidth] == back) {
@@ -529,7 +529,7 @@ bool CxImage::SelectionAddPolygon(POINT *points, int32_t npoints, uint8_t level)
                   }
                 }
 
-                if ((fyy + 1)<head.biHeight && plocal[fxx + (fyy + 1)*head.biWidth] == back) {
+                if ((fyy + 1) < head.biHeight && plocal[fxx + (fyy + 1)*head.biWidth] == back) {
                   pix[last].x = fx;
                   pix[last].y = fy + 1;
                   last++;
@@ -560,29 +560,29 @@ bool CxImage::SelectionAddPolygon(POINT *points, int32_t npoints, uint8_t level)
   //transfer the region
   int32_t yoffset;
 
-  for (y=localbox.bottom; y<=localbox.top; y++) {
+  for (y = localbox.bottom; y <= localbox.top; y++) {
     yoffset = y * head.biWidth;
 
-    for (x=localbox.left; x<=localbox.right; x++)
-      if (plocal[x + yoffset]!=1) {
-        pSelection[x + yoffset]=level;
+    for (x = localbox.left; x <= localbox.right; x++)
+      if (plocal[x + yoffset] != 1) {
+        pSelection[x + yoffset] = level;
       }
   }
 
   if (info.rSelectionBox.top <= localbox.top) {
-    info.rSelectionBox.top = min(head.biHeight,localbox.top + 1);
+    info.rSelectionBox.top = min(head.biHeight, localbox.top + 1);
   }
 
   if (info.rSelectionBox.left > localbox.left) {
-    info.rSelectionBox.left = min(head.biWidth,localbox.left);
+    info.rSelectionBox.left = min(head.biWidth, localbox.left);
   }
 
   if (info.rSelectionBox.right <= localbox.right) {
-    info.rSelectionBox.right = min(head.biWidth,localbox.right + 1);
+    info.rSelectionBox.right = min(head.biWidth, localbox.right + 1);
   }
 
   if (info.rSelectionBox.bottom > localbox.bottom) {
-    info.rSelectionBox.bottom = min(head.biHeight,localbox.bottom);
+    info.rSelectionBox.bottom = min(head.biHeight, localbox.bottom);
   }
 
   free(plocal);
@@ -596,15 +596,15 @@ bool CxImage::SelectionAddPolygon(POINT *points, int32_t npoints, uint8_t level)
  */
 bool CxImage::SelectionAddColor(RGBQUAD c, uint8_t level)
 {
-  if (pSelection==NULL) {
+  if (pSelection == NULL) {
     SelectionCreate();
   }
 
-  if (pSelection==NULL) {
+  if (pSelection == NULL) {
     return false;
   }
 
-  RECT localbox = {head.biWidth,0,0,head.biHeight};
+  RECT localbox = {head.biWidth, 0, 0, head.biHeight};
 
   for (int32_t y = 0; y < head.biHeight; y++) {
     for (int32_t x = 0; x < head.biWidth; x++) {
@@ -658,19 +658,19 @@ bool CxImage::SelectionAddColor(RGBQUAD c, uint8_t level)
  */
 bool CxImage::SelectionAddPixel(int32_t x, int32_t y, uint8_t level)
 {
-  if (pSelection==NULL) {
+  if (pSelection == NULL) {
     SelectionCreate();
   }
 
-  if (pSelection==NULL) {
+  if (pSelection == NULL) {
     return false;
   }
 
-  if (IsInside(x,y)) {
+  if (IsInside(x, y)) {
     pSelection[x + y * head.biWidth] = level; // set the correct mask bit
 
     if (info.rSelectionBox.top <= y) {
-      info.rSelectionBox.top = y+1;
+      info.rSelectionBox.top = y + 1;
     }
 
     if (info.rSelectionBox.left > x) {
@@ -678,7 +678,7 @@ bool CxImage::SelectionAddPixel(int32_t x, int32_t y, uint8_t level)
     }
 
     if (info.rSelectionBox.right <= x) {
-      info.rSelectionBox.right = x+1;
+      info.rSelectionBox.right = x + 1;
     }
 
     if (info.rSelectionBox.bottom > y) {
@@ -700,16 +700,16 @@ bool CxImage::SelectionSplit(CxImage *dest)
     return false;
   }
 
-  CxImage tmp(head.biWidth,head.biHeight,8);
+  CxImage tmp(head.biWidth, head.biHeight, 8);
 
   if (!tmp.IsValid()) {
-    strcpy(info.szLastError,tmp.GetLastError());
+    strcpy(info.szLastError, tmp.GetLastError());
     return false;
   }
 
-  for(int32_t y=0; y<head.biHeight; y++) {
-    for(int32_t x=0; x<head.biWidth; x++) {
-      tmp.BlindSetPixelIndex(x,y,pSelection[x+y*head.biWidth]);
+  for (int32_t y = 0; y < head.biHeight; y++) {
+    for (int32_t x = 0; x < head.biWidth; x++) {
+      tmp.BlindSetPixelIndex(x, y, pSelection[x + y * head.biWidth]);
     }
   }
 
@@ -727,24 +727,25 @@ bool CxImage::SelectionSet(CxImage &from)
 {
   if (!from.IsGrayScale() || head.biWidth != from.head.biWidth
       || head.biHeight != from.head.biHeight) {
-    strcpy(info.szLastError,"CxImage::SelectionSet: wrong width or height, or image is not gray scale");
+    strcpy(info.szLastError,
+           "CxImage::SelectionSet: wrong width or height, or image is not gray scale");
     return false;
   }
 
-  if (pSelection==NULL) {
-    pSelection = (uint8_t*)malloc(head.biWidth * head.biHeight);
+  if (pSelection == NULL) {
+    pSelection = (uint8_t *)malloc(head.biWidth * head.biHeight);
   }
 
-  uint8_t* src = from.info.pImage;
-  uint8_t* dst = pSelection;
+  uint8_t *src = from.info.pImage;
+  uint8_t *dst = pSelection;
 
-  if (src==NULL || dst==NULL) {
-    strcpy(info.szLastError,"CxImage::SelectionSet: null pointer");
+  if (src == NULL || dst == NULL) {
+    strcpy(info.szLastError, "CxImage::SelectionSet: null pointer");
     return false;
   }
 
-  for (int32_t y=0; y<head.biHeight; y++) {
-    memcpy(dst,src,head.biWidth);
+  for (int32_t y = 0; y < head.biHeight; y++) {
+    memcpy(dst, src, head.biWidth);
     dst += head.biWidth;
     src += from.info.dwEffWidth;
   }
@@ -758,20 +759,20 @@ bool CxImage::SelectionSet(CxImage &from)
  * Sets the Selection level for a single pixel
  * internal use only: doesn't set SelectionBox. Use SelectionAddPixel
  */
-void CxImage::SelectionSet(const int32_t x,const int32_t y,const uint8_t level)
+void CxImage::SelectionSet(const int32_t x, const int32_t y, const uint8_t level)
 {
-  if (pSelection && IsInside(x,y)) {
-    pSelection[x+y*head.biWidth]=level;
+  if (pSelection && IsInside(x, y)) {
+    pSelection[x + y * head.biWidth] = level;
   }
 }
 ////////////////////////////////////////////////////////////////////////////////
 /**
  * Gets the Selection level for a single pixel
  */
-uint8_t CxImage::SelectionGet(const int32_t x,const int32_t y)
+uint8_t CxImage::SelectionGet(const int32_t x, const int32_t y)
 {
-  if (pSelection && IsInside(x,y)) {
-    return pSelection[x+y*head.biWidth];
+  if (pSelection && IsInside(x, y)) {
+    return pSelection[x + y * head.biWidth];
   }
 
   return 0;
@@ -790,39 +791,39 @@ void CxImage::SelectionRebuildBox()
     return;
   }
 
-  int32_t x,y;
+  int32_t x, y;
 
-  for (y=0; y<head.biHeight; y++) {
-    for (x=0; x<info.rSelectionBox.left; x++) {
-      if (pSelection[x+y*head.biWidth]) {
+  for (y = 0; y < head.biHeight; y++) {
+    for (x = 0; x < info.rSelectionBox.left; x++) {
+      if (pSelection[x + y * head.biWidth]) {
         info.rSelectionBox.left = x;
         continue;
       }
     }
   }
 
-  for (y=0; y<head.biHeight; y++) {
-    for (x=head.biWidth-1; x>=info.rSelectionBox.right; x--) {
-      if (pSelection[x+y*head.biWidth]) {
-        info.rSelectionBox.right = x+1;
+  for (y = 0; y < head.biHeight; y++) {
+    for (x = head.biWidth - 1; x >= info.rSelectionBox.right; x--) {
+      if (pSelection[x + y * head.biWidth]) {
+        info.rSelectionBox.right = x + 1;
         continue;
       }
     }
   }
 
-  for (x=0; x<head.biWidth; x++) {
-    for (y=0; y<info.rSelectionBox.bottom; y++) {
-      if (pSelection[x+y*head.biWidth]) {
+  for (x = 0; x < head.biWidth; x++) {
+    for (y = 0; y < info.rSelectionBox.bottom; y++) {
+      if (pSelection[x + y * head.biWidth]) {
         info.rSelectionBox.bottom = y;
         continue;
       }
     }
   }
 
-  for (x=0; x<head.biWidth; x++) {
-    for (y=head.biHeight-1; y>=info.rSelectionBox.top; y--) {
-      if (pSelection[x+y*head.biWidth]) {
-        info.rSelectionBox.top = y+1;
+  for (x = 0; x < head.biWidth; x++) {
+    for (y = head.biHeight - 1; y >= info.rSelectionBox.top; y--) {
+      if (pSelection[x + y * head.biWidth]) {
+        info.rSelectionBox.top = y + 1;
         continue;
       }
     }
@@ -834,11 +835,11 @@ void CxImage::SelectionRebuildBox()
  * Gets the Selection level for a single pixel
  * "blind" version assumes that (x,y) is inside to the image.
  */
-uint8_t CxImage::BlindSelectionGet(const int32_t x,const int32_t y)
+uint8_t CxImage::BlindSelectionGet(const int32_t x, const int32_t y)
 {
 #ifdef _DEBUG
 
-  if (!IsInside(x,y) || (pSelection==0))
+  if (!IsInside(x, y) || (pSelection == 0))
 #if CXIMAGE_SUPPORT_EXCEPTION_HANDLING
     throw 0;
 
@@ -846,16 +847,16 @@ uint8_t CxImage::BlindSelectionGet(const int32_t x,const int32_t y)
     return 0;
 #endif
 #endif
-  return pSelection[x+y*head.biWidth];
+  return pSelection[x + y * head.biWidth];
 }
 ////////////////////////////////////////////////////////////////////////////////
 /**
  * Returns pointer to selection data for pixel (x,y).
  */
-uint8_t* CxImage::SelectionGetPointer(const int32_t x,const int32_t y)
+uint8_t *CxImage::SelectionGetPointer(const int32_t x, const int32_t y)
 {
-  if (pSelection && IsInside(x,y)) {
-    return pSelection+x+y*head.biWidth;
+  if (pSelection && IsInside(x, y)) {
+    return pSelection + x + y * head.biWidth;
   }
 
   return 0;
@@ -867,22 +868,22 @@ bool CxImage::SelectionFlip()
     return false;
   }
 
-  uint8_t *buff = (uint8_t*)malloc(head.biWidth);
+  uint8_t *buff = (uint8_t *)malloc(head.biWidth);
 
   if (!buff) {
     return false;
   }
 
-  uint8_t *iSrc,*iDst;
-  iSrc = pSelection + (head.biHeight-1)*head.biWidth;
+  uint8_t *iSrc, *iDst;
+  iSrc = pSelection + (head.biHeight - 1) * head.biWidth;
   iDst = pSelection;
 
-  for (int32_t i=0; i<(head.biHeight/2); ++i) {
+  for (int32_t i = 0; i < (head.biHeight / 2); ++i) {
     memcpy(buff, iSrc, head.biWidth);
     memcpy(iSrc, iDst, head.biWidth);
     memcpy(iDst, buff, head.biWidth);
-    iSrc-=head.biWidth;
-    iDst+=head.biWidth;
+    iSrc -= head.biWidth;
+    iDst += head.biWidth;
   }
 
   free(buff);
@@ -899,28 +900,28 @@ bool CxImage::SelectionMirror()
     return false;
   }
 
-  uint8_t* pSelection2 = (uint8_t*)malloc(head.biWidth * head.biHeight);
+  uint8_t *pSelection2 = (uint8_t *)malloc(head.biWidth * head.biHeight);
 
   if (!pSelection2) {
     return false;
   }
 
-  uint8_t *iSrc,*iDst;
-  int32_t wdt=head.biWidth-1;
-  iSrc=pSelection + wdt;
-  iDst=pSelection2;
+  uint8_t *iSrc, *iDst;
+  int32_t wdt = head.biWidth - 1;
+  iSrc = pSelection + wdt;
+  iDst = pSelection2;
 
-  for(int32_t y=0; y < head.biHeight; y++) {
-    for(int32_t x=0; x <= wdt; x++) {
-      *(iDst+x)=*(iSrc-x);
+  for (int32_t y = 0; y < head.biHeight; y++) {
+    for (int32_t x = 0; x <= wdt; x++) {
+      *(iDst + x) = *(iSrc - x);
     }
 
-    iSrc+=head.biWidth;
-    iDst+=head.biWidth;
+    iSrc += head.biWidth;
+    iDst += head.biWidth;
   }
 
   free(pSelection);
-  pSelection=pSelection2;
+  pSelection = pSelection2;
 
   int32_t left = info.rSelectionBox.left;
   info.rSelectionBox.left = head.biWidth - info.rSelectionBox.right;
@@ -932,15 +933,15 @@ bool CxImage::SelectionMirror()
 /**
  * Converts the selection in a HRGN object.
  */
-bool CxImage::SelectionToHRGN(HRGN& region)
+bool CxImage::SelectionToHRGN(HRGN &region)
 {
   if (pSelection && region) {
-    for(int32_t y = 0; y < head.biHeight; y++) {
+    for (int32_t y = 0; y < head.biHeight; y++) {
       HRGN hTemp = NULL;
       int32_t iStart = -1;
       int32_t x = 0;
 
-      for(; x < head.biWidth; x++) {
+      for (; x < head.biWidth; x++) {
         if (pSelection[x + y * head.biWidth] != 0) {
           if (iStart == -1) {
             iStart = x;

@@ -22,37 +22,37 @@
 
 // Pointer to the HGE interface.
 // Helper classes require this to work.
-HGE *hge=0;
+static HGE *hge = 0;
 
 
 // Pointers to the HGE objects we will use
-hgeSprite*      spr;
-hgeSprite*      spt;
-hgeFont*      fnt;
-hgeParticleSystem*  par;
+static hgeSprite      *spr;
+static hgeSprite      *spt;
+static hgeFont      *fnt;
+static hgeParticleSystem  *par;
 
 // Handles for HGE resourcces
-HTEXTURE      tex;
-HEFFECT       snd;
+static HTEXTURE      tex;
+static HEFFECT       snd;
 
 // Some "gameplay" variables
-float x=100.0f, y=100.0f;
-float dx=0.0f, dy=0.0f;
+static float x = 100.0f, y = 100.0f;
+static float dx = 0.0f, dy = 0.0f;
 
-const float speed=90;
-const float friction=0.98f;
+const float speed = 90;
+const float friction = 0.98f;
 
 // Play sound effect
-void boom()
+static void boom()
 {
-  int pan=int((x-400)/4);
-  float pitch=(dx*dx+dy*dy)*0.0005f+0.2f;
-  hge->Effect_PlayEx(snd,100,pan,pitch);
+  int pan = int((x - 400) / 4);
+  float pitch = (dx * dx + dy * dy) * 0.0005f + 0.2f;
+  hge->Effect_PlayEx(snd, 100, pan, pitch);
 }
 
-bool FrameFunc()
+static bool FrameFunc()
 {
-  float dt=hge->Timer_GetDelta();
+  float dt = hge->Timer_GetDelta();
 
   // Process keys
   if (hge->Input_GetKeyState(HGEK_ESCAPE)) {
@@ -60,61 +60,61 @@ bool FrameFunc()
   }
 
   if (hge->Input_GetKeyState(HGEK_LEFT)) {
-    dx-=speed*dt;
+    dx -= speed * dt;
   }
 
   if (hge->Input_GetKeyState(HGEK_RIGHT)) {
-    dx+=speed*dt;
+    dx += speed * dt;
   }
 
   if (hge->Input_GetKeyState(HGEK_UP)) {
-    dy-=speed*dt;
+    dy -= speed * dt;
   }
 
   if (hge->Input_GetKeyState(HGEK_DOWN)) {
-    dy+=speed*dt;
+    dy += speed * dt;
   }
 
   // Do some movement calculations and collision detection
-  dx*=friction;
-  dy*=friction;
-  x+=dx;
-  y+=dy;
+  dx *= friction;
+  dy *= friction;
+  x += dx;
+  y += dy;
 
-  if(x>784) {
-    x=784-(x-784);
-    dx=-dx;
+  if (x > 784) {
+    x = 784 - (x - 784);
+    dx = -dx;
     boom();
   }
 
-  if(x<16) {
-    x=16+16-x;
-    dx=-dx;
+  if (x < 16) {
+    x = 16 + 16 - x;
+    dx = -dx;
     boom();
   }
 
-  if(y>584) {
-    y=584-(y-584);
-    dy=-dy;
+  if (y > 584) {
+    y = 584 - (y - 584);
+    dy = -dy;
     boom();
   }
 
-  if(y<16) {
-    y=16+16-y;
-    dy=-dy;
+  if (y < 16) {
+    y = 16 + 16 - y;
+    dy = -dy;
     boom();
   }
 
   // Update particle system
-  par->info.nEmission=(int)(dx*dx+dy*dy)*2;
-  par->MoveTo(x,y);
+  par->info.nEmission = static_cast<int>(dx * dx + dy * dy) * 2;
+  par->MoveTo(x, y);
   par->Update(dt);
 
   return false;
 }
 
 
-bool RenderFunc()
+static bool RenderFunc()
 {
   // Render graphics
   hge->Gfx_BeginScene();
@@ -130,7 +130,7 @@ bool RenderFunc()
 
 
 #ifdef PLATFORM_UNIX
-int main(int argc, char *argv[])
+int main(int /*argc*/, char * /*argv*/ [])
 #else
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 #endif
@@ -147,17 +147,17 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
   hge->System_SetState(HGE_SCREENHEIGHT, 600);
   hge->System_SetState(HGE_SCREENBPP, 32);
 
-  if(hge->System_Initiate()) {
+  if (hge->System_Initiate()) {
 
     // Load sound and texture
 #ifdef PLATFORM_UNIX
-    snd=hge->Effect_Load("menu.ogg");
+    snd = hge->Effect_Load("menu.ogg");
 #else
-    snd=hge->Effect_Load("menu.wav");
+    snd = hge->Effect_Load("menu.wav");
 #endif
-    tex=hge->Texture_Load("particles.png");
+    tex = hge->Texture_Load("particles.png");
 
-    if(!snd || !tex) {
+    if (!snd || !tex) {
       // If one of the data files is not found, display
       // an error message and shutdown.
 #ifdef PLATFORM_UNIX
@@ -174,18 +174,18 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
     }
 
     // Create and set up a sprite
-    spr=new hgeSprite(tex, 96, 64, 32, 32);
+    spr = new hgeSprite(tex, 96, 64, 32, 32);
     spr->SetColor(0xFFFFA000);
-    spr->SetHotSpot(16,16);
+    spr->SetHotSpot(16, 16);
 
     // Load a font
-    fnt=new hgeFont("font1.fnt");
+    fnt = new hgeFont("font1.fnt");
 
     // Create and set up a particle system
-    spt=new hgeSprite(tex, 32, 32, 32, 32);
+    spt = new hgeSprite(tex, 32, 32, 32, 32);
     spt->SetBlendMode(BLEND_COLORMUL | BLEND_ALPHAADD | BLEND_NOZWRITE);
-    spt->SetHotSpot(16,16);
-    par=new hgeParticleSystem("trail.psi",spt);
+    spt->SetHotSpot(16, 16);
+    par = new hgeParticleSystem("trail.psi", spt);
     par->Fire();
 
     // Let's rock now!

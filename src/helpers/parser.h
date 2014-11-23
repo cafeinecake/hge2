@@ -52,18 +52,18 @@ public:
   int   get_token();
   void  put_back()
   {
-    script-=strlen(tokenvalue);
+    script -= strlen(tokenvalue);
   }
   int   get_line()
   {
     return line;
   }
-  char* get_name()
+  char *get_name()
   {
     return scriptname;
   }
 
-  char* tkn_string()
+  char *tkn_string()
   {
     return tokenvalue;
   }
@@ -77,7 +77,7 @@ public:
   }
   bool  tkn_bool()
   {
-    return (tokenvalue[0]=='t' || tokenvalue[0]=='T') ? true : false;
+    return (tokenvalue[0] == 't' || tokenvalue[0] == 'T') ? true : false;
   }
   uint32_t tkn_hex();
 
@@ -85,8 +85,8 @@ public:
 
   int   tokentype;
   char  tokenvalue[128];
-  char* script;
-  char* scriptname;
+  char *script;
+  char *scriptname;
   int   line;
 
 private:

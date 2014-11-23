@@ -60,7 +60,7 @@ bool CxImageWMF::Decode(CxFile *hFile, int32_t nForceWidth, int32_t nForceHeight
 
   HENHMETAFILE  hMeta;
   HDC       hDC;
-  int32_t       cx,cy;
+  int32_t       cx, cy;
 
   //save the current position of the file
   int32_t pos = hFile->Tell();
@@ -97,18 +97,18 @@ bool CxImageWMF::Decode(CxFile *hFile, int32_t nForceWidth, int32_t nForceHeight
     int32_t cy1 = ::GetDeviceCaps(hDC, LOGPIXELSY);
     ::ReleaseDC(0, hDC);
 
-    cx = (mfh.inch/2 + (mfh.bbox.right - mfh.bbox.left) * cx1) / mfh.inch;
-    cy = (mfh.inch/2 + (mfh.bbox.bottom - mfh.bbox.top) * cy1) / mfh.inch;
+    cx = (mfh.inch / 2 + (mfh.bbox.right - mfh.bbox.left) * cx1) / mfh.inch;
+    cy = (mfh.inch / 2 + (mfh.bbox.bottom - mfh.bbox.top) * cy1) / mfh.inch;
 
   } else {    // maybe it's an EMF...
 
-    hFile->Seek(pos,SEEK_SET);
+    hFile->Seek(pos, SEEK_SET);
 
     ENHMETAHEADER emh;
     hMeta = ConvertEmfFiletoEmf(hFile, &emh);
 
     if (!hMeta) {
-      strcpy(info.szLastError,"corrupted WMF");
+      strcpy(info.szLastError, "corrupted WMF");
       return false; // definitively give up
     }
 
@@ -130,25 +130,25 @@ bool CxImageWMF::Decode(CxFile *hFile, int32_t nForceWidth, int32_t nForceHeight
 
   if (info.nEscape == -1) { // Check if cancelled
     head.biWidth = cx;
-    head.biHeight= cy;
+    head.biHeight = cy;
     info.dwType = CXIMAGE_FORMAT_WMF;
     DeleteEnhMetaFile(hMeta);
-    strcpy(info.szLastError,"output dimensions returned");
+    strcpy(info.szLastError, "output dimensions returned");
     return true;
   }
 
   if (!cx || !cy) {
     DeleteEnhMetaFile(hMeta);
-    strcpy(info.szLastError,"empty WMF");
+    strcpy(info.szLastError, "empty WMF");
     return false;
   }
 
   if (nForceWidth) {
-    cx=nForceWidth;
+    cx = nForceWidth;
   }
 
   if (nForceHeight) {
-    cy=nForceHeight;
+    cy = nForceHeight;
   }
 
   ShrinkMetafile(cx, cy);   // !! Otherwise Bitmap may have bombastic size
@@ -160,7 +160,7 @@ bool CxImageWMF::Decode(CxFile *hFile, int32_t nForceWidth, int32_t nForceHeight
 
   if (hDC) {
     if (hBitmap) {
-      RECT rc = {0,0,cx,cy};
+      RECT rc = {0, 0, cx, cy};
       int32_t bpp = ::GetDeviceCaps(hDC, BITSPIXEL);
 
       HBITMAP hBitmapOld = (HBITMAP)SelectObject(hDC, hBitmap);
@@ -187,11 +187,11 @@ bool CxImageWMF::Decode(CxFile *hFile, int32_t nForceWidth, int32_t nForceHeight
 
       if (iEntries) {
         if ((plogPal = (PLOGPALETTE)GlobalAlloc(GMEM_FIXED | GMEM_ZEROINIT,
-                                                sizeof(uint32_t) + sizeof(PALETTEENTRY)*iEntries )) == NULL) {
+                                                sizeof(uint32_t) + sizeof(PALETTEENTRY) * iEntries )) == NULL) {
           DeleteObject(hBitmap);
           DeleteDC(hDC);
           DeleteEnhMetaFile(hMeta);
-          strcpy(info.szLastError,"Cancelled");
+          strcpy(info.szLastError, "Cancelled");
           return false;
         }
 
@@ -219,7 +219,7 @@ bool CxImageWMF::Decode(CxFile *hFile, int32_t nForceWidth, int32_t nForceHeight
       if (info.nEscape) { // Check if cancelled
         DeleteObject(hBitmap);
         DeleteDC(hDC);
-        strcpy(info.szLastError,"Cancelled");
+        strcpy(info.szLastError, "Cancelled");
         return false;
       }
 
@@ -248,7 +248,7 @@ bool CxImageWMF::Decode(CxFile *hFile, int32_t nForceWidth, int32_t nForceHeight
       DeleteObject(hBitmap);
       DeleteDC(hDC);
 
-      return (bRet!=0);
+      return (bRet != 0);
     } else {
       DeleteDC(hDC);
     }
@@ -464,9 +464,9 @@ HENHMETAFILE CxImageWMF::ConvertEmfFiletoEmf(CxFile *pFile, ENHMETAHEADER *pemfh
   }
 
   //if (pemfh->nBytes != (uint32_t)iLen)             return NULL;
-  pFile->Seek(pos,SEEK_SET);
+  pFile->Seek(pos, SEEK_SET);
 
-  uint8_t* pBuff = (uint8_t *)malloc(iLen);
+  uint8_t *pBuff = (uint8_t *)malloc(iLen);
 
   if (!pBuff) {
     return (FALSE);
@@ -506,7 +506,7 @@ HENHMETAFILE CxImageWMF::ConvertEmfFiletoEmf(CxFile *pFile, ENHMETAHEADER *pemfh
 ////////////////////////////////////////////////////////////////////////////////
 #if CXIMAGE_SUPPORT_ENCODE
 /////////////////////////////////////////////////////////////////////
-bool CxImageWMF::Encode(CxFile * hFile)
+bool CxImageWMF::Encode(CxFile *hFile)
 {
   if (hFile == NULL) {
     return false;

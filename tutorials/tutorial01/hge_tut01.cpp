@@ -9,12 +9,12 @@
 
 #include "../../include/hge.h"
 
-HGE *hge = 0;
+static HGE *hge = 0;
 
 // This function will be called by HGE once per frame.
 // Put your game loop code here. In this example we
 // just check whether ESC key has been pressed.
-bool FrameFunc()
+static bool FrameFunc()
 {
   // By returning "true" we tell HGE
   // to stop running the application.
@@ -27,7 +27,7 @@ bool FrameFunc()
 }
 
 #ifdef PLATFORM_UNIX
-int main(int argc, char *argv[])
+int main(int /*argc*/, char * /*argv*/ [])
 #else
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 #endif
@@ -56,7 +56,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
   // If something goes wrong, "false" is returned
   // and more specific description of what have
   // happened can be read with System_GetErrorMessage().
-  if(hge->System_Initiate()) {
+  if (hge->System_Initiate()) {
     // Starts running FrameFunc().
     // Note that the execution "stops" here
     // until "true" is returned from FrameFunc().

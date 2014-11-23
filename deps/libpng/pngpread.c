@@ -112,7 +112,7 @@ png_push_read_sig(png_structp png_ptr, png_infop info_ptr)
 
   png_push_fill_buffer(png_ptr, &(info_ptr->signature[num_checked]),
                        num_to_check);
-  png_ptr->sig_bytes = (png_byte)(png_ptr->sig_bytes+num_to_check);
+  png_ptr->sig_bytes = (png_byte)(png_ptr->sig_bytes + num_to_check);
 
   if (png_sig_cmp(info_ptr->signature, num_checked, num_to_check)) {
     if (num_checked < 4 &&
@@ -204,7 +204,7 @@ png_push_read_chunk(png_structp png_ptr, png_infop info_ptr)
     }
 
     png_push_fill_buffer(png_ptr, chunk_length, 4);
-    png_ptr->push_length = png_get_uint_31(png_ptr,chunk_length);
+    png_ptr->push_length = png_get_uint_31(png_ptr, chunk_length);
     png_reset_crc(png_ptr);
     png_crc_read(png_ptr, png_ptr->chunk_name, 4);
     png_ptr->mode |= PNG_HAVE_CHUNK_HEADER;
@@ -592,7 +592,7 @@ png_push_save_buffer(png_structp png_ptr)
 {
   if (png_ptr->save_buffer_size) {
     if (png_ptr->save_buffer_ptr != png_ptr->save_buffer) {
-      png_size_t i,istop;
+      png_size_t i, istop;
       png_bytep sp;
       png_bytep dp;
 
@@ -661,7 +661,7 @@ png_push_read_IDAT(png_structp png_ptr)
     }
 
     png_push_fill_buffer(png_ptr, chunk_length, 4);
-    png_ptr->push_length = png_get_uint_31(png_ptr,chunk_length);
+    png_ptr->push_length = png_get_uint_31(png_ptr, chunk_length);
     png_reset_crc(png_ptr);
     png_crc_read(png_ptr, png_ptr->chunk_name, 4);
     png_ptr->mode |= PNG_HAVE_CHUNK_HEADER;
@@ -686,7 +686,7 @@ png_push_read_IDAT(png_structp png_ptr)
       save_size = (png_size_t)png_ptr->idat_size;
 
       /* check for overflow */
-      if((png_uint_32)save_size != png_ptr->idat_size) {
+      if ((png_uint_32)save_size != png_ptr->idat_size) {
         png_error(png_ptr, "save_size overflowed in pngpread");
       }
     } else {
@@ -712,7 +712,7 @@ png_push_read_IDAT(png_structp png_ptr)
       save_size = (png_size_t)png_ptr->idat_size;
 
       /* check for overflow */
-      if((png_uint_32)save_size != png_ptr->idat_size) {
+      if ((png_uint_32)save_size != png_ptr->idat_size) {
         png_error(png_ptr, "save_size overflowed in pngpread");
       }
     } else {
@@ -756,7 +756,7 @@ png_process_IDAT_data(png_structp png_ptr, png_bytep buffer,
   png_ptr->zstream.next_in = buffer;
   png_ptr->zstream.avail_in = (uInt)buffer_length;
 
-  for(;;) {
+  for (;;) {
     ret = inflate(&png_ptr->zstream, Z_PARTIAL_FLUSH);
 
     if (ret != Z_OK) {
@@ -822,7 +822,7 @@ png_push_process_row(png_structp png_ptr)
   png_memcpy_check(png_ptr, png_ptr->prev_row, png_ptr->row_buf,
                    png_ptr->rowbytes + 1);
 
-  if (png_ptr->transformations || (png_ptr->flags&PNG_FLAG_STRIP_ALPHA)) {
+  if (png_ptr->transformations || (png_ptr->flags & PNG_FLAG_STRIP_ALPHA)) {
     png_do_read_transformations(png_ptr);
   }
 
@@ -1073,7 +1073,7 @@ png_push_handle_tEXt(png_structp png_ptr, png_infop info_ptr, png_uint_32
     png_error(png_ptr, "Out of place tEXt");
 
     /* to quiet some compiler warnings */
-    if(info_ptr == NULL) {
+    if (info_ptr == NULL) {
       return;
     }
   }
@@ -1090,7 +1090,7 @@ png_push_handle_tEXt(png_structp png_ptr, png_infop info_ptr, png_uint_32
 #endif
 
   png_ptr->current_text = (png_charp)png_malloc(png_ptr,
-                          (png_uint_32)(length+1));
+                          (png_uint_32)(length + 1));
   png_ptr->current_text[length] = '\0';
   png_ptr->current_text_ptr = png_ptr->current_text;
   png_ptr->current_text_size = (png_size_t)length;
@@ -1177,7 +1177,7 @@ png_push_handle_zTXt(png_structp png_ptr, png_infop info_ptr, png_uint_32
     png_error(png_ptr, "Out of place zTXt");
 
     /* to quiet some compiler warnings */
-    if(info_ptr == NULL) {
+    if (info_ptr == NULL) {
       return;
     }
   }
@@ -1197,7 +1197,7 @@ png_push_handle_zTXt(png_structp png_ptr, png_infop info_ptr, png_uint_32
 #endif
 
   png_ptr->current_text = (png_charp)png_malloc(png_ptr,
-                          (png_uint_32)(length+1));
+                          (png_uint_32)(length + 1));
   png_ptr->current_text[length] = '\0';
   png_ptr->current_text_ptr = png_ptr->current_text;
   png_ptr->current_text_size = (png_size_t)length;
@@ -1366,7 +1366,7 @@ png_push_handle_iTXt(png_structp png_ptr, png_infop info_ptr, png_uint_32
     png_error(png_ptr, "Out of place iTXt");
 
     /* to quiet some compiler warnings */
-    if(info_ptr == NULL) {
+    if (info_ptr == NULL) {
       return;
     }
   }
@@ -1383,7 +1383,7 @@ png_push_handle_iTXt(png_structp png_ptr, png_infop info_ptr, png_uint_32
 #endif
 
   png_ptr->current_text = (png_charp)png_malloc(png_ptr,
-                          (png_uint_32)(length+1));
+                          (png_uint_32)(length + 1));
   png_ptr->current_text[length] = '\0';
   png_ptr->current_text_ptr = png_ptr->current_text;
   png_ptr->current_text_size = (png_size_t)length;
@@ -1488,18 +1488,18 @@ void /* PRIVATE */
 png_push_handle_unknown(png_structp png_ptr, png_infop info_ptr, png_uint_32
                         length)
 {
-  png_uint_32 skip=0;
+  png_uint_32 skip = 0;
   png_check_chunk_name(png_ptr, png_ptr->chunk_name);
 
   if (!(png_ptr->chunk_name[0] & 0x20)) {
 #if defined(PNG_READ_UNKNOWN_CHUNKS_SUPPORTED)
 
-    if(png_handle_as_unknown(png_ptr, png_ptr->chunk_name) !=
+    if (png_handle_as_unknown(png_ptr, png_ptr->chunk_name) !=
         PNG_HANDLE_CHUNK_ALWAYS
 #if defined(PNG_READ_USER_CHUNKS_SUPPORTED)
         && png_ptr->read_user_chunk_fn == NULL
 #endif
-      )
+       )
 #endif
       png_chunk_error(png_ptr, "unknown critical chunk");
 
@@ -1530,11 +1530,11 @@ png_push_handle_unknown(png_structp png_ptr, png_infop info_ptr, png_uint_32
     chunk.size = length;
 #if defined(PNG_READ_USER_CHUNKS_SUPPORTED)
 
-    if(png_ptr->read_user_chunk_fn != NULL) {
+    if (png_ptr->read_user_chunk_fn != NULL) {
       /* callback to user unknown chunk handler */
       if ((*(png_ptr->read_user_chunk_fn)) (png_ptr, &chunk) <= 0) {
         if (!(png_ptr->chunk_name[0] & 0x20))
-          if(png_handle_as_unknown(png_ptr, png_ptr->chunk_name) !=
+          if (png_handle_as_unknown(png_ptr, png_ptr->chunk_name) !=
               PNG_HANDLE_CHUNK_ALWAYS) {
             png_chunk_error(png_ptr, "unknown critical chunk");
           }
@@ -1548,7 +1548,7 @@ png_push_handle_unknown(png_structp png_ptr, png_infop info_ptr, png_uint_32
     png_free(png_ptr, chunk.data);
   } else
 #endif
-    skip=length;
+    skip = length;
 
   png_push_crc_skip(png_ptr, skip);
 }

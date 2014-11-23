@@ -11,7 +11,7 @@
 /**
  * If the object is an internal layer, GetParent return its parent in the hierarchy.
  */
-CxImage* CxImage::GetParent() const
+CxImage *CxImage::GetParent() const
 {
   return info.pParent;
 }
@@ -33,24 +33,24 @@ bool CxImage::LayerCreate(int32_t position)
     position = info.nNumLayers;
   }
 
-  CxImage** ptmp = new CxImage*[info.nNumLayers + 1];
+  CxImage **ptmp = new CxImage*[info.nNumLayers + 1];
 
-  if (ptmp==0) {
+  if (ptmp == 0) {
     return false;
   }
 
-  int32_t i=0;
+  int32_t i = 0;
 
-  for (int32_t n=0; n<info.nNumLayers; n++) {
+  for (int32_t n = 0; n < info.nNumLayers; n++) {
     if (position == n) {
       ptmp[n] = new CxImage();
-      i=1;
+      i = 1;
     }
 
-    ptmp[n+i]=ppLayers[n];
+    ptmp[n + i] = ppLayers[n];
   }
 
-  if (i==0) {
+  if (i == 0) {
     ptmp[info.nNumLayers] = new CxImage();
   }
 
@@ -84,23 +84,23 @@ bool CxImage::LayerDelete(int32_t position)
     return false;
   }
 
-  if (info.nNumLayers>1) {
+  if (info.nNumLayers > 1) {
 
-    CxImage** ptmp = new CxImage*[info.nNumLayers - 1];
+    CxImage **ptmp = new CxImage*[info.nNumLayers - 1];
 
-    if (ptmp==0) {
+    if (ptmp == 0) {
       return false;
     }
 
-    int32_t i=0;
+    int32_t i = 0;
 
-    for (int32_t n=0; n<info.nNumLayers; n++) {
+    for (int32_t n = 0; n < info.nNumLayers; n++) {
       if (position == n) {
         delete ppLayers[n];
-        i=1;
+        i = 1;
       }
 
-      ptmp[n]=ppLayers[n+i];
+      ptmp[n] = ppLayers[n + i];
     }
 
     info.nNumLayers--;
@@ -120,12 +120,12 @@ bool CxImage::LayerDelete(int32_t position)
 void CxImage::LayerDeleteAll()
 {
   if (ppLayers) {
-    for(int32_t n=0; n<info.nNumLayers; n++) {
+    for (int32_t n = 0; n < info.nNumLayers; n++) {
       delete ppLayers[n];
     }
 
     delete [] ppLayers;
-    ppLayers=0;
+    ppLayers = 0;
     info.nNumLayers = 0;
   }
 }
@@ -133,7 +133,7 @@ void CxImage::LayerDeleteAll()
 /**
  * Returns a pointer to a layer. If position is less than 0, the last layer will be returned
  */
-CxImage* CxImage::GetLayer(int32_t position)
+CxImage *CxImage::GetLayer(int32_t position)
 {
   if ( ppLayers == NULL) {
     return NULL;

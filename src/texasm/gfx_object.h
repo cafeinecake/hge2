@@ -1,22 +1,21 @@
-
-#ifndef GFX_OBJECT_H
-#define GFX_OBJECT_H
+#pragma once
 
 #include "texasm.h"
 #include <stdio.h>
 #include <list>
 #include <string>
 
-using namespace std;
+//using namespace std;
 
 class CGfxObject {
 public:
   CGfxObject(char *_name, int _resgroup)
   {
-    name=_name;
+    name = _name;
     placed = false;
     resgroup = _resgroup;
   }
+  virtual ~CGfxObject();
 
   char  *GetName()
   {
@@ -63,8 +62,8 @@ protected:
 #ifdef _MSC_VER
 #if _MSC_VER < 1300
 template<>
-struct std::greater<CGfxObject*>  : public binary_function<CGfxObject*, CGfxObject*, bool> {
-  bool operator()(const CGfxObject* &a, const CGfxObject* &b) const
+struct std::greater<CGfxObject *>  : public binary_function<CGfxObject *, CGfxObject *, bool> {
+  bool operator()(const CGfxObject *&a, const CGfxObject *&b) const
   {
     return (a->GetWidth()  < b->GetWidth() && a->GetWidth()  > b->GetHeight()) ||
            (a->GetHeight() > b->GetWidth() && a->GetHeight() > b->GetHeight());
@@ -74,8 +73,8 @@ struct std::greater<CGfxObject*>  : public binary_function<CGfxObject*, CGfxObje
 #endif
 // END WORKAROUND
 
-struct ByLargestDimensionDescending : public greater<CGfxObject *> {
-  bool operator()(CGfxObject* &a, CGfxObject* &b) const
+struct ByLargestDimensionDescending : public std::greater<CGfxObject *> {
+  bool operator()(CGfxObject *&a, CGfxObject *&b) const
   {
     return (a->GetWidth()  < b->GetWidth() && a->GetWidth()  > b->GetHeight()) ||
            (a->GetHeight() > b->GetWidth() && a->GetHeight() > b->GetHeight());
@@ -84,8 +83,5 @@ struct ByLargestDimensionDescending : public greater<CGfxObject *> {
 
 // list and iterator
 
-typedef list<CGfxObject *> GfxObjList;
-typedef list<CGfxObject *>::iterator GfxObjIterator;
-
-
-#endif
+typedef std::list<CGfxObject *> GfxObjList;
+typedef std::list<CGfxObject *>::iterator GfxObjIterator;

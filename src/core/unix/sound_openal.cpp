@@ -185,18 +185,18 @@ HEFFECT CALL HGE_Impl::Effect_Load(const char *filename, uint32_t size)
   uint32_t _size; //, length, samples;
   void *data;
 
-  if(hOpenAL) {
-    if(bSilent) {
+  if (hOpenAL) {
+    if (bSilent) {
       return 1;
     }
 
-    if(size) {
+    if (size) {
       data = reinterpret_cast<void *>(const_cast<char *>(filename));
-      _size=size;
+      _size = size;
     } else {
-      data=Resource_Load(filename, &_size);
+      data = Resource_Load(filename, &_size);
 
-      if(!data) {
+      if (!data) {
         return 0;
       }
     }
@@ -209,7 +209,7 @@ HEFFECT CALL HGE_Impl::Effect_Load(const char *filename, uint32_t size)
     // !!! FIXME: we currently expect Ogg Vorbis, since this is all we
     // !!! FIXME:  need at the moment.
     if (!isOgg) {
-      if(!size) {
+      if (!size) {
         Resource_Free(data);
       }
 
@@ -243,7 +243,7 @@ HEFFECT CALL HGE_Impl::Effect_Load(const char *filename, uint32_t size)
     alBufferData(bid, fmt, decompressed, decompressed_size, freq);
     free(allocation_decompressed);  // not delete[] !
 
-    if(!size) {
+    if (!size) {
       Resource_Free(data);
     }
 
@@ -260,7 +260,7 @@ HCHANNEL CALL HGE_Impl::Effect_Play(HEFFECT eff)
 
 HCHANNEL CALL HGE_Impl::Effect_PlayEx(HEFFECT eff, int volume, int pan, float pitch, bool loop)
 {
-  if(hOpenAL) {
+  if (hOpenAL) {
     const ALuint sid = get_source(); // find an unused sid, or generate a new one.
 
     if (sid != 0) {
@@ -294,7 +294,7 @@ HCHANNEL CALL HGE_Impl::Effect_PlayEx(HEFFECT eff, int volume, int pan, float pi
 
 void CALL HGE_Impl::Effect_Free(HEFFECT eff)
 {
-  if(hOpenAL) {
+  if (hOpenAL) {
     ALuint bid = static_cast<ALuint>(eff);
     alDeleteBuffers(1, &bid);
   }
@@ -394,7 +394,7 @@ void CALL HGE_Impl::Channel_SetPanning(HCHANNEL chn, int pan)
   assert(pan >= -100);
   assert(pan <= 100);
 
-  if(hOpenAL) {
+  if (hOpenAL) {
     alSource3f(static_cast<ALuint>(chn),
                AL_POSITION,
                (static_cast<ALfloat>(pan)) / 100.0f,
@@ -405,7 +405,7 @@ void CALL HGE_Impl::Channel_SetPanning(HCHANNEL chn, int pan)
 
 void CALL HGE_Impl::Channel_SetVolume(HCHANNEL chn, int volume)
 {
-  if(hOpenAL) {
+  if (hOpenAL) {
     if (volume < 0) {
       volume = 0;
     } else if (volume > 100) {
@@ -420,35 +420,35 @@ void CALL HGE_Impl::Channel_SetVolume(HCHANNEL chn, int volume)
 
 void CALL HGE_Impl::Channel_SetPitch(HCHANNEL chn, float pitch)
 {
-  if(hOpenAL) {
+  if (hOpenAL) {
     alSourcef(static_cast<ALuint>(chn), AL_PITCH, pitch);
   }
 }
 
 void CALL HGE_Impl::Channel_Pause(HCHANNEL chn)
 {
-  if(hOpenAL) {
+  if (hOpenAL) {
     alSourcePause(static_cast<ALuint>(chn));
   }
 }
 
 void CALL HGE_Impl::Channel_Resume(HCHANNEL chn)
 {
-  if(hOpenAL) {
+  if (hOpenAL) {
     alSourcePlay(static_cast<ALuint>(chn));
   }
 }
 
 void CALL HGE_Impl::Channel_Stop(HCHANNEL chn)
 {
-  if(hOpenAL) {
+  if (hOpenAL) {
     alSourceStop(static_cast<ALuint>(chn));
   }
 }
 
 void CALL HGE_Impl::Channel_PauseAll()
 {
-  if(hOpenAL) {
+  if (hOpenAL) {
     ALCcontext *ctx = alcGetCurrentContext();
     alcSuspendContext(ctx);
   }
@@ -456,7 +456,7 @@ void CALL HGE_Impl::Channel_PauseAll()
 
 void CALL HGE_Impl::Channel_ResumeAll()
 {
-  if(hOpenAL) {
+  if (hOpenAL) {
     ALCcontext *ctx = alcGetCurrentContext();
     alcProcessContext(ctx);
   }
@@ -464,7 +464,7 @@ void CALL HGE_Impl::Channel_ResumeAll()
 
 void CALL HGE_Impl::Channel_StopAll()
 {
-  if(hOpenAL) {
+  if (hOpenAL) {
     for (int i = 0; i < sidcount; i++) {
       alSourceStop(sids[i]);
     }
@@ -473,7 +473,7 @@ void CALL HGE_Impl::Channel_StopAll()
 
 bool CALL HGE_Impl::Channel_IsPlaying(HCHANNEL chn)
 {
-  if(hOpenAL) {
+  if (hOpenAL) {
     ALint state = AL_STOPPED;
     alGetSourceiv(static_cast<ALuint>(chn), AL_SOURCE_STATE, &state);
     return state == AL_PLAYING;
@@ -517,11 +517,11 @@ bool CALL HGE_Impl::Channel_IsSliding(HCHANNEL /*channel*/)
 
 bool HGE_Impl::_SoundInit()
 {
-  if(!bUseSound || hOpenAL) {
+  if (!bUseSound || hOpenAL) {
     return true;
   }
 
-  bSilent=false;
+  bSilent = false;
 
   sidcount = 0;
   memset(sids, '\0', sizeof (sids));
@@ -532,7 +532,7 @@ bool HGE_Impl::_SoundInit()
 
   if (!dev) {
     System_Log("alcOpenDevice(NULL) failed, using no sound");
-    bSilent=true;
+    bSilent = true;
     return true;
   }
 
@@ -542,7 +542,7 @@ bool HGE_Impl::_SoundInit()
   if (!ctx) {
     alcCloseDevice(dev);
     System_Log("alcCreateContext(NULL) failed, using no sound");
-    bSilent=true;
+    bSilent = true;
     return true;
   }
 
@@ -567,9 +567,9 @@ bool HGE_Impl::_SoundInit()
 
 void HGE_Impl::_SoundDone()
 {
-  CStreamList *stmItem=streams, *stmNext;
+  CStreamList *stmItem = streams, *stmNext;
 
-  if(hOpenAL) {
+  if (hOpenAL) {
     for (int i = 0; i < sidcount; i++) {
       alSourceStop(sids[i]);
     }
@@ -585,16 +585,16 @@ void HGE_Impl::_SoundDone()
     alcDestroyContext(ctx);
     alcCloseDevice(dev);
 
-    hOpenAL=0;
+    hOpenAL = 0;
 
-    while(stmItem) {
-      stmNext=stmItem->next;
+    while (stmItem) {
+      stmNext = stmItem->next;
       Resource_Free(stmItem->data);
       delete stmItem;
-      stmItem=stmNext;
+      stmItem = stmNext;
     }
 
-    streams=0;
+    streams = 0;
   }
 }
 
@@ -610,7 +610,7 @@ void HGE_NORETURN HGE_Impl::_SetStreamVolume(int /*vol*/)
 
 void HGE_Impl::_SetFXVolume(int vol)
 {
-  if(hOpenAL) {
+  if (hOpenAL) {
     alListenerf(AL_GAIN, (static_cast<ALfloat>(vol)) / 100.0f);
   }
 }

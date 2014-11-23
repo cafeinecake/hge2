@@ -14,22 +14,22 @@
 ////////////////////////////////////////////////////////////////////////////////
 bool CxImageICO::Decode(CxFile *hFile)
 {
-  if (hFile==NULL) {
+  if (hFile == NULL) {
     return false;
   }
 
   uint32_t off = hFile->Tell(); //<yuandi>
-  int32_t page=info.nFrame; //internal icon structure indexes
+  int32_t page = info.nFrame; //internal icon structure indexes
 
   // read the first part of the header
   ICONHEADER icon_header;
-  hFile->Read(&icon_header,sizeof(ICONHEADER),1);
+  hFile->Read(&icon_header, sizeof(ICONHEADER), 1);
 
   icon_header.idType = m_ntohs(icon_header.idType);
   icon_header.idCount = m_ntohs(icon_header.idCount);
 
   // check if it's an icon or a cursor
-  if ((icon_header.idReserved == 0) && ((icon_header.idType == 1)||(icon_header.idType == 2))) {
+  if ((icon_header.idReserved == 0) && ((icon_header.idType == 1) || (icon_header.idType == 2))) {
 
     info.nNumFrames = icon_header.idCount;
 
@@ -46,7 +46,7 @@ bool CxImageICO::Decode(CxFile *hFile)
       icon_list[c].dwImageOffset = m_ntohl(icon_list[c].dwImageOffset);
     }
 
-    if ((page>=0)&&(page<icon_header.idCount)) {
+    if ((page >= 0) && (page < icon_header.idCount)) {
 
       if (info.nEscape == -1) {
         // Return output dimensions only
@@ -54,13 +54,13 @@ bool CxImageICO::Decode(CxFile *hFile)
         head.biHeight = icon_list[page].bHeight;
 #if CXIMAGE_SUPPORT_PNG
 
-        if (head.biWidth==0 && head.biHeight==0) {
+        if (head.biWidth == 0 && head.biHeight == 0) {
           // Vista icon support
           hFile->Seek(off + icon_list[page].dwImageOffset, SEEK_SET);
           CxImage png;
           png.SetEscape(-1);
 
-          if (png.Decode(hFile,CXIMAGE_FORMAT_PNG)) {
+          if (png.Decode(hFile, CXIMAGE_FORMAT_PNG)) {
             Transfer(png);
             info.nNumFrames = icon_header.idCount;
           }
@@ -76,12 +76,12 @@ bool CxImageICO::Decode(CxFile *hFile)
       BITMAPINFOHEADER bih;
       hFile->Seek(off + icon_list[page].dwImageOffset, SEEK_SET);
 
-      if (icon_list[page].bWidth==0 && icon_list[page].bHeight==0) {
+      if (icon_list[page].bWidth == 0 && icon_list[page].bHeight == 0) {
         // Vista icon support
 #if CXIMAGE_SUPPORT_PNG
         CxImage png;
 
-        if (png.Decode(hFile,CXIMAGE_FORMAT_PNG)) {
+        if (png.Decode(hFile, CXIMAGE_FORMAT_PNG)) {
           Transfer(png);
           info.nNumFrames = icon_header.idCount;
         }
@@ -90,33 +90,33 @@ bool CxImageICO::Decode(CxFile *hFile)
 #endif //CXIMAGE_SUPPORT_PNG
       } else {
         // standard icon
-        hFile->Read(&bih,sizeof(BITMAPINFOHEADER),1);
+        hFile->Read(&bih, sizeof(BITMAPINFOHEADER), 1);
 
         bihtoh(&bih);
 
         c = bih.biBitCount;
 
         // allocate memory for one icon
-        Create(icon_list[page].bWidth,icon_list[page].bHeight, c, CXIMAGE_FORMAT_ICO);  //image creation
+        Create(icon_list[page].bWidth, icon_list[page].bHeight, c, CXIMAGE_FORMAT_ICO); //image creation
 
         // read the palette
         RGBQUAD pal[256];
 
         if (bih.biClrUsed) {
-          hFile->Read(pal,bih.biClrUsed*sizeof(RGBQUAD), 1);
+          hFile->Read(pal, bih.biClrUsed * sizeof(RGBQUAD), 1);
         } else {
-          hFile->Read(pal,head.biClrUsed*sizeof(RGBQUAD), 1);
+          hFile->Read(pal, head.biClrUsed * sizeof(RGBQUAD), 1);
         }
 
-        SetPalette(pal,head.biClrUsed); //palette assign
+        SetPalette(pal, head.biClrUsed); //palette assign
 
         //read the icon
-        if (c<=24) {
+        if (c <= 24) {
           hFile->Read(info.pImage, head.biSizeImage, 1);
         } else { // 32 bit icon
-          uint8_t* buf=(uint8_t*)malloc(4*head.biHeight*head.biWidth);
-          uint8_t* src = buf;
-          hFile->Read(buf, 4*head.biHeight*head.biWidth, 1);
+          uint8_t *buf = (uint8_t *)malloc(4 * head.biHeight * head.biWidth);
+          uint8_t *src = buf;
+          hFile->Read(buf, 4 * head.biHeight * head.biWidth, 1);
 #if CXIMAGE_SUPPORT_ALPHA
 
           if (!AlphaIsValid()) {
@@ -126,16 +126,16 @@ bool CxImageICO::Decode(CxFile *hFile)
 #endif //CXIMAGE_SUPPORT_ALPHA
 
           for (int32_t y = 0; y < head.biHeight; y++) {
-            uint8_t* dst = GetBits(y);
+            uint8_t *dst = GetBits(y);
 
-            for(int32_t x=0; x<head.biWidth; x++) {
-              *dst++=src[0];
-              *dst++=src[1];
-              *dst++=src[2];
+            for (int32_t x = 0; x < head.biWidth; x++) {
+              *dst++ = src[0];
+              *dst++ = src[1];
+              *dst++ = src[2];
 #if CXIMAGE_SUPPORT_ALPHA
-              AlphaSet(x,y,src[3]);
+              AlphaSet(x, y, src[3]);
 #endif //CXIMAGE_SUPPORT_ALPHA
-              src+=4;
+              src += 4;
             }
           }
 
@@ -143,17 +143,17 @@ bool CxImageICO::Decode(CxFile *hFile)
         }
 
         // apply the AND and XOR masks
-        int32_t maskwdt = ((head.biWidth+31) / 32) * 4; //line width of AND mask (always 1 Bpp)
+        int32_t maskwdt = ((head.biWidth + 31) / 32) * 4; //line width of AND mask (always 1 Bpp)
         int32_t masksize = head.biHeight * maskwdt;       //size of mask
         uint8_t *mask = (uint8_t *)malloc(masksize);
 
         if (hFile->Read(mask, masksize, 1)) {
 
-          bool bGoodMask=false;
+          bool bGoodMask = false;
 
-          for (int32_t im=0; im<masksize; im++) {
-            if (mask[im]!=255) {
-              bGoodMask=true;
+          for (int32_t im = 0; im < masksize; im++) {
+            if (mask[im] != 255) {
+              bGoodMask = true;
               break;
             }
           }
@@ -165,16 +165,16 @@ bool CxImageICO::Decode(CxFile *hFile)
             if (!AlphaIsValid()) {
               AlphaCreate();
             } else {
-              bNeedAlpha=true; //32bit icon
+              bNeedAlpha = true; //32bit icon
             }
 
-            int32_t x,y;
+            int32_t x, y;
 
             for (y = 0; y < head.biHeight; y++) {
               for (x = 0; x < head.biWidth; x++) {
-                if (((mask[y*maskwdt+(x>>3)]>>(7-x%8))&0x01)) {
-                  AlphaSet(x,y,0);
-                  bNeedAlpha=true;
+                if (((mask[y * maskwdt + (x >> 3)] >> (7 - x % 8)) & 0x01)) {
+                  AlphaSet(x, y, 0);
+                  bNeedAlpha = true;
                 }
               }
             }
@@ -186,17 +186,17 @@ bool CxImageICO::Decode(CxFile *hFile)
 #endif //CXIMAGE_SUPPORT_ALPHA
 
             //check if there is only one transparent color
-            RGBQUAD cc,ct;
-            int32_t nTransColors=0;
-            int32_t nTransIndex=0;
+            RGBQUAD cc, ct;
+            int32_t nTransColors = 0;
+            int32_t nTransIndex = 0;
 
             for (y = 0; y < head.biHeight; y++) {
               for (x = 0; x < head.biWidth; x++) {
-                if (((mask[y*maskwdt+(x>>3)] >> (7-x%8)) & 0x01)) {
-                  cc = GetPixelColor(x,y,false);
+                if (((mask[y * maskwdt + (x >> 3)] >> (7 - x % 8)) & 0x01)) {
+                  cc = GetPixelColor(x, y, false);
 
-                  if (nTransColors==0) {
-                    nTransIndex = GetPixelIndex(x,y);
+                  if (nTransColors == 0) {
+                    nTransIndex = GetPixelIndex(x, y);
                     nTransColors++;
                     ct = cc;
                   } else {
@@ -208,7 +208,7 @@ bool CxImageICO::Decode(CxFile *hFile)
               }
             }
 
-            if (nTransColors==1 && c<=8) {
+            if (nTransColors == 1 && c <= 8) {
               SetTransColor(ct);
               SetTransIndex(nTransIndex);
 #if CXIMAGE_SUPPORT_ALPHA
@@ -227,13 +227,13 @@ bool CxImageICO::Decode(CxFile *hFile)
 
               for (y = 0; y < head.biHeight; y++) {
                 for (x = 0; x < head.biWidth; x++) {
-                  colorsUsed[BlindGetPixelIndex(x,y)] = 1;
+                  colorsUsed[BlindGetPixelIndex(x, y)] = 1;
                 }
               }
 
               int32_t iTransIdx = -1;
 
-              for (x = static_cast<int32_t>(head.biClrUsed-1); x>=0 ; x--) {
+              for (x = static_cast<int32_t>(head.biClrUsed - 1); x >= 0 ; x--) {
                 if (colorsUsed[x] == 0) {
                   iTransIdx = x; // this one is not in use. we may use it as transparent color
                   break;
@@ -247,7 +247,7 @@ bool CxImageICO::Decode(CxFile *hFile)
                 for (y = 0; y < head.biHeight; y++) {
                   for (x = 0; x < head.biWidth; x++) {
                     // AND mask (Each Byte represents 8 Pixels)
-                    if (((mask[y*maskwdt+(x>>3)] >> (7-x%8)) & 0x01)) {
+                    if (((mask[y * maskwdt + (x >> 3)] >> (7 - x % 8)) & 0x01)) {
                       // AND mask is set (!=0). This is a transparent part
                       SetPixelIndex(x, y, (uint8_t)iTransIdx);
                       bNeedTrans = true;
@@ -290,24 +290,24 @@ bool CxImageICO::Decode(CxFile *hFile)
 #if CXIMAGE_SUPPORT_ENCODE
 ////////////////////////////////////////////////////////////////////////////////
 // Thanks to <Alas>
-bool CxImageICO::Encode(CxFile * hFile, CxImage ** pImages, int32_t nPageCount)
+bool CxImageICO::Encode(CxFile *hFile, CxImage **pImages, int32_t nPageCount)
 {
   cx_try {
-    if (hFile==NULL)
+    if (hFile == NULL)
     {
       cx_throw("invalid file pointer");
     }
 
-    if (pImages==NULL || nPageCount<=0)
+    if (pImages == NULL || nPageCount <= 0)
     {
       cx_throw("multipage ICO, no images!");
     }
 
     int32_t i;
 
-    for (i=0; i<nPageCount; i++)
+    for (i = 0; i < nPageCount; i++)
     {
-      if (pImages[i]==NULL) {
+      if (pImages[i] == NULL) {
         cx_throw("Bad image pointer");
       }
 
@@ -318,36 +318,36 @@ bool CxImageICO::Encode(CxFile * hFile, CxImage ** pImages, int32_t nPageCount)
 
     CxImageICO ghost;
 
-    for (i=0; i<nPageCount; i++)  //write headers
+    for (i = 0; i < nPageCount; i++) //write headers
     {
       ghost.Ghost(pImages[i]);
       ghost.info.nNumFrames = nPageCount;
 
-      if (i==0) {
-        if (!ghost.Encode(hFile,false,nPageCount)) {
+      if (i == 0) {
+        if (!ghost.Encode(hFile, false, nPageCount)) {
           cx_throw("Error writing ICO file header");
         }
       }
 
-      if (!ghost.Encode(hFile,true,nPageCount)) {
+      if (!ghost.Encode(hFile, true, nPageCount)) {
         cx_throw("Error saving ICO image header");
       }
     }
 
-    for (i=0; i<nPageCount; i++)  //write bodies
+    for (i = 0; i < nPageCount; i++) //write bodies
     {
       ghost.Ghost(pImages[i]);
       ghost.info.nNumFrames = nPageCount;
 
-      if (!ghost.Encode(hFile,true,i)) {
+      if (!ghost.Encode(hFile, true, i)) {
         cx_throw("Error saving ICO body");
       }
     }
 
   } cx_catch {
-    if (strcmp(message,""))
+    if (strcmp(message, ""))
     {
-      strncpy(info.szLastError,message,255);
+      strncpy(info.szLastError, message, 255);
     }
 
     return false;
@@ -355,7 +355,7 @@ bool CxImageICO::Encode(CxFile * hFile, CxImage ** pImages, int32_t nPageCount)
   return true;
 }
 ////////////////////////////////////////////////////////////////////////////////
-bool CxImageICO::Encode(CxFile * hFile, bool bAppend, int32_t nPageCount)
+bool CxImageICO::Encode(CxFile *hFile, bool bAppend, int32_t nPageCount)
 {
   if (EncodeSafeCheck(hFile)) {
     return false;
@@ -364,29 +364,29 @@ bool CxImageICO::Encode(CxFile * hFile, bool bAppend, int32_t nPageCount)
 #if CXIMAGE_SUPPORT_PNG == 0
 
   //check format limits
-  if ((head.biWidth>255)||(head.biHeight>255)) {
-    strcpy(info.szLastError,"Can't save this image as icon");
+  if ((head.biWidth > 255) || (head.biHeight > 255)) {
+    strcpy(info.szLastError, "Can't save this image as icon");
     return false;
   }
 
 #endif
 
   //prepare the palette struct
-  RGBQUAD* pal=GetPalette();
+  RGBQUAD *pal = GetPalette();
 
-  if (head.biBitCount<=8 && pal==NULL) {
+  if (head.biBitCount <= 8 && pal == NULL) {
     return false;
   }
 
-  int32_t maskwdt=((head.biWidth+31)/32)*4; //mask line width
-  int32_t masksize=head.biHeight * maskwdt; //size of mask
-  int32_t bitcount=head.biBitCount;
-  int32_t imagesize=head.biSizeImage;
+  int32_t maskwdt = ((head.biWidth + 31) / 32) * 4; //mask line width
+  int32_t masksize = head.biHeight * maskwdt; //size of mask
+  int32_t bitcount = head.biBitCount;
+  int32_t imagesize = head.biSizeImage;
 #if CXIMAGE_SUPPORT_ALPHA
 
-  if (AlphaIsValid() && head.biClrUsed==0) {
-    bitcount=32;
-    imagesize=4*head.biHeight*head.biWidth;
+  if (AlphaIsValid() && head.biClrUsed == 0) {
+    bitcount = 32;
+    imagesize = 4 * head.biHeight * head.biWidth;
   }
 
 #endif
@@ -394,19 +394,20 @@ bool CxImageICO::Encode(CxFile * hFile, bool bAppend, int32_t nPageCount)
   //fill the icon headers
   int32_t nPages = nPageCount;
 
-  if (nPages<1) {
+  if (nPages < 1) {
     nPages = 1;
   }
 
-  ICONHEADER icon_header= {0,1,nPages};
+  ICONHEADER icon_header = {0, 1, nPages};
 
   if (!bAppend) {
     m_dwImageOffset = sizeof(ICONHEADER) + nPages * sizeof(ICONDIRENTRY);
   }
 
-  uint32_t dwBytesInRes = sizeof(BITMAPINFOHEADER)+head.biClrUsed*sizeof(RGBQUAD)+imagesize+masksize;
+  uint32_t dwBytesInRes = sizeof(BITMAPINFOHEADER) + head.biClrUsed * sizeof(
+                            RGBQUAD) + imagesize + masksize;
 
-  ICONDIRENTRY icon_list= {
+  ICONDIRENTRY icon_list = {
     (uint8_t)head.biWidth,
     (uint8_t)head.biHeight,
     (uint8_t)head.biClrUsed,
@@ -416,10 +417,10 @@ bool CxImageICO::Encode(CxFile * hFile, bool bAppend, int32_t nPageCount)
     m_dwImageOffset
   };
 
-  BITMAPINFOHEADER bi= {
+  BITMAPINFOHEADER bi = {
     sizeof(BITMAPINFOHEADER),
     head.biWidth,
-    2*head.biHeight,
+    2 * head.biHeight,
     1,
     (uint16_t)bitcount,
     0, imagesize,
@@ -430,10 +431,10 @@ bool CxImageICO::Encode(CxFile * hFile, bool bAppend, int32_t nPageCount)
   CxImage png(*this);
   CxMemFile memfile;
 
-  if (head.biWidth>255 || head.biHeight>255) {
+  if (head.biWidth > 255 || head.biHeight > 255) {
     icon_list.bWidth = icon_list.bHeight = 0;
     memfile.Open();
-    png.Encode(&memfile,CXIMAGE_FORMAT_PNG);
+    png.Encode(&memfile, CXIMAGE_FORMAT_PNG);
     icon_list.dwBytesInRes = dwBytesInRes = memfile.Size();
   }
 
@@ -442,18 +443,18 @@ bool CxImageICO::Encode(CxFile * hFile, bool bAppend, int32_t nPageCount)
   if (!bAppend) {
     icon_header.idType = m_ntohs(icon_header.idType);
     icon_header.idCount = m_ntohs(icon_header.idCount);
-    hFile->Write(&icon_header,sizeof(ICONHEADER),1);  //write the file header
+    hFile->Write(&icon_header, sizeof(ICONHEADER), 1); //write the file header
     icon_header.idType = m_ntohs(icon_header.idType);
     icon_header.idCount = m_ntohs(icon_header.idCount);
   }
 
 
-  if ((bAppend && nPageCount==info.nNumFrames) || (!bAppend && nPageCount==0)) {
+  if ((bAppend && nPageCount == info.nNumFrames) || (!bAppend && nPageCount == 0)) {
     icon_list.wPlanes = m_ntohs(icon_list.wPlanes);
     icon_list.wBitCount = m_ntohs(icon_list.wBitCount);
     icon_list.dwBytesInRes = m_ntohl(icon_list.dwBytesInRes);
     icon_list.dwImageOffset = m_ntohl(icon_list.dwImageOffset);
-    hFile->Write(&icon_list,sizeof(ICONDIRENTRY),1);  //write the image entry
+    hFile->Write(&icon_list, sizeof(ICONDIRENTRY), 1); //write the image entry
     icon_list.wPlanes = m_ntohs(icon_list.wPlanes);
     icon_list.wBitCount = m_ntohs(icon_list.wBitCount);
     icon_list.dwBytesInRes = m_ntohl(icon_list.dwBytesInRes);
@@ -462,17 +463,17 @@ bool CxImageICO::Encode(CxFile * hFile, bool bAppend, int32_t nPageCount)
     m_dwImageOffset += dwBytesInRes;      //update offset for next header
   }
 
-  if ((bAppend && nPageCount<info.nNumFrames) || (!bAppend && nPageCount==0)) {
+  if ((bAppend && nPageCount < info.nNumFrames) || (!bAppend && nPageCount == 0)) {
 #if CXIMAGE_SUPPORT_PNG
 
-    if (icon_list.bWidth==0 && icon_list.bHeight==0) {  // Vista icon support
-      hFile->Write(memfile.GetBuffer(false),dwBytesInRes,1);
+    if (icon_list.bWidth == 0 && icon_list.bHeight == 0) { // Vista icon support
+      hFile->Write(memfile.GetBuffer(false), dwBytesInRes, 1);
     } else
 #endif //CXIMAGE_SUPPORT_PNG
     {
       // standard icon
       bihtoh(&bi);
-      hFile->Write(&bi,sizeof(BITMAPINFOHEADER),1);     //write the image header
+      hFile->Write(&bi, sizeof(BITMAPINFOHEADER), 1);   //write the image header
       bihtoh(&bi);
 
       bool bTransparent = info.nBkgndIndex >= 0;
@@ -480,56 +481,56 @@ bool CxImageICO::Encode(CxFile * hFile, bool bAppend, int32_t nPageCount)
 
       if (pal) {
         if (bTransparent) {
-          SetPaletteColor((uint8_t)info.nBkgndIndex,0,0,0,0);
+          SetPaletteColor((uint8_t)info.nBkgndIndex, 0, 0, 0, 0);
         }
 
-        hFile->Write(pal,head.biClrUsed*sizeof(RGBQUAD),1); //write palette
+        hFile->Write(pal, head.biClrUsed * sizeof(RGBQUAD), 1); //write palette
 
         if (bTransparent) {
-          SetPaletteColor((uint8_t)info.nBkgndIndex,ct);
+          SetPaletteColor((uint8_t)info.nBkgndIndex, ct);
         }
       }
 
 #if CXIMAGE_SUPPORT_ALPHA
 
-      if (AlphaIsValid() && head.biClrUsed==0) {
-        uint8_t* buf=(uint8_t*)malloc(imagesize);
-        uint8_t* dst = buf;
+      if (AlphaIsValid() && head.biClrUsed == 0) {
+        uint8_t *buf = (uint8_t *)malloc(imagesize);
+        uint8_t *dst = buf;
 
         for (int32_t y = 0; y < head.biHeight; y++) {
-          uint8_t* src = GetBits(y);
+          uint8_t *src = GetBits(y);
 
-          for(int32_t x=0; x<head.biWidth; x++) {
-            *dst++=*src++;
-            *dst++=*src++;
-            *dst++=*src++;
-            *dst++=AlphaGet(x,y);
+          for (int32_t x = 0; x < head.biWidth; x++) {
+            *dst++ = *src++;
+            *dst++ = *src++;
+            *dst++ = *src++;
+            *dst++ = AlphaGet(x, y);
           }
         }
 
-        hFile->Write(buf,imagesize, 1);
+        hFile->Write(buf, imagesize, 1);
         free(buf);
       } else {
-        hFile->Write(info.pImage,imagesize,1);  //write image
+        hFile->Write(info.pImage, imagesize, 1); //write image
       }
 
 #else
-      hFile->Write(info.pImage,imagesize,1);  //write image
+      hFile->Write(info.pImage, imagesize, 1); //write image
 #endif
 
       //save transparency mask
-      uint8_t* mask=(uint8_t*)calloc(masksize,1); //create empty AND/XOR masks
+      uint8_t *mask = (uint8_t *)calloc(masksize, 1); //create empty AND/XOR masks
 
       if (!mask) {
         return false;
       }
 
       //prepare the variables to build the mask
-      uint8_t* iDst;
-      int32_t pos,i;
-      RGBQUAD c= {0,0,0,0};
-      int32_t* pc = (int32_t*)&c;
-      int32_t* pct= (int32_t*)&ct;
+      uint8_t *iDst;
+      int32_t pos, i;
+      RGBQUAD c = {0, 0, 0, 0};
+      int32_t *pc = (int32_t *)&c;
+      int32_t *pct = (int32_t *)&ct;
 #if CXIMAGE_SUPPORT_ALPHA
       bool bAlphaPaletteIsValid = AlphaPaletteIsValid();
       bool bAlphaIsValid = AlphaIsValid();
@@ -538,33 +539,33 @@ bool CxImageICO::Encode(CxFile * hFile, bool bAppend, int32_t nPageCount)
       //build the mask
       for (int32_t y = 0; y < head.biHeight; y++) {
         for (int32_t x = 0; x < head.biWidth; x++) {
-          i=0;
+          i = 0;
 #if CXIMAGE_SUPPORT_ALPHA
 
-          if (bAlphaIsValid && AlphaGet(x,y)==0) {
-            i=1;
+          if (bAlphaIsValid && AlphaGet(x, y) == 0) {
+            i = 1;
           }
 
-          if (bAlphaPaletteIsValid && BlindGetPixelColor(x,y).rgbReserved==0) {
-            i=1;
+          if (bAlphaPaletteIsValid && BlindGetPixelColor(x, y).rgbReserved == 0) {
+            i = 1;
           }
 
 #endif
-          c=GetPixelColor(x,y,false);
+          c = GetPixelColor(x, y, false);
 
-          if (bTransparent && *pc==*pct) {
-            i=1;
+          if (bTransparent && *pc == *pct) {
+            i = 1;
           }
 
-          iDst = mask + y*maskwdt + (x>>3);
-          pos = 7-x%8;
-          *iDst &= ~(0x01<<pos);
-          *iDst |= ((i & 0x01)<<pos);
+          iDst = mask + y * maskwdt + (x >> 3);
+          pos = 7 - x % 8;
+          *iDst &= ~(0x01 << pos);
+          *iDst |= ((i & 0x01) << pos);
         }
       }
 
       //write AND/XOR masks
-      hFile->Write(mask,masksize,1);
+      hFile->Write(mask, masksize, 1);
       free(mask);
     }
   }

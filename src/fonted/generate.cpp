@@ -4,36 +4,52 @@
 
 CHAR_DESC vChars[256];
 
-
-bool PlaceSymbols(int nWidth, int nHeight, CSymbolRange *pRanges, int nRangeCount)
+#ifndef PLATFORM_UNIX
+static bool PlaceSymbols(int nWidth, int nHeight, CSymbolRange *pRanges,
+                         int nRangeCount)
 {
   int i, j;
-  int x=1, y=1;
+  int x = 1, y = 1;
 
-  for(i=0; i<nRangeCount; i++) {
-    for(j=pRanges[i].First; j<=pRanges[i].Last; j++ ) {
-      if(y+vChars[j].h+1 >= nHeight) {
+  for (i = 0; i < nRangeCount; i++) {
+    for (j = pRanges[i].First; j <= pRanges[i].Last; j++ ) {
+      if (y + vChars[j].h + 1 >= nHeight) {
         return false;
       }
 
-      if(x+vChars[j].w+1 >= nWidth) {
-        x=1;
-        y+=vChars[j].h+1;
+      if (x + vChars[j].w + 1 >= nWidth) {
+        x = 1;
+        y += vChars[j].h + 1;
 
-        if(y+vChars[j].h+1 >= nHeight) {
+        if (y + vChars[j].h + 1 >= nHeight) {
           return false;
         }
       }
 
       vChars[j].x = x;
       vChars[j].y = y;
-      x+=vChars[j].w+1;
+      x += vChars[j].w + 1;
     }
   }
 
   return true;
 }
+#endif
 
+#ifdef PLATFORM_UNIX
+HTEXTURE FontGenerate(char * /*szFontName*/,
+                      int /*nSize*/,
+                      int /*nPaddingTop*/, int /*nPaddingBtm*/,
+                      int /*nPaddingLft*/, int /*nPaddingRgt*/,
+                      bool /*bBold*/,
+                      bool /*bItalic*/,
+                      bool /*bAntialias*/,
+                      CSymbolRange * /*pRanges*/,
+                      int /*nRangeCount*/)
+{
+  return 0;
+}
+#else
 HTEXTURE FontGenerate(char *szFontName,
                       int nSize,
                       int nPaddingTop, int nPaddingBtm, int nPaddingLft, int nPaddingRgt,
@@ -43,10 +59,7 @@ HTEXTURE FontGenerate(char *szFontName,
                       CSymbolRange *pRanges,
                       int nRangeCount)
 {
-#ifdef PLATFORM_UNIX
-  return 0;
-#else
-  int i,j;
+  int i, j;
   int nWidth, nHeight;
 
   HDC     hBMDC;
@@ -65,14 +78,14 @@ HTEXTURE FontGenerate(char *szFontName,
                      (bAntialias) ? ANTIALIASED_QUALITY : NONANTIALIASED_QUALITY,
                      DEFAULT_PITCH | FF_DONTCARE, szFontName);
 
-  if(!hFont) {
+  if (!hFont) {
     return 0;
   }
 
   // create and setup compatible DC
   hBMDC = CreateCompatibleDC(0);
-  SetTextColor(hBMDC, RGB(255,255,255));
-  SetBkColor(hBMDC, RGB(0,0,0));
+  SetTextColor(hBMDC, RGB(255, 255, 255));
+  SetBkColor(hBMDC, RGB(0, 0, 0));
   SetBkMode(hBMDC, TRANSPARENT);
   SetMapMode(hBMDC, MM_TEXT);
   SetTextAlign(hBMDC, TA_TOP);
@@ -86,29 +99,29 @@ HTEXTURE FontGenerate(char *szFontName,
       GetCharABCWidthsFloat(hBMDC, j, j, &abc);
 
       // reserve pixels for antialiasing
-      vChars[j].a = int(abc.abcfA)-1;
-      vChars[j].c = int(abc.abcfC)-1;
-      vChars[j].w = int(abc.abcfB)+2 + nPaddingLft+nPaddingRgt;
-      vChars[j].h = tTextMetrics.tmHeight + nPaddingTop+nPaddingBtm;
+      vChars[j].a = int(abc.abcfA) - 1;
+      vChars[j].c = int(abc.abcfC) - 1;
+      vChars[j].w = int(abc.abcfB) + 2 + nPaddingLft + nPaddingRgt;
+      vChars[j].h = tTextMetrics.tmHeight + nPaddingTop + nPaddingBtm;
     }
   }
 
   // calculate symbols placement
-  nWidth=32;
-  nHeight=32;
+  nWidth = 32;
+  nHeight = 32;
 
-  for(;;) {
-    if(PlaceSymbols(nWidth, nHeight, pRanges, nRangeCount)) {
+  for (;;) {
+    if (PlaceSymbols(nWidth, nHeight, pRanges, nRangeCount)) {
       break;
     }
 
-    if(nWidth<=nHeight) {
-      nWidth<<=1;
+    if (nWidth <= nHeight) {
+      nWidth <<= 1;
     } else {
-      nHeight<<=1;
+      nHeight <<= 1;
     }
 
-    if(nWidth > MAX_TEXTURE_SIZE || nHeight > MAX_TEXTURE_SIZE) {
+    if (nWidth > MAX_TEXTURE_SIZE || nHeight > MAX_TEXTURE_SIZE) {
       DeleteObject(hFont);
       DeleteDC(hBMDC);
       return 0;
@@ -124,9 +137,9 @@ HTEXTURE FontGenerate(char *szFontName,
   bmi.bmiHeader.biPlanes = 1;
   bmi.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
 
-  hBM = CreateDIBSection(hBMDC, &bmi, DIB_RGB_COLORS, (void**)&pPixels, 0, 0);
+  hBM = CreateDIBSection(hBMDC, &bmi, DIB_RGB_COLORS, (void **)&pPixels, 0, 0);
 
-  if(!hBM) {
+  if (!hBM) {
     DeleteObject(hFont);
     DeleteDC(hBMDC);
     return 0;
@@ -138,7 +151,7 @@ HTEXTURE FontGenerate(char *szFontName,
   for (i = 0; i < nRangeCount; i++ ) {
     for (j = pRanges[i].First; j <= pRanges[i].Last; j++ ) {
       char c = (char)j;
-      TextOut(hBMDC, vChars[j].x-vChars[j].a+nPaddingLft, vChars[j].y+nPaddingTop, &c, 1);
+      TextOut(hBMDC, vChars[j].x - vChars[j].a + nPaddingLft, vChars[j].y + nPaddingTop, &c, 1);
     }
   }
 
@@ -160,14 +173,14 @@ HTEXTURE FontGenerate(char *szFontName,
   */
 
   // transfer DC bitmap onto HGE texture with alpha channel
-  tex=hge->Texture_Create(nWidth, nHeight);
-  pTexData=hge->Texture_Lock(tex, false);
+  tex = hge->Texture_Create(nWidth, nHeight);
+  pTexData = hge->Texture_Lock(tex, false);
 
-  for (i=0; i<nHeight; i++) {
-    for (j=0; j<nWidth; j++) {
-      dwPixel = pPixels[i*nWidth+j];
+  for (i = 0; i < nHeight; i++) {
+    for (j = 0; j < nWidth; j++) {
+      dwPixel = pPixels[i * nWidth + j];
       dwPixel = 0xFFFFFF | ((dwPixel & 0xFF) << 24);
-      pTexData[i*nWidth+j] = dwPixel;
+      pTexData[i * nWidth + j] = dwPixel;
     }
   }
 
@@ -179,5 +192,5 @@ HTEXTURE FontGenerate(char *szFontName,
   DeleteDC(hBMDC);
 
   return tex;
-#endif
 }
+#endif

@@ -6,11 +6,11 @@
 //////////////////////////////////////////////////////////
 class DLL_EXP CxMemFile : public CxFile {
 public:
-  CxMemFile(uint8_t* pBuffer = NULL, uint32_t size = 0);
+  CxMemFile(uint8_t *pBuffer = NULL, uint32_t size = 0);
   ~CxMemFile();
 
   bool Open();
-  uint8_t* GetBuffer(bool bDetachBuffer = true);
+  uint8_t *GetBuffer(bool bDetachBuffer = true);
 
   virtual bool  Close();
   virtual size_t  Read(void *buffer, size_t size, size_t count);
@@ -23,14 +23,14 @@ public:
   virtual int32_t Error();
   virtual bool  PutC(uint8_t c);
   virtual int32_t GetC();
-  virtual char *  GetS(char *string, int32_t n);
-  virtual int32_t Scanf(const char *format, void* output);
+  virtual char   *GetS(char *string, int32_t n);
+  virtual int32_t Scanf(const char *format, void *output);
 
 protected:
   bool  Alloc(uint32_t nBytes);
   void  Free();
 
-  uint8_t*  m_pBuffer;
+  uint8_t  *m_pBuffer;
   uint32_t  m_Size;
   bool  m_bFreeOnClose;
   int32_t m_Position; //current position

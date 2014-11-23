@@ -34,32 +34,32 @@ png_error(png_structp png_ptr, png_const_charp error_message)
 #ifdef PNG_ERROR_NUMBERS_SUPPORTED
   char msg[16];
 
-  if (png_ptr->flags&(PNG_FLAG_STRIP_ERROR_NUMBERS|PNG_FLAG_STRIP_ERROR_TEXT)) {
+  if (png_ptr->flags & (PNG_FLAG_STRIP_ERROR_NUMBERS | PNG_FLAG_STRIP_ERROR_TEXT)) {
     if (*error_message == '#') {
       int offset;
 
-      for (offset=1; offset<15; offset++)
-        if (*(error_message+offset) == ' ') {
+      for (offset = 1; offset < 15; offset++)
+        if (*(error_message + offset) == ' ') {
           break;
         }
 
-      if (png_ptr->flags&PNG_FLAG_STRIP_ERROR_TEXT) {
+      if (png_ptr->flags & PNG_FLAG_STRIP_ERROR_TEXT) {
         int i;
 
-        for (i=0; i<offset-1; i++) {
-          msg[i]=error_message[i+1];
+        for (i = 0; i < offset - 1; i++) {
+          msg[i] = error_message[i + 1];
         }
 
-        msg[i]='\0';
-        error_message=msg;
+        msg[i] = '\0';
+        error_message = msg;
       } else {
-        error_message+=offset;
+        error_message += offset;
       }
     } else {
-      if (png_ptr->flags&PNG_FLAG_STRIP_ERROR_TEXT) {
-        msg[0]='0';
-        msg[1]='\0';
-        error_message=msg;
+      if (png_ptr->flags & PNG_FLAG_STRIP_ERROR_TEXT) {
+        msg[0] = '0';
+        msg[1] = '\0';
+        error_message = msg;
       }
     }
   }
@@ -86,21 +86,21 @@ png_warning(png_structp png_ptr, png_const_charp warning_message)
   int offset = 0;
 #ifdef PNG_ERROR_NUMBERS_SUPPORTED
 
-  if (png_ptr->flags&(PNG_FLAG_STRIP_ERROR_NUMBERS|PNG_FLAG_STRIP_ERROR_TEXT))
+  if (png_ptr->flags & (PNG_FLAG_STRIP_ERROR_NUMBERS | PNG_FLAG_STRIP_ERROR_TEXT))
 #endif
   {
     if (*warning_message == '#') {
-      for (offset=1; offset<15; offset++)
-        if (*(warning_message+offset) == ' ') {
+      for (offset = 1; offset < 15; offset++)
+        if (*(warning_message + offset) == ' ') {
           break;
         }
     }
   }
 
   if (png_ptr != NULL && png_ptr->warning_fn != NULL) {
-    (*(png_ptr->warning_fn))(png_ptr, warning_message+offset);
+    (*(png_ptr->warning_fn))(png_ptr, warning_message + offset);
   } else {
-    png_default_warning(png_ptr, warning_message+offset);
+    png_default_warning(png_ptr, warning_message + offset);
   }
 }
 
@@ -140,15 +140,15 @@ png_format_buffer(png_structp png_ptr, png_charp buffer, png_const_charp
   } else {
     buffer[iout++] = ':';
     buffer[iout++] = ' ';
-    png_strncpy(buffer+iout, error_message, 63);
-    buffer[iout+63] = 0;
+    png_strncpy(buffer + iout, error_message, 63);
+    buffer[iout + 63] = 0;
   }
 }
 
 void PNGAPI
 png_chunk_error(png_structp png_ptr, png_const_charp error_message)
 {
-  char msg[18+64];
+  char msg[18 + 64];
   png_format_buffer(png_ptr, msg, error_message);
   png_error(png_ptr, msg);
 }
@@ -156,7 +156,7 @@ png_chunk_error(png_structp png_ptr, png_const_charp error_message)
 void PNGAPI
 png_chunk_warning(png_structp png_ptr, png_const_charp warning_message)
 {
-  char msg[18+64];
+  char msg[18 + 64];
   png_format_buffer(png_ptr, msg, warning_message);
   png_warning(png_ptr, msg);
 }
@@ -176,20 +176,20 @@ png_default_error(png_structp png_ptr, png_const_charp error_message)
     int offset;
     char error_number[16];
 
-    for (offset=0; offset<15; offset++) {
-      error_number[offset] = *(error_message+offset+1);
+    for (offset = 0; offset < 15; offset++) {
+      error_number[offset] = *(error_message + offset + 1);
 
-      if (*(error_message+offset) == ' ') {
+      if (*(error_message + offset) == ' ') {
         break;
       }
     }
 
-    if((offset > 1) && (offset < 15)) {
-      error_number[offset-1]='\0';
+    if ((offset > 1) && (offset < 15)) {
+      error_number[offset - 1] = '\0';
       fprintf(stderr, "libpng error no. %s: %s\n", error_number,
-              error_message+offset);
+              error_message + offset);
     } else {
-      fprintf(stderr, "libpng error: %s, offset=%d\n", error_message,offset);
+      fprintf(stderr, "libpng error: %s, offset=%d\n", error_message, offset);
     }
   } else
 #endif
@@ -201,7 +201,7 @@ png_default_error(png_structp png_ptr, png_const_charp error_message)
 #  ifdef USE_FAR_KEYWORD
   {
     jmp_buf jmpbuf;
-    png_memcpy(jmpbuf,png_ptr->jmpbuf,png_sizeof(jmp_buf));
+    png_memcpy(jmpbuf, png_ptr->jmpbuf, png_sizeof(jmp_buf));
     longjmp(jmpbuf, 1);
   }
 #  else
@@ -240,18 +240,18 @@ png_default_warning(png_structp png_ptr, png_const_charp warning_message)
     int offset;
     char warning_number[16];
 
-    for (offset=0; offset<15; offset++) {
-      warning_number[offset]=*(warning_message+offset+1);
+    for (offset = 0; offset < 15; offset++) {
+      warning_number[offset] = *(warning_message + offset + 1);
 
-      if (*(warning_message+offset) == ' ') {
+      if (*(warning_message + offset) == ' ') {
         break;
       }
     }
 
-    if((offset > 1) && (offset < 15)) {
-      warning_number[offset-1]='\0';
+    if ((offset > 1) && (offset < 15)) {
+      warning_number[offset - 1] = '\0';
       fprintf(stderr, "libpng warning no. %s: %s\n", warning_number,
-              warning_message+offset);
+              warning_message + offset);
     } else {
       fprintf(stderr, "libpng warning: %s\n", warning_message);
     }
@@ -304,9 +304,9 @@ png_get_error_ptr(png_structp png_ptr)
 void PNGAPI
 png_set_strip_error_numbers(png_structp png_ptr, png_uint_32 strip_mode)
 {
-  if(png_ptr != NULL) {
+  if (png_ptr != NULL) {
     png_ptr->flags &=
-      ((~(PNG_FLAG_STRIP_ERROR_NUMBERS|PNG_FLAG_STRIP_ERROR_TEXT))&strip_mode);
+      ((~(PNG_FLAG_STRIP_ERROR_NUMBERS | PNG_FLAG_STRIP_ERROR_TEXT))&strip_mode);
   }
 }
 #endif

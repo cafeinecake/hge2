@@ -1969,11 +1969,11 @@ typedef void (* glGetMinmaxParameterivProcPtr) (GLenum target, GLenum pname, GLi
 typedef void (* glGetPixelMapfvProcPtr) (GLenum map, GLfloat *values);
 typedef void (* glGetPixelMapuivProcPtr) (GLenum map, GLuint *values);
 typedef void (* glGetPixelMapusvProcPtr) (GLenum map, GLushort *values);
-typedef void (* glGetPointervProcPtr) (GLenum pname, GLvoid**params);
+typedef void (* glGetPointervProcPtr) (GLenum pname, GLvoid **params);
 typedef void (* glGetPolygonStippleProcPtr) (GLubyte *mask);
 typedef void (* glGetSeparableFilterProcPtr) (GLenum target, GLenum format, GLenum type,
     GLvoid *row, GLvoid *column, GLvoid *span);
-typedef const GLubyte * (* glGetStringProcPtr) (GLenum name);
+typedef const GLubyte *(* glGetStringProcPtr) (GLenum name);
 typedef void (* glGetTexEnvfvProcPtr) (GLenum target, GLenum pname, GLfloat *params);
 typedef void (* glGetTexEnvivProcPtr) (GLenum target, GLenum pname, GLint *params);
 typedef void (* glGetTexGendvProcPtr) (GLenum coord, GLenum pname, GLdouble *params);
@@ -2321,7 +2321,7 @@ typedef void (* glBlendFuncSeparateProcPtr) (GLenum srcRGB, GLenum dstRGB, GLenu
 typedef void (* glMultiDrawArraysProcPtr) (GLenum mode, const GLint *first, const GLsizei *count,
     GLsizei primcount);
 typedef void (* glMultiDrawElementsProcPtr) (GLenum mode, const GLsizei *count, GLenum type,
-    const GLvoid**indices, GLsizei primcount);
+    const GLvoid **indices, GLsizei primcount);
 
 typedef void (* glWindowPos2dProcPtr) (GLdouble x, GLdouble y);
 typedef void (* glWindowPos2dvProcPtr) (const GLdouble *v);
@@ -2410,11 +2410,11 @@ typedef void (* glDisableVertexAttribArrayProcPtr) (GLuint index);
 typedef void (* glGetVertexAttribdvProcPtr) (GLuint index, GLenum pname, GLdouble *params);
 typedef void (* glGetVertexAttribfvProcPtr) (GLuint index, GLenum pname, GLfloat *params);
 typedef void (* glGetVertexAttribivProcPtr) (GLuint index, GLenum pname, GLint *params);
-typedef void (* glGetVertexAttribPointervProcPtr) (GLuint index, GLenum pname, GLvoid**pointer);
+typedef void (* glGetVertexAttribPointervProcPtr) (GLuint index, GLenum pname, GLvoid **pointer);
 typedef void (* glDeleteShaderProcPtr) (GLuint shader);
 typedef void (* glDetachShaderProcPtr) (GLuint program, GLuint shader);
 typedef GLuint (* glCreateShaderProcPtr) (GLenum type);
-typedef void (* glShaderSourceProcPtr) (GLuint shader, GLsizei count, const GLchar**string,
+typedef void (* glShaderSourceProcPtr) (GLuint shader, GLsizei count, const GLchar **string,
                                         const GLint *length);
 typedef void (* glCompileShaderProcPtr) (GLuint shader);
 typedef GLuint (* glCreateProgramProcPtr) (void);
@@ -2637,11 +2637,11 @@ extern void glGetMinmaxParameteriv (GLenum target, GLenum pname, GLint *params);
 extern void glGetPixelMapfv (GLenum map, GLfloat *values);
 extern void glGetPixelMapuiv (GLenum map, GLuint *values);
 extern void glGetPixelMapusv (GLenum map, GLushort *values);
-extern void glGetPointerv (GLenum pname, GLvoid**params);
+extern void glGetPointerv (GLenum pname, GLvoid **params);
 extern void glGetPolygonStipple (GLubyte *mask);
 extern void glGetSeparableFilter (GLenum target, GLenum format, GLenum type, GLvoid *row,
                                   GLvoid *column, GLvoid *span);
-extern const GLubyte * glGetString (GLenum name);
+extern const GLubyte *glGetString (GLenum name);
 extern void glGetTexEnvfv (GLenum target, GLenum pname, GLfloat *params);
 extern void glGetTexEnviv (GLenum target, GLenum pname, GLint *params);
 extern void glGetTexGendv (GLenum coord, GLenum pname, GLdouble *params);
@@ -2943,7 +2943,7 @@ extern void glMultiTexCoord4sv (GLenum target, const GLshort *v);
 extern void glFogCoordf (GLfloat coord);
 extern void glFogCoordfv (const GLfloat *coord);
 extern void glFogCoordd (GLdouble coord);
-extern void glFogCoorddv (const GLdouble * coord);
+extern void glFogCoorddv (const GLdouble *coord);
 extern void glFogCoordPointer (GLenum type, GLsizei stride, const GLvoid *pointer);
 
 extern void glSecondaryColor3b (GLbyte red, GLbyte green, GLbyte blue);
@@ -2975,7 +2975,7 @@ extern void glBlendFuncSeparate (GLenum srcRGB, GLenum dstRGB, GLenum srcAlpha, 
 extern void glMultiDrawArrays (GLenum mode, const GLint *first, const GLsizei *count,
                                GLsizei primcount);
 extern void glMultiDrawElements (GLenum mode, const GLsizei *count, GLenum type,
-                                 const GLvoid**indices, GLsizei primcount);
+                                 const GLvoid **indices, GLsizei primcount);
 
 extern void glWindowPos2d (GLdouble x, GLdouble y);
 extern void glWindowPos2dv (const GLdouble *v);
@@ -3010,7 +3010,7 @@ extern GLboolean glIsBuffer (GLuint buffer);
 extern void glBufferData (GLenum target, GLsizeiptr size, const GLvoid *data, GLenum usage);
 extern void glBufferSubData (GLenum target, GLintptr offset, GLsizeiptr size, const GLvoid *data);
 extern void glGetBufferSubData (GLenum target, GLintptr offset, GLsizeiptr size, GLvoid *data);
-extern GLvoid * glMapBuffer (GLenum target, GLenum access);
+extern GLvoid *glMapBuffer (GLenum target, GLenum access);
 extern GLboolean glUnmapBuffer (GLenum target);
 extern void glGetBufferParameteriv (GLenum target, GLenum pname, GLint *params);
 extern void glGetBufferPointerv (GLenum target, GLenum pname, GLvoid **params);
@@ -3059,11 +3059,11 @@ extern void glDisableVertexAttribArray (GLuint index);
 extern void glGetVertexAttribdv (GLuint index, GLenum pname, GLdouble *params);
 extern void glGetVertexAttribfv (GLuint index, GLenum pname, GLfloat *params);
 extern void glGetVertexAttribiv (GLuint index, GLenum pname, GLint *params);
-extern void glGetVertexAttribPointerv (GLuint index, GLenum pname, GLvoid**pointer);
+extern void glGetVertexAttribPointerv (GLuint index, GLenum pname, GLvoid **pointer);
 extern void glDeleteShader (GLuint shader);
 extern void glDetachShader (GLuint program, GLuint shader);
 extern GLuint glCreateShader (GLenum type);
-extern void glShaderSource (GLuint shader, GLsizei count, const GLchar**string,
+extern void glShaderSource (GLuint shader, GLsizei count, const GLchar **string,
                             const GLint *length);
 extern void glCompileShader (GLuint shader);
 extern GLuint glCreateProgram (void);

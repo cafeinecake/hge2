@@ -26,7 +26,7 @@ public:
 
 //  bool Load(const TCHAR * imageFileName){ return CxImage::Load(imageFileName,CXIMAGE_FORMAT_JBG);}
 //  bool Save(const TCHAR * imageFileName){ return CxImage::Save(imageFileName,CXIMAGE_FORMAT_JBG);}
-  bool Decode(CxFile * hFile);
+  bool Decode(CxFile *hFile);
   bool Decode(FILE *hFile)
   {
     CxIOFile file(hFile);
@@ -34,7 +34,7 @@ public:
   }
 
 #if CXIMAGE_SUPPORT_ENCODE
-  bool Encode(CxFile * hFile);
+  bool Encode(CxFile *hFile);
   bool Encode(FILE *hFile)
   {
     CxIOFile file(hFile);
@@ -44,7 +44,7 @@ public:
 protected:
   static void jbig_data_out(uint8_t *buffer, uint32_t len, void *file)
   {
-    ((CxFile*)file)->Write(buffer,len,1);
+    ((CxFile *)file)->Write(buffer, len, 1);
   }
 };
 

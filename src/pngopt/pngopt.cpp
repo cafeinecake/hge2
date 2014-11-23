@@ -22,27 +22,25 @@ struct color {
 
 struct filelist {
   char    filename[256];
-  filelist* next;
+  filelist *next;
 };
 
-filelist *files=0;
+static filelist *files = 0;
 
 
-extern bool Write32BitPNGWithPitch(FILE* fp, void* pBits, bool bNeedAlpha, int nWidth, int nHeight,
+extern bool Write32BitPNGWithPitch(FILE *fp, void *pBits, bool bNeedAlpha, int nWidth, int nHeight,
                                    int nPitch);
 bool convert(char *filename);
 
 
-int main(int argc, char* argv[])
+int main(int argc, char *argv [])
 {
-  int         nfiles=0;
-  bool        done=false;
-  char        *buf, filename[256];
+  int         nfiles = 0;
   filelist      *newFile, *nextFile;
 
   printf("\nPNG Optimizer v0.2\nCopyright (C) 2003-2008, Relish Games\n\n");
 
-  if(argc!=2) {
+  if (argc != 2) {
     printf("Usage: PNGOPT.EXE <wildcard>\n\n");
     printf("The image data of all files found by the specified wildcard\n");
     printf("will be expanded beneath the alpha channel boundary.\n");
@@ -51,75 +49,78 @@ int main(int argc, char* argv[])
     return 0;
   } else {
 #ifdef PLATFORM_UNIX
+    argv[0] = *argv;
 #else
+    bool        done = false;
+    char        *buf, filename[256];
     WIN32_FIND_DATA   SearchData;
     HANDLE        hSearch;
-    hSearch=FindFirstFile(argv[1], &SearchData);
-    nextFile=0;
+    hSearch = FindFirstFile(argv[1], &SearchData);
+    nextFile = 0;
 
-    for(;;) {
-      if(hSearch==INVALID_HANDLE_VALUE || done) {
+    for (;;) {
+      if (hSearch == INVALID_HANDLE_VALUE || done) {
         FindClose(hSearch);
         break;
       }
 
-      if(!(SearchData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)) {
+      if (!(SearchData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)) {
         strcpy(filename, argv[1]);
-        buf=strrchr(filename, '\\');
+        buf = strrchr(filename, '\\');
 
-        if(!buf) {
-          buf=filename;
+        if (!buf) {
+          buf = filename;
         } else {
           buf++;
         }
 
-        strcpy(buf,SearchData.cFileName);
-        newFile=new filelist;
-        strcpy(newFile->filename,filename);
-        newFile->next=0;
+        strcpy(buf, SearchData.cFileName);
+        newFile = new filelist;
+        strcpy(newFile->filename, filename);
+        newFile->next = 0;
 
-        if(nextFile) {
-          nextFile->next=newFile;
+        if (nextFile) {
+          nextFile->next = newFile;
         } else {
-          files=newFile;
+          files = newFile;
         }
 
-        nextFile=newFile;
+        nextFile = newFile;
       }
 
-      done=!FindNextFile(hSearch, &SearchData);
+      done = !FindNextFile(hSearch, &SearchData);
     }
 
 #endif
 
-    hge=hgeCreate(HGE_VERSION);
+    hge = hgeCreate(HGE_VERSION);
     hge->System_SetState(HGE_USESOUND, false);
     hge->System_SetState(HGE_WINDOWED, true);
     hge->System_SetState(HGE_SCREENWIDTH, 320);
     hge->System_SetState(HGE_SCREENHEIGHT, 200);
     hge->System_SetState(HGE_SHOWSPLASH, false);
 
-    if(!hge->System_Initiate()) {
+    if (!hge->System_Initiate()) {
       hge->Release();
-      printf("\nCan't initiate HGE.\n\n",nfiles);
+      printf("\nCan't initiate HGE.\n\n");
       return 0;
     }
 
-    newFile=files;
+    newFile = files;
 
-    while(newFile) {
-      if(convert(newFile->filename)) {
+    while (newFile) {
+      if (convert(newFile->filename)) {
         nfiles++;
       }
 
-      nextFile=newFile->next;
+      nextFile = newFile->next;
       delete newFile;
-      newFile=nextFile;
+      newFile = nextFile;
     }
 
     hge->System_Shutdown();
     hge->Release();
-    printf("\n%d image(s) successfully optimized.\n\n",nfiles);
+    printf("\n%d image(s) successfully optimized.\n\n", nfiles);
     return 0;
   }
 }
@@ -130,17 +131,17 @@ bool convert(char *filename)
   int width, height, pitch;
   color *buf;
 
-  int i,j,k,l;
-  int r,g,b;
+  int i, j, k, l;
+  int r, g, b;
   int count;
 
-  FILE *fp=0;
+  FILE *fp = 0;
 
   printf("%s - ", filename);
 
   tex = hge->Texture_Load(filename);
 
-  if(!tex) {
+  if (!tex) {
     printf("Can't load texture.\n");
     return false;
   }
@@ -149,47 +150,47 @@ bool convert(char *filename)
   height = hge->Texture_GetHeight(tex, true);
   pitch  = hge->Texture_GetWidth(tex, false);
 
-  buf=(color *)hge->Texture_Lock(tex, false);
+  buf = reinterpret_cast<color *>(hge->Texture_Lock(tex, false));
 
-  if(!buf) {
+  if (!buf) {
     printf("Can't lock texture.\n");
     return false;
   }
 
-  for(i=0; i<height; i++)
-    for(j=0; j<width; j++)
-      if(!buf[i*pitch+j].a) {
+  for (i = 0; i < height; i++)
+    for (j = 0; j < width; j++)
+      if (!buf[i * pitch + j].a) {
         count = 0;
-        r=g=b = 0;
+        r = g = b = 0;
 
-        for(k=-1; k<=1; k++)
-          for(l=-1; l<=1; l++)
-            if(i+k >= 0 && i+k < height &&
-                j+l >= 0 && j+l < width &&
-                buf[(i+k)*pitch + (j+l)].a) {
-              r += buf[(i+k)*pitch + (j+l)].r;
-              g += buf[(i+k)*pitch + (j+l)].g;
-              b += buf[(i+k)*pitch + (j+l)].b;
+        for (k = -1; k <= 1; k++)
+          for (l = -1; l <= 1; l++)
+            if (i + k >= 0 && i + k < height &&
+                j + l >= 0 && j + l < width &&
+                buf[(i + k)*pitch + (j + l)].a) {
+              r += buf[(i + k) * pitch + (j + l)].r;
+              g += buf[(i + k) * pitch + (j + l)].g;
+              b += buf[(i + k) * pitch + (j + l)].b;
               count++;
             }
 
-        if(count) {
-          buf[i*pitch+j].r = (unsigned char)(r / count);
-          buf[i*pitch+j].g = (unsigned char)(g / count);
-          buf[i*pitch+j].b = (unsigned char)(b / count);
+        if (count) {
+          buf[i * pitch + j].r = static_cast<uint8_t>(r / count);
+          buf[i * pitch + j].g = static_cast<uint8_t>(g / count);
+          buf[i * pitch + j].b = static_cast<uint8_t>(b / count);
         }
       }
 
 
-  fp=fopen(filename,"wb");
+  fp = fopen(filename, "wb");
 
-  if(!fp) {
+  if (!fp) {
     hge->Texture_Unlock(tex);
     printf("Can't write to file.\n");
     return false;
   }
 
-  if(!Write32BitPNGWithPitch(fp, buf, true, width, height, pitch)) {
+  if (!Write32BitPNGWithPitch(fp, buf, true, width, height, pitch)) {
     hge->Texture_Unlock(tex);
     fclose(fp);
     printf("Error writing data.\n");

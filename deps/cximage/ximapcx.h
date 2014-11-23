@@ -42,7 +42,7 @@ public:
 
 //  bool Load(const TCHAR * imageFileName){ return CxImage::Load(imageFileName,CXIMAGE_FORMAT_PCX);}
 //  bool Save(const TCHAR * imageFileName){ return CxImage::Save(imageFileName,CXIMAGE_FORMAT_PCX);}
-  bool Decode(CxFile * hFile);
+  bool Decode(CxFile *hFile);
   bool Decode(FILE *hFile)
   {
     CxIOFile file(hFile);
@@ -50,7 +50,7 @@ public:
   }
 
 #if CXIMAGE_SUPPORT_ENCODE
-  bool Encode(CxFile * hFile);
+  bool Encode(CxFile *hFile);
   bool Encode(FILE *hFile)
   {
     CxIOFile file(hFile);
@@ -58,14 +58,14 @@ public:
   }
 #endif // CXIMAGE_SUPPORT_ENCODE
 protected:
-  bool PCX_PlanesToPixels(uint8_t * pixels, uint8_t * bitplanes, int16_t bytesperline, int16_t planes,
+  bool PCX_PlanesToPixels(uint8_t *pixels, uint8_t *bitplanes, int16_t bytesperline, int16_t planes,
                           int16_t bitsperpixel);
-  bool PCX_UnpackPixels(uint8_t * pixels, uint8_t * bitplanes, int16_t bytesperline, int16_t planes,
+  bool PCX_UnpackPixels(uint8_t *pixels, uint8_t *bitplanes, int16_t bytesperline, int16_t planes,
                         int16_t bitsperpixel);
-  void PCX_PackPixels(const int32_t p,uint8_t &c, uint8_t &n, CxFile &f);
-  void PCX_PackPlanes(uint8_t* buff, const int32_t size, CxFile &f);
-  void PCX_PixelsToPlanes(uint8_t* raw, int32_t width, uint8_t* buf, int32_t plane);
-  void PCX_toh(PCXHEADER* p);
+  void PCX_PackPixels(const int32_t p, uint8_t &c, uint8_t &n, CxFile &f);
+  void PCX_PackPlanes(uint8_t *buff, const int32_t size, CxFile &f);
+  void PCX_PixelsToPlanes(uint8_t *raw, int32_t width, uint8_t *buf, int32_t plane);
+  void PCX_toh(PCXHEADER *p);
 };
 
 #endif

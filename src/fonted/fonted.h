@@ -7,9 +7,7 @@
 */
 
 
-#ifndef FONTED_H
-#define FONTED_H
-
+#pragma once
 
 #include "../../include/hge.h"
 #include "../../include/hgefont.h"
@@ -20,11 +18,11 @@
 #include "hgeguirange.h"
 
 
-#define ButtonGetState(id)    ((hgeGUIButton*)gui->GetCtrl(id))->GetState()
-#define ButtonSetState(id,b)  ((hgeGUIButton*)gui->GetCtrl(id))->SetState(b)
-#define SliderGetValue(id)    ((hgeGUISlider*)gui->GetCtrl(id))->GetValue()
-#define SliderSetValue(id,f)  ((hgeGUISlider*)gui->GetCtrl(id))->SetValue(f)
-#define GetTextCtrl(id)     ((hgeGUIText*)gui->GetCtrl(id))
+#define ButtonGetState(id)    (reinterpret_cast<hgeGUIButton*>(gui->GetCtrl(id)))->GetState()
+#define ButtonSetState(id,b)  (reinterpret_cast<hgeGUIButton*>(gui->GetCtrl(id)))->SetState(b)
+#define SliderGetValue(id)    (reinterpret_cast<hgeGUISlider*>(gui->GetCtrl(id)))->GetValue()
+#define SliderSetValue(id,f)  (reinterpret_cast<hgeGUISlider*>(gui->GetCtrl(id)))->SetValue(f)
+#define GetTextCtrl(id)       (reinterpret_cast<hgeGUIText*>(gui->GetCtrl(id)))
 
 
 #define MAX_TEXTURE_SIZE 1024
@@ -113,6 +111,3 @@ HTEXTURE FontGenerate(char *szFontName,
 #define CMD_TFONTSIZE     10
 #define CMD_FAMILYLIST      11
 #define CMD_FAMILYSLIDER    12
-
-
-#endif

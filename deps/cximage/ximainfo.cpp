@@ -15,7 +15,7 @@
  */
 RGBQUAD CxImage::GetTransColor()
 {
-  if (head.biBitCount<24 && info.nBkgndIndex>=0) {
+  if (head.biBitCount < 24 && info.nBkgndIndex >= 0) {
     return GetPaletteColor(static_cast<uint8_t>(info.nBkgndIndex));
   }
 
@@ -48,13 +48,13 @@ void CxImage::SetTransIndex(int32_t idx)
  */
 void CxImage::SetTransColor(RGBQUAD rgb)
 {
-  rgb.rgbReserved=0;
+  rgb.rgbReserved = 0;
   info.nBkgndColor = rgb;
 }
 ////////////////////////////////////////////////////////////////////////////////
 bool CxImage::IsTransparent() const
 {
-  return info.nBkgndIndex>=0; // <vho>
+  return info.nBkgndIndex >= 0; // <vho>
 }
 ////////////////////////////////////////////////////////////////////////////////
 /**
@@ -62,7 +62,7 @@ bool CxImage::IsTransparent() const
  */
 bool CxImage::IsIndexed() const
 {
-  return head.biClrUsed!=0;
+  return head.biClrUsed != 0;
 }
 ////////////////////////////////////////////////////////////////////////////////
 /**
@@ -70,7 +70,7 @@ bool CxImage::IsIndexed() const
  */
 uint8_t CxImage::GetColorType()
 {
-  uint8_t b = static_cast<uint8_t>((head.biBitCount>8) ?
+  uint8_t b = static_cast<uint8_t>((head.biBitCount > 8) ?
                                    2 /*COLORTYPE_COLOR*/
                                    : 1 /*COLORTYPE_PALETTE*/);
 #if CXIMAGE_SUPPORT_ALPHA
@@ -104,7 +104,7 @@ int32_t CxImage::GetYDPI() const
  */
 void CxImage::SetXDPI(int32_t dpi)
 {
-  if (dpi<=0) {
+  if (dpi <= 0) {
     dpi = CXIMAGE_DEFAULT_DPI;
   }
 
@@ -112,7 +112,7 @@ void CxImage::SetXDPI(int32_t dpi)
   head.biXPelsPerMeter = static_cast<int32_t>(floor(dpi * 10000.0 / 254.0 + 0.5));
 
   if (pDib) {
-    static_cast<BITMAPINFOHEADER*>(pDib)->biXPelsPerMeter = head.biXPelsPerMeter;
+    static_cast<BITMAPINFOHEADER *>(pDib)->biXPelsPerMeter = head.biXPelsPerMeter;
   }
 }
 ////////////////////////////////////////////////////////////////////////////////
@@ -121,7 +121,7 @@ void CxImage::SetXDPI(int32_t dpi)
  */
 void CxImage::SetYDPI(int32_t dpi)
 {
-  if (dpi<=0) {
+  if (dpi <= 0) {
     dpi = CXIMAGE_DEFAULT_DPI;
   }
 
@@ -129,7 +129,7 @@ void CxImage::SetYDPI(int32_t dpi)
   head.biYPelsPerMeter = static_cast<int32_t>(floor(dpi * 10000.0 / 254.0 + 0.5));
 
   if (pDib) {
-    static_cast<BITMAPINFOHEADER*>(pDib)->biYPelsPerMeter = head.biYPelsPerMeter;
+    static_cast<BITMAPINFOHEADER *>(pDib)->biYPelsPerMeter = head.biYPelsPerMeter;
   }
 }
 ////////////////////////////////////////////////////////////////////////////////
@@ -166,7 +166,7 @@ uint32_t CxImage::GetCodecOption(uint32_t imagetype)
 {
   imagetype = GetTypeIndexFromId(imagetype);
 
-  if (imagetype==0) {
+  if (imagetype == 0) {
     imagetype = GetTypeIndexFromId(GetType());
   }
 
@@ -191,7 +191,7 @@ bool CxImage::SetCodecOption(uint32_t opt, uint32_t imagetype)
 {
   imagetype = GetTypeIndexFromId(imagetype);
 
-  if (imagetype==0) {
+  if (imagetype == 0) {
     imagetype = GetTypeIndexFromId(GetType());
   }
 
@@ -202,7 +202,7 @@ bool CxImage::SetCodecOption(uint32_t opt, uint32_t imagetype)
 /**
  * \return internal hDib object..
  */
-void* CxImage::GetDIB() const
+void *CxImage::GetDIB() const
 {
   return pDib;
 }
@@ -331,171 +331,171 @@ bool CxImage::SetType(uint32_t type)
 ////////////////////////////////////////////////////////////////////////////////
 uint32_t CxImage::GetNumTypes()
 {
-  return CMAX_IMAGE_FORMATS-1;
+  return CMAX_IMAGE_FORMATS - 1;
 }
 ////////////////////////////////////////////////////////////////////////////////
-uint32_t CxImage::GetTypeIdFromName(const TCHAR* ext)
+uint32_t CxImage::GetTypeIdFromName(const TCHAR *ext)
 {
 #if CXIMAGE_SUPPORT_BMP
 
-  if (_tcsnicmp(ext,_T("bmp"),3)==0 ) {
+  if (_tcsnicmp(ext, _T("bmp"), 3) == 0 ) {
     return CXIMAGE_FORMAT_BMP;
   }
 
 #endif
 #if CXIMAGE_SUPPORT_JPG
 
-  if (_tcsnicmp(ext,_T("jpg"),3)==0 ||
-      _tcsnicmp(ext,_T("jpe"),3)==0 ||
-      _tcsnicmp(ext,_T("jfi"),3)==0 ) {
+  if (_tcsnicmp(ext, _T("jpg"), 3) == 0 ||
+      _tcsnicmp(ext, _T("jpe"), 3) == 0 ||
+      _tcsnicmp(ext, _T("jfi"), 3) == 0 ) {
     return CXIMAGE_FORMAT_JPG;
   }
 
 #endif
 #if CXIMAGE_SUPPORT_GIF
 
-  if (_tcsnicmp(ext,_T("gif"),3)==0 ) {
+  if (_tcsnicmp(ext, _T("gif"), 3) == 0 ) {
     return CXIMAGE_FORMAT_GIF;
   }
 
 #endif
 #if CXIMAGE_SUPPORT_PNG
 
-  if (_tcsnicmp(ext,_T("png"),3)==0 ) {
+  if (_tcsnicmp(ext, _T("png"), 3) == 0 ) {
     return CXIMAGE_FORMAT_PNG;
   }
 
 #endif
 #if CXIMAGE_SUPPORT_ICO
 
-  if (_tcsnicmp(ext,_T("ico"),3)==0 ||
-      _tcsnicmp(ext,_T("cur"),3)==0 ) {
+  if (_tcsnicmp(ext, _T("ico"), 3) == 0 ||
+      _tcsnicmp(ext, _T("cur"), 3) == 0 ) {
     return CXIMAGE_FORMAT_ICO;
   }
 
 #endif
 #if CXIMAGE_SUPPORT_TIF
 
-  if (_tcsnicmp(ext,_T("tif"),3)==0 ) {
+  if (_tcsnicmp(ext, _T("tif"), 3) == 0 ) {
     return CXIMAGE_FORMAT_TIF;
   }
 
 #endif
 #if CXIMAGE_SUPPORT_TGA
 
-  if (_tcsnicmp(ext,_T("tga"),3)==0 ) {
+  if (_tcsnicmp(ext, _T("tga"), 3) == 0 ) {
     return CXIMAGE_FORMAT_TGA;
   }
 
 #endif
 #if CXIMAGE_SUPPORT_PCX
 
-  if (_tcsnicmp(ext,_T("pcx"),3)==0 ) {
+  if (_tcsnicmp(ext, _T("pcx"), 3) == 0 ) {
     return CXIMAGE_FORMAT_PCX;
   }
 
 #endif
 #if CXIMAGE_SUPPORT_WBMP
 
-  if (_tcsnicmp(ext,_T("wbm"),3)==0 ) {
+  if (_tcsnicmp(ext, _T("wbm"), 3) == 0 ) {
     return CXIMAGE_FORMAT_WBMP;
   }
 
 #endif
 #if CXIMAGE_SUPPORT_WMF
 
-  if (_tcsnicmp(ext,_T("wmf"),3)==0 ||
-      _tcsnicmp(ext,_T("emf"),3)==0 ) {
+  if (_tcsnicmp(ext, _T("wmf"), 3) == 0 ||
+      _tcsnicmp(ext, _T("emf"), 3) == 0 ) {
     return CXIMAGE_FORMAT_WMF;
   }
 
 #endif
 #if CXIMAGE_SUPPORT_JP2
 
-  if (_tcsnicmp(ext,_T("jp2"),3)==0 ||
-      _tcsnicmp(ext,_T("j2k"),3)==0 ) {
+  if (_tcsnicmp(ext, _T("jp2"), 3) == 0 ||
+      _tcsnicmp(ext, _T("j2k"), 3) == 0 ) {
     return CXIMAGE_FORMAT_JP2;
   }
 
 #endif
 #if CXIMAGE_SUPPORT_JPC
 
-  if (_tcsnicmp(ext,_T("jpc"),3)==0 ||
-      _tcsnicmp(ext,_T("j2c"),3)==0 ) {
+  if (_tcsnicmp(ext, _T("jpc"), 3) == 0 ||
+      _tcsnicmp(ext, _T("j2c"), 3) == 0 ) {
     return CXIMAGE_FORMAT_JPC;
   }
 
 #endif
 #if CXIMAGE_SUPPORT_PGX
 
-  if (_tcsnicmp(ext,_T("pgx"),3)==0 ) {
+  if (_tcsnicmp(ext, _T("pgx"), 3) == 0 ) {
     return CXIMAGE_FORMAT_PGX;
   }
 
 #endif
 #if CXIMAGE_SUPPORT_RAS
 
-  if (_tcsnicmp(ext,_T("ras"),3)==0 ) {
+  if (_tcsnicmp(ext, _T("ras"), 3) == 0 ) {
     return CXIMAGE_FORMAT_RAS;
   }
 
 #endif
 #if CXIMAGE_SUPPORT_PNM
 
-  if (_tcsnicmp(ext,_T("pnm"),3)==0 ||
-      _tcsnicmp(ext,_T("pgm"),3)==0 ||
-      _tcsnicmp(ext,_T("ppm"),3)==0 ) {
+  if (_tcsnicmp(ext, _T("pnm"), 3) == 0 ||
+      _tcsnicmp(ext, _T("pgm"), 3) == 0 ||
+      _tcsnicmp(ext, _T("ppm"), 3) == 0 ) {
     return CXIMAGE_FORMAT_PNM;
   }
 
 #endif
 #if CXIMAGE_SUPPORT_JBG
 
-  if (_tcsnicmp(ext,_T("jbg"),3)==0 ) {
+  if (_tcsnicmp(ext, _T("jbg"), 3) == 0 ) {
     return CXIMAGE_FORMAT_JBG;
   }
 
 #endif
 #if CXIMAGE_SUPPORT_MNG
 
-  if (_tcsnicmp(ext,_T("mng"),3)==0 ||
-      _tcsnicmp(ext,_T("jng"),3)==0 ) {
+  if (_tcsnicmp(ext, _T("mng"), 3) == 0 ||
+      _tcsnicmp(ext, _T("jng"), 3) == 0 ) {
     return CXIMAGE_FORMAT_MNG;
   }
 
 #endif
 #if CXIMAGE_SUPPORT_SKA
 
-  if (_tcsnicmp(ext,_T("ska"),3)==0 ) {
+  if (_tcsnicmp(ext, _T("ska"), 3) == 0 ) {
     return CXIMAGE_FORMAT_SKA;
   }
 
 #endif
 #if CXIMAGE_SUPPORT_PSD
 
-  if (_tcsnicmp(ext,_T("psd"),3)==0 ) {
+  if (_tcsnicmp(ext, _T("psd"), 3) == 0 ) {
     return CXIMAGE_FORMAT_PSD;
   }
 
 #endif
 #if CXIMAGE_SUPPORT_RAW
 
-  if (_tcsnicmp(ext,_T("nef"),3)==0 ||
-      _tcsnicmp(ext,_T("crw"),3)==0 ||
-      _tcsnicmp(ext,_T("cr2"),3)==0 ||
-      _tcsnicmp(ext,_T("dng"),3)==0 ||
-      _tcsnicmp(ext,_T("arw"),3)==0 ||
-      _tcsnicmp(ext,_T("erf"),3)==0 ||
-      _tcsnicmp(ext,_T("3fr"),3)==0 ||
-      _tcsnicmp(ext,_T("dcr"),3)==0 ||
-      _tcsnicmp(ext,_T("raw"),3)==0 ||
-      _tcsnicmp(ext,_T("x3f"),3)==0 ||
-      _tcsnicmp(ext,_T("mef"),3)==0 ||
-      _tcsnicmp(ext,_T("raf"),3)==0 ||
-      _tcsnicmp(ext,_T("mrw"),3)==0 ||
-      _tcsnicmp(ext,_T("pef"),3)==0 ||
-      _tcsnicmp(ext,_T("sr2"),3)==0 ||
-      _tcsnicmp(ext,_T("orf"),3)==0 ) {
+  if (_tcsnicmp(ext, _T("nef"), 3) == 0 ||
+      _tcsnicmp(ext, _T("crw"), 3) == 0 ||
+      _tcsnicmp(ext, _T("cr2"), 3) == 0 ||
+      _tcsnicmp(ext, _T("dng"), 3) == 0 ||
+      _tcsnicmp(ext, _T("arw"), 3) == 0 ||
+      _tcsnicmp(ext, _T("erf"), 3) == 0 ||
+      _tcsnicmp(ext, _T("3fr"), 3) == 0 ||
+      _tcsnicmp(ext, _T("dcr"), 3) == 0 ||
+      _tcsnicmp(ext, _T("raw"), 3) == 0 ||
+      _tcsnicmp(ext, _T("x3f"), 3) == 0 ||
+      _tcsnicmp(ext, _T("mef"), 3) == 0 ||
+      _tcsnicmp(ext, _T("raf"), 3) == 0 ||
+      _tcsnicmp(ext, _T("mrw"), 3) == 0 ||
+      _tcsnicmp(ext, _T("pef"), 3) == 0 ||
+      _tcsnicmp(ext, _T("sr2"), 3) == 0 ||
+      _tcsnicmp(ext, _T("orf"), 3) == 0 ) {
     return CXIMAGE_FORMAT_RAW;
   }
 
@@ -508,7 +508,7 @@ uint32_t CxImage::GetTypeIdFromIndex(const uint32_t index)
 {
   uint32_t n;
 
-  n=0;
+  n = 0;
 
   if (index == n) {
     return CXIMAGE_FORMAT_UNKNOWN;
@@ -682,7 +682,7 @@ uint32_t CxImage::GetTypeIndexFromId(const uint32_t id)
 {
   uint32_t n;
 
-  n=0;
+  n = 0;
 
   if (id == CXIMAGE_FORMAT_UNKNOWN) {
     return n;
@@ -866,19 +866,19 @@ uint32_t CxImage::GetFrameDelay() const
  */
 void CxImage::SetFrameDelay(uint32_t d)
 {
-  info.dwFrameDelay=d;
+  info.dwFrameDelay = d;
 }
 ////////////////////////////////////////////////////////////////////////////////
-void CxImage::GetOffset(int32_t *x,int32_t *y)
+void CxImage::GetOffset(int32_t *x, int32_t *y)
 {
-  *x=info.xOffset;
-  *y=info.yOffset;
+  *x = info.xOffset;
+  *y = info.yOffset;
 }
 ////////////////////////////////////////////////////////////////////////////////
-void CxImage::SetOffset(int32_t x,int32_t y)
+void CxImage::SetOffset(int32_t x, int32_t y)
 {
-  info.xOffset=x;
-  info.yOffset=y;
+  info.xOffset = x;
+  info.yOffset = y;
 }
 ////////////////////////////////////////////////////////////////////////////////
 /**
@@ -917,7 +917,7 @@ void CxImage::SetJpegQuality(uint8_t q)
  */
 void CxImage::SetJpegQualityF(float q)
 {
-  if (q>0) {
+  if (q > 0) {
     info.fQuality = q;
   } else {
     info.fQuality = 0.0f;
@@ -985,7 +985,7 @@ void CxImage::SetEscape(int32_t i)
  */
 bool CxImage::IsValid() const
 {
-  return pDib!=0;
+  return pDib != 0;
 }
 ////////////////////////////////////////////////////////////////////////////////
 /**
@@ -1001,7 +1001,7 @@ bool CxImage::IsEnabled() const
  */
 void CxImage::Enable(bool enable)
 {
-  info.bEnabled=enable;
+  info.bEnabled = enable;
 }
 ////////////////////////////////////////////////////////////////////////////////
 /**
@@ -1028,7 +1028,7 @@ int32_t CxImage::GetFrame() const
  */
 void CxImage::SetFrame(int32_t nFrame)
 {
-  info.nFrame=nFrame;
+  info.nFrame = nFrame;
 }
 ////////////////////////////////////////////////////////////////////////////////
 /**
@@ -1037,7 +1037,7 @@ void CxImage::SetFrame(int32_t nFrame)
  */
 void CxImage::SetDisposalMethod(uint8_t dm)
 {
-  info.dispmeth=dm;
+  info.dispmeth = dm;
 }
 ////////////////////////////////////////////////////////////////////////////////
 /**
@@ -1068,7 +1068,7 @@ void CxImage::SetRetreiveAllFrames(bool flag)
   info.bGetAllFrames = flag;
 }
 ////////////////////////////////////////////////////////////////////////////////
-CxImage * CxImage::GetFrame(int32_t nFrame) const
+CxImage *CxImage::GetFrame(int32_t nFrame) const
 {
   if ( ppFrames == NULL) {
     return NULL;
@@ -1119,7 +1119,7 @@ int32_t CxImage::m_ntohl_i(const int32_t dword)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void CxImage::bihtoh(BITMAPINFOHEADER* bih)
+void CxImage::bihtoh(BITMAPINFOHEADER *bih)
 {
   bih->biSize = m_ntohl(bih->biSize);
   bih->biWidth = m_ntohl_i(bih->biWidth);
@@ -1137,7 +1137,7 @@ void CxImage::bihtoh(BITMAPINFOHEADER* bih)
 /**
  * Returns the last reported error.
  */
-const char* CxImage::GetLastError()
+const char *CxImage::GetLastError()
 {
   return info.szLastError;
 }
@@ -1172,7 +1172,7 @@ uint32_t CxImage::DumpSize()
 #if CXIMAGE_SUPPORT_LAYERS
 
   if (ppLayers) {
-    for (int32_t m=0; m<GetNumLayers(); m++) {
+    for (int32_t m = 0; m < GetNumLayers(); m++) {
       if (GetLayer(m)) {
         n += 1 + GetLayer(m)->DumpSize();
       }
@@ -1184,7 +1184,7 @@ uint32_t CxImage::DumpSize()
 #endif
 
   if (ppFrames) {
-    for (int32_t m=0; m<GetNumFrames(); m++) {
+    for (int32_t m = 0; m < GetNumFrames(); m++) {
       if (GetFrame(m)) {
         n += 1 + GetFrame(m)->DumpSize();
       }
@@ -1196,16 +1196,16 @@ uint32_t CxImage::DumpSize()
   return n;
 }
 ////////////////////////////////////////////////////////////////////////////////
-uint32_t CxImage::Dump(uint8_t * dst)
+uint32_t CxImage::Dump(uint8_t *dst)
 {
   if (!dst) {
     return 0;
   }
 
-  memcpy(dst,&head,sizeof(BITMAPINFOHEADER));
+  memcpy(dst, &head, sizeof(BITMAPINFOHEADER));
   dst += sizeof(BITMAPINFOHEADER);
 
-  memcpy(dst,&info,sizeof(CXIMAGEINFO));
+  memcpy(dst, &info, sizeof(CXIMAGEINFO));
   dst += sizeof(CXIMAGEINFO);
 
   memcpy(dst, pDib, static_cast<size_t>(GetSize()));
@@ -1227,7 +1227,7 @@ uint32_t CxImage::Dump(uint8_t * dst)
 
   if (pSelection) {
     memset(dst++, 1, 1);
-    memcpy(dst,pSelection,head.biWidth * head.biHeight);
+    memcpy(dst, pSelection, head.biWidth * head.biHeight);
     dst += head.biWidth * head.biHeight;
   } else {
     memset(dst++, 0, 1);
@@ -1240,7 +1240,7 @@ uint32_t CxImage::Dump(uint8_t * dst)
   if (ppLayers) {
     memset(dst++, 1, 1);
 
-    for (int32_t m=0; m<GetNumLayers(); m++) {
+    for (int32_t m = 0; m < GetNumLayers(); m++) {
       if (GetLayer(m)) {
         dst += GetLayer(m)->Dump(dst);
       }
@@ -1254,7 +1254,7 @@ uint32_t CxImage::Dump(uint8_t * dst)
   if (ppFrames) {
     memset(dst++, 1, 1);
 
-    for (int32_t m=0; m<GetNumFrames(); m++) {
+    for (int32_t m = 0; m < GetNumFrames(); m++) {
       if (GetFrame(m)) {
         dst += GetFrame(m)->Dump(dst);
       }
@@ -1266,7 +1266,7 @@ uint32_t CxImage::Dump(uint8_t * dst)
   return DumpSize();
 }
 ////////////////////////////////////////////////////////////////////////////////
-uint32_t CxImage::UnDump(const uint8_t * src)
+uint32_t CxImage::UnDump(const uint8_t *src)
 {
   if (!src) {
     return 0;
@@ -1282,10 +1282,10 @@ uint32_t CxImage::UnDump(const uint8_t * src)
 
   uint32_t n = 0;
 
-  memcpy(&head,src,sizeof(BITMAPINFOHEADER));
+  memcpy(&head, src, sizeof(BITMAPINFOHEADER));
   n += sizeof(BITMAPINFOHEADER);
 
-  memcpy(&info,&src[n],sizeof(CXIMAGEINFO));
+  memcpy(&info, &src[n], sizeof(CXIMAGEINFO));
   n += sizeof(CXIMAGEINFO);
 
   if (!Create(static_cast<uint32_t>(head.biWidth),
@@ -1329,7 +1329,7 @@ uint32_t CxImage::UnDump(const uint8_t * src)
   if (src[n++]) {
     ppLayers = new CxImage*[info.nNumLayers];
 
-    for (int32_t m=0; m<GetNumLayers(); m++) {
+    for (int32_t m = 0; m < GetNumLayers(); m++) {
       ppLayers[m] = new CxImage();
       n += ppLayers[m]->UnDump(&src[n]);
     }
@@ -1340,7 +1340,7 @@ uint32_t CxImage::UnDump(const uint8_t * src)
   if (src[n++]) {
     ppFrames = new CxImage*[info.nNumFrames];
 
-    for (int32_t m=0; m<GetNumFrames(); m++) {
+    for (int32_t m = 0; m < GetNumFrames(); m++) {
       ppFrames[m] = new CxImage();
       n += ppFrames[m]->UnDump(&src[n]);
     }
@@ -1361,7 +1361,7 @@ float CxImage::GetVersionNumber()
   return 7.000000000f;
 }
 ////////////////////////////////////////////////////////////////////////////////
-const TCHAR* CxImage::GetVersion()
+const TCHAR *CxImage::GetVersion()
 {
   static const TCHAR CxImageVersion[] = _T("CxImage 7.0.0");
   return (CxImageVersion);

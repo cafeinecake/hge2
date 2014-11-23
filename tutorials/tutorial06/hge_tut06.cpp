@@ -24,39 +24,39 @@
 
 // Pointer to the HGE interface.
 // Helper classes require this to work.
-HGE *hge=0;
+static HGE *hge = 0;
 
 // Some resource handles
-HEFFECT       snd;
-HTEXTURE      tex;
-hgeQuad       quad;
+static HEFFECT       snd;
+static HTEXTURE      tex;
+static hgeQuad       quad;
 
 // Pointers to the HGE objects we will use
-hgeGUI        *gui;
-hgeFont       *fnt;
-hgeSprite     *spr;
+static hgeGUI        *gui;
+static hgeFont       *fnt;
+static hgeSprite     *spr;
 
 
-bool FrameFunc()
+static bool FrameFunc()
 {
-  float dt=hge->Timer_GetDelta();
-  static float t=0.0f;
-  float tx,ty;
+  float dt = hge->Timer_GetDelta();
+  static float t = 0.0f;
+  float tx, ty;
   int id;
-  static int lastid=0;
+  static int lastid = 0;
 
   // If ESCAPE was pressed, tell the GUI to finish
-  if(hge->Input_GetKeyState(HGEK_ESCAPE)) {
-    lastid=5;
+  if (hge->Input_GetKeyState(HGEK_ESCAPE)) {
+    lastid = 5;
     gui->Leave();
   }
 
   // We update the GUI and take an action if
   // one of the menu items was selected
-  id=gui->Update(dt);
+  id = gui->Update(dt);
 
-  if(id == -1) {
-    switch(lastid) {
+  if (id == -1) {
+    switch (lastid) {
     case 1:
     case 2:
     case 3:
@@ -68,30 +68,30 @@ bool FrameFunc()
     case 5:
       return true;
     }
-  } else if(id) {
-    lastid=id;
+  } else if (id) {
+    lastid = id;
     gui->Leave();
   }
 
   // Here we update our background animation
-  t+=dt;
-  tx=50*cosf(t/60);
-  ty=50*sinf(t/60);
+  t += dt;
+  tx = 50 * cosf(t / 60);
+  ty = 50 * sinf(t / 60);
 
-  quad.v[0].tx=tx;
-  quad.v[0].ty=ty;
-  quad.v[1].tx=tx+800/64;
-  quad.v[1].ty=ty;
-  quad.v[2].tx=tx+800/64;
-  quad.v[2].ty=ty+600/64;
-  quad.v[3].tx=tx;
-  quad.v[3].ty=ty+600/64;
+  quad.v[0].tx = tx;
+  quad.v[0].ty = ty;
+  quad.v[1].tx = tx + 800 / 64;
+  quad.v[1].ty = ty;
+  quad.v[2].tx = tx + 800 / 64;
+  quad.v[2].ty = ty + 600 / 64;
+  quad.v[3].tx = tx;
+  quad.v[3].ty = ty + 600 / 64;
 
   return false;
 }
 
 
-bool RenderFunc()
+static bool RenderFunc()
 {
   // Render graphics
   hge->Gfx_BeginScene();
@@ -106,7 +106,7 @@ bool RenderFunc()
 
 
 #ifdef PLATFORM_UNIX
-int main(int argc, char *argv[])
+int main(int /*argc*/, char * /*argv*/ [])
 #else
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 #endif
@@ -122,18 +122,18 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
   hge->System_SetState(HGE_SCREENHEIGHT, 600);
   hge->System_SetState(HGE_SCREENBPP, 32);
 
-  if(hge->System_Initiate()) {
+  if (hge->System_Initiate()) {
 
     // Load sound and textures
-    quad.tex=hge->Texture_Load("bg.png");
-    tex=hge->Texture_Load("cursor.png");
+    quad.tex = hge->Texture_Load("bg.png");
+    tex = hge->Texture_Load("cursor.png");
 #ifdef PLATFORM_UNIX
-    snd=hge->Effect_Load("menu.ogg");
+    snd = hge->Effect_Load("menu.ogg");
 #else
-    snd=hge->Effect_Load("menu.wav");
+    snd = hge->Effect_Load("menu.wav");
 #endif
 
-    if(!quad.tex || !tex || !snd) {
+    if (!quad.tex || !tex || !snd) {
       // If one of the data files is not found, display
       // an error message and shutdown.
 #ifdef PLATFORM_UNIX
@@ -148,37 +148,37 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
     }
 
     // Set up the quad we will use for background animation
-    quad.blend=BLEND_ALPHABLEND | BLEND_COLORMUL | BLEND_NOZWRITE;
+    quad.blend = BLEND_ALPHABLEND | BLEND_COLORMUL | BLEND_NOZWRITE;
 
-    for(int i=0; i<4; i++) {
+    for (int i = 0; i < 4; i++) {
       // Set up z-coordinate of vertices
-      quad.v[i].z=0.5f;
+      quad.v[i].z = 0.5f;
       // Set up color. The format of DWORD col is 0xAARRGGBB
-      quad.v[i].col=0xFFFFFFFF;
+      quad.v[i].col = 0xFFFFFFFF;
     }
 
-    quad.v[0].x=0;
-    quad.v[0].y=0;
-    quad.v[1].x=800;
-    quad.v[1].y=0;
-    quad.v[2].x=800;
-    quad.v[2].y=600;
-    quad.v[3].x=0;
-    quad.v[3].y=600;
+    quad.v[0].x = 0;
+    quad.v[0].y = 0;
+    quad.v[1].x = 800;
+    quad.v[1].y = 0;
+    quad.v[2].x = 800;
+    quad.v[2].y = 600;
+    quad.v[3].x = 0;
+    quad.v[3].y = 600;
 
 
     // Load the font, create the cursor sprite
-    fnt=new hgeFont("font1.fnt");
-    spr=new hgeSprite(tex,0,0,32,32);
+    fnt = new hgeFont("font1.fnt");
+    spr = new hgeSprite(tex, 0, 0, 32, 32);
 
     // Create and initialize the GUI
-    gui=new hgeGUI();
+    gui = new hgeGUI();
 
-    gui->AddCtrl(new hgeGUIMenuItem(1,fnt,snd,400,200,0.0f,"Play"));
-    gui->AddCtrl(new hgeGUIMenuItem(2,fnt,snd,400,240,0.1f,"Options"));
-    gui->AddCtrl(new hgeGUIMenuItem(3,fnt,snd,400,280,0.2f,"Instructions"));
-    gui->AddCtrl(new hgeGUIMenuItem(4,fnt,snd,400,320,0.3f,"Credits"));
-    gui->AddCtrl(new hgeGUIMenuItem(5,fnt,snd,400,360,0.4f,"Exit"));
+    gui->AddCtrl(new hgeGUIMenuItem(1, fnt, snd, 400, 200, 0.0f, "Play"));
+    gui->AddCtrl(new hgeGUIMenuItem(2, fnt, snd, 400, 240, 0.1f, "Options"));
+    gui->AddCtrl(new hgeGUIMenuItem(3, fnt, snd, 400, 280, 0.2f, "Instructions"));
+    gui->AddCtrl(new hgeGUIMenuItem(4, fnt, snd, 400, 320, 0.3f, "Credits"));
+    gui->AddCtrl(new hgeGUIMenuItem(5, fnt, snd, 400, 360, 0.4f, "Exit"));
 
     gui->SetNavMode(HGEGUI_UPDOWN | HGEGUI_CYCLED);
     gui->SetCursor(spr);

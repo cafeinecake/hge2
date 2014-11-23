@@ -510,7 +510,7 @@ gzFile file;
 }
 
 /* -- see zlib.h -- */
-const char * ZEXPORT gzerror(file, errnum)
+const char *ZEXPORT gzerror(file, errnum)
 gzFile file;
 int *errnum;
 {

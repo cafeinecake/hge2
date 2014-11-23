@@ -32,7 +32,7 @@ public:
 
 //  bool Load(const char * imageFileName){ return CxImage::Load(imageFileName,CXIMAGE_FORMAT_PSD);}
 //  bool Save(const char * imageFileName){ return CxImage::Save(imageFileName,CXIMAGE_FORMAT_PSD);}
-  bool Decode(CxFile * hFile);
+  bool Decode(CxFile *hFile);
   bool Decode(FILE *hFile)
   {
     CxIOFile file(hFile);
@@ -44,7 +44,7 @@ public:
 //#endif //CXIMAGE_SUPPORT_EXIF
 
 #if CXIMAGE_SUPPORT_ENCODE
-  bool Encode(CxFile * hFile);
+  bool Encode(CxFile *hFile);
   bool Encode(FILE *hFile)
   {
     CxIOFile file(hFile);
@@ -56,7 +56,7 @@ public:
 protected:
   class CxFilePsd {
   public:
-    CxFilePsd(CxFile* pFile,psd_context *context)
+    CxFilePsd(CxFile *pFile, psd_context *context)
     {
       context->file = pFile;
 
@@ -77,17 +77,17 @@ protected:
 
     static int32_t psd_file_size(psd_file_obj *obj)
     {
-      return ((CxFile*)obj)->Size();
+      return ((CxFile *)obj)->Size();
     }
 
     static int32_t psd_file_seek(psd_file_obj *obj, int32_t offset, int32_t origin)
     {
-      return ((CxFile*)obj)->Seek(offset,origin);
+      return ((CxFile *)obj)->Seek(offset, origin);
     }
 
     static int32_t psd_file_read(psd_file_obj *obj, void *buf, int32_t size, int32_t cnt)
     {
-      return ((CxFile*)obj)->Read(buf,size,cnt);
+      return ((CxFile *)obj)->Read(buf, size, cnt);
     }
 
 //    static int32_t psd_file_write(psd_file_obj *obj, void *buf, int32_t size, int32_t cnt)
