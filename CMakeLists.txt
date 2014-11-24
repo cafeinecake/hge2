@@ -81,25 +81,29 @@ if(UNIX OR APPLE)
 	set(USE_SHARED SHARED)
 elseif(WIN32)
 	# Windows
-	add_definitions(-D_WINDOWS -D_WIN32)
+	add_definitions(-D_WINDOWS -D_WIN32 /MP )
 	set(USE_INTERNAL_ZLIB ON)
 	add_subdirectory( deps/zlib )
 
+    	# CxImage required defines
+    	add_definitions(-DSUPPORT_CXIMAGE)
+    	add_subdirectory( deps/cximage )
+
 	set(HGE_LIBRARIES
-		d3d8
+		## d3d8
 		winmm
 	)
 
 	if(MSVC AND NOT (CMAKE_BUILD_TYPE MATCHES Debug))
-		set(HGE_LIBRARIES ${HGE_LIBRARIES}
-			d3dx8
-		)
+#		set(HGE_LIBRARIES ${HGE_LIBRARIES}
+#			d3dx8
+#		)
 	else()
-		#Sorry MinGW32, you're not currently allowed to make a "release"
+#		#Sorry MinGW32, you're not currently allowed to make a "release"
 		add_definitions(-DDEBUG)
-		set(HGE_LIBRARIES ${HGE_LIBRARIES}
-			d3dx8d
-		)
+#		set(HGE_LIBRARIES ${HGE_LIBRARIES}
+#			d3dx8d
+#		)
 	endif()
 
 	set(USE_SHARED SHARED)

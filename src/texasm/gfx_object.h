@@ -5,6 +5,10 @@
 #include <list>
 #include <string>
 
+#ifdef _MSC_VER
+#include <functional>
+#endif
+
 //using namespace std;
 
 class CGfxObject {

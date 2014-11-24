@@ -32,10 +32,10 @@ void CxImage::OverflowCoordinates(int32_t &x, int32_t &y, OverflowMethod const o
   switch (ofMethod) {
   case OM_REPEAT:
     //clip coordinates
-    x = std::max(x, 0);
-    x = std::min(x, head.biWidth - 1);
-    y = std::max(y, 0);
-    y = std::min(y, head.biHeight - 1);
+    x = std::max<int32_t>(x, 0);
+    x = std::min<int32_t>(x, head.biWidth - 1);
+    y = std::max<int32_t>(y, 0);
+    y = std::min<int32_t>(y, head.biHeight - 1);
     break;
 
   case OM_WRAP:

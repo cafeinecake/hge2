@@ -52,6 +52,8 @@
 #pragma once
 #endif
 
+#include <stdint.h>
+
 #ifdef _LINUX
 #ifndef _XOPEN_SOURCE
 #define _XOPEN_SOURCE

@@ -9,6 +9,7 @@
 #pragma once
 
 #include "unix_compat.h"
+#include <stdint.h>
 
 #ifdef _WINDOWS
 #include <windows.h>
@@ -82,15 +83,50 @@
 #endif
 
 
-/*
-** HGE Handle types
-*/
-typedef size_t HTEXTURE;
-typedef size_t HTARGET;
-typedef size_t HEFFECT;
-typedef size_t HMUSIC;
-typedef size_t HSTREAM;
-typedef size_t HCHANNEL;
+//
+// HGE Handle types
+// Made them structs to be incompatible, except where conversion exists
+//
+class HTEXTURE {
+public:
+  size_t value;
+  HTEXTURE() : value(0) {}
+  HTEXTURE(int) : value(0) {}
+  inline operator bool() { 
+    return value != 0; 
+  }
+};
+class HTARGET {
+public:
+  size_t value; 
+  HTARGET() : value(0) {}
+  HTARGET(int) : value(0) {}
+  inline operator bool() {
+    return value != 0;
+  }
+};
+class HEFFECT { 
+public:
+  size_t value; 
+  inline operator bool() {
+    return value != 0;
+  }
+};
+class HMUSIC { 
+public:
+  size_t value;
+};
+class HSTREAM {
+public:
+  size_t value;
+};
+class HCHANNEL {
+public:
+  size_t value; 
+};
+
+// internal any-handle wrapper, do not use
+typedef struct { size_t value; } hgeResHandle; 
 
 
 /*

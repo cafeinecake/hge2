@@ -24,7 +24,6 @@
 
 
 class hgeResourceManager;
-typedef size_t hgeResHandle;
 
 class IResource {
 public:

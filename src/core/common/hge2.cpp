@@ -1,4 +1,4 @@
-#include <hge.h>
+#include "../include/hge.h"
 
 HGE::~HGE()
 {

@@ -67,6 +67,8 @@
 
 #if defined(WIN32) || defined(_WIN32_WCE)
 #include <windows.h>
+#undef min
+#undef max
 #include <tchar.h>
 #endif
 
