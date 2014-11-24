@@ -10,5 +10,6 @@ for wild in "*.cpp" "*.h" "*.c" ; do
 	--align-pointer=name \
 	--pad-oper \
 	--pad-header \
+	--unpad-paren \
 	-r "$wild"
 done

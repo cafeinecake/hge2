@@ -149,7 +149,7 @@ bool CxImage::Encode(FILE *hFile, uint32_t imagetype)
  * \param imagetype: file format, see ENUM_CXIMAGE_FORMATS
  * \return true if everything is ok
  */
-bool CxImage::Encode(uint8_t*&buffer, int32_t &size, uint32_t imagetype)
+bool CxImage::Encode(uint8_t *&buffer, int32_t &size, uint32_t imagetype)
 {
   if (buffer != NULL) {
     strcpy(info.szLastError, "the buffer must be empty");
@@ -460,7 +460,7 @@ bool CxImage::Encode(CxFile *hFile, uint32_t imagetype)
 #if  CXIMAGE_SUPPORT_RAS
     CXIMAGE_FORMAT_RAS == imagetype ||
 #endif
-    false ) {
+    false) {
     CxImageJAS *newima = new CxImageJAS;
 
     if (!newima) {
@@ -637,7 +637,7 @@ bool CxImage::Encode(CxFile *hFile, CxImage **pImages, int32_t pagecount, uint32
  * \param bFlipY: direction of Y axis. default = false.
  * \return true if everything is ok
  */
-bool CxImage::Encode2RGBA(uint8_t*&buffer, int32_t &size, bool bFlipY)
+bool CxImage::Encode2RGBA(uint8_t *&buffer, int32_t &size, bool bFlipY)
 {
   if (buffer != NULL) {
     strcpy(info.szLastError, "the buffer must be empty");
@@ -711,7 +711,7 @@ bool CxImage::Load(const TCHAR *filename, uint32_t imagetype)
   /* automatic file type recognition */
   bool bOK = false;
 
-  if ( GetTypeIndexFromId(imagetype) ) {
+  if (GetTypeIndexFromId(imagetype)) {
     FILE *hFile;  //file handle to read the image
 
 #ifdef WIN32
@@ -1278,7 +1278,7 @@ bool CxImage::Decode(CxFile *hFile, uint32_t imagetype)
 #if CXIMAGE_SUPPORT_RAS
       CXIMAGE_FORMAT_RAS == imagetype ||
 #endif
-      false ) {
+      false) {
     CxImageJAS *newima = new CxImageJAS;
 
     if (!newima) {

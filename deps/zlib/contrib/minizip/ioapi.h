@@ -124,17 +124,17 @@ extern "C" {
 
 
 
-typedef voidpf   (ZCALLBACK *open_file_func)      OF((voidpf opaque, const char *filename,
+typedef voidpf(ZCALLBACK *open_file_func)      OF((voidpf opaque, const char *filename,
     int mode));
-typedef uLong    (ZCALLBACK *read_file_func)      OF((voidpf opaque, voidpf stream, void *buf,
+typedef uLong(ZCALLBACK *read_file_func)      OF((voidpf opaque, voidpf stream, void *buf,
     uLong size));
-typedef uLong    (ZCALLBACK *write_file_func)     OF((voidpf opaque, voidpf stream, const void *buf,
+typedef uLong(ZCALLBACK *write_file_func)     OF((voidpf opaque, voidpf stream, const void *buf,
     uLong size));
-typedef int      (ZCALLBACK *close_file_func)     OF((voidpf opaque, voidpf stream));
-typedef int      (ZCALLBACK *testerror_file_func) OF((voidpf opaque, voidpf stream));
+typedef int (ZCALLBACK *close_file_func)     OF((voidpf opaque, voidpf stream));
+typedef int (ZCALLBACK *testerror_file_func) OF((voidpf opaque, voidpf stream));
 
-typedef long     (ZCALLBACK *tell_file_func)      OF((voidpf opaque, voidpf stream));
-typedef long     (ZCALLBACK *seek_file_func)      OF((voidpf opaque, voidpf stream, uLong offset,
+typedef long(ZCALLBACK *tell_file_func)      OF((voidpf opaque, voidpf stream));
+typedef long(ZCALLBACK *seek_file_func)      OF((voidpf opaque, voidpf stream, uLong offset,
     int origin));
 
 
@@ -150,10 +150,10 @@ typedef struct zlib_filefunc_def_s {
   voidpf              opaque;
 } zlib_filefunc_def;
 
-typedef ZPOS64_T (ZCALLBACK *tell64_file_func)    OF((voidpf opaque, voidpf stream));
-typedef long     (ZCALLBACK *seek64_file_func)    OF((voidpf opaque, voidpf stream, ZPOS64_T offset,
+typedef ZPOS64_T(ZCALLBACK *tell64_file_func)    OF((voidpf opaque, voidpf stream));
+typedef long(ZCALLBACK *seek64_file_func)    OF((voidpf opaque, voidpf stream, ZPOS64_T offset,
     int origin));
-typedef voidpf   (ZCALLBACK *open64_file_func)    OF((voidpf opaque, const void *filename,
+typedef voidpf(ZCALLBACK *open64_file_func)    OF((voidpf opaque, const void *filename,
     int mode));
 
 typedef struct zlib_filefunc64_def_s {

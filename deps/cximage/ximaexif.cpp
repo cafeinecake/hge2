@@ -318,11 +318,11 @@ int32_t CxImageJPG::CxExifInfo::Get16u(void *Short)
 int32_t CxImageJPG::CxExifInfo::Get32s(void *Long)
 {
   if (MotorolaOrder) {
-    return  ((( char *)Long)[0] << 24) | (((uint8_t *)Long)[1] << 16)
-            | (((uint8_t *)Long)[2] << 8 ) | (((uint8_t *)Long)[3] << 0 );
+    return (((char *)Long)[0] << 24) | (((uint8_t *)Long)[1] << 16)
+           | (((uint8_t *)Long)[2] << 8) | (((uint8_t *)Long)[3] << 0);
   } else {
-    return  ((( char *)Long)[3] << 24) | (((uint8_t *)Long)[2] << 16)
-            | (((uint8_t *)Long)[1] << 8 ) | (((uint8_t *)Long)[0] << 0 );
+    return (((char *)Long)[3] << 24) | (((uint8_t *)Long)[2] << 16)
+           | (((uint8_t *)Long)[1] << 8) | (((uint8_t *)Long)[0] << 0);
   }
 }
 ////////////////////////////////////////////////////////////////////////////////
@@ -696,7 +696,7 @@ bool CxImageJPG::CxExifInfo::ProcessExifDir(uint8_t *DirStart, uint8_t *OffsetBa
     case TAG_ISO_EQUIVALENT:
       m_exifinfo->ISOequivalent = (int32_t)ConvertAnyFormat(ValuePtr, Format);
 
-      if ( m_exifinfo->ISOequivalent < 50 ) {
+      if (m_exifinfo->ISOequivalent < 50) {
         m_exifinfo->ISOequivalent *= 200;
       }
 
@@ -842,7 +842,7 @@ double CxImageJPG::CxExifInfo::ConvertAnyFormat(void *ValuePtr, int32_t Format)
   return Value;
 }
 ////////////////////////////////////////////////////////////////////////////////
-void CxImageJPG::CxExifInfo::process_COM (const uint8_t *Data, int32_t length)
+void CxImageJPG::CxExifInfo::process_COM(const uint8_t *Data, int32_t length)
 {
   int32_t ch;
   char Comment[MAX_COMMENT + 1];
@@ -876,7 +876,7 @@ void CxImageJPG::CxExifInfo::process_COM (const uint8_t *Data, int32_t length)
   strcpy(m_exifinfo->Comments, Comment);
 }
 ////////////////////////////////////////////////////////////////////////////////
-void CxImageJPG::CxExifInfo::process_SOFn (const uint8_t *Data, int32_t marker)
+void CxImageJPG::CxExifInfo::process_SOFn(const uint8_t *Data, int32_t marker)
 {
   int32_t data_precision, num_components;
 

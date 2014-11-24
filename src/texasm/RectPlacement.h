@@ -36,17 +36,17 @@ public:
     TRect() { }
     TRect(int _x, int _y, int _w, int _h): TPos(_x, _y), w(_w > 0 ? _w : 0), h(_h > 0 ? _h : 0) { }
 
-    bool Contains   (const TPos &p)  const
+    bool Contains(const TPos &p)  const
     {
       return (p.x >= x && p.y >= y &&
               p.x < (x + w) && p.y < (y + h));
     }
-    bool Contains   (const TRect &r) const
+    bool Contains(const TRect &r) const
     {
       return (r.x - m_margin >= x && r.y - m_margin >= y &&
               (r.x + r.w + m_margin) <= (x + w) && (r.y + r.h + m_margin) <= (y + h));
     }
-    bool Intersects (const TRect &r) const
+    bool Intersects(const TRect &r) const
     {
       return w > 0 && h > 0 && r.w > 0 && r.h > 0 &&
              ((r.x + r.w + m_margin) > x && (r.x - m_margin) < (x + w) &&
@@ -86,31 +86,31 @@ public:
     m_margin = margin;
   }
 
-  void      Init    (int w = 1, int h = 1);
-  void      End     ();
-  bool      IsOk    ()                      const
+  void      Init(int w = 1, int h = 1);
+  void      End();
+  bool      IsOk()                      const
   {
     return m_size.w > 0;
   }
 
-  int       GetW    ()                      const
+  int       GetW()                      const
   {
     return m_size.w;
   }
-  int       GetH    ()                      const
+  int       GetH()                      const
   {
     return m_size.h;
   }
-  long      GetArea ()                      const
+  long      GetArea()                      const
   {
     return m_area;
   }
-  long      GetTotalArea ()                 const
+  long      GetTotalArea()                 const
   {
     return m_size.w * m_size.h;
   }
 
-  bool AddAtEmptySpotAutoGrow (TRect *pRect, int maxW, int maxH);
+  bool AddAtEmptySpotAutoGrow(TRect *pRect, int maxW, int maxH);
 
   static int  m_margin;
 
@@ -122,9 +122,9 @@ private:
 
   // ---------------------
 
-  bool IsFree                 (const TRect &r) const;
-  void AddPosition            (const TPos &p);
-  void AddRect                (const TRect &r);
-  bool AddAtEmptySpot         (TRect &r);
+  bool IsFree(const TRect &r) const;
+  void AddPosition(const TPos &p);
+  void AddRect(const TRect &r);
+  bool AddAtEmptySpot(TRect &r);
 };
 // --------------------------------------------------------------------------------

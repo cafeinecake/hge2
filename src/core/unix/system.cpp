@@ -100,17 +100,17 @@ bool CALL HGE_Impl::System_Initiate()
       Gestalt(gestaltSystemVersionBugFix, &macver_patch);
     }
 
-    snprintf(verbuf, sizeof (verbuf), "%d.%d.%d",
+    snprintf(verbuf, sizeof(verbuf), "%d.%d.%d",
              (int) macver_major, (int) macver_minor, (int) macver_patch);
   }
 
   System_Log("OS: Mac OS X%s", verbuf);
 
   unsigned long phys = 0;
-  size_t len = sizeof (phys);
+  size_t len = sizeof(phys);
   int mib[2] = { CTL_HW, HW_PHYSMEM };
 
-  if ((sysctl(mib, 2, &phys, &len, NULL, 0) != 0) || (len != sizeof (phys))) {
+  if ((sysctl(mib, 2, &phys, &len, NULL, 0) != 0) || (len != sizeof(phys))) {
     phys = 0;  // oh well.
   }
 
@@ -134,14 +134,14 @@ bool CALL HGE_Impl::System_Initiate()
 
   if (SDL_Init(SDL_INIT_VIDEO) == -1) {
     char buffer[1024];
-    snprintf(buffer, sizeof (buffer), "SDL_Init() failed: %s\n", SDL_GetError());
+    snprintf(buffer, sizeof(buffer), "SDL_Init() failed: %s\n", SDL_GetError());
     _PostError(buffer);
     return false;
   }
 
   if (SDL_GL_LoadLibrary(NULL) == -1) {
     char buffer[1024];
-    snprintf(buffer, sizeof (buffer), "SDL_GL_LoadLibrary() failed: %s\n", SDL_GetError());
+    snprintf(buffer, sizeof(buffer), "SDL_GL_LoadLibrary() failed: %s\n", SDL_GetError());
     _PostError(buffer);
     SDL_Quit();
     return false;
@@ -172,7 +172,7 @@ bool CALL HGE_Impl::System_Initiate()
 
   if (!hwnd) {
     char buffer[1024];
-    snprintf(buffer, sizeof (buffer), "SDL_SetVideoMode() failed: %s\n", SDL_GetError());
+    snprintf(buffer, sizeof(buffer), "SDL_SetVideoMode() failed: %s\n", SDL_GetError());
     _PostError(buffer);
     SDL_Quit();
     return false;
@@ -226,8 +226,8 @@ bool CALL HGE_Impl::System_Initiate()
 
 #ifdef DEMO
 
-  bool      (*func)();
-  bool      (*rfunc)();
+  bool (*func)();
+  bool (*rfunc)();
   HWND      hwndTmp;
 
   if (pHGE->bDMO) {
@@ -1006,7 +1006,7 @@ HGE_Impl::HGE_Impl()
   szAppPath[0] = '\0';
   int i;
 
-  for (i = static_cast<int>(strlen(szAppPath) - 1); i > 0; i -- )
+  for (i = static_cast<int>(strlen(szAppPath) - 1); i > 0; i --)
     if (szAppPath[i] == '/') {
       break;
     }
@@ -1099,8 +1099,8 @@ bool HGE_Impl::_ProcessSDLEvent(const SDL_Event &e)
 #if 0  // (my app handles this, actually.)
 
     // hotkey to toggle fullscreen/windowed mode.
-    if ( (keymods & KMOD_ALT) && ((e.key.keysym.sym == SDLK_RETURN)
-                                  || (e.key.keysym.sym == SDLK_KP_ENTER)) ) {
+    if ((keymods & KMOD_ALT) && ((e.key.keysym.sym == SDLK_RETURN)
+                                 || (e.key.keysym.sym == SDLK_KP_ENTER))) {
       System_SetStateBool(HGE_WINDOWED, !bWindowed);
       break;
     }

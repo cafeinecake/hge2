@@ -199,7 +199,7 @@ _fromfile:
   }
 
   if (ReadFile(hF, ptr, file_info.uncompressed_size, (uint32_t *)&file_info.uncompressed_size,
-               NULL ) == 0) {
+               NULL) == 0) {
     CloseHandle(hF);
     free(ptr);
     sprintf(szName, res_err, filename);

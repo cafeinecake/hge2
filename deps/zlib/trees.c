@@ -272,7 +272,7 @@ local void tr_static_init()
     }
   }
 
-  Assert (length == 256, "tr_static_init: length != 256");
+  Assert(length == 256, "tr_static_init: length != 256");
   /* Note that the length 255 (match length 258) can be represented
    * in two different ways: code 284 + 5 bits or code 285, so we
    * overwrite length_code[255] to use the best encoding:
@@ -290,10 +290,10 @@ local void tr_static_init()
     }
   }
 
-  Assert (dist == 256, "tr_static_init: dist != 256");
+  Assert(dist == 256, "tr_static_init: dist != 256");
   dist >>= 7; /* from now on, all distances are divided by 128 */
 
-  for ( ; code < D_CODES; code++) {
+  for (; code < D_CODES; code++) {
     base_dist[code] = dist << 7;
 
     for (n = 0; n < (1 << (extra_dbits[code] - 7)); n++) {
@@ -301,7 +301,7 @@ local void tr_static_init()
     }
   }
 
-  Assert (dist == 256, "tr_static_init: 256+dist != 512");
+  Assert(dist == 256, "tr_static_init: 256+dist != 512");
 
   /* Construct the codes of the static literal tree */
   for (bits = 0; bits <= MAX_BITS; bits++) {
@@ -363,7 +363,7 @@ void gen_trees_header()
   FILE *header = fopen("trees.h", "w");
   int i;
 
-  Assert (header != NULL, "Can't open trees.h");
+  Assert(header != NULL, "Can't open trees.h");
   fprintf(header,
           "/* header created automatically with -DGEN_TREES_H */\n\n");
 
@@ -654,7 +654,7 @@ tree_desc *desc;    /* the tree descriptor */
  * OUT assertion: the field code is set for all tree elements of non
  *     zero code length.
  */
-local void gen_codes (tree, max_code, bl_count)
+local void gen_codes(tree, max_code, bl_count)
 ct_data *tree;             /* the tree to decorate */
 int max_code;              /* largest code with non zero frequency */
 ushf *bl_count;            /* number of codes at each bit length */
@@ -674,8 +674,8 @@ ushf *bl_count;            /* number of codes at each bit length */
   /* Check that the bit counts in bl_count are consistent. The last code
    * must be all ones.
    */
-  Assert (code + bl_count[MAX_BITS] - 1 == (1 << MAX_BITS) - 1,
-          "inconsistent bit counts");
+  Assert(code + bl_count[MAX_BITS] - 1 == (1 << MAX_BITS) - 1,
+         "inconsistent bit counts");
   Tracev((stderr, "\ngen_codes: max_code %d ", max_code));
 
   for (n = 0;  n <= max_code; n++) {
@@ -793,14 +793,14 @@ tree_desc *desc; /* the tree descriptor */
   gen_bitlen(s, (tree_desc *)desc);
 
   /* The field len is now set, we can generate the bit codes */
-  gen_codes ((ct_data *)tree, max_code, s->bl_count);
+  gen_codes((ct_data *)tree, max_code, s->bl_count);
 }
 
 /* ===========================================================================
  * Scan a literal or distance tree to determine the frequencies of the codes
  * in the bit length tree.
  */
-local void scan_tree (s, tree, max_code)
+local void scan_tree(s, tree, max_code)
 deflate_state *s;
 ct_data *tree;   /* the tree to be scanned */
 int max_code;    /* and its largest code of non zero frequency */
@@ -856,7 +856,7 @@ int max_code;    /* and its largest code of non zero frequency */
  * Send a literal or distance tree in compressed form, using the codes in
  * bl_tree.
  */
-local void send_tree (s, tree, max_code)
+local void send_tree(s, tree, max_code)
 deflate_state *s;
 ct_data *tree; /* the tree to be scanned */
 int max_code;       /* and its largest code of non zero frequency */
@@ -965,9 +965,9 @@ int lcodes, dcodes, blcodes; /* number of codes for each tree */
 {
   int rank;                    /* index in bl_order */
 
-  Assert (lcodes >= 257 && dcodes >= 1 && blcodes >= 4, "not enough codes");
-  Assert (lcodes <= L_CODES && dcodes <= D_CODES && blcodes <= BL_CODES,
-          "too many codes");
+  Assert(lcodes >= 257 && dcodes >= 1 && blcodes >= 4, "not enough codes");
+  Assert(lcodes <= L_CODES && dcodes <= D_CODES && blcodes <= BL_CODES,
+         "too many codes");
   Tracev((stderr, "\nbl counts: "));
   send_bits(s, lcodes - 257, 5); /* not +255 as stated in appnote.txt */
   send_bits(s, dcodes - 1,   5);
@@ -1132,7 +1132,7 @@ int last;         /* one if this is the last block for a file */
 #endif
   }
 
-  Assert (s->compressed_len == s->bits_sent, "bad compressed size");
+  Assert(s->compressed_len == s->bits_sent, "bad compressed size");
   /* The above check is made mod 2^32, for files larger than 512 MB
    * and uLong implemented on 32 bits.
    */
@@ -1153,7 +1153,7 @@ int last;         /* one if this is the last block for a file */
  * Save the match info and tally the frequency counts. Return true if
  * the current block must be flushed.
  */
-int ZLIB_INTERNAL _tr_tally (s, dist, lc)
+int ZLIB_INTERNAL _tr_tally(s, dist, lc)
 deflate_state *s;
 unsigned dist;  /* distance of matched string */
 unsigned lc;    /* match length-MIN_MATCH or unmatched char (if dist==0) */
@@ -1242,7 +1242,7 @@ ct_data *dtree; /* distance tree */
 
         dist--; /* dist is now the match distance - 1 */
         code = d_code(dist);
-        Assert (code < D_CODES, "bad d_code");
+        Assert(code < D_CODES, "bad d_code");
 
         send_code(s, code, dtree);       /* send the distance code */
         extra = extra_dbits[code];

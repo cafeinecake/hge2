@@ -373,7 +373,7 @@ bool CxImageBMP::Decode(CxFile *hFile)
                 low_nibble = !low_nibble;
               }
 
-              if ((((status_byte + 1) >> 1) & 1 ) == 1) {
+              if ((((status_byte + 1) >> 1) & 1) == 1) {
                 hFile->Read(&second_byte, sizeof(uint8_t), 1);
               }
 

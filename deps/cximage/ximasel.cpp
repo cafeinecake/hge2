@@ -476,7 +476,7 @@ bool CxImage::SelectionAddPolygon(POINT *points, int32_t npoints, uint8_t level)
 
             for (;;) {
               if ((plocal[fxx + fyy * head.biWidth] == back) &&
-                  fxx >= localbox.left && fxx <= localbox.right && fyy >= localbox.bottom && fyy <= localbox.top ) {
+                  fxx >= localbox.left && fxx <= localbox.right && fyy >= localbox.bottom && fyy <= localbox.top) {
                 plocal[fxx + fyy * head.biWidth] = mark;
 
                 if (fyy > 0 && plocal[fxx + (fyy - 1)*head.biWidth] == back) {
@@ -514,9 +514,9 @@ bool CxImage::SelectionAddPolygon(POINT *points, int32_t npoints, uint8_t level)
 
             fyy = fy + y;
 
-            for ( ;; ) {
+            for (;;) {
               if ((plocal[fxx + fyy * head.biWidth] == back) &&
-                  fxx >= localbox.left && fxx <= localbox.right && fyy >= localbox.bottom && fyy <= localbox.top ) {
+                  fxx >= localbox.left && fxx <= localbox.right && fyy >= localbox.bottom && fyy <= localbox.top) {
                 plocal[fxx + (y + fy)*head.biWidth] = mark;
 
                 if (fyy > 0 && plocal[fxx + (fyy - 1)*head.biWidth] == back) {

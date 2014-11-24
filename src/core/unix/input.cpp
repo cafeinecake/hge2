@@ -454,7 +454,7 @@ void HGE_Impl::_BuildEvent(int type, int key, int /*scan*/, int flags, int x, in
   if (type == INPUT_KEYDOWN) {
     key = SDLKeyToHGEKey(key);
 
-    if ( (key < 0) || (key > static_cast<int>(sizeof (keyz) / sizeof (keyz[0]))) ) {
+    if ((key < 0) || (key > static_cast<int>(sizeof(keyz) / sizeof(keyz[0])))) {
       return;
     }
 
@@ -471,7 +471,7 @@ void HGE_Impl::_BuildEvent(int type, int key, int /*scan*/, int flags, int x, in
   if (type == INPUT_KEYUP) {
     key = SDLKeyToHGEKey(key);
 
-    if ( (key < 0) || (key > static_cast<int>(sizeof (keyz) / sizeof (keyz[0]))) ) {
+    if ((key < 0) || (key > static_cast<int>(sizeof(keyz) / sizeof(keyz[0])))) {
       return;
     }
 
@@ -586,7 +586,7 @@ void HGE_Impl::_ClearQueue()
   CInputEventList *nexteptr, *eptr = queue;
 
   //memset(&keyz, 0, sizeof(keyz));
-  for (int i = 0; i < static_cast<int>(sizeof (keyz) / sizeof (keyz[0])); i++) {
+  for (int i = 0; i < static_cast<int>(sizeof(keyz) / sizeof(keyz[0])); i++) {
     keyz[i] &= ~3;  // only reset some of the bits.
   }
 

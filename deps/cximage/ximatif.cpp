@@ -141,7 +141,7 @@ bool CxImageTIF::Decode(CxFile *hFile)
     } else{
       if ((photometric == PHOTOMETRIC_MINISBLACK) || (photometric == PHOTOMETRIC_MINISWHITE) || (photometric == PHOTOMETRIC_PALETTE))
       {
-        if  (bitspersample == 1) {
+        if (bitspersample == 1) {
           head.biBitCount = 1;  //B&W image
           head.biClrUsed = 2;
         } else if (bitspersample == 4) {
@@ -203,7 +203,7 @@ bool CxImageTIF::Decode(CxFile *hFile)
       uint32 *raster;   // retrieve RGBA image
       uint32 *row;
 
-      raster = (uint32 *)_TIFFmalloc(width * height * sizeof (uint32));
+      raster = (uint32 *)_TIFFmalloc(width * height * sizeof(uint32));
 
       if (raster == NULL) {
         cx_throw("No space for raster buffer");
@@ -315,7 +315,7 @@ bool CxImageTIF::Decode(CxFile *hFile)
         }
 
         // load the palette in the DIB
-        for (int32_t i = (1 << ( BIG_palette ? bitspersample : bpp )) - 1; i >= 0; i--) {
+        for (int32_t i = (1 << (BIG_palette ? bitspersample : bpp)) - 1; i >= 0; i--) {
           if (Palette16Bits) {
             pal[i].rgbRed = (uint8_t) CVT(red[i]);
             pal[i].rgbGreen = (uint8_t) CVT(green[i]);
@@ -439,7 +439,7 @@ bool CxImageTIF::Decode(CxFile *hFile)
             if (colb + tw > imagew) {
               uint32 owidth = imagew - colb;
               uint32 oskew = tilew - owidth;
-              TileToStrip(bufp + colb, tilebuf, nrow, owidth, oskew + iskew, oskew );
+              TileToStrip(bufp + colb, tilebuf, nrow, owidth, oskew + iskew, oskew);
             } else {
               TileToStrip(bufp + colb, tilebuf, nrow, tilew, iskew, 0);
             }
@@ -488,7 +488,7 @@ bool CxImageTIF::Decode(CxFile *hFile)
               the_shift = (hi_max == 0) ? 8 : 0;
 
               if (!the_shift)
-                while ( ! (hi_max & 0x80) ) {
+                while (!(hi_max & 0x80)) {
                   the_shift++;
                   hi_max <<= 1;
                 }
@@ -518,18 +518,18 @@ bool CxImageTIF::Decode(CxFile *hFile)
             if (BIG_palette)
               if (bits16) {
                 int32_t offset16 = (nrow - y - 1) * line16; // + VK
-                MoveBitsPal( info.pImage + info.dwEffWidth * (height - ys - nrow + y),
-                             bits16 + offset16, width, bitspersample, pal );
+                MoveBitsPal(info.pImage + info.dwEffWidth * (height - ys - nrow + y),
+                            bits16 + offset16, width, bitspersample, pal);
               } else
-                MoveBitsPal( info.pImage + info.dwEffWidth * (height - ys - nrow + y),
-                             bits + offset, width, bitspersample, pal );
+                MoveBitsPal(info.pImage + info.dwEffWidth * (height - ys - nrow + y),
+                            bits + offset, width, bitspersample, pal);
             else if ((bitspersample == head.biBitCount) ||
                      (bitspersample == 16)) { //simple 8bpp, 4bpp image or 16bpp
               memcpy(info.pImage + info.dwEffWidth * (height - ys - nrow + y), bits + offset, min((unsigned)line,
                      info.dwEffWidth));
             } else
-              MoveBits( info.pImage + info.dwEffWidth * (height - ys - nrow + y),
-                        bits + offset, width, bitspersample );
+              MoveBits(info.pImage + info.dwEffWidth * (height - ys - nrow + y),
+                       bits + offset, width, bitspersample);
           } else if (samplesperpixel == 2) { //8bpp image with alpha layer
             int32_t xi = 0;
             int32_t ii = 0;
@@ -590,9 +590,9 @@ bool CxImageTIF::Decode(CxFile *hFile)
 
               // lab to xyz
               p = (l / 2.55 + 16) / 116.0;
-              cx = pow( p + a * 0.002, 3);
-              cy = pow( p, 3);
-              cz = pow( p - b * 0.005, 3);
+              cx = pow(p + a * 0.002, 3);
+              cy = pow(p, 3);
+              cz = pow(p - b * 0.005, 3);
               // white point
               cx *= 0.95047;
               //cy*=1.000;
@@ -602,19 +602,19 @@ bool CxImageTIF::Decode(CxFile *hFile)
               cg = -0.969256 * cx + 1.875992 * cy + 0.041556 * cz;
               cb =  0.055648 * cx - 0.204043 * cy + 1.057311 * cz;
 
-              if ( cr > 0.00304 ) {
+              if (cr > 0.00304) {
                 cr = 1.055 * pow(cr, 0.41667) - 0.055;
               } else {
                 cr = 12.92 * cr;
               }
 
-              if ( cg > 0.00304 ) {
+              if (cg > 0.00304) {
                 cg = 1.055 * pow(cg, 0.41667) - 0.055;
               } else {
                 cg = 12.92 * cg;
               }
 
-              if ( cb > 0.00304 ) {
+              if (cb > 0.00304) {
                 cb = 1.055 * pow(cb, 0.41667) - 0.055;
               } else {
                 cb = 12.92 * cb;
@@ -658,19 +658,19 @@ bool CxImageTIF::Decode(CxFile *hFile)
         // 1. calculate maximum necessary shift
         int32_t min_row_shift = 8;
 
-        for ( y = 0; y < height; y++ ) {
+        for (y = 0; y < height; y++) {
           if (min_row_shift > row_shifts[y]) {
             min_row_shift = row_shifts[y];
           }
         }
 
         // 2. for rows having less shift value, correct such rows:
-        for ( y = 0; y < height; y++ ) {
+        for (y = 0; y < height; y++) {
           if (min_row_shift < row_shifts[y]) {
             int32_t need_shift = row_shifts[y] - min_row_shift;
             uint8_t *data = info.pImage + info.dwEffWidth * y;
 
-            for ( x = 0; x < width; x++, data++ ) {
+            for (x = 0; x < width; x++, data++) {
               *data >>= need_shift;
             }
           }
@@ -679,7 +679,7 @@ bool CxImageTIF::Decode(CxFile *hFile)
 
       if (row_shifts)
       {
-        free( row_shifts );
+        free(row_shifts);
       }
 
 #endif
@@ -1219,7 +1219,7 @@ void CxImageTIF::TIFFCloseEx(TIFF *tif)
   }
 }
 ////////////////////////////////////////////////////////////////////////////////
-void CxImageTIF::MoveBits( uint8_t *dest, uint8_t *from, int32_t count, int32_t bpp )
+void CxImageTIF::MoveBits(uint8_t *dest, uint8_t *from, int32_t count, int32_t bpp)
 {
   int32_t offbits = 0;
   uint16 w;
@@ -1250,7 +1250,7 @@ void CxImageTIF::MoveBits( uint8_t *dest, uint8_t *from, int32_t count, int32_t 
     while (count-- > 0) {
       d = (*from << 24) | (from[1] << 16) | (from[2] << 8) | from[3];
       d >>= (24 - offbits);
-      *dest++ = (uint8_t) ( d );
+      *dest++ = (uint8_t)(d);
       offbits += bpp;
 
       while (offbits >= 8) {
@@ -1262,7 +1262,7 @@ void CxImageTIF::MoveBits( uint8_t *dest, uint8_t *from, int32_t count, int32_t 
     while (count-- > 0) {
       d = (*from << 24) | (from[1] << 16) | (from[2] << 8) | from[3];
       //d = *(uint32*)from;
-      *dest++ = (uint8_t) ( d >> (offbits + bpp - 8) );
+      *dest++ = (uint8_t)(d >> (offbits + bpp - 8));
       offbits += bpp;
 
       while (offbits >= 8) {
@@ -1273,24 +1273,24 @@ void CxImageTIF::MoveBits( uint8_t *dest, uint8_t *from, int32_t count, int32_t 
   } else {
     while (count-- > 0) {
       d = *(uint32 *)from;
-      *dest++ = (uint8_t) (d >> 24);
+      *dest++ = (uint8_t)(d >> 24);
       from += 4;
     }
   }
 }
 ////////////////////////////////////////////////////////////////////////////////
-void CxImageTIF::MoveBitsPal( uint8_t *dest, uint8_t *from, int32_t count, int32_t bpp,
-                              RGBQUAD *pal )
+void CxImageTIF::MoveBitsPal(uint8_t *dest, uint8_t *from, int32_t count, int32_t bpp,
+                             RGBQUAD *pal)
 {
   int32_t offbits = 0;
   uint32 d;
   uint16 palidx;
 
   while (count-- > 0) {
-    d = (*from << 24) | ( *( from + 1 ) << 16 )
-        | ( *( from + 2 ) << 8 )
-        | ( *( from + 3 ) );
-    palidx = (uint16) (d >> (32 - offbits - bpp));
+    d = (*from << 24) | (*(from + 1) << 16)
+        | (*(from + 2) << 8)
+        | (*(from + 3));
+    palidx = (uint16)(d >> (32 - offbits - bpp));
 
     if (bpp < 16) {
       palidx <<= 16 - bpp;

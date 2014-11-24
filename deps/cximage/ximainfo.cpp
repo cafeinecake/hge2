@@ -338,7 +338,7 @@ uint32_t CxImage::GetTypeIdFromName(const TCHAR *ext)
 {
 #if CXIMAGE_SUPPORT_BMP
 
-  if (_tcsnicmp(ext, _T("bmp"), 3) == 0 ) {
+  if (_tcsnicmp(ext, _T("bmp"), 3) == 0) {
     return CXIMAGE_FORMAT_BMP;
   }
 
@@ -347,21 +347,21 @@ uint32_t CxImage::GetTypeIdFromName(const TCHAR *ext)
 
   if (_tcsnicmp(ext, _T("jpg"), 3) == 0 ||
       _tcsnicmp(ext, _T("jpe"), 3) == 0 ||
-      _tcsnicmp(ext, _T("jfi"), 3) == 0 ) {
+      _tcsnicmp(ext, _T("jfi"), 3) == 0) {
     return CXIMAGE_FORMAT_JPG;
   }
 
 #endif
 #if CXIMAGE_SUPPORT_GIF
 
-  if (_tcsnicmp(ext, _T("gif"), 3) == 0 ) {
+  if (_tcsnicmp(ext, _T("gif"), 3) == 0) {
     return CXIMAGE_FORMAT_GIF;
   }
 
 #endif
 #if CXIMAGE_SUPPORT_PNG
 
-  if (_tcsnicmp(ext, _T("png"), 3) == 0 ) {
+  if (_tcsnicmp(ext, _T("png"), 3) == 0) {
     return CXIMAGE_FORMAT_PNG;
   }
 
@@ -369,35 +369,35 @@ uint32_t CxImage::GetTypeIdFromName(const TCHAR *ext)
 #if CXIMAGE_SUPPORT_ICO
 
   if (_tcsnicmp(ext, _T("ico"), 3) == 0 ||
-      _tcsnicmp(ext, _T("cur"), 3) == 0 ) {
+      _tcsnicmp(ext, _T("cur"), 3) == 0) {
     return CXIMAGE_FORMAT_ICO;
   }
 
 #endif
 #if CXIMAGE_SUPPORT_TIF
 
-  if (_tcsnicmp(ext, _T("tif"), 3) == 0 ) {
+  if (_tcsnicmp(ext, _T("tif"), 3) == 0) {
     return CXIMAGE_FORMAT_TIF;
   }
 
 #endif
 #if CXIMAGE_SUPPORT_TGA
 
-  if (_tcsnicmp(ext, _T("tga"), 3) == 0 ) {
+  if (_tcsnicmp(ext, _T("tga"), 3) == 0) {
     return CXIMAGE_FORMAT_TGA;
   }
 
 #endif
 #if CXIMAGE_SUPPORT_PCX
 
-  if (_tcsnicmp(ext, _T("pcx"), 3) == 0 ) {
+  if (_tcsnicmp(ext, _T("pcx"), 3) == 0) {
     return CXIMAGE_FORMAT_PCX;
   }
 
 #endif
 #if CXIMAGE_SUPPORT_WBMP
 
-  if (_tcsnicmp(ext, _T("wbm"), 3) == 0 ) {
+  if (_tcsnicmp(ext, _T("wbm"), 3) == 0) {
     return CXIMAGE_FORMAT_WBMP;
   }
 
@@ -405,7 +405,7 @@ uint32_t CxImage::GetTypeIdFromName(const TCHAR *ext)
 #if CXIMAGE_SUPPORT_WMF
 
   if (_tcsnicmp(ext, _T("wmf"), 3) == 0 ||
-      _tcsnicmp(ext, _T("emf"), 3) == 0 ) {
+      _tcsnicmp(ext, _T("emf"), 3) == 0) {
     return CXIMAGE_FORMAT_WMF;
   }
 
@@ -413,7 +413,7 @@ uint32_t CxImage::GetTypeIdFromName(const TCHAR *ext)
 #if CXIMAGE_SUPPORT_JP2
 
   if (_tcsnicmp(ext, _T("jp2"), 3) == 0 ||
-      _tcsnicmp(ext, _T("j2k"), 3) == 0 ) {
+      _tcsnicmp(ext, _T("j2k"), 3) == 0) {
     return CXIMAGE_FORMAT_JP2;
   }
 
@@ -421,21 +421,21 @@ uint32_t CxImage::GetTypeIdFromName(const TCHAR *ext)
 #if CXIMAGE_SUPPORT_JPC
 
   if (_tcsnicmp(ext, _T("jpc"), 3) == 0 ||
-      _tcsnicmp(ext, _T("j2c"), 3) == 0 ) {
+      _tcsnicmp(ext, _T("j2c"), 3) == 0) {
     return CXIMAGE_FORMAT_JPC;
   }
 
 #endif
 #if CXIMAGE_SUPPORT_PGX
 
-  if (_tcsnicmp(ext, _T("pgx"), 3) == 0 ) {
+  if (_tcsnicmp(ext, _T("pgx"), 3) == 0) {
     return CXIMAGE_FORMAT_PGX;
   }
 
 #endif
 #if CXIMAGE_SUPPORT_RAS
 
-  if (_tcsnicmp(ext, _T("ras"), 3) == 0 ) {
+  if (_tcsnicmp(ext, _T("ras"), 3) == 0) {
     return CXIMAGE_FORMAT_RAS;
   }
 
@@ -444,14 +444,14 @@ uint32_t CxImage::GetTypeIdFromName(const TCHAR *ext)
 
   if (_tcsnicmp(ext, _T("pnm"), 3) == 0 ||
       _tcsnicmp(ext, _T("pgm"), 3) == 0 ||
-      _tcsnicmp(ext, _T("ppm"), 3) == 0 ) {
+      _tcsnicmp(ext, _T("ppm"), 3) == 0) {
     return CXIMAGE_FORMAT_PNM;
   }
 
 #endif
 #if CXIMAGE_SUPPORT_JBG
 
-  if (_tcsnicmp(ext, _T("jbg"), 3) == 0 ) {
+  if (_tcsnicmp(ext, _T("jbg"), 3) == 0) {
     return CXIMAGE_FORMAT_JBG;
   }
 
@@ -459,21 +459,21 @@ uint32_t CxImage::GetTypeIdFromName(const TCHAR *ext)
 #if CXIMAGE_SUPPORT_MNG
 
   if (_tcsnicmp(ext, _T("mng"), 3) == 0 ||
-      _tcsnicmp(ext, _T("jng"), 3) == 0 ) {
+      _tcsnicmp(ext, _T("jng"), 3) == 0) {
     return CXIMAGE_FORMAT_MNG;
   }
 
 #endif
 #if CXIMAGE_SUPPORT_SKA
 
-  if (_tcsnicmp(ext, _T("ska"), 3) == 0 ) {
+  if (_tcsnicmp(ext, _T("ska"), 3) == 0) {
     return CXIMAGE_FORMAT_SKA;
   }
 
 #endif
 #if CXIMAGE_SUPPORT_PSD
 
-  if (_tcsnicmp(ext, _T("psd"), 3) == 0 ) {
+  if (_tcsnicmp(ext, _T("psd"), 3) == 0) {
     return CXIMAGE_FORMAT_PSD;
   }
 
@@ -495,7 +495,7 @@ uint32_t CxImage::GetTypeIdFromName(const TCHAR *ext)
       _tcsnicmp(ext, _T("mrw"), 3) == 0 ||
       _tcsnicmp(ext, _T("pef"), 3) == 0 ||
       _tcsnicmp(ext, _T("sr2"), 3) == 0 ||
-      _tcsnicmp(ext, _T("orf"), 3) == 0 ) {
+      _tcsnicmp(ext, _T("orf"), 3) == 0) {
     return CXIMAGE_FORMAT_RAW;
   }
 
@@ -1070,19 +1070,19 @@ void CxImage::SetRetreiveAllFrames(bool flag)
 ////////////////////////////////////////////////////////////////////////////////
 CxImage *CxImage::GetFrame(int32_t nFrame) const
 {
-  if ( ppFrames == NULL) {
+  if (ppFrames == NULL) {
     return NULL;
   }
 
-  if ( info.nNumFrames == 0) {
+  if (info.nNumFrames == 0) {
     return NULL;
   }
 
-  if ( nFrame >= info.nNumFrames ) {
+  if (nFrame >= info.nNumFrames) {
     return NULL;
   }
 
-  if ( nFrame < 0) {
+  if (nFrame < 0) {
     nFrame = info.nNumFrames - 1;
   }
 
@@ -1095,7 +1095,7 @@ uint16_t CxImage::m_ntohs(const uint16_t word)
     return word;
   }
 
-  return static_cast<uint16_t>( (word & 0xff) << 8 ) | ( (word >> 8) & 0xff );
+  return static_cast<uint16_t>((word & 0xff) << 8) | ((word >> 8) & 0xff);
 }
 ////////////////////////////////////////////////////////////////////////////////
 uint32_t CxImage::m_ntohl(const uint32_t dword)
@@ -1104,8 +1104,8 @@ uint32_t CxImage::m_ntohl(const uint32_t dword)
     return dword;
   }
 
-  return  ((dword & 0xff) << 24 ) | ((dword & 0xff00) << 8 ) |
-          ((dword >> 8) & 0xff00) | ((dword >> 24) & 0xff);
+  return ((dword & 0xff) << 24) | ((dword & 0xff00) << 8) |
+         ((dword >> 8) & 0xff00) | ((dword >> 24) & 0xff);
 }
 
 int32_t CxImage::m_ntohl_i(const int32_t dword)
@@ -1114,8 +1114,8 @@ int32_t CxImage::m_ntohl_i(const int32_t dword)
     return dword;
   }
 
-  return  ((dword & 0xff) << 24 ) | ((dword & 0xff00) << 8 ) |
-          ((dword >> 8) & 0xff00) | ((dword >> 24) & 0xff);
+  return ((dword & 0xff) << 24) | ((dword & 0xff00) << 8) |
+         ((dword >> 8) & 0xff00) | ((dword >> 24) & 0xff);
 }
 
 ////////////////////////////////////////////////////////////////////////////////

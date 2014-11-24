@@ -91,7 +91,7 @@ png_destroy_struct_2(png_voidp struct_ptr, png_free_ptr free_fn,
     }
 
 #endif /* PNG_USER_MEM_SUPPORTED */
-    farfree (struct_ptr);
+    farfree(struct_ptr);
   }
 }
 
@@ -217,7 +217,7 @@ png_malloc_default(png_structp png_ptr, png_uint_32 size)
 
           png_ptr->offset_table = table;
           png_ptr->offset_table_ptr = farmalloc(num_blocks *
-                                                png_sizeof (png_bytep));
+                                                png_sizeof(png_bytep));
 
           if (png_ptr->offset_table_ptr == NULL) {
 #ifndef PNG_USER_MEM_SUPPORTED
@@ -592,8 +592,8 @@ png_malloc_warn(png_structp png_ptr, png_uint_32 size)
 #endif
 
 png_voidp PNGAPI
-png_memcpy_check (png_structp png_ptr, png_voidp s1, png_voidp s2,
-                  png_uint_32 length)
+png_memcpy_check(png_structp png_ptr, png_voidp s1, png_voidp s2,
+                 png_uint_32 length)
 {
   png_size_t size;
 
@@ -603,12 +603,12 @@ png_memcpy_check (png_structp png_ptr, png_voidp s1, png_voidp s2,
     png_error(png_ptr, "Overflow in png_memcpy_check.");
   }
 
-  return (png_memcpy (s1, s2, size));
+  return (png_memcpy(s1, s2, size));
 }
 
 png_voidp PNGAPI
-png_memset_check (png_structp png_ptr, png_voidp s1, int value,
-                  png_uint_32 length)
+png_memset_check(png_structp png_ptr, png_voidp s1, int value,
+                 png_uint_32 length)
 {
   png_size_t size;
 
@@ -618,7 +618,7 @@ png_memset_check (png_structp png_ptr, png_voidp s1, int value,
     png_error(png_ptr, "Overflow in png_memset_check.");
   }
 
-  return (png_memset (s1, value, size));
+  return (png_memset(s1, value, size));
 
 }
 

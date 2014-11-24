@@ -73,12 +73,12 @@ png_set_cHRM(png_structp png_ptr, png_infop info_ptr,
 #ifdef PNG_FIXED_POINT_SUPPORTED
   info_ptr->int_x_white = (png_fixed_point)(white_x * 100000. + 0.5);
   info_ptr->int_y_white = (png_fixed_point)(white_y * 100000. + 0.5);
-  info_ptr->int_x_red   = (png_fixed_point)(  red_x * 100000. + 0.5);
-  info_ptr->int_y_red   = (png_fixed_point)(  red_y * 100000. + 0.5);
+  info_ptr->int_x_red   = (png_fixed_point)(red_x * 100000. + 0.5);
+  info_ptr->int_y_red   = (png_fixed_point)(red_y * 100000. + 0.5);
   info_ptr->int_x_green = (png_fixed_point)(green_x * 100000. + 0.5);
   info_ptr->int_y_green = (png_fixed_point)(green_y * 100000. + 0.5);
-  info_ptr->int_x_blue  = (png_fixed_point)( blue_x * 100000. + 0.5);
-  info_ptr->int_y_blue  = (png_fixed_point)( blue_y * 100000. + 0.5);
+  info_ptr->int_x_blue  = (png_fixed_point)(blue_x * 100000. + 0.5);
+  info_ptr->int_y_blue  = (png_fixed_point)(blue_y * 100000. + 0.5);
 #endif
   info_ptr->valid |= PNG_INFO_cHRM;
 }
@@ -129,12 +129,12 @@ png_set_cHRM_fixed(png_structp png_ptr, png_infop info_ptr,
 #ifdef PNG_FLOATING_POINT_SUPPORTED
   info_ptr->x_white = static_cast<float>(white_x / 100000.);
   info_ptr->y_white = static_cast<float>(white_y / 100000.);
-  info_ptr->x_red   = static_cast<float>(  red_x / 100000.);
-  info_ptr->y_red   = static_cast<float>(  red_y / 100000.);
+  info_ptr->x_red   = static_cast<float>(red_x / 100000.);
+  info_ptr->y_red   = static_cast<float>(red_y / 100000.);
   info_ptr->x_green = static_cast<float>(green_x / 100000.);
   info_ptr->y_green = static_cast<float>(green_y / 100000.);
-  info_ptr->x_blue  = static_cast<float>( blue_x / 100000.);
-  info_ptr->y_blue  = static_cast<float>( blue_y / 100000.);
+  info_ptr->x_blue  = static_cast<float>(blue_x / 100000.);
+  info_ptr->y_blue  = static_cast<float>(blue_y / 100000.);
 #endif
   info_ptr->valid |= PNG_INFO_cHRM;
 }
@@ -233,7 +233,7 @@ png_set_hIST(png_structp png_ptr, png_infop info_ptr, png_uint_16p hist)
 #endif
   /* Changed from info->num_palette to 256 in version 1.2.1 */
   png_ptr->hist = (png_uint_16p)png_malloc_warn(png_ptr,
-                  (png_uint_32)(256 * png_sizeof (png_uint_16)));
+                  (png_uint_32)(256 * png_sizeof(png_uint_16)));
 
   if (png_ptr->hist == NULL) {
     png_warning(png_ptr, "Insufficient memory for hIST chunk data.");
@@ -290,12 +290,12 @@ png_set_IHDR(png_structp png_ptr, png_infop info_ptr,
     png_error(png_ptr, "Invalid image size in IHDR");
   }
 
-  if ( width > (PNG_UINT_32_MAX
-                >> 3)      /* 8-byte RGBA pixels */
-       - 64       /* bigrowbuf hack */
-       - 1        /* filter byte */
-       - 7 * 8    /* rounding of width to multiple of 8 pixels */
-       - 8) {     /* extra max_pixel_depth pad */
+  if (width > (PNG_UINT_32_MAX
+               >> 3)      /* 8-byte RGBA pixels */
+      - 64       /* bigrowbuf hack */
+      - 1        /* filter byte */
+      - 7 * 8    /* rounding of width to multiple of 8 pixels */
+      - 8) {     /* extra max_pixel_depth pad */
     png_warning(png_ptr, "Width is too large for libpng to process pixels");
   }
 
@@ -385,12 +385,12 @@ png_set_IHDR(png_structp png_ptr, png_infop info_ptr,
   info_ptr->pixel_depth = (png_byte)(info_ptr->channels * info_ptr->bit_depth);
 
   /* check for potential overflow */
-  if ( width > (PNG_UINT_32_MAX
-                >> 3)      /* 8-byte RGBA pixels */
-       - 64       /* bigrowbuf hack */
-       - 1        /* filter byte */
-       - 7 * 8    /* rounding of width to multiple of 8 pixels */
-       - 8) {     /* extra max_pixel_depth pad */
+  if (width > (PNG_UINT_32_MAX
+               >> 3)      /* 8-byte RGBA pixels */
+      - 64       /* bigrowbuf hack */
+      - 1        /* filter byte */
+      - 7 * 8    /* rounding of width to multiple of 8 pixels */
+      - 8) {     /* extra max_pixel_depth pad */
     info_ptr->rowbytes = (png_size_t)0;
   } else {
     info_ptr->rowbytes = PNG_ROWBYTES(info_ptr->pixel_depth, width);
@@ -537,7 +537,7 @@ png_set_sCAL_s(png_structp png_ptr, png_infop info_ptr,
   info_ptr->scal_s_height = (png_charp)png_malloc_warn(png_ptr, length);
 
   if (info_ptr->scal_s_height == NULL) {
-    png_free (png_ptr, info_ptr->scal_s_width);
+    png_free(png_ptr, info_ptr->scal_s_width);
     png_warning(png_ptr, "Memory allocation failed while processing sCAL.");
   }
 
@@ -595,7 +595,7 @@ png_set_PLTE(png_structp png_ptr, png_infop info_ptr,
   png_ptr->palette = (png_colorp)png_malloc(png_ptr,
                      256 * png_sizeof(png_color));
   png_memset(png_ptr->palette, 0, 256 * png_sizeof(png_color));
-  png_memcpy(png_ptr->palette, palette, num_palette * png_sizeof (png_color));
+  png_memcpy(png_ptr->palette, palette, num_palette * png_sizeof(png_color));
   info_ptr->palette = png_ptr->palette;
   info_ptr->num_palette = png_ptr->num_palette = (png_uint_16)num_palette;
 
@@ -619,7 +619,7 @@ png_set_sBIT(png_structp png_ptr, png_infop info_ptr,
     return;
   }
 
-  png_memcpy(&(info_ptr->sig_bit), sig_bit, png_sizeof (png_color_8));
+  png_memcpy(&(info_ptr->sig_bit), sig_bit, png_sizeof(png_color_8));
   info_ptr->valid |= PNG_INFO_sBIT;
 }
 #endif
@@ -737,7 +737,7 @@ png_set_iCCP(png_structp png_ptr, png_infop info_ptr,
   new_iccp_profile = (png_charp)png_malloc_warn(png_ptr, proflen);
 
   if (new_iccp_profile == NULL) {
-    png_free (png_ptr, new_iccp_name);
+    png_free(png_ptr, new_iccp_name);
     png_warning(png_ptr, "Insufficient memory to process iCCP profile.");
     return;
   }
@@ -797,7 +797,7 @@ png_set_text_2(png_structp png_ptr, png_infop info_ptr, png_textp text_ptr,
       info_ptr->max_text = info_ptr->num_text + num_text + 8;
       old_text = info_ptr->text;
       info_ptr->text = (png_textp)png_malloc_warn(png_ptr,
-                       (png_uint_32)(info_ptr->max_text * png_sizeof (png_text)));
+                       (png_uint_32)(info_ptr->max_text * png_sizeof(png_text)));
 
       if (info_ptr->text == NULL) {
         png_free(png_ptr, old_text);
@@ -811,7 +811,7 @@ png_set_text_2(png_structp png_ptr, png_infop info_ptr, png_textp text_ptr,
       info_ptr->max_text = num_text + 8;
       info_ptr->num_text = 0;
       info_ptr->text = (png_textp)png_malloc_warn(png_ptr,
-                       (png_uint_32)(info_ptr->max_text * png_sizeof (png_text)));
+                       (png_uint_32)(info_ptr->max_text * png_sizeof(png_text)));
 
       if (info_ptr->text == NULL) {
         return (1);
@@ -952,7 +952,7 @@ png_set_tIME(png_structp png_ptr, png_infop info_ptr, png_timep mod_time)
     return;
   }
 
-  png_memcpy(&(info_ptr->mod_time), mod_time, png_sizeof (png_time));
+  png_memcpy(&(info_ptr->mod_time), mod_time, png_sizeof(png_time));
   info_ptr->valid |= PNG_INFO_tIME;
 }
 #endif
@@ -1113,7 +1113,7 @@ png_set_unknown_chunk_location(png_structp png_ptr, png_infop info_ptr,
 #if defined(PNG_READ_EMPTY_PLTE_SUPPORTED) || \
     defined(PNG_WRITE_EMPTY_PLTE_SUPPORTED)
 void PNGAPI
-png_permit_empty_plte (png_structp png_ptr, int empty_plte_permitted)
+png_permit_empty_plte(png_structp png_ptr, int empty_plte_permitted)
 {
   /* This function is deprecated in favor of png_permit_mng_features()
      and will be removed from libpng-2.0.0 */
@@ -1131,7 +1131,7 @@ png_permit_empty_plte (png_structp png_ptr, int empty_plte_permitted)
 
 #if defined(PNG_MNG_FEATURES_SUPPORTED)
 png_uint_32 PNGAPI
-png_permit_mng_features (png_structp png_ptr, png_uint_32 mng_features)
+png_permit_mng_features(png_structp png_ptr, png_uint_32 mng_features)
 {
   png_debug(1, "in png_permit_mng_features\n");
 
@@ -1260,7 +1260,7 @@ png_set_invalid(png_structp png_ptr, png_infop info_ptr, int mask)
 #ifdef PNG_ASSEMBLER_CODE_SUPPORTED
 /* this function was added to libpng 1.2.0 and should always exist by default */
 void PNGAPI
-png_set_asm_flags (png_structp png_ptr, png_uint_32 asm_flags)
+png_set_asm_flags(png_structp png_ptr, png_uint_32 asm_flags)
 {
   png_uint_32 settable_asm_flags;
   png_uint_32 settable_mmx_flags;
@@ -1302,9 +1302,9 @@ png_set_asm_flags (png_structp png_ptr, png_uint_32 asm_flags)
 #ifdef PNG_ASSEMBLER_CODE_SUPPORTED
 /* this function was added to libpng 1.2.0 */
 void PNGAPI
-png_set_mmx_thresholds (png_structp png_ptr,
-                        png_byte mmx_bitdepth_threshold,
-                        png_uint_32 mmx_rowbytes_threshold)
+png_set_mmx_thresholds(png_structp png_ptr,
+                       png_byte mmx_bitdepth_threshold,
+                       png_uint_32 mmx_rowbytes_threshold)
 {
   png_ptr->mmx_bitdepth_threshold = mmx_bitdepth_threshold;
   png_ptr->mmx_rowbytes_threshold = mmx_rowbytes_threshold;
@@ -1314,8 +1314,8 @@ png_set_mmx_thresholds (png_structp png_ptr,
 #ifdef PNG_SET_USER_LIMITS_SUPPORTED
 /* this function was added to libpng 1.2.6 */
 void PNGAPI
-png_set_user_limits (png_structp png_ptr, png_uint_32 user_width_max,
-                     png_uint_32 user_height_max)
+png_set_user_limits(png_structp png_ptr, png_uint_32 user_width_max,
+                    png_uint_32 user_height_max)
 {
   /* Images with dimensions larger than these limits will be
    * rejected by png_set_IHDR().  To accept any PNG datastream

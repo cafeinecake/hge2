@@ -28,7 +28,7 @@
 void /* PRIVATE */
 png_write_data(png_structp png_ptr, png_bytep data, png_size_t length)
 {
-  if (png_ptr->write_data_fn != NULL ) {
+  if (png_ptr->write_data_fn != NULL) {
     (*(png_ptr->write_data_fn))(png_ptr, data, length);
   } else {
     png_error(png_ptr, "Call to NULL write function");
@@ -48,7 +48,7 @@ png_default_write_data(png_structp png_ptr, png_bytep data, png_size_t length)
 
 #if defined(_WIN32_WCE)
 
-  if ( !WriteFile((HANDLE)(png_ptr->io_ptr), data, length, &check, NULL) ) {
+  if (!WriteFile((HANDLE)(png_ptr->io_ptr), data, length, &check, NULL)) {
     check = 0;
   }
 
@@ -83,7 +83,7 @@ png_default_write_data(png_structp png_ptr, png_bytep data, png_size_t length)
   if ((png_bytep)near_data == data) {
 #if defined(_WIN32_WCE)
 
-    if ( !WriteFile(io_ptr, near_data, length, &check, NULL) ) {
+    if (!WriteFile(io_ptr, near_data, length, &check, NULL)) {
       check = 0;
     }
 
@@ -101,7 +101,7 @@ png_default_write_data(png_structp png_ptr, png_bytep data, png_size_t length)
       png_memcpy(buf, data, written); /* copy far buffer to near buffer */
 #if defined(_WIN32_WCE)
 
-      if ( !WriteFile(io_ptr, buf, written, &err, NULL) ) {
+      if (!WriteFile(io_ptr, buf, written, &err, NULL)) {
         err = 0;
       }
 

@@ -10,7 +10,7 @@ void CTextureAssembler::ClearResources()
 {
   GfxObjIterator it;
 
-  for (it = obj_list.begin( ); it != obj_list.end( ); it++) {
+  for (it = obj_list.begin(); it != obj_list.end(); it++) {
     delete *it;
   }
 
@@ -36,7 +36,7 @@ bool CTextureAssembler::CheckMask(char *name, char *mask_set, bool bMaskInclusiv
     mask_len = static_cast<int32_t>(strlen(mask));
 
     match = (name_len >= mask_len)
-        && !memcmp(name, mask, static_cast<uint32_t>(mask_len));
+            && !memcmp(name, mask, static_cast<uint32_t>(mask_len));
 
     if (match && bMaskInclusive) {
       return true;
@@ -57,7 +57,7 @@ CGfxObject *CTextureAssembler::FindObj(GfxObjList /*objlist*/, char *name)
 {
   GfxObjIterator it;
 
-  for (it = obj_list.begin( ); it != obj_list.end( ); it++)
+  for (it = obj_list.begin(); it != obj_list.end(); it++)
     if (!strcmp((*it)->GetName(), name)) {
       return *it;
     }
@@ -91,14 +91,14 @@ void CTextureAssembler::AccumulateRMResources(hgeResourceManager *rm, int resgro
 
 #ifdef PLATFORM_UNIX
 void CTextureAssembler::AccumulateFileResources(char * /*wildcard*/,
-                                                int /*resgroup*/,
-                                                char * /*mask_set*/,
-                                                bool /*bMaskInclusive*/)
+    int /*resgroup*/,
+    char * /*mask_set*/,
+    bool /*bMaskInclusive*/)
 {
 #else
 void CTextureAssembler::AccumulateFileResources(char *wildcard, int resgroup,
-                                                char *mask_set,
-                                                bool bMaskInclusive)
+    char *mask_set,
+    bool bMaskInclusive)
 {
   HANDLE        hSearch;
   WIN32_FIND_DATA   SearchData;

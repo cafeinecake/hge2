@@ -26,7 +26,7 @@ local gzFile gz_open OF((const char *, int, const char *));
 
    The gz_strwinerror function does not change the current setting of
    GetLastError. */
-char ZLIB_INTERNAL *gz_strwinerror (error)
+char ZLIB_INTERNAL *gz_strwinerror(error)
 hgeU32 error;
 {
   static char buf[1024];
@@ -50,8 +50,8 @@ hgeU32 error;
       msgbuf[chars] = 0;
     }
 
-    if (chars > sizeof (buf) - 1) {
-      chars = sizeof (buf) - 1;
+    if (chars > sizeof(buf) - 1) {
+      chars = sizeof(buf) - 1;
       msgbuf[chars] = 0;
     }
 

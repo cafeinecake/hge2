@@ -51,7 +51,7 @@ png_default_read_data(png_structp png_ptr, png_bytep data, png_size_t length)
    */
 #if defined(_WIN32_WCE)
 
-  if ( !ReadFile((HANDLE)(png_ptr->io_ptr), data, length, &check, NULL) ) {
+  if (!ReadFile((HANDLE)(png_ptr->io_ptr), data, length, &check, NULL)) {
     check = 0;
   }
 
@@ -87,7 +87,7 @@ png_default_read_data(png_structp png_ptr, png_bytep data, png_size_t length)
   if ((png_bytep)n_data == data) {
 #if defined(_WIN32_WCE)
 
-    if ( !ReadFile((HANDLE)(png_ptr->io_ptr), data, length, &check, NULL) ) {
+    if (!ReadFile((HANDLE)(png_ptr->io_ptr), data, length, &check, NULL)) {
       check = 0;
     }
 
@@ -104,7 +104,7 @@ png_default_read_data(png_structp png_ptr, png_bytep data, png_size_t length)
       read = MIN(NEAR_BUF_SIZE, remaining);
 #if defined(_WIN32_WCE)
 
-      if ( !ReadFile((HANDLE)(io_ptr), buf, read, &err, NULL) ) {
+      if (!ReadFile((HANDLE)(io_ptr), buf, read, &err, NULL)) {
         err = 0;
       }
 

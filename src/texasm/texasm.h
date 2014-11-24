@@ -14,6 +14,6 @@ extern HGE *hge;
 void SysLog(const char *format, ...);
 
 extern bool Write32BitPNGWithPitch(FILE *fp, void *pBits, bool bNeedAlpha,
-                            int nWidth, int nHeight, int nPitch);
+                                   int nWidth, int nHeight, int nPitch);
 
 #endif

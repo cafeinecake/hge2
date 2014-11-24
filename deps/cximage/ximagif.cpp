@@ -125,7 +125,7 @@ bool CxImageGIF::Decode(CxFile *fp)
   int32_t  prevdispmeth = 0;
   CxImage *previousFrame = NULL;
 
-  for (BOOL bContinue = TRUE; bContinue; ) {
+  for (BOOL bContinue = TRUE; bContinue;) {
     if (fp->Read(&ch, sizeof(ch), 1) != 1) {
       break;
     }
@@ -176,7 +176,7 @@ bool CxImageGIF::Decode(CxFile *fp)
 
         int32_t bpp; //<DP> select the correct bit per pixel value
 
-        if    (palcount <= 2) {
+        if (palcount <= 2) {
           bpp = 1;
         } else if (palcount <= 16) {
           bpp = 4;
@@ -287,7 +287,7 @@ bool CxImageGIF::Decode(CxFile *fp)
           return false;  // <vho> - cancel decoding
         }
 
-        if (bTrueColor < 2 ) { //standard GIF: mix frame with background
+        if (bTrueColor < 2) {  //standard GIF: mix frame with background
           backimage.IncreaseBpp(static_cast<uint32_t>(bpp));
           backimage.GifMix(*this, image);
           backimage.SetTransIndex(first_transparent_index);
@@ -466,7 +466,7 @@ int32_t CxImageGIF::get_byte(CxFile *file)
     // FW 06/02/98 >>>
     ibfmax = static_cast<int32_t>(file->Read(m_buf, 1, GIFBUFTAM));
 
-    if ( ibfmax < GIFBUFTAM ) {
+    if (ibfmax < GIFBUFTAM) {
       m_buf[ ibfmax ] = 255 ;
     }
 
@@ -559,8 +559,8 @@ bool CxImageGIF::Encode(CxFile *fp)
     return EncodeRGB(fp);
   }
 
-  if ( GetNumFrames() > 1 && ppFrames ) {
-    return Encode(fp, ppFrames, GetNumFrames() );
+  if (GetNumFrames() > 1 && ppFrames) {
+    return Encode(fp, ppFrames, GetNumFrames());
   }
 
   EncodeHeader(fp);
@@ -863,9 +863,9 @@ bool CxImageGIF::EncodeRGB(CxFile *fp)
 ////////////////////////////////////////////////////////////////////////////////
 // Return the next pixel from the image
 // <DP> fix for 1 & 4 bpp images
-int32_t CxImageGIF::GifNextPixel( )
+int32_t CxImageGIF::GifNextPixel()
 {
-  if ( CountDown == 0 ) {
+  if (CountDown == 0) {
     return EOF;
   }
 
@@ -874,7 +874,7 @@ int32_t CxImageGIF::GifNextPixel( )
   // Bump the current X position
   ++curx;
 
-  if ( curx == head.biWidth ) {
+  if (curx == head.biWidth) {
     curx = 0;
     cury--;              //bottom to top
   }
@@ -882,13 +882,13 @@ int32_t CxImageGIF::GifNextPixel( )
   return r;
 }
 ////////////////////////////////////////////////////////////////////////////////
-void CxImageGIF::Putword(int32_t w, CxFile *fp )
+void CxImageGIF::Putword(int32_t w, CxFile *fp)
 {
   fp->PutC(static_cast<uint8_t>(w & 0xff));
   fp->PutC(static_cast<uint8_t>((w >> 8) & 0xff));
 }
 ////////////////////////////////////////////////////////////////////////////////
-void CxImageGIF::compressNONE( int32_t init_bits, CxFile *outfile)
+void CxImageGIF::compressNONE(int32_t init_bits, CxFile *outfile)
 {
   int32_t c;
   int32_t ent;
@@ -909,27 +909,27 @@ void CxImageGIF::compressNONE( int32_t init_bits, CxFile *outfile)
   free_ent = static_cast<int16_t>(ClearCode + 2);
 
   a_count = 0;
-  ent = GifNextPixel( );
+  ent = GifNextPixel();
 
-  output( static_cast<code_int>(ClearCode) );
+  output(static_cast<code_int>(ClearCode));
 
-  while ( ent != EOF ) {
+  while (ent != EOF) {
     c = GifNextPixel();
 
-    output ( static_cast<code_int>(ent) );
+    output(static_cast<code_int>(ent));
     ent = c;
 
-    if ( free_ent < maxmaxcode ) {
+    if (free_ent < maxmaxcode) {
       free_ent++;
     } else {
       free_ent = static_cast<int16_t>(ClearCode + 2);
       clear_flg = 1;
-      output( static_cast<code_int>(ClearCode) );
+      output(static_cast<code_int>(ClearCode));
     }
   }
 
   // Put out the final code.
-  output( static_cast<code_int>(EOFCode) );
+  output(static_cast<code_int>(EOFCode));
 }
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -939,7 +939,7 @@ void CxImageGIF::compressNONE( int32_t init_bits, CxFile *outfile)
  *
  ***************************************************************************/
 
-void CxImageGIF::compressLZW( int32_t init_bits, CxFile *outfile)
+void CxImageGIF::compressLZW(int32_t init_bits, CxFile *outfile)
 {
   int32_t fcode;
   int32_t c;
@@ -964,58 +964,58 @@ void CxImageGIF::compressLZW( int32_t init_bits, CxFile *outfile)
   free_ent = static_cast<int16_t>(ClearCode + 2);
 
   a_count = 0;
-  ent = GifNextPixel( );
+  ent = GifNextPixel();
 
   hshift = 0;
 
-  for ( fcode = static_cast<int32_t>(HSIZE); fcode < 65536L; fcode *= 2L ) {
+  for (fcode = static_cast<int32_t>(HSIZE); fcode < 65536L; fcode *= 2L) {
     ++hshift;
   }
 
   hshift = 8 - hshift;                /* set hash code range bound */
   cl_hash(static_cast<int32_t>(HSIZE));        /* clear hash table */
-  output( static_cast<code_int>(ClearCode) );
+  output(static_cast<code_int>(ClearCode));
 
-  while ( (c = GifNextPixel( )) != EOF ) {
+  while ((c = GifNextPixel()) != EOF) {
 
     fcode = (static_cast<int32_t>(c) << MAXBITSCODES) + ent;
     i = ((static_cast<code_int>(c) << hshift) ^ ent);    /* xor hashing */
 
-    if ( HashTabOf (i) == fcode ) {
-      ent = CodeTabOf (i);
+    if (HashTabOf(i) == fcode) {
+      ent = CodeTabOf(i);
       continue;
-    } else if ( static_cast<int32_t>(HashTabOf (i)) < 0 ) {    /* empty slot */
+    } else if (static_cast<int32_t>(HashTabOf(i)) < 0) {       /* empty slot */
       goto nomatch;
     }
 
     disp = HSIZE - i;           /* secondary hash (after G. Knott) */
 
-    if ( i == 0 ) {
+    if (i == 0) {
       disp = 1;
     }
 
 probe:
 
-    if ( (i -= disp) < 0 ) {
+    if ((i -= disp) < 0) {
       i += HSIZE;
     }
 
-    if ( HashTabOf (i) == fcode ) {
-      ent = CodeTabOf (i);
+    if (HashTabOf(i) == fcode) {
+      ent = CodeTabOf(i);
       continue;
     }
 
-    if ( static_cast<int32_t>(HashTabOf (i)) > 0 ) {
+    if (static_cast<int32_t>(HashTabOf(i)) > 0) {
       goto probe;
     }
 
 nomatch:
-    output ( static_cast<code_int>(ent) );
+    output(static_cast<code_int>(ent));
     ent = c;
 
-    if ( free_ent < maxmaxcode ) {
-      CodeTabOf (i) = static_cast<uint16_t>(free_ent++); /* code -> hashtable */
-      HashTabOf (i) = fcode;
+    if (free_ent < maxmaxcode) {
+      CodeTabOf(i) = static_cast<uint16_t>(free_ent++);  /* code -> hashtable */
+      HashTabOf(i) = fcode;
     } else {
       cl_hash(static_cast<int32_t>(HSIZE));
       free_ent = static_cast<int16_t>(ClearCode + 2);
@@ -1025,8 +1025,8 @@ nomatch:
   }
 
   // Put out the final code.
-  output( static_cast<code_int>(ent) );
-  output( static_cast<code_int>(EOFCode) );
+  output(static_cast<code_int>(ent));
+  output(static_cast<code_int>(EOFCode));
 }
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -1037,11 +1037,11 @@ static const uint32_t code_mask[] = { 0x0000, 0x0001, 0x0003, 0x0007, 0x000F,
                                     };
 
 ////////////////////////////////////////////////////////////////////////////////
-void CxImageGIF::output( code_int  code)
+void CxImageGIF::output(code_int  code)
 {
   cur_accum &= code_mask[ cur_bits ];
 
-  if ( cur_bits > 0 ) {
+  if (cur_bits > 0) {
     cur_accum |= (static_cast<uint32_t>(code) << cur_bits);
   } else {
     cur_accum = static_cast<uint32_t>(code);
@@ -1049,8 +1049,8 @@ void CxImageGIF::output( code_int  code)
 
   cur_bits += n_bits;
 
-  while ( cur_bits >= 8 ) {
-    char_out( static_cast<int32_t>(cur_accum & 0xff) );
+  while (cur_bits >= 8) {
+    char_out(static_cast<int32_t>(cur_accum & 0xff));
     cur_accum >>= 8;
     cur_bits -= 8;
   }
@@ -1060,15 +1060,15 @@ void CxImageGIF::output( code_int  code)
    * then increase it, if possible.
    */
 
-  if ( free_ent > maxcode || clear_flg ) {
-    if ( clear_flg ) {
+  if (free_ent > maxcode || clear_flg) {
+    if (clear_flg) {
       n_bits = g_init_bits;
       maxcode = MAXCODE(static_cast<uint16_t>(g_init_bits));
       clear_flg = 0;
     } else {
       ++n_bits;
 
-      if ( n_bits == MAXBITSCODES ) {
+      if (n_bits == MAXBITSCODES) {
         /* should NEVER generate this code */
         maxcode = static_cast<code_int>(1) << MAXBITSCODES;
       } else {
@@ -1077,10 +1077,10 @@ void CxImageGIF::output( code_int  code)
     }
   }
 
-  if ( code == EOFCode ) {
+  if (code == EOFCode) {
     // At EOF, write the rest of the buffer.
-    while ( cur_bits > 0 ) {
-      char_out( static_cast<int32_t>(cur_accum & 0xff) );
+    while (cur_bits > 0) {
+      char_out(static_cast<int32_t>(cur_accum & 0xff));
       cur_accum >>= 8;
       cur_bits -= 8;
     }
@@ -1486,7 +1486,7 @@ int32_t CxImageGIF::get_num_frames(CxFile *fp, struct_TabCol *TabColSrc, struct_
   char ch;
   bool bPreviousWasNull = true;
 
-  for (BOOL bContinue = TRUE; bContinue; ) {
+  for (BOOL bContinue = TRUE; bContinue;) {
     if (fp->Read(&ch, sizeof(ch), 1) != 1) {
       break;
     }
@@ -1862,7 +1862,7 @@ uint32_t CxImageGIF::rle_isqrt(uint32_t x)
 
   for (v = x, r = 1; v; v >>= 2, r <<= 1) ;
 
-  for ( ;; ) {
+  for (;;) {
     v = ((x / r) + r) / 2;
 
     if ((v == r) || (v == r + 1)) {
@@ -1938,7 +1938,7 @@ void CxImageGIF::rle_output_flush(struct_RLE *rle)
   rle_block_flush(rle);
 }
 ////////////////////////////////////////////////////////////////////////////////
-void CxImageGIF::compressRLE( int32_t init_bits, CxFile *outfile)
+void CxImageGIF::compressRLE(int32_t init_bits, CxFile *outfile)
 {
   g_init_bits = init_bits;
   g_outfile = outfile;
@@ -1961,7 +1961,7 @@ void CxImageGIF::compressRLE( int32_t init_bits, CxFile *outfile)
 
   int32_t c;
 
-  for ( ;; ) {
+  for (;;) {
     c = GifNextPixel();
 
     if ((rle.rl_count > 0) && (c != rle.rl_pixel)) {

@@ -422,6 +422,7 @@ void cmdSavePreset(int /*n*/)
   if (!state.ps) {
     return;
   }
+
   state.ps->info.sprite = sprParticles;
 }
 #else
@@ -430,6 +431,7 @@ void cmdSavePreset(int n)
   if (!state.ps) {
     return;
   }
+
   HANDLE hF;
   uint32_t size;
   char filename[_MAX_PATH];
@@ -442,14 +444,14 @@ void cmdSavePreset(int n)
 
   state.ps->info.sprite = (hgeSprite *)(sprParticles->GetFrame() | sprParticles->GetBlendMode() <<
                                         16);
-  hF = CreateFile( filename, GENERIC_WRITE, FILE_SHARE_WRITE, NULL, CREATE_ALWAYS,
-                   FILE_ATTRIBUTE_NORMAL, NULL );
+  hF = CreateFile(filename, GENERIC_WRITE, FILE_SHARE_WRITE, NULL, CREATE_ALWAYS,
+                  FILE_ATTRIBUTE_NORMAL, NULL);
 
   if (hF == INVALID_HANDLE_VALUE) {
     return;
   }
 
-  WriteFile(hF, &state.ps->info, sizeof(hgeParticleSystemInfo), &size, NULL );
+  WriteFile(hF, &state.ps->info, sizeof(hgeParticleSystemInfo), &size, NULL);
   CloseHandle(hF);
 
   state.ps->info.sprite = sprParticles;
@@ -480,14 +482,14 @@ void cmdLoadPreset(int n)
   s = s.substr(0, s.rfind('\\')) + "\\" + "particle" + char('1' + n) + ".psi";
   strcpy(filename, s.c_str());
 
-  hF = CreateFile( filename, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING,
-                   FILE_ATTRIBUTE_NORMAL, NULL );
+  hF = CreateFile(filename, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING,
+                  FILE_ATTRIBUTE_NORMAL, NULL);
 
   if (hF == INVALID_HANDLE_VALUE) {
     return;
   }
 
-  ReadFile(hF, &state.ps->info, sizeof(hgeParticleSystemInfo), &size, NULL );
+  ReadFile(hF, &state.ps->info, sizeof(hgeParticleSystemInfo), &size, NULL);
   CloseHandle(hF);
 #endif
 

@@ -31,7 +31,7 @@ _tiffWriteProcEx(thandle_t fd, tdata_t buf, tsize_t size)
 static toff_t
 _tiffSeekProcEx(thandle_t fd, toff_t off, int whence)
 {
-  if ( off == 0xFFFFFFFF ) {
+  if (off == 0xFFFFFFFF) {
     return 0xFFFFFFFF;
   }
 

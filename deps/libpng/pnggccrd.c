@@ -600,7 +600,7 @@ png_combine_row(png_structp png_ptr, png_bytep row, int mask)
 #if !defined(PNG_1_0_X)
 
       if ((png_ptr->asm_flags & PNG_ASM_FLAG_MMX_READ_COMBINE_ROW)
-          /* && _mmx_supported */ )
+          /* && _mmx_supported */)
 #else
       if (_mmx_supported)
 #endif
@@ -616,9 +616,9 @@ png_combine_row(png_structp png_ptr, png_bytep row, int mask)
         srcptr = png_ptr->row_buf + 1;
         dstptr = row;
         len  = png_ptr->width & ~7; // reduce to multiple of 8
-        diff = (int) (png_ptr->width & 7);  // amount lost
+        diff = (int)(png_ptr->width & 7);   // amount lost
 
-        __asm__ __volatile__ (
+        __asm__ __volatile__(
           "movd      _unmask, %%mm7  \n\t" // load bit pattern
           "psubb     %%mm6, %%mm6    \n\t" // zero mm6
           "punpcklbw %%mm7, %%mm7    \n\t"
@@ -671,18 +671,18 @@ png_combine_row(png_structp png_ptr, png_bytep row, int mask)
           "end8:                       \n\t"
           "EMMS                      \n\t"  // DONE
 
-          : "=a" (dummy_value_a),           // output regs (dummy)
-          "=d" (dummy_value_d),
-          "=c" (dummy_value_c),
-          "=S" (dummy_value_S),
-          "=D" (dummy_value_D)
+          : "=a"(dummy_value_a),            // output regs (dummy)
+          "=d"(dummy_value_d),
+          "=c"(dummy_value_c),
+          "=S"(dummy_value_S),
+          "=D"(dummy_value_D)
 
-          : "3" (srcptr),      // esi       // input regs
-          "4" (dstptr),      // edi
-          "0" (diff),        // eax
+          : "3"(srcptr),       // esi       // input regs
+          "4"(dstptr),       // edi
+          "0"(diff),         // eax
 // was (unmask)     "b"    RESERVED    // ebx       // Global Offset Table idx
-          "2" (len),         // ecx
-          "1" (mask)         // edx
+          "2"(len),          // ecx
+          "1"(mask)          // edx
 
 #if 0  /* MMX regs (%mm0, etc.) not supported by gcc 2.7.2.3 or egcs 1.1 */
           : "%mm0", "%mm4", "%mm6", "%mm7"  // clobber list
@@ -699,7 +699,7 @@ png_combine_row(png_structp png_ptr, png_bytep row, int mask)
         register int rep_bytes = png_pass_width[png_ptr->pass];
         /* png.c:  png_pass_width[] = {8, 4, 4, 2, 2, 1, 1}; */
         png_uint_32 len = png_ptr->width & ~7; /* reduce to mult. of 8 */
-        int diff = (int) (png_ptr->width & 7); /* amount lost */
+        int diff = (int)(png_ptr->width & 7);  /* amount lost */
         register png_uint_32 final_val = len;  /* GRR bugfix */
 
         srcptr = png_ptr->row_buf + 1 + initial_val;
@@ -738,7 +738,7 @@ png_combine_row(png_structp png_ptr, png_bytep row, int mask)
 #if !defined(PNG_1_0_X)
 
       if ((png_ptr->asm_flags & PNG_ASM_FLAG_MMX_READ_COMBINE_ROW)
-          /* && _mmx_supported */ )
+          /* && _mmx_supported */)
 #else
       if (_mmx_supported)
 #endif
@@ -754,9 +754,9 @@ png_combine_row(png_structp png_ptr, png_bytep row, int mask)
         srcptr = png_ptr->row_buf + 1;
         dstptr = row;
         len  = png_ptr->width & ~7; // reduce to multiple of 8
-        diff = (int) (png_ptr->width & 7); // amount lost //
+        diff = (int)(png_ptr->width & 7);  // amount lost //
 
-        __asm__ __volatile__ (
+        __asm__ __volatile__(
           "movd      _unmask, %%mm7   \n\t" // load bit pattern
           "psubb     %%mm6, %%mm6     \n\t" // zero mm6
           "punpcklbw %%mm7, %%mm7     \n\t"
@@ -824,18 +824,18 @@ png_combine_row(png_structp png_ptr, png_bytep row, int mask)
           "end16:                       \n\t"
           "EMMS                       \n\t" // DONE
 
-          : "=a" (dummy_value_a),           // output regs (dummy)
-          "=c" (dummy_value_c),
-          "=d" (dummy_value_d),
-          "=S" (dummy_value_S),
-          "=D" (dummy_value_D)
+          : "=a"(dummy_value_a),            // output regs (dummy)
+          "=c"(dummy_value_c),
+          "=d"(dummy_value_d),
+          "=S"(dummy_value_S),
+          "=D"(dummy_value_D)
 
-          : "0" (diff),        // eax       // input regs
+          : "0"(diff),         // eax       // input regs
 // was (unmask)     " "    RESERVED    // ebx       // Global Offset Table idx
-          "1" (len),         // ecx
-          "2" (mask),        // edx
-          "3" (srcptr),      // esi
-          "4" (dstptr)       // edi
+          "1"(len),          // ecx
+          "2"(mask),         // edx
+          "3"(srcptr),       // esi
+          "4"(dstptr)        // edi
 
 #if 0  /* MMX regs (%mm0, etc.) not supported by gcc 2.7.2.3 or egcs 1.1 */
           : "%mm0", "%mm1", "%mm4"          // clobber list
@@ -853,7 +853,7 @@ png_combine_row(png_structp png_ptr, png_bytep row, int mask)
         register int rep_bytes = BPP2 * png_pass_width[png_ptr->pass];
         /* png.c:  png_pass_width[] = {8, 4, 4, 2, 2, 1, 1}; */
         png_uint_32 len = png_ptr->width & ~7; /* reduce to mult. of 8 */
-        int diff = (int) (png_ptr->width & 7); /* amount lost */
+        int diff = (int)(png_ptr->width & 7);  /* amount lost */
         register png_uint_32 final_val = BPP2 * len;   /* GRR bugfix */
 
         srcptr = png_ptr->row_buf + 1 + initial_val;
@@ -891,7 +891,7 @@ png_combine_row(png_structp png_ptr, png_bytep row, int mask)
 #if !defined(PNG_1_0_X)
 
       if ((png_ptr->asm_flags & PNG_ASM_FLAG_MMX_READ_COMBINE_ROW)
-          /* && _mmx_supported */ )
+          /* && _mmx_supported */)
 #else
       if (_mmx_supported)
 #endif
@@ -907,9 +907,9 @@ png_combine_row(png_structp png_ptr, png_bytep row, int mask)
         srcptr = png_ptr->row_buf + 1;
         dstptr = row;
         len  = png_ptr->width & ~7; // reduce to multiple of 8
-        diff = (int) (png_ptr->width & 7); // amount lost //
+        diff = (int)(png_ptr->width & 7);  // amount lost //
 
-        __asm__ __volatile__ (
+        __asm__ __volatile__(
           "movd      _unmask, %%mm7   \n\t" // load bit pattern
           "psubb     %%mm6, %%mm6     \n\t" // zero mm6
           "punpcklbw %%mm7, %%mm7     \n\t"
@@ -992,18 +992,18 @@ png_combine_row(png_structp png_ptr, png_bytep row, int mask)
           "end24:                       \n\t"
           "EMMS                       \n\t" // DONE
 
-          : "=a" (dummy_value_a),           // output regs (dummy)
-          "=d" (dummy_value_d),
-          "=c" (dummy_value_c),
-          "=S" (dummy_value_S),
-          "=D" (dummy_value_D)
+          : "=a"(dummy_value_a),            // output regs (dummy)
+          "=d"(dummy_value_d),
+          "=c"(dummy_value_c),
+          "=S"(dummy_value_S),
+          "=D"(dummy_value_D)
 
-          : "3" (srcptr),      // esi       // input regs
-          "4" (dstptr),      // edi
-          "0" (diff),        // eax
+          : "3"(srcptr),       // esi       // input regs
+          "4"(dstptr),       // edi
+          "0"(diff),         // eax
 // was (unmask)     "b"    RESERVED    // ebx       // Global Offset Table idx
-          "2" (len),         // ecx
-          "1" (mask)         // edx
+          "2"(len),          // ecx
+          "1"(mask)          // edx
 
 #if 0  /* MMX regs (%mm0, etc.) not supported by gcc 2.7.2.3 or egcs 1.1 */
           : "%mm0", "%mm1", "%mm2"          // clobber list
@@ -1021,7 +1021,7 @@ png_combine_row(png_structp png_ptr, png_bytep row, int mask)
         register int rep_bytes = BPP3 * png_pass_width[png_ptr->pass];
         /* png.c:  png_pass_width[] = {8, 4, 4, 2, 2, 1, 1}; */
         png_uint_32 len = png_ptr->width & ~7; /* reduce to mult. of 8 */
-        int diff = (int) (png_ptr->width & 7); /* amount lost */
+        int diff = (int)(png_ptr->width & 7);  /* amount lost */
         register png_uint_32 final_val = BPP3 * len;   /* GRR bugfix */
 
         srcptr = png_ptr->row_buf + 1 + initial_val;
@@ -1059,7 +1059,7 @@ png_combine_row(png_structp png_ptr, png_bytep row, int mask)
 #if !defined(PNG_1_0_X)
 
       if ((png_ptr->asm_flags & PNG_ASM_FLAG_MMX_READ_COMBINE_ROW)
-          /* && _mmx_supported */ )
+          /* && _mmx_supported */)
 #else
       if (_mmx_supported)
 #endif
@@ -1075,9 +1075,9 @@ png_combine_row(png_structp png_ptr, png_bytep row, int mask)
         srcptr = png_ptr->row_buf + 1;
         dstptr = row;
         len  = png_ptr->width & ~7; // reduce to multiple of 8
-        diff = (int) (png_ptr->width & 7); // amount lost //
+        diff = (int)(png_ptr->width & 7);  // amount lost //
 
-        __asm__ __volatile__ (
+        __asm__ __volatile__(
           "movd      _unmask, %%mm7   \n\t" // load bit pattern
           "psubb     %%mm6, %%mm6     \n\t" // zero mm6
           "punpcklbw %%mm7, %%mm7     \n\t"
@@ -1167,18 +1167,18 @@ png_combine_row(png_structp png_ptr, png_bytep row, int mask)
           "end32:                       \n\t"
           "EMMS                       \n\t" // DONE
 
-          : "=a" (dummy_value_a),           // output regs (dummy)
-          "=d" (dummy_value_d),
-          "=c" (dummy_value_c),
-          "=S" (dummy_value_S),
-          "=D" (dummy_value_D)
+          : "=a"(dummy_value_a),            // output regs (dummy)
+          "=d"(dummy_value_d),
+          "=c"(dummy_value_c),
+          "=S"(dummy_value_S),
+          "=D"(dummy_value_D)
 
-          : "3" (srcptr),      // esi       // input regs
-          "4" (dstptr),      // edi
-          "0" (diff),        // eax
+          : "3"(srcptr),       // esi       // input regs
+          "4"(dstptr),       // edi
+          "0"(diff),         // eax
 // was (unmask)     "b"    RESERVED    // ebx       // Global Offset Table idx
-          "2" (len),         // ecx
-          "1" (mask)         // edx
+          "2"(len),          // ecx
+          "1"(mask)          // edx
 
 #if 0  /* MMX regs (%mm0, etc.) not supported by gcc 2.7.2.3 or egcs 1.1 */
           : "%mm0", "%mm1", "%mm2", "%mm3"  // clobber list
@@ -1196,7 +1196,7 @@ png_combine_row(png_structp png_ptr, png_bytep row, int mask)
         register int rep_bytes = BPP4 * png_pass_width[png_ptr->pass];
         /* png.c:  png_pass_width[] = {8, 4, 4, 2, 2, 1, 1}; */
         png_uint_32 len = png_ptr->width & ~7; /* reduce to mult. of 8 */
-        int diff = (int) (png_ptr->width & 7); /* amount lost */
+        int diff = (int)(png_ptr->width & 7);  /* amount lost */
         register png_uint_32 final_val = BPP4 * len;   /* GRR bugfix */
 
         srcptr = png_ptr->row_buf + 1 + initial_val;
@@ -1234,7 +1234,7 @@ png_combine_row(png_structp png_ptr, png_bytep row, int mask)
 #if !defined(PNG_1_0_X)
 
       if ((png_ptr->asm_flags & PNG_ASM_FLAG_MMX_READ_COMBINE_ROW)
-          /* && _mmx_supported */ )
+          /* && _mmx_supported */)
 #else
       if (_mmx_supported)
 #endif
@@ -1250,9 +1250,9 @@ png_combine_row(png_structp png_ptr, png_bytep row, int mask)
         srcptr = png_ptr->row_buf + 1;
         dstptr = row;
         len  = png_ptr->width & ~7; // reduce to multiple of 8
-        diff = (int) (png_ptr->width & 7); // amount lost //
+        diff = (int)(png_ptr->width & 7);  // amount lost //
 
-        __asm__ __volatile__ (
+        __asm__ __volatile__(
           "movd      _unmask, %%mm7   \n\t" // load bit pattern
           "psubb     %%mm6, %%mm6     \n\t" // zero mm6
           "punpcklbw %%mm7, %%mm7     \n\t"
@@ -1359,18 +1359,18 @@ png_combine_row(png_structp png_ptr, png_bytep row, int mask)
           "end48:                       \n\t"
           "EMMS                       \n\t" // DONE
 
-          : "=a" (dummy_value_a),           // output regs (dummy)
-          "=d" (dummy_value_d),
-          "=c" (dummy_value_c),
-          "=S" (dummy_value_S),
-          "=D" (dummy_value_D)
+          : "=a"(dummy_value_a),            // output regs (dummy)
+          "=d"(dummy_value_d),
+          "=c"(dummy_value_c),
+          "=S"(dummy_value_S),
+          "=D"(dummy_value_D)
 
-          : "3" (srcptr),      // esi       // input regs
-          "4" (dstptr),      // edi
-          "0" (diff),        // eax
+          : "3"(srcptr),       // esi       // input regs
+          "4"(dstptr),       // edi
+          "0"(diff),         // eax
 // was (unmask)     "b"    RESERVED    // ebx       // Global Offset Table idx
-          "2" (len),         // ecx
-          "1" (mask)         // edx
+          "2"(len),          // ecx
+          "1"(mask)          // edx
 
 #if 0  /* MMX regs (%mm0, etc.) not supported by gcc 2.7.2.3 or egcs 1.1 */
           : "%mm0", "%mm1", "%mm2", "%mm3"  // clobber list
@@ -1388,7 +1388,7 @@ png_combine_row(png_structp png_ptr, png_bytep row, int mask)
         register int rep_bytes = BPP6 * png_pass_width[png_ptr->pass];
         /* png.c:  png_pass_width[] = {8, 4, 4, 2, 2, 1, 1}; */
         png_uint_32 len = png_ptr->width & ~7; /* reduce to mult. of 8 */
-        int diff = (int) (png_ptr->width & 7); /* amount lost */
+        int diff = (int)(png_ptr->width & 7);  /* amount lost */
         register png_uint_32 final_val = BPP6 * len;   /* GRR bugfix */
 
         srcptr = png_ptr->row_buf + 1 + initial_val;
@@ -1429,7 +1429,7 @@ png_combine_row(png_structp png_ptr, png_bytep row, int mask)
       register int rep_bytes = BPP8 * png_pass_width[png_ptr->pass];
       /* png.c:  png_pass_width[] = {8, 4, 4, 2, 2, 1, 1}; */
       png_uint_32 len = png_ptr->width & ~7; /* reduce to mult. of 8 */
-      int diff = (int) (png_ptr->width & 7); /* amount lost */
+      int diff = (int)(png_ptr->width & 7);  /* amount lost */
       register png_uint_32 final_val = BPP8 * len;   /* GRR bugfix */
 
       srcptr = png_ptr->row_buf + 1 + initial_val;
@@ -1709,7 +1709,7 @@ png_do_read_interlace(png_structp png_ptr)
 #if !defined(PNG_1_0_X)
 
       if ((png_ptr->asm_flags & PNG_ASM_FLAG_MMX_READ_INTERLACE)
-          /* && _mmx_supported */ )
+          /* && _mmx_supported */)
 #else
       if (_mmx_supported)
 #endif
@@ -1721,7 +1721,7 @@ png_do_read_interlace(png_structp png_ptr)
             int dummy_value_S;
             int dummy_value_D;
 
-            __asm__ __volatile__ (
+            __asm__ __volatile__(
               "subl $21, %%edi         \n\t"
               // (png_pass_inc[pass] - 1)*pixel_bytes
 
@@ -1750,14 +1750,14 @@ png_do_read_interlace(png_structp png_ptr)
               "jnz .loop3_pass0        \n\t"
               "EMMS                    \n\t" // DONE
 
-              : "=c" (dummy_value_c),        // output regs (dummy)
-              "=S" (dummy_value_S),
-              "=D" (dummy_value_D)
+              : "=c"(dummy_value_c),         // output regs (dummy)
+              "=S"(dummy_value_S),
+              "=D"(dummy_value_D)
 
-              : "1" (sptr),      // esi      // input regs
-              "2" (dp),        // edi
-              "0" (width),     // ecx
-              "rim" (_const4)  // %1(?)  (0x0000000000FFFFFFLL)
+              : "1"(sptr),       // esi      // input regs
+              "2"(dp),         // edi
+              "0"(width),      // ecx
+              "rim"(_const4)   // %1(?)  (0x0000000000FFFFFFLL)
 
 #if 0  /* %mm0, ..., %mm4 not supported by gcc 2.7.2.3 or egcs 1.1 */
               : "%mm0", "%mm1", "%mm2"       // clobber list
@@ -1769,7 +1769,7 @@ png_do_read_interlace(png_structp png_ptr)
             int dummy_value_S;
             int dummy_value_D;
 
-            __asm__ __volatile__ (
+            __asm__ __volatile__(
               "subl $9, %%edi          \n\t"
               // (png_pass_inc[pass] - 1)*pixel_bytes
 
@@ -1792,14 +1792,14 @@ png_do_read_interlace(png_structp png_ptr)
               "jnz .loop3_pass2        \n\t"
               "EMMS                    \n\t" // DONE
 
-              : "=c" (dummy_value_c),        // output regs (dummy)
-              "=S" (dummy_value_S),
-              "=D" (dummy_value_D)
+              : "=c"(dummy_value_c),         // output regs (dummy)
+              "=S"(dummy_value_S),
+              "=D"(dummy_value_D)
 
-              : "1" (sptr),      // esi      // input regs
-              "2" (dp),        // edi
-              "0" (width),     // ecx
-              "rim" (_const4)  // (0x0000000000FFFFFFLL)
+              : "1"(sptr),       // esi      // input regs
+              "2"(dp),         // edi
+              "0"(width),      // ecx
+              "rim"(_const4)   // (0x0000000000FFFFFFLL)
 
 #if 0  /* %mm0, ..., %mm2 not supported by gcc 2.7.2.3 or egcs 1.1 */
               : "%mm0", "%mm1", "%mm2"       // clobber list
@@ -1822,7 +1822,7 @@ png_do_read_interlace(png_structp png_ptr)
               int dummy_value_S;
               int dummy_value_D;
 
-              __asm__ __volatile__ (
+              __asm__ __volatile__(
                 "subl $3, %%esi          \n\t"
                 "subl $9, %%edi          \n\t"
                 // (png_pass_inc[pass] + 1)*pixel_bytes
@@ -1848,15 +1848,15 @@ png_do_read_interlace(png_structp png_ptr)
                 "jnz .loop3_pass4        \n\t"
                 "EMMS                    \n\t" // DONE
 
-                : "=c" (dummy_value_c),        // output regs (dummy)
-                "=S" (dummy_value_S),
-                "=D" (dummy_value_D)
+                : "=c"(dummy_value_c),         // output regs (dummy)
+                "=S"(dummy_value_S),
+                "=D"(dummy_value_D)
 
-                : "1" (sptr),      // esi      // input regs
-                "2" (dp),        // edi
-                "0" (width_mmx), // ecx
-                "rim" (_const4), // 0x0000000000FFFFFFLL
-                "rim" (_const6)  // 0x00000000000000FFLL
+                : "1"(sptr),       // esi      // input regs
+                "2"(dp),         // edi
+                "0"(width_mmx),  // ecx
+                "rim"(_const4),  // 0x0000000000FFFFFFLL
+                "rim"(_const6)   // 0x00000000000000FFLL
 
 #if 0  /* %mm0, ..., %mm3 not supported by gcc 2.7.2.3 or egcs 1.1 */
                 : "%mm0", "%mm1"               // clobber list
@@ -1895,7 +1895,7 @@ png_do_read_interlace(png_structp png_ptr)
               int dummy_value_S;
               int dummy_value_D;
 
-              __asm__ __volatile__ (
+              __asm__ __volatile__(
                 "subl $3, %%esi          \n\t"
                 "subl $31, %%edi         \n\t"
 
@@ -1922,13 +1922,13 @@ png_do_read_interlace(png_structp png_ptr)
                 "jnz .loop1_pass0        \n\t"
                 "EMMS                    \n\t" // DONE
 
-                : "=c" (dummy_value_c),        // output regs (dummy)
-                "=S" (dummy_value_S),
-                "=D" (dummy_value_D)
+                : "=c"(dummy_value_c),         // output regs (dummy)
+                "=S"(dummy_value_S),
+                "=D"(dummy_value_D)
 
-                : "1" (sptr),      // esi      // input regs
-                "2" (dp),        // edi
-                "0" (width_mmx)  // ecx
+                : "1"(sptr),       // esi      // input regs
+                "2"(dp),         // edi
+                "0"(width_mmx)   // ecx
 
 #if 0  /* %mm0, ..., %mm4 not supported by gcc 2.7.2.3 or egcs 1.1 */
                 : "%mm0", "%mm1", "%mm2"       // clobber list
@@ -1976,7 +1976,7 @@ png_do_read_interlace(png_structp png_ptr)
               int dummy_value_S;
               int dummy_value_D;
 
-              __asm__ __volatile__ (
+              __asm__ __volatile__(
                 "subl $3, %%esi          \n\t"
                 "subl $15, %%edi         \n\t"
 
@@ -1994,13 +1994,13 @@ png_do_read_interlace(png_structp png_ptr)
                 "jnz .loop1_pass2        \n\t"
                 "EMMS                    \n\t" // DONE
 
-                : "=c" (dummy_value_c),        // output regs (dummy)
-                "=S" (dummy_value_S),
-                "=D" (dummy_value_D)
+                : "=c"(dummy_value_c),         // output regs (dummy)
+                "=S"(dummy_value_S),
+                "=D"(dummy_value_D)
 
-                : "1" (sptr),      // esi      // input regs
-                "2" (dp),        // edi
-                "0" (width_mmx)  // ecx
+                : "1"(sptr),       // esi      // input regs
+                "2"(dp),         // edi
+                "0"(width_mmx)   // ecx
 
 #if 0  /* %mm0, %mm1 not supported by gcc 2.7.2.3 or egcs 1.1 */
                 : "%mm0", "%mm1"               // clobber list
@@ -2029,7 +2029,7 @@ png_do_read_interlace(png_structp png_ptr)
               int dummy_value_S;
               int dummy_value_D;
 
-              __asm__ __volatile__ (
+              __asm__ __volatile__(
                 "subl $7, %%esi          \n\t"
                 "subl $15, %%edi         \n\t"
 
@@ -2046,13 +2046,13 @@ png_do_read_interlace(png_structp png_ptr)
                 "jnz .loop1_pass4        \n\t"
                 "EMMS                    \n\t" // DONE
 
-                : "=c" (dummy_value_c),        // output regs (none)
-                "=S" (dummy_value_S),
-                "=D" (dummy_value_D)
+                : "=c"(dummy_value_c),         // output regs (none)
+                "=S"(dummy_value_S),
+                "=D"(dummy_value_D)
 
-                : "1" (sptr),      // esi      // input regs
-                "2" (dp),        // edi
-                "0" (width_mmx)  // ecx
+                : "1"(sptr),       // esi      // input regs
+                "2"(dp),         // edi
+                "0"(width_mmx)   // ecx
 
 #if 0  /* %mm0, %mm1 not supported by gcc 2.7.2.3 or egcs 1.1 */
                 : "%mm0", "%mm1"               // clobber list
@@ -2086,7 +2086,7 @@ png_do_read_interlace(png_structp png_ptr)
               int dummy_value_S;
               int dummy_value_D;
 
-              __asm__ __volatile__ (
+              __asm__ __volatile__(
                 "subl $2, %%esi          \n\t"
                 "subl $30, %%edi         \n\t"
 
@@ -2106,13 +2106,13 @@ png_do_read_interlace(png_structp png_ptr)
                 "jnz .loop2_pass0        \n\t"
                 "EMMS                    \n\t" // DONE
 
-                : "=c" (dummy_value_c),        // output regs (dummy)
-                "=S" (dummy_value_S),
-                "=D" (dummy_value_D)
+                : "=c"(dummy_value_c),         // output regs (dummy)
+                "=S"(dummy_value_S),
+                "=D"(dummy_value_D)
 
-                : "1" (sptr),      // esi      // input regs
-                "2" (dp),        // edi
-                "0" (width_mmx)  // ecx
+                : "1"(sptr),       // esi      // input regs
+                "2"(dp),         // edi
+                "0"(width_mmx)   // ecx
 
 #if 0  /* %mm0, %mm1 not supported by gcc 2.7.2.3 or egcs 1.1 */
                 : "%mm0", "%mm1"               // clobber list
@@ -2143,7 +2143,7 @@ png_do_read_interlace(png_structp png_ptr)
               int dummy_value_S;
               int dummy_value_D;
 
-              __asm__ __volatile__ (
+              __asm__ __volatile__(
                 "subl $2, %%esi          \n\t"
                 "subl $14, %%edi         \n\t"
 
@@ -2161,13 +2161,13 @@ png_do_read_interlace(png_structp png_ptr)
                 "jnz .loop2_pass2        \n\t"
                 "EMMS                    \n\t" // DONE
 
-                : "=c" (dummy_value_c),        // output regs (dummy)
-                "=S" (dummy_value_S),
-                "=D" (dummy_value_D)
+                : "=c"(dummy_value_c),         // output regs (dummy)
+                "=S"(dummy_value_S),
+                "=D"(dummy_value_D)
 
-                : "1" (sptr),      // esi      // input regs
-                "2" (dp),        // edi
-                "0" (width_mmx)  // ecx
+                : "1"(sptr),       // esi      // input regs
+                "2"(dp),         // edi
+                "0"(width_mmx)   // ecx
 
 #if 0  /* %mm0, %mm1 not supported by gcc 2.7.2.3 or egcs 1.1 */
                 : "%mm0", "%mm1"               // clobber list
@@ -2198,7 +2198,7 @@ png_do_read_interlace(png_structp png_ptr)
               int dummy_value_S;
               int dummy_value_D;
 
-              __asm__ __volatile__ (
+              __asm__ __volatile__(
                 "subl $2, %%esi          \n\t"
                 "subl $6, %%edi          \n\t"
 
@@ -2212,13 +2212,13 @@ png_do_read_interlace(png_structp png_ptr)
                 "jnz .loop2_pass4        \n\t"
                 "EMMS                    \n\t" // DONE
 
-                : "=c" (dummy_value_c),        // output regs (dummy)
-                "=S" (dummy_value_S),
-                "=D" (dummy_value_D)
+                : "=c"(dummy_value_c),         // output regs (dummy)
+                "=S"(dummy_value_S),
+                "=D"(dummy_value_D)
 
-                : "1" (sptr),      // esi      // input regs
-                "2" (dp),        // edi
-                "0" (width_mmx)  // ecx
+                : "1"(sptr),       // esi      // input regs
+                "2"(dp),         // edi
+                "0"(width_mmx)   // ecx
 
 #if 0  /* %mm0 not supported by gcc 2.7.2.3 or egcs 1.1 */
                 : "%mm0"                       // clobber list
@@ -2254,7 +2254,7 @@ png_do_read_interlace(png_structp png_ptr)
               int dummy_value_S;
               int dummy_value_D;
 
-              __asm__ __volatile__ (
+              __asm__ __volatile__(
                 "subl $4, %%esi          \n\t"
                 "subl $60, %%edi         \n\t"
 
@@ -2277,13 +2277,13 @@ png_do_read_interlace(png_structp png_ptr)
                 "jnz .loop4_pass0        \n\t"
                 "EMMS                    \n\t" // DONE
 
-                : "=c" (dummy_value_c),        // output regs (dummy)
-                "=S" (dummy_value_S),
-                "=D" (dummy_value_D)
+                : "=c"(dummy_value_c),         // output regs (dummy)
+                "=S"(dummy_value_S),
+                "=D"(dummy_value_D)
 
-                : "1" (sptr),      // esi      // input regs
-                "2" (dp),        // edi
-                "0" (width_mmx)  // ecx
+                : "1"(sptr),       // esi      // input regs
+                "2"(dp),         // edi
+                "0"(width_mmx)   // ecx
 
 #if 0  /* %mm0, %mm1 not supported by gcc 2.7.2.3 or egcs 1.1 */
                 : "%mm0", "%mm1"               // clobber list
@@ -2314,7 +2314,7 @@ png_do_read_interlace(png_structp png_ptr)
               int dummy_value_S;
               int dummy_value_D;
 
-              __asm__ __volatile__ (
+              __asm__ __volatile__(
                 "subl $4, %%esi          \n\t"
                 "subl $28, %%edi         \n\t"
 
@@ -2333,13 +2333,13 @@ png_do_read_interlace(png_structp png_ptr)
                 "jnz .loop4_pass2        \n\t"
                 "EMMS                    \n\t" // DONE
 
-                : "=c" (dummy_value_c),        // output regs (dummy)
-                "=S" (dummy_value_S),
-                "=D" (dummy_value_D)
+                : "=c"(dummy_value_c),         // output regs (dummy)
+                "=S"(dummy_value_S),
+                "=D"(dummy_value_D)
 
-                : "1" (sptr),      // esi      // input regs
-                "2" (dp),        // edi
-                "0" (width_mmx)  // ecx
+                : "1"(sptr),       // esi      // input regs
+                "2"(dp),         // edi
+                "0"(width_mmx)   // ecx
 
 #if 0  /* %mm0, %mm1 not supported by gcc 2.7.2.3 or egcs 1.1 */
                 : "%mm0", "%mm1"               // clobber list
@@ -2370,7 +2370,7 @@ png_do_read_interlace(png_structp png_ptr)
               int dummy_value_S;
               int dummy_value_D;
 
-              __asm__ __volatile__ (
+              __asm__ __volatile__(
                 "subl $4, %%esi          \n\t"
                 "subl $12, %%edi         \n\t"
 
@@ -2387,13 +2387,13 @@ png_do_read_interlace(png_structp png_ptr)
                 "jnz .loop4_pass4        \n\t"
                 "EMMS                    \n\t" // DONE
 
-                : "=c" (dummy_value_c),        // output regs (dummy)
-                "=S" (dummy_value_S),
-                "=D" (dummy_value_D)
+                : "=c"(dummy_value_c),         // output regs (dummy)
+                "=S"(dummy_value_S),
+                "=D"(dummy_value_D)
 
-                : "1" (sptr),      // esi      // input regs
-                "2" (dp),        // edi
-                "0" (width_mmx)  // ecx
+                : "1"(sptr),       // esi      // input regs
+                "2"(dp),         // edi
+                "0"(width_mmx)   // ecx
 
 #if 0  /* %mm0, %mm1 not supported by gcc 2.7.2.3 or egcs 1.1 */
                 : "%mm0", "%mm1"               // clobber list
@@ -2429,7 +2429,7 @@ png_do_read_interlace(png_structp png_ptr)
 
             // source is 8-byte RRGGBBAA
             // dest is 64-byte RRGGBBAA RRGGBBAA RRGGBBAA RRGGBBAA ...
-            __asm__ __volatile__ (
+            __asm__ __volatile__(
               "subl $56, %%edi         \n\t" // start of last block
 
               ".loop8_pass0:              \n\t"
@@ -2448,13 +2448,13 @@ png_do_read_interlace(png_structp png_ptr)
               "jnz .loop8_pass0        \n\t"
               "EMMS                    \n\t" // DONE
 
-              : "=c" (dummy_value_c),        // output regs (dummy)
-              "=S" (dummy_value_S),
-              "=D" (dummy_value_D)
+              : "=c"(dummy_value_c),         // output regs (dummy)
+              "=S"(dummy_value_S),
+              "=D"(dummy_value_D)
 
-              : "1" (sptr),      // esi      // input regs
-              "2" (dp),        // edi
-              "0" (width)      // ecx
+              : "1"(sptr),       // esi      // input regs
+              "2"(dp),         // edi
+              "0"(width)       // ecx
 
 #if 0  /* %mm0 not supported by gcc 2.7.2.3 or egcs 1.1 */
               : "%mm0"                       // clobber list
@@ -2470,7 +2470,7 @@ png_do_read_interlace(png_structp png_ptr)
               int dummy_value_S;
               int dummy_value_D;
 
-              __asm__ __volatile__ (
+              __asm__ __volatile__(
                 "subl $24, %%edi         \n\t" // start of last block
 
                 ".loop8_pass2:              \n\t"
@@ -2485,13 +2485,13 @@ png_do_read_interlace(png_structp png_ptr)
                 "jnz .loop8_pass2        \n\t"
                 "EMMS                    \n\t" // DONE
 
-                : "=c" (dummy_value_c),        // output regs (dummy)
-                "=S" (dummy_value_S),
-                "=D" (dummy_value_D)
+                : "=c"(dummy_value_c),         // output regs (dummy)
+                "=S"(dummy_value_S),
+                "=D"(dummy_value_D)
 
-                : "1" (sptr),      // esi      // input regs
-                "2" (dp),        // edi
-                "0" (width)      // ecx
+                : "1"(sptr),       // esi      // input regs
+                "2"(dp),         // edi
+                "0"(width)       // ecx
 
 #if 0  /* %mm0 not supported by gcc 2.7.2.3 or egcs 1.1 */
                 : "%mm0"                       // clobber list
@@ -2506,7 +2506,7 @@ png_do_read_interlace(png_structp png_ptr)
               int dummy_value_S;
               int dummy_value_D;
 
-              __asm__ __volatile__ (
+              __asm__ __volatile__(
                 "subl $8, %%edi          \n\t" // start of last block
 
                 ".loop8_pass4:              \n\t"
@@ -2519,13 +2519,13 @@ png_do_read_interlace(png_structp png_ptr)
                 "jnz .loop8_pass4        \n\t"
                 "EMMS                    \n\t" // DONE
 
-                : "=c" (dummy_value_c),        // output regs (dummy)
-                "=S" (dummy_value_S),
-                "=D" (dummy_value_D)
+                : "=c"(dummy_value_c),         // output regs (dummy)
+                "=S"(dummy_value_S),
+                "=D"(dummy_value_D)
 
-                : "1" (sptr),      // esi      // input regs
-                "2" (dp),        // edi
-                "0" (width)      // ecx
+                : "1"(sptr),       // esi      // input regs
+                "2"(dp),         // edi
+                "0"(width)       // ecx
 
 #if 0  /* %mm0 not supported by gcc 2.7.2.3 or egcs 1.1 */
                 : "%mm0"                       // clobber list
@@ -2570,7 +2570,7 @@ png_do_read_interlace(png_structp png_ptr)
       } // end of _mmx_supported ========================================
 
       else /* MMX not supported:  use modified C code - takes advantage
-            *   of inlining of png_memcpy for a constant */
+          *   of inlining of png_memcpy for a constant */
         /* GRR 19991007:  does it?  or should pixel_bytes in each
          *   block be replaced with immediate value (e.g., 1)? */
         /* GRR 19991017:  replaced with constants in each case */
@@ -2727,7 +2727,7 @@ png_read_filter_row_mmx_avg(png_row_infop row_info, png_bytep row,
   bpp = (row_info->pixel_depth + 7) >> 3;  // get # bytes per pixel
   _FullLength  = row_info->rowbytes;       // # of bytes to filter
 
-  __asm__ __volatile__ (
+  __asm__ __volatile__(
     // initialize address pointers and offset
 #ifdef __PIC__
     "pushl %%ebx                 \n\t" // save index to Global Offset Table
@@ -2789,13 +2789,13 @@ png_read_filter_row_mmx_avg(png_row_infop row_info, png_bytep row,
     "popl %%ebx                  \n\t" // restore index to Global Offset Table
 #endif
 
-    : "=c" (dummy_value_c),            // output regs (dummy)
-    "=S" (dummy_value_S),
-    "=D" (dummy_value_D)
+    : "=c"(dummy_value_c),             // output regs (dummy)
+    "=S"(dummy_value_S),
+    "=D"(dummy_value_D)
 
-    : "0" (bpp),       // ecx          // input regs
-    "1" (prev_row),  // esi
-    "2" (row)        // edi
+    : "0"(bpp),        // ecx          // input regs
+    "1"(prev_row),   // esi
+    "2"(row)         // edi
 
     : "%eax", "%edx"                   // clobber list
 #ifndef __PIC__
@@ -2812,7 +2812,7 @@ png_read_filter_row_mmx_avg(png_row_infop row_info, png_bytep row,
     _ShiftBpp.use = 24;    // == 3 * 8
     _ShiftRem.use = 40;    // == 64 - 24
 
-    __asm__ __volatile__ (
+    __asm__ __volatile__(
       // re-init address pointers and offset
       "movq _ActiveMask, %%mm7      \n\t"
       "movl _dif, %%ecx             \n\t" // ecx:  x = offset to
@@ -2905,11 +2905,11 @@ png_read_filter_row_mmx_avg(png_row_infop row_info, png_bytep row,
       "movq %%mm0, %%mm2            \n\t" // mov updated Raw(x) to mm2
       "jb avg_3lp                   \n\t"
 
-      : "=S" (dummy_value_S),             // output regs (dummy)
-      "=D" (dummy_value_D)
+      : "=S"(dummy_value_S),              // output regs (dummy)
+      "=D"(dummy_value_D)
 
-      : "0" (prev_row),  // esi           // input regs
-      "1" (row)        // edi
+      : "0"(prev_row),   // esi           // input regs
+      "1"(row)         // edi
 
       : "%ecx"                            // clobber list
 #if 0  /* %mm0, ..., %mm7 not supported by gcc 2.7.2.3 or egcs 1.1 */
@@ -2930,7 +2930,7 @@ png_read_filter_row_mmx_avg(png_row_infop row_info, png_bytep row,
     _ShiftBpp.use = bpp << 3;
     _ShiftRem.use = 64 - _ShiftBpp.use;
 
-    __asm__ __volatile__ (
+    __asm__ __volatile__(
       "movq _HBClearMask, %%mm4    \n\t"
 
       // re-init address pointers and offset
@@ -3004,11 +3004,11 @@ png_read_filter_row_mmx_avg(png_row_infop row_info, png_bytep row,
       "movq %%mm0, %%mm2           \n\t" // mov updated Raws to mm2
       "jb avg_4lp                  \n\t"
 
-      : "=S" (dummy_value_S),            // output regs (dummy)
-      "=D" (dummy_value_D)
+      : "=S"(dummy_value_S),             // output regs (dummy)
+      "=D"(dummy_value_D)
 
-      : "0" (prev_row),  // esi          // input regs
-      "1" (row)        // edi
+      : "0"(prev_row),   // esi          // input regs
+      "1"(row)         // edi
 
       : "%ecx"                           // clobber list
 #if 0  /* %mm0, ..., %mm7 not supported by gcc 2.7.2.3 or egcs 1.1 */
@@ -3024,7 +3024,7 @@ png_read_filter_row_mmx_avg(png_row_infop row_info, png_bytep row,
     _ShiftBpp.use = 16;   // == 2 * 8
     _ShiftRem.use = 48;   // == 64 - 16
 
-    __asm__ __volatile__ (
+    __asm__ __volatile__(
       // load _ActiveMask
       "movq _ActiveMask, %%mm7     \n\t"
       // re-init address pointers and offset
@@ -3139,11 +3139,11 @@ png_read_filter_row_mmx_avg(png_row_infop row_info, png_bytep row,
       "movq %%mm0, %%mm2           \n\t" // mov updated Raws to mm2
       "jb avg_2lp                  \n\t"
 
-      : "=S" (dummy_value_S),            // output regs (dummy)
-      "=D" (dummy_value_D)
+      : "=S"(dummy_value_S),             // output regs (dummy)
+      "=D"(dummy_value_D)
 
-      : "0" (prev_row),  // esi          // input regs
-      "1" (row)        // edi
+      : "0"(prev_row),   // esi          // input regs
+      "1"(row)         // edi
 
       : "%ecx"                           // clobber list
 #if 0  /* %mm0, ..., %mm7 not supported by gcc 2.7.2.3 or egcs 1.1 */
@@ -3155,7 +3155,7 @@ png_read_filter_row_mmx_avg(png_row_infop row_info, png_bytep row,
   break;  // end 2 bpp
 
   case 1: {
-    __asm__ __volatile__ (
+    __asm__ __volatile__(
       // re-init address pointers and offset
 #ifdef __PIC__
       "pushl %%ebx                 \n\t" // save Global Offset Table index
@@ -3192,13 +3192,13 @@ png_read_filter_row_mmx_avg(png_row_infop row_info, png_bytep row,
       "popl %%ebx                  \n\t" // Global Offset Table index
 #endif
 
-      : "=c" (dummy_value_c),            // output regs (dummy)
-      "=S" (dummy_value_S),
-      "=D" (dummy_value_D)
+      : "=c"(dummy_value_c),             // output regs (dummy)
+      "=S"(dummy_value_S),
+      "=D"(dummy_value_D)
 
-      : "0" (bpp),       // ecx          // input regs
-      "1" (prev_row),  // esi
-      "2" (row)        // edi
+      : "0"(bpp),        // ecx          // input regs
+      "1"(prev_row),   // esi
+      "2"(row)         // edi
 
       : "%eax", "%edx"                   // clobber list
 #ifndef __PIC__
@@ -3210,7 +3210,7 @@ png_read_filter_row_mmx_avg(png_row_infop row_info, png_bytep row,
   return;  // end 1 bpp
 
   case 8: {
-    __asm__ __volatile__ (
+    __asm__ __volatile__(
       // re-init address pointers and offset
       "movl _dif, %%ecx            \n\t" // ecx:  x == offset to alignment
       "movq _LBCarryMask, %%mm5    \n\t" //            boundary
@@ -3242,11 +3242,11 @@ png_read_filter_row_mmx_avg(png_row_infop row_info, png_bytep row,
       "movq %%mm0, %%mm2           \n\t" // reuse as Raw(x-bpp)
       "jb avg_8lp                  \n\t"
 
-      : "=S" (dummy_value_S),            // output regs (dummy)
-      "=D" (dummy_value_D)
+      : "=S"(dummy_value_S),             // output regs (dummy)
+      "=D"(dummy_value_D)
 
-      : "0" (prev_row),  // esi          // input regs
-      "1" (row)        // edi
+      : "0"(prev_row),   // esi          // input regs
+      "1"(row)         // edi
 
       : "%ecx"                           // clobber list
 #if 0  /* %mm0, ..., %mm5 not supported by gcc 2.7.2.3 or egcs 1.1 */
@@ -3266,7 +3266,7 @@ png_read_filter_row_mmx_avg(png_row_infop row_info, png_bytep row,
 #endif
 
 #if 0
-    __asm__ __volatile__ (
+    __asm__ __volatile__(
       "movq _LBCarryMask, %%mm5    \n\t"
       // re-init address pointers and offset
       "movl _dif, %%ebx            \n\t" // ebx:  x = offset to
@@ -3313,7 +3313,7 @@ png_read_filter_row_mmx_avg(png_row_infop row_info, png_bytep row,
 
   } // end switch (bpp)
 
-  __asm__ __volatile__ (
+  __asm__ __volatile__(
     // MMX acceleration complete; now do clean-up
     // check if any remaining bytes left to decode
 #ifdef __PIC__
@@ -3350,13 +3350,13 @@ png_read_filter_row_mmx_avg(png_row_infop row_info, png_bytep row,
     "popl %%ebx                  \n\t" // restore index to Global Offset Table
 #endif
 
-    : "=c" (dummy_value_c),            // output regs (dummy)
-    "=S" (dummy_value_S),
-    "=D" (dummy_value_D)
+    : "=c"(dummy_value_c),             // output regs (dummy)
+    "=S"(dummy_value_S),
+    "=D"(dummy_value_D)
 
-    : "0" (bpp),       // ecx          // input regs
-    "1" (prev_row),  // esi
-    "2" (row)        // edi
+    : "0"(bpp),        // ecx          // input regs
+    "1"(prev_row),   // esi
+    "2"(row)         // edi
 
     : "%eax", "%edx"                   // clobber list
 #ifndef __PIC__
@@ -3390,7 +3390,7 @@ png_read_filter_row_mmx_paeth(png_row_infop row_info, png_bytep row,
   bpp = (row_info->pixel_depth + 7) >> 3; // Get # bytes per pixel
   _FullLength  = row_info->rowbytes; // # of bytes to filter
 
-  __asm__ __volatile__ (
+  __asm__ __volatile__(
 #ifdef __PIC__
     "pushl %%ebx                 \n\t" // save index to Global Offset Table
 #endif
@@ -3505,13 +3505,13 @@ png_read_filter_row_mmx_paeth(png_row_infop row_info, png_bytep row,
     "popl %%ebx                  \n\t" // restore index to Global Offset Table
 #endif
 
-    : "=c" (dummy_value_c),            // output regs (dummy)
-    "=S" (dummy_value_S),
-    "=D" (dummy_value_D)
+    : "=c"(dummy_value_c),             // output regs (dummy)
+    "=S"(dummy_value_S),
+    "=D"(dummy_value_D)
 
-    : "0" (bpp),       // ecx          // input regs
-    "1" (prev_row),  // esi
-    "2" (row)        // edi
+    : "0"(bpp),        // ecx          // input regs
+    "1"(prev_row),   // esi
+    "2"(row)         // edi
 
     : "%eax", "%edx"                   // clobber list
 #ifndef __PIC__
@@ -3527,7 +3527,7 @@ png_read_filter_row_mmx_paeth(png_row_infop row_info, png_bytep row,
     _ShiftBpp.use = 24;    // == bpp(3) * 8
     _ShiftRem.use = 40;    // == 64 - 24
 
-    __asm__ __volatile__ (
+    __asm__ __volatile__(
       "movl _dif, %%ecx            \n\t"
 // preload  "movl row, %%edi             \n\t"
 // preload  "movl prev_row, %%esi        \n\t"
@@ -3726,11 +3726,11 @@ png_read_filter_row_mmx_paeth(png_row_infop row_info, png_bytep row,
       // mm3 ready to be used as Prior(x-bpp) next loop
       "jb paeth_3lp                \n\t"
 
-      : "=S" (dummy_value_S),             // output regs (dummy)
-      "=D" (dummy_value_D)
+      : "=S"(dummy_value_S),              // output regs (dummy)
+      "=D"(dummy_value_D)
 
-      : "0" (prev_row),  // esi           // input regs
-      "1" (row)        // edi
+      : "0"(prev_row),   // esi           // input regs
+      "1"(row)         // edi
 
       : "%ecx"                            // clobber list
 #if 0  /* %mm0, ..., %mm7 not supported by gcc 2.7.2.3 or egcs 1.1 */
@@ -3750,7 +3750,7 @@ png_read_filter_row_mmx_paeth(png_row_infop row_info, png_bytep row,
     _ShiftBpp.use = bpp << 3;    // == bpp * 8
     _ShiftRem.use = 64 - _ShiftBpp.use;
 
-    __asm__ __volatile__ (
+    __asm__ __volatile__(
       "movl _dif, %%ecx            \n\t"
 // preload  "movl row, %%edi             \n\t"
 // preload  "movl prev_row, %%esi        \n\t"
@@ -3888,11 +3888,11 @@ png_read_filter_row_mmx_paeth(png_row_infop row_info, png_bytep row,
       // mm1 will be used as Raw(x-bpp) next loop
       "jb paeth_6lp                \n\t"
 
-      : "=S" (dummy_value_S),             // output regs (dummy)
-      "=D" (dummy_value_D)
+      : "=S"(dummy_value_S),              // output regs (dummy)
+      "=D"(dummy_value_D)
 
-      : "0" (prev_row),  // esi           // input regs
-      "1" (row)        // edi
+      : "0"(prev_row),   // esi           // input regs
+      "1"(row)         // edi
 
       : "%ecx"                            // clobber list
 #if 0  /* %mm0, ..., %mm7 not supported by gcc 2.7.2.3 or egcs 1.1 */
@@ -3906,7 +3906,7 @@ png_read_filter_row_mmx_paeth(png_row_infop row_info, png_bytep row,
   case 4: {
     _ActiveMask.use  = 0x00000000ffffffffLL;
 
-    __asm__ __volatile__ (
+    __asm__ __volatile__(
       "movl _dif, %%ecx            \n\t"
 // preload  "movl row, %%edi             \n\t"
 // preload  "movl prev_row, %%esi        \n\t"
@@ -4032,11 +4032,11 @@ png_read_filter_row_mmx_paeth(png_row_infop row_info, png_bytep row,
       // mm1 will be used as Raw(x-bpp) next loop
       "jb paeth_4lp                \n\t"
 
-      : "=S" (dummy_value_S),             // output regs (dummy)
-      "=D" (dummy_value_D)
+      : "=S"(dummy_value_S),              // output regs (dummy)
+      "=D"(dummy_value_D)
 
-      : "0" (prev_row),  // esi           // input regs
-      "1" (row)        // edi
+      : "0"(prev_row),   // esi           // input regs
+      "1"(row)         // edi
 
       : "%ecx"                            // clobber list
 #if 0  /* %mm0, ..., %mm7 not supported by gcc 2.7.2.3 or egcs 1.1 */
@@ -4050,7 +4050,7 @@ png_read_filter_row_mmx_paeth(png_row_infop row_info, png_bytep row,
   case 8: {                        // bpp == 8
     _ActiveMask.use  = 0x00000000ffffffffLL;
 
-    __asm__ __volatile__ (
+    __asm__ __volatile__(
       "movl _dif, %%ecx            \n\t"
 // preload  "movl row, %%edi             \n\t"
 // preload  "movl prev_row, %%esi        \n\t"
@@ -4177,11 +4177,11 @@ png_read_filter_row_mmx_paeth(png_row_infop row_info, png_bytep row,
       // mm1 will be used as Raw(x-bpp) next loop
       "jb paeth_8lp                \n\t"
 
-      : "=S" (dummy_value_S),             // output regs (dummy)
-      "=D" (dummy_value_D)
+      : "=S"(dummy_value_S),              // output regs (dummy)
+      "=D"(dummy_value_D)
 
-      : "0" (prev_row),  // esi           // input regs
-      "1" (row)        // edi
+      : "0"(prev_row),   // esi           // input regs
+      "1"(row)         // edi
 
       : "%ecx"                            // clobber list
 #if 0  /* %mm0, ..., %mm7 not supported by gcc 2.7.2.3 or egcs 1.1 */
@@ -4195,7 +4195,7 @@ png_read_filter_row_mmx_paeth(png_row_infop row_info, png_bytep row,
   case 1:                // bpp = 1
   case 2:                // bpp = 2
   default: {             // bpp > 8
-    __asm__ __volatile__ (
+    __asm__ __volatile__(
 #ifdef __PIC__
       "pushl %%ebx                 \n\t" // save Global Offset Table index
 #endif
@@ -4287,13 +4287,13 @@ png_read_filter_row_mmx_paeth(png_row_infop row_info, png_bytep row,
       "popl %%ebx                  \n\t" // index to Global Offset Table
 #endif
 
-      : "=c" (dummy_value_c),            // output regs (dummy)
-      "=S" (dummy_value_S),
-      "=D" (dummy_value_D)
+      : "=c"(dummy_value_c),             // output regs (dummy)
+      "=S"(dummy_value_S),
+      "=D"(dummy_value_D)
 
-      : "0" (bpp),       // ecx          // input regs
-      "1" (prev_row),  // esi
-      "2" (row)        // edi
+      : "0"(bpp),        // ecx          // input regs
+      "1"(prev_row),   // esi
+      "2"(row)         // edi
 
       : "%eax", "%edx"                   // clobber list
 #ifndef __PIC__
@@ -4306,7 +4306,7 @@ png_read_filter_row_mmx_paeth(png_row_infop row_info, png_bytep row,
 
   } // end switch (bpp)
 
-  __asm__ __volatile__ (
+  __asm__ __volatile__(
     // MMX acceleration complete; now do clean-up
     // check if any remaining bytes left to decode
 #ifdef __PIC__
@@ -4400,13 +4400,13 @@ png_read_filter_row_mmx_paeth(png_row_infop row_info, png_bytep row,
     "popl %%ebx                  \n\t" // restore index to Global Offset Table
 #endif
 
-    : "=c" (dummy_value_c),            // output regs (dummy)
-    "=S" (dummy_value_S),
-    "=D" (dummy_value_D)
+    : "=c"(dummy_value_c),             // output regs (dummy)
+    "=S"(dummy_value_S),
+    "=D"(dummy_value_D)
 
-    : "0" (bpp),       // ecx          // input regs
-    "1" (prev_row),  // esi
-    "2" (row)        // edi
+    : "0"(bpp),        // ecx          // input regs
+    "1"(prev_row),   // esi
+    "2"(row)         // edi
 
     : "%eax", "%edx"                   // clobber list (no input regs!)
 #ifndef __PIC__
@@ -4439,7 +4439,7 @@ png_read_filter_row_mmx_sub(png_row_infop row_info, png_bytep row)
   bpp = (row_info->pixel_depth + 7) >> 3;   // calc number of bytes per pixel
   _FullLength = row_info->rowbytes - bpp;   // number of bytes to filter
 
-  __asm__ __volatile__ (
+  __asm__ __volatile__(
 //pre "movl row, %%edi             \n\t"
     "movl %%edi, %%esi           \n\t" // lp = row
 //pre "movl bpp, %%eax             \n\t"
@@ -4469,11 +4469,11 @@ png_read_filter_row_mmx_sub(png_row_infop row_info, png_bytep row)
     "subl %%edx, %%eax           \n\t" // drop over bytes from length
     "movl %%eax, _MMXLength      \n\t"
 
-    : "=a" (dummy_value_a),   // 0      // output regs (dummy)
-    "=D" (dummy_value_D)    // 1
+    : "=a"(dummy_value_a),    // 0      // output regs (dummy)
+    "=D"(dummy_value_D)     // 1
 
-    : "0" (bpp),              // eax    // input regs
-    "1" (row)               // edi
+    : "0"(bpp),               // eax    // input regs
+    "1"(row)                // edi
 
     : "%esi", "%ecx", "%edx"            // clobber list
 
@@ -4490,7 +4490,7 @@ png_read_filter_row_mmx_sub(png_row_infop row_info, png_bytep row)
     _ShiftBpp.use = 24;       // == 3 * 8
     _ShiftRem.use  = 40;      // == 64 - 24
 
-    __asm__ __volatile__ (
+    __asm__ __volatile__(
 // preload  "movl row, %%edi              \n\t"
       "movq _ActiveMask, %%mm7       \n\t" // load _ActiveMask for 2nd
       //  active byte group
@@ -4529,11 +4529,11 @@ png_read_filter_row_mmx_sub(png_row_infop row_info, png_bytep row)
       "movq %%mm0, %%mm1            \n\t" // prep 1st add at top of loop
       "jb sub_3lp                   \n\t"
 
-      : "=a" (dummy_value_a),   // 0      // output regs (dummy)
-      "=D" (dummy_value_D)    // 1
+      : "=a"(dummy_value_a),    // 0      // output regs (dummy)
+      "=D"(dummy_value_D)     // 1
 
-      : "0" (bpp),              // eax    // input regs
-      "1" (row)               // edi
+      : "0"(bpp),               // eax    // input regs
+      "1"(row)                // edi
 
       : "%edx", "%esi"                    // clobber list
 #if 0  /* MMX regs (%mm0, etc.) not supported by gcc 2.7.2.3 or egcs 1.1 */
@@ -4544,7 +4544,7 @@ png_read_filter_row_mmx_sub(png_row_infop row_info, png_bytep row)
   break;
 
   case 1: {
-    __asm__ __volatile__ (
+    __asm__ __volatile__(
       "movl _dif, %%edx            \n\t"
 // preload  "movl row, %%edi             \n\t"
       "cmpl _FullLength, %%edx     \n\t"
@@ -4563,11 +4563,11 @@ png_read_filter_row_mmx_sub(png_row_infop row_info, png_bytep row)
 
       "sub_1end:                      \n\t"
 
-      : "=a" (dummy_value_a),   // 0      // output regs (dummy)
-      "=D" (dummy_value_D)    // 1
+      : "=a"(dummy_value_a),    // 0      // output regs (dummy)
+      "=D"(dummy_value_D)     // 1
 
-      : "0" (bpp),              // eax    // input regs
-      "1" (row)               // edi
+      : "0"(bpp),               // eax    // input regs
+      "1"(row)                // edi
 
       : "%edx", "%esi"                    // clobber list
     );
@@ -4583,7 +4583,7 @@ png_read_filter_row_mmx_sub(png_row_infop row_info, png_bytep row)
     _ShiftBpp.use = bpp << 3;
     _ShiftRem.use = 64 - _ShiftBpp.use;
 
-    __asm__ __volatile__ (
+    __asm__ __volatile__(
 // preload  "movl row, %%edi              \n\t"
       "movl _dif, %%edx             \n\t"
       "movl %%edi, %%esi            \n\t" // lp = row
@@ -4610,11 +4610,11 @@ png_read_filter_row_mmx_sub(png_row_infop row_info, png_bytep row)
       "movq %%mm0, %%mm1            \n\t" // prep 1st add at top of loop
       "jb sub_4lp                   \n\t"
 
-      : "=a" (dummy_value_a),   // 0      // output regs (dummy)
-      "=D" (dummy_value_D)    // 1
+      : "=a"(dummy_value_a),    // 0      // output regs (dummy)
+      "=D"(dummy_value_D)     // 1
 
-      : "0" (bpp),              // eax    // input regs
-      "1" (row)               // edi
+      : "0"(bpp),               // eax    // input regs
+      "1"(row)                // edi
 
       : "%edx", "%esi"                    // clobber list
 #if 0  /* MMX regs (%mm0, etc.) not supported by gcc 2.7.2.3 or egcs 1.1 */
@@ -4629,7 +4629,7 @@ png_read_filter_row_mmx_sub(png_row_infop row_info, png_bytep row)
     _ShiftBpp.use = 16;       // == 2 * 8
     _ShiftRem.use = 48;       // == 64 - 16
 
-    __asm__ __volatile__ (
+    __asm__ __volatile__(
       "movq _ActiveMask, %%mm7      \n\t" // load _ActiveMask for 2nd
       //  active byte group
       "movl _dif, %%edx             \n\t"
@@ -4676,11 +4676,11 @@ png_read_filter_row_mmx_sub(png_row_infop row_info, png_bytep row)
       "movq %%mm0, %%mm1            \n\t" // prep 1st add at top of loop
       "jb sub_2lp                   \n\t"
 
-      : "=a" (dummy_value_a),   // 0      // output regs (dummy)
-      "=D" (dummy_value_D)    // 1
+      : "=a"(dummy_value_a),    // 0      // output regs (dummy)
+      "=D"(dummy_value_D)     // 1
 
-      : "0" (bpp),              // eax    // input regs
-      "1" (row)               // edi
+      : "0"(bpp),               // eax    // input regs
+      "1"(row)                // edi
 
       : "%edx", "%esi"                    // clobber list
 #if 0  /* MMX regs (%mm0, etc.) not supported by gcc 2.7.2.3 or egcs 1.1 */
@@ -4691,7 +4691,7 @@ png_read_filter_row_mmx_sub(png_row_infop row_info, png_bytep row)
   break;
 
   case 8: {
-    __asm__ __volatile__ (
+    __asm__ __volatile__(
 // preload  "movl row, %%edi              \n\t"
       "movl _dif, %%edx             \n\t"
       "movl %%edi, %%esi            \n\t" // lp = row
@@ -4754,11 +4754,11 @@ png_read_filter_row_mmx_sub(png_row_infop row_info, png_bytep row)
 
       "sub_8lt8:                       \n\t"
 
-      : "=a" (dummy_value_a),   // 0      // output regs (dummy)
-      "=D" (dummy_value_D)    // 1
+      : "=a"(dummy_value_a),    // 0      // output regs (dummy)
+      "=D"(dummy_value_D)     // 1
 
-      : "0" (bpp),              // eax    // input regs
-      "1" (row)               // edi
+      : "0"(bpp),               // eax    // input regs
+      "1"(row)                // edi
 
       : "%ecx", "%edx", "%esi"            // clobber list
 #if 0  /* MMX regs (%mm0, etc.) not supported by gcc 2.7.2.3 or egcs 1.1 */
@@ -4769,7 +4769,7 @@ png_read_filter_row_mmx_sub(png_row_infop row_info, png_bytep row)
   break;
 
   default: {              // bpp greater than 8 bytes   GRR BOGUS
-    __asm__ __volatile__ (
+    __asm__ __volatile__(
       "movl _dif, %%edx             \n\t"
 // preload  "movl row, %%edi              \n\t"
       "movl %%edi, %%esi            \n\t" // lp = row
@@ -4786,11 +4786,11 @@ png_read_filter_row_mmx_sub(png_row_infop row_info, png_bytep row)
       //  -8 to offset addl edx
       "jb sub_Alp                   \n\t"
 
-      : "=a" (dummy_value_a),   // 0      // output regs (dummy)
-      "=D" (dummy_value_D)    // 1
+      : "=a"(dummy_value_a),    // 0      // output regs (dummy)
+      "=D"(dummy_value_D)     // 1
 
-      : "0" (bpp),              // eax    // input regs
-      "1" (row)               // edi
+      : "0"(bpp),               // eax    // input regs
+      "1"(row)                // edi
 
       : "%edx", "%esi"                    // clobber list
 #if 0  /* MMX regs (%mm0, etc.) not supported by gcc 2.7.2.3 or egcs 1.1 */
@@ -4802,7 +4802,7 @@ png_read_filter_row_mmx_sub(png_row_infop row_info, png_bytep row)
 
   } // end switch (bpp)
 
-  __asm__ __volatile__ (
+  __asm__ __volatile__(
     "movl _MMXLength, %%edx       \n\t"
 //pre "movl row, %%edi              \n\t"
     "cmpl _FullLength, %%edx      \n\t"
@@ -4823,11 +4823,11 @@ png_read_filter_row_mmx_sub(png_row_infop row_info, png_bytep row)
     "sub_end:                        \n\t"
     "EMMS                         \n\t" // end MMX instructions
 
-    : "=a" (dummy_value_a),   // 0      // output regs (dummy)
-    "=D" (dummy_value_D)    // 1
+    : "=a"(dummy_value_a),    // 0      // output regs (dummy)
+    "=D"(dummy_value_D)     // 1
 
-    : "0" (bpp),              // eax    // input regs
-    "1" (row)               // edi
+    : "0"(bpp),               // eax    // input regs
+    "1"(row)                // edi
 
     : "%edx", "%esi"                    // clobber list
   );
@@ -4857,7 +4857,7 @@ png_read_filter_row_mmx_up(png_row_infop row_info, png_bytep row,
 
   len = row_info->rowbytes;              // number of bytes to filter
 
-  __asm__ __volatile__ (
+  __asm__ __volatile__(
 //pre "movl row, %%edi              \n\t"
     // get # of bytes to alignment
 #ifdef __PIC__
@@ -4966,13 +4966,13 @@ png_read_filter_row_mmx_up(png_row_infop row_info, png_bytep row,
     "popl %%ebx                   \n\t"
 #endif
 
-    : "=d" (dummy_value_d),   // 0      // output regs (dummy)
-    "=S" (dummy_value_S),   // 1
-    "=D" (dummy_value_D)    // 2
+    : "=d"(dummy_value_d),    // 0      // output regs (dummy)
+    "=S"(dummy_value_S),    // 1
+    "=D"(dummy_value_D)     // 2
 
-    : "0" (len),              // edx    // input regs
-    "1" (prev_row),         // esi
-    "2" (row)               // edi
+    : "0"(len),               // edx    // input regs
+    "1"(prev_row),          // esi
+    "2"(row)                // edi
 
     : "%eax", "%ecx"            // clobber list (no input regs!)
 #ifndef __PIC__
@@ -5277,7 +5277,7 @@ int PNGAPI
 png_mmx_support(void)
 {
 #if defined(PNG_MMX_CODE_SUPPORTED)
-  __asm__ __volatile__ (
+  __asm__ __volatile__(
     "pushl %%ebx          \n\t"  // ebx gets clobbered by CPUID instruction
     "pushl %%ecx          \n\t"  // so does ecx...
     "pushl %%edx          \n\t"  // ...and edx (but ecx & edx safe on Linux)

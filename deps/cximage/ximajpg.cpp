@@ -30,12 +30,12 @@ typedef jpg_error_mgr *jpg_error_ptr;
 // Here's the routine that will replace the standard error_exit method:
 ////////////////////////////////////////////////////////////////////////////////
 static void __attribute__((__noreturn__))
-ima_jpeg_error_exit (j_common_ptr cinfo)
+ima_jpeg_error_exit(j_common_ptr cinfo)
 {
   /* cinfo->err really points to a my_error_mgr struct, so coerce pointer */
   jpg_error_ptr myerr = reinterpret_cast<jpg_error_ptr>(cinfo->err);
   /* Create the message */
-  myerr->pub.format_message (cinfo, myerr->buffer);
+  myerr->pub.format_message(cinfo, myerr->buffer);
   /* Send it to stderr, adding a newline */
   /* Return control to the setjmp point */
   longjmp(myerr->setjmp_buffer, 1);

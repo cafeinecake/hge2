@@ -29,7 +29,7 @@ int32_t CxImage::GetNumLayers() const
  */
 bool CxImage::LayerCreate(int32_t position)
 {
-  if ( position < 0 || position > info.nNumLayers ) {
+  if (position < 0 || position > info.nNumLayers) {
     position = info.nNumLayers;
   }
 
@@ -72,15 +72,15 @@ bool CxImage::LayerCreate(int32_t position)
  */
 bool CxImage::LayerDelete(int32_t position)
 {
-  if ( position >= info.nNumLayers ) {
+  if (position >= info.nNumLayers) {
     return false;
   }
 
-  if ( position < 0) {
+  if (position < 0) {
     position = info.nNumLayers - 1;
   }
 
-  if ( position < 0) {
+  if (position < 0) {
     return false;
   }
 
@@ -135,19 +135,19 @@ void CxImage::LayerDeleteAll()
  */
 CxImage *CxImage::GetLayer(int32_t position)
 {
-  if ( ppLayers == NULL) {
+  if (ppLayers == NULL) {
     return NULL;
   }
 
-  if ( info.nNumLayers == 0) {
+  if (info.nNumLayers == 0) {
     return NULL;
   }
 
-  if ( position >= info.nNumLayers ) {
+  if (position >= info.nNumLayers) {
     return NULL;
   }
 
-  if ( position < 0) {
+  if (position < 0) {
     position = info.nNumLayers - 1;
   }
 

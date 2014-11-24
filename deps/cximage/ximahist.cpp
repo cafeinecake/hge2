@@ -472,11 +472,11 @@ bool CxImage::HistogramStretch(int32_t method, double threshold)
 
         for (x = 0; x < head.biWidth; x++) {
 
-          RGBQUAD color = BlindGetPixelColor( x, y );
+          RGBQUAD color = BlindGetPixelColor(x, y);
           RGBQUAD yuvClr = RGBtoYUV(color);
           yuvClr.rgbRed = lut[yuvClr.rgbRed];
           color = YUVtoRGB(yuvClr);
-          BlindSetPixelColor( x, y, color );
+          BlindSetPixelColor(x, y, color);
         }
       }
     }
@@ -501,9 +501,9 @@ bool CxImage::HistogramEqualize()
   RGBQUAD yuvClr;
   uint32_t YVal, high, low;
 
-  memset( &histogram, 0, sizeof(int32_t) * 256 );
-  memset( &map, 0, sizeof(int32_t) * 256 );
-  memset( &equalize_map, 0, sizeof(int32_t) * 256 );
+  memset(&histogram, 0, sizeof(int32_t) * 256);
+  memset(&map, 0, sizeof(int32_t) * 256);
+  memset(&equalize_map, 0, sizeof(int32_t) * 256);
 
   // form histogram
   for (y = 0; y < head.biHeight; y++) {
@@ -514,7 +514,7 @@ bool CxImage::HistogramEqualize()
     }
 
     for (x = 0; x < head.biWidth; x++) {
-      color = BlindGetPixelColor( x, y );
+      color = BlindGetPixelColor(x, y);
       YVal = (uint32_t)RGB2GRAY(color.rgbRed, color.rgbGreen, color.rgbBlue);
       histogram[YVal]++;
     }
@@ -536,32 +536,32 @@ bool CxImage::HistogramEqualize()
     return false;
   }
 
-  for ( i = 0; i <= 255; i++ ) {
-    equalize_map[i] = static_cast<uint32_t>((((double)( map[i] - low ) ) * 255) / ( high - low ) );
+  for (i = 0; i <= 255; i++) {
+    equalize_map[i] = static_cast<uint32_t>((((double)(map[i] - low)) * 255) / (high - low));
   }
 
   // stretch the histogram
   if (head.biClrUsed == 0) { // No Palette
-    for ( y = 0; y < head.biHeight; y++ ) {
+    for (y = 0; y < head.biHeight; y++) {
       info.nProgress = static_cast<int32_t>(50 + 50 * y / head.biHeight);
 
       if (info.nEscape) {
         break;
       }
 
-      for ( x = 0; x < head.biWidth; x++ ) {
+      for (x = 0; x < head.biWidth; x++) {
 
-        color = BlindGetPixelColor( x, y );
+        color = BlindGetPixelColor(x, y);
         yuvClr = RGBtoYUV(color);
 
         yuvClr.rgbRed = (uint8_t)equalize_map[yuvClr.rgbRed];
 
         color = YUVtoRGB(yuvClr);
-        BlindSetPixelColor( x, y, color );
+        BlindSetPixelColor(x, y, color);
       }
     }
   } else { // Palette
-    for ( i = 0; i < (int32_t)head.biClrUsed; i++ ) {
+    for (i = 0; i < (int32_t)head.biClrUsed; i++) {
 
       color = GetPaletteColor((uint8_t)i);
       yuvClr = RGBtoYUV(color);
@@ -569,7 +569,7 @@ bool CxImage::HistogramEqualize()
       yuvClr.rgbRed = (uint8_t)equalize_map[yuvClr.rgbRed];
 
       color = YUVtoRGB(yuvClr);
-      SetPaletteColor( (uint8_t)i, color );
+      SetPaletteColor((uint8_t)i, color);
     }
   }
 
@@ -592,8 +592,8 @@ bool CxImage::HistogramNormalize()
   RGBQUAD color;
   RGBQUAD yuvClr;
 
-  memset( &histogram, 0, sizeof( int32_t ) * 256 );
-  memset( &normalize_map, 0, sizeof( uint32_t ) * 256 );
+  memset(&histogram, 0, sizeof(int32_t) * 256);
+  memset(&normalize_map, 0, sizeof(uint32_t) * 256);
 
   // form histogram
   for (y = 0; y < head.biHeight; y++) {
@@ -604,106 +604,106 @@ bool CxImage::HistogramNormalize()
     }
 
     for (x = 0; x < head.biWidth; x++) {
-      color = BlindGetPixelColor( x, y );
+      color = BlindGetPixelColor(x, y);
       YVal = (uint32_t)RGB2GRAY(color.rgbRed, color.rgbGreen, color.rgbBlue);
       histogram[YVal]++;
     }
   }
 
   // find histogram boundaries by locating the 1 percent levels
-  threshold_intensity = ( head.biWidth * head.biHeight) / 100;
+  threshold_intensity = (head.biWidth * head.biHeight) / 100;
 
   intense = 0;
 
-  for ( low = 0; low < 255; low++ ) {
+  for (low = 0; low < 255; low++) {
     intense += histogram[low];
 
-    if ( intense > threshold_intensity ) {
+    if (intense > threshold_intensity) {
       break;
     }
   }
 
   intense = 0;
 
-  for ( high = 255; high != 0; high--) {
+  for (high = 255; high != 0; high--) {
     intense += histogram[ high ];
 
-    if ( intense > threshold_intensity ) {
+    if (intense > threshold_intensity) {
       break;
     }
   }
 
-  if ( low == high ) {
+  if (low == high) {
     // Unreasonable contrast;  use zero threshold to determine boundaries.
     threshold_intensity = 0;
     intense = 0;
 
-    for ( low = 0; low < 255; low++) {
+    for (low = 0; low < 255; low++) {
       intense += histogram[low];
 
-      if ( intense > threshold_intensity ) {
+      if (intense > threshold_intensity) {
         break;
       }
     }
 
     intense = 0;
 
-    for ( high = 255; high != 0; high-- ) {
+    for (high = 255; high != 0; high--) {
       intense += histogram [high ];
 
-      if ( intense > threshold_intensity ) {
+      if (intense > threshold_intensity) {
         break;
       }
     }
   }
 
-  if ( low == high ) {
+  if (low == high) {
     return false;  // zero span bound
   }
 
   // Stretch the histogram to create the normalized image mapping.
   for (i = 0; i <= 255; i++) {
-    if ( i < (int32_t) low ) {
+    if (i < (int32_t) low) {
       normalize_map[i] = 0;
     } else {
       if (i > (int32_t) high) {
         normalize_map[i] = 255;
       } else {
-        normalize_map[i] = ( 255 - 1) * ( i - low) / ( high - low );
+        normalize_map[i] = (255 - 1) * (i - low) / (high - low);
       }
     }
   }
 
   // Normalize
-  if ( head.biClrUsed == 0 ) {
-    for ( y = 0; y < head.biHeight; y++ ) {
+  if (head.biClrUsed == 0) {
+    for (y = 0; y < head.biHeight; y++) {
       info.nProgress = static_cast<int32_t>(50 + 50 * y / head.biHeight);
 
       if (info.nEscape) {
         break;
       }
 
-      for ( x = 0; x < head.biWidth; x++ ) {
+      for (x = 0; x < head.biWidth; x++) {
 
-        color = BlindGetPixelColor( x, y );
-        yuvClr = RGBtoYUV( color );
+        color = BlindGetPixelColor(x, y);
+        yuvClr = RGBtoYUV(color);
 
         yuvClr.rgbRed = (uint8_t)normalize_map[yuvClr.rgbRed];
 
-        color = YUVtoRGB( yuvClr );
-        BlindSetPixelColor( x, y, color );
+        color = YUVtoRGB(yuvClr);
+        BlindSetPixelColor(x, y, color);
       }
     }
   } else {
     for (i = 0; i < (int32_t)head.biClrUsed; i++) {
 
-      color = GetPaletteColor( (uint8_t)i );
-      yuvClr = RGBtoYUV( color );
+      color = GetPaletteColor((uint8_t)i);
+      yuvClr = RGBtoYUV(color);
 
       yuvClr.rgbRed = (uint8_t)normalize_map[yuvClr.rgbRed];
 
-      color = YUVtoRGB( yuvClr );
-      SetPaletteColor( (uint8_t)i, color );
+      color = YUVtoRGB(yuvClr);
+      SetPaletteColor((uint8_t)i, color);
     }
   }
 
@@ -725,7 +725,7 @@ bool CxImage::HistogramLog()
   uint32_t YVal, high = 1;
 
   // Find Highest Luminance Value in the Image
-  if ( head.biClrUsed == 0 ) { // No Palette
+  if (head.biClrUsed == 0) {   // No Palette
     for (y = 0; y < head.biHeight; y++) {
       info.nProgress = static_cast<int32_t>(50 * y / head.biHeight);
 
@@ -734,10 +734,10 @@ bool CxImage::HistogramLog()
       }
 
       for (x = 0; x < head.biWidth; x++) {
-        color = BlindGetPixelColor( x, y );
+        color = BlindGetPixelColor(x, y);
         YVal = (uint32_t)RGB2GRAY(color.rgbRed, color.rgbGreen, color.rgbBlue);
 
-        if (YVal > high ) {
+        if (YVal > high) {
           high = YVal;
         }
       }
@@ -747,44 +747,44 @@ bool CxImage::HistogramLog()
       color = GetPaletteColor((uint8_t)i);
       YVal = (uint32_t)RGB2GRAY(color.rgbRed, color.rgbGreen, color.rgbBlue);
 
-      if (YVal > high ) {
+      if (YVal > high) {
         high = YVal;
       }
     }
   }
 
   // Logarithm Operator
-  double k = 255.0 / ::log( 1.0 + (double)high );
+  double k = 255.0 / ::log(1.0 + (double)high);
 
-  if ( head.biClrUsed == 0 ) {
-    for ( y = 0; y < head.biHeight; y++ ) {
+  if (head.biClrUsed == 0) {
+    for (y = 0; y < head.biHeight; y++) {
       info.nProgress = static_cast<int32_t>(50 + 50 * y / head.biHeight);
 
       if (info.nEscape) {
         break;
       }
 
-      for ( x = 0; x < head.biWidth; x++ ) {
+      for (x = 0; x < head.biWidth; x++) {
 
-        color = BlindGetPixelColor( x, y );
-        yuvClr = RGBtoYUV( color );
+        color = BlindGetPixelColor(x, y);
+        yuvClr = RGBtoYUV(color);
 
-        yuvClr.rgbRed = static_cast<uint8_t>(k * ::log( 1.0 + (double)yuvClr.rgbRed ) );
+        yuvClr.rgbRed = static_cast<uint8_t>(k * ::log(1.0 + (double)yuvClr.rgbRed));
 
-        color = YUVtoRGB( yuvClr );
-        BlindSetPixelColor( x, y, color );
+        color = YUVtoRGB(yuvClr);
+        BlindSetPixelColor(x, y, color);
       }
     }
   } else {
     for (i = 0; i < (int32_t)head.biClrUsed; i++) {
 
-      color = GetPaletteColor( (uint8_t)i );
-      yuvClr = RGBtoYUV( color );
+      color = GetPaletteColor((uint8_t)i);
+      yuvClr = RGBtoYUV(color);
 
-      yuvClr.rgbRed = static_cast<uint8_t>(k * ::log( 1.0 + (double)yuvClr.rgbRed ) );
+      yuvClr.rgbRed = static_cast<uint8_t>(k * ::log(1.0 + (double)yuvClr.rgbRed));
 
-      color = YUVtoRGB( yuvClr );
-      SetPaletteColor( (uint8_t)i, color );
+      color = YUVtoRGB(yuvClr);
+      SetPaletteColor((uint8_t)i, color);
     }
   }
 
@@ -808,7 +808,7 @@ bool CxImage::HistogramRoot()
   uint32_t YVal, high = 1;
 
   // Find Highest Luminance Value in the Image
-  if ( head.biClrUsed == 0 ) { // No Palette
+  if (head.biClrUsed == 0) {   // No Palette
     for (y = 0; y < head.biHeight; y++) {
       info.nProgress = static_cast<int32_t>(50 * y / head.biHeight);
 
@@ -817,10 +817,10 @@ bool CxImage::HistogramRoot()
       }
 
       for (x = 0; x < head.biWidth; x++) {
-        color = BlindGetPixelColor( x, y );
+        color = BlindGetPixelColor(x, y);
         YVal = (uint32_t)RGB2GRAY(color.rgbRed, color.rgbGreen, color.rgbBlue);
 
-        if (YVal > high ) {
+        if (YVal > high) {
           high = YVal;
         }
       }
@@ -830,64 +830,64 @@ bool CxImage::HistogramRoot()
       color = GetPaletteColor((uint8_t)i);
       YVal = (uint32_t)RGB2GRAY(color.rgbRed, color.rgbGreen, color.rgbBlue);
 
-      if (YVal > high ) {
+      if (YVal > high) {
         high = YVal;
       }
     }
   }
 
   // Root Operator
-  double k = 256.0 / ::sqrt( 1.0 + (double)high );
+  double k = 256.0 / ::sqrt(1.0 + (double)high);
 
-  if ( head.biClrUsed == 0 ) {
-    for ( y = 0; y < head.biHeight; y++ ) {
+  if (head.biClrUsed == 0) {
+    for (y = 0; y < head.biHeight; y++) {
       info.nProgress = static_cast<int32_t>(50 + 50 * y / head.biHeight);
 
       if (info.nEscape) {
         break;
       }
 
-      for ( x = 0; x < head.biWidth; x++ ) {
+      for (x = 0; x < head.biWidth; x++) {
 
-        color = BlindGetPixelColor( x, y );
-        yuvClr = RGBtoYUV( color );
+        color = BlindGetPixelColor(x, y);
+        yuvClr = RGBtoYUV(color);
 
-        dtmp = k * ::sqrt( (double)yuvClr.rgbRed );
+        dtmp = k * ::sqrt((double)yuvClr.rgbRed);
 
-        if ( dtmp > 255.0 ) {
+        if (dtmp > 255.0) {
           dtmp = 255.0;
         }
 
-        if ( dtmp < 0 ) {
+        if (dtmp < 0) {
           dtmp = 0;
         }
 
         yuvClr.rgbRed = (uint8_t)dtmp;
 
-        color = YUVtoRGB( yuvClr );
-        BlindSetPixelColor( x, y, color );
+        color = YUVtoRGB(yuvClr);
+        BlindSetPixelColor(x, y, color);
       }
     }
   } else {
     for (i = 0; i < (int32_t)head.biClrUsed; i++) {
 
-      color = GetPaletteColor( (uint8_t)i );
-      yuvClr = RGBtoYUV( color );
+      color = GetPaletteColor((uint8_t)i);
+      yuvClr = RGBtoYUV(color);
 
-      dtmp = k * ::sqrt( (double)yuvClr.rgbRed );
+      dtmp = k * ::sqrt((double)yuvClr.rgbRed);
 
-      if ( dtmp > 255.0 ) {
+      if (dtmp > 255.0) {
         dtmp = 255.0;
       }
 
-      if ( dtmp < 0 ) {
+      if (dtmp < 0) {
         dtmp = 0;
       }
 
       yuvClr.rgbRed = (uint8_t)dtmp;
 
-      color = YUVtoRGB( yuvClr );
-      SetPaletteColor( (uint8_t)i, color );
+      color = YUVtoRGB(yuvClr);
+      SetPaletteColor((uint8_t)i, color);
     }
   }
 

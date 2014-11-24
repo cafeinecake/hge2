@@ -168,7 +168,7 @@ bool CxImageJAS::Decode(CxFile *hFile, uint32_t imagetype)
         image->cmpts_[0]->height_ == image->cmpts_[1]->height_ &&
         image->cmpts_[1]->height_ == image->cmpts_[2]->height_ &&
         image->cmpts_[0]->prec_  == image->cmpts_[1]->prec_ &&
-        image->cmpts_[1]->prec_ == image->cmpts_[2]->prec_ )
+        image->cmpts_[1]->prec_ == image->cmpts_[2]->prec_)
     {
 
       if (!Create(w, h, 24, fmt)) {

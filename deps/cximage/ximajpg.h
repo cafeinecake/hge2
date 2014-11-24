@@ -117,8 +117,8 @@ public:
     void DiscardAllButExif();
   protected:
     bool process_EXIF(uint8_t *CharBuf, uint32_t length);
-    void process_COM (const uint8_t *Data, int32_t length);
-    void process_SOFn (const uint8_t *Data, int32_t marker);
+    void process_COM(const uint8_t *Data, int32_t length);
+    void process_SOFn(const uint8_t *Data, int32_t marker);
     int32_t Get16u(void *Short);
     int32_t Get16m(void *Short);
     int32_t Get32s(void *Long);

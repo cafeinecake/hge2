@@ -1258,7 +1258,7 @@ png_push_read_zTXt(png_structp png_ptr, png_infop info_ptr)
 
     text++;
 
-    png_ptr->zstream.next_in = (png_bytep )text;
+    png_ptr->zstream.next_in = (png_bytep)text;
     png_ptr->zstream.avail_in = (uInt)(png_ptr->current_text_size -
                                        (text - key));
     png_ptr->zstream.next_out = png_ptr->zbuf;
@@ -1532,7 +1532,7 @@ png_push_handle_unknown(png_structp png_ptr, png_infop info_ptr, png_uint_32
 
     if (png_ptr->read_user_chunk_fn != NULL) {
       /* callback to user unknown chunk handler */
-      if ((*(png_ptr->read_user_chunk_fn)) (png_ptr, &chunk) <= 0) {
+      if ((*(png_ptr->read_user_chunk_fn))(png_ptr, &chunk) <= 0) {
         if (!(png_ptr->chunk_name[0] & 0x20))
           if (png_handle_as_unknown(png_ptr, png_ptr->chunk_name) !=
               PNG_HANDLE_CHUNK_ALWAYS) {
@@ -1578,8 +1578,8 @@ png_push_have_row(png_structp png_ptr, png_bytep row)
 }
 
 void PNGAPI
-png_progressive_combine_row (png_structp png_ptr,
-                             png_bytep old_row, png_bytep new_row)
+png_progressive_combine_row(png_structp png_ptr,
+                            png_bytep old_row, png_bytep new_row)
 {
 #ifdef PNG_USE_LOCAL_ARRAYS
   const int FARDATA png_pass_dsp_mask[7] =

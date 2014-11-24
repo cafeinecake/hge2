@@ -253,7 +253,7 @@ bool CxImagePNG::Decode(CxFile *hFile)
 
     if (number_passes > 1)
     {
-      SetCodecOption( (ENCODE_INTERLACE) | GetCodecOption(CXIMAGE_FORMAT_PNG));
+      SetCodecOption((ENCODE_INTERLACE) | GetCodecOption(CXIMAGE_FORMAT_PNG));
     } else {
       SetCodecOption(static_cast<uint32_t>(~(ENCODE_INTERLACE))
       & GetCodecOption(CXIMAGE_FORMAT_PNG));
@@ -420,7 +420,7 @@ bool CxImagePNG::Encode(CxFile *hFile)
 
     if (info_ptr == NULL)
     {
-      png_destroy_write_struct(&png_ptr,  (png_infopp)NULL);
+      png_destroy_write_struct(&png_ptr, (png_infopp)NULL);
       cx_throw("Failed to initialize PNG info structure");
     }
 
@@ -434,7 +434,7 @@ bool CxImagePNG::Encode(CxFile *hFile)
         free(info_ptr->palette);
       }
 
-      png_destroy_write_struct(&png_ptr,  (png_infopp)&info_ptr);
+      png_destroy_write_struct(&png_ptr, (png_infopp)&info_ptr);
       cx_throw("Error saving PNG file");
     }
 
@@ -663,7 +663,7 @@ bool CxImagePNG::Encode(CxFile *hFile)
     /* if you malloced the palette, free it here */
     if (info_ptr->palette)
     {
-      delete [] (info_ptr->palette);
+      delete [](info_ptr->palette);
       info_ptr->palette = NULL;
     }
 

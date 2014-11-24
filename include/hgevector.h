@@ -31,15 +31,15 @@ public:
     y = 0;
   }
 
-  hgeVector operator-  ()         const
+  hgeVector operator- ()         const
   {
     return hgeVector(-x, -y);
   }
-  hgeVector operator-  (const hgeVector &v) const
+  hgeVector operator- (const hgeVector &v) const
   {
     return hgeVector(x - v.x, y - v.y);
   }
-  hgeVector operator+  (const hgeVector &v) const
+  hgeVector operator+ (const hgeVector &v) const
   {
     return hgeVector(x + v.x, y + v.y);
   }
@@ -58,11 +58,11 @@ public:
   bool operator== (const hgeVector &v) const;
   bool operator!= (const hgeVector &v) const;
 
-  hgeVector operator/  (const float scalar) const
+  hgeVector operator/ (const float scalar) const
   {
     return hgeVector(x / scalar, y / scalar);
   }
-  hgeVector operator*  (const float scalar) const
+  hgeVector operator* (const float scalar) const
   {
     return hgeVector(x * scalar, y * scalar);
   }

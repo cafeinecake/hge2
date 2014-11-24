@@ -176,14 +176,14 @@ protected:
   int32_t ibfmax;
   uint8_t *m_buf;
 // Implementation
-  int32_t GifNextPixel ();
-  void Putword (int32_t w, CxFile *fp );
-  void compressNONE (int32_t init_bits, CxFile *outfile);
-  void compressLZW (int32_t init_bits, CxFile *outfile);
-  void output (code_int code );
-  void cl_hash (int32_t hsize);
-  void char_out (int32_t c);
-  void flush_char ();
+  int32_t GifNextPixel();
+  void Putword(int32_t w, CxFile *fp);
+  void compressNONE(int32_t init_bits, CxFile *outfile);
+  void compressLZW(int32_t init_bits, CxFile *outfile);
+  void output(code_int code);
+  void cl_hash(int32_t hsize);
+  void char_out(int32_t c);
+  void flush_char();
   int16_t init_exp(int16_t size);
   int16_t get_next_code(CxFile *);
   int16_t decoder(CxFile *, CImageIterator *iter, int16_t linewidth, int32_t &bad_code_count);
@@ -236,7 +236,7 @@ protected:
   int32_t m_loops;
 
 //RLE compression routines
-  void compressRLE( int32_t init_bits, CxFile *outfile);
+  void compressRLE(int32_t init_bits, CxFile *outfile);
   void rle_clear(struct_RLE *rle);
   void rle_flush(struct_RLE *rle);
   void rle_flush_withtable(int32_t count, struct_RLE *rle);

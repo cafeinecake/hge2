@@ -42,15 +42,15 @@ public:
     r = g = b = a = 0;
   }
 
-  hgeColorRGB   operator-  (const hgeColorRGB &c) const
+  hgeColorRGB   operator- (const hgeColorRGB &c) const
   {
     return hgeColorRGB(r - c.r, g - c.g, b - c.b, a - c.a);
   }
-  hgeColorRGB   operator+  (const hgeColorRGB &c) const
+  hgeColorRGB   operator+ (const hgeColorRGB &c) const
   {
     return hgeColorRGB(r + c.r, g + c.g, b + c.b, a + c.a);
   }
-  hgeColorRGB   operator*  (const hgeColorRGB &c) const
+  hgeColorRGB   operator* (const hgeColorRGB &c) const
   {
     return hgeColorRGB(r * c.r, g * c.g, b * c.b, a * c.a);
   }
@@ -73,11 +73,11 @@ public:
   bool operator== (const hgeColorRGB &c) const;
   bool operator!= (const hgeColorRGB &c) const;
 
-  hgeColorRGB operator/  (const float scalar) const
+  hgeColorRGB operator/ (const float scalar) const
   {
     return hgeColorRGB(r / scalar, g / scalar, b / scalar, a / scalar);
   }
-  hgeColorRGB   operator*  (const float scalar) const
+  hgeColorRGB   operator* (const float scalar) const
   {
     return hgeColorRGB(r * scalar, g * scalar, b * scalar, a * scalar);
   }
@@ -138,15 +138,15 @@ public:
     h = s = v = a = 0;
   }
 
-  hgeColorHSV   operator-  (const hgeColorHSV &c) const
+  hgeColorHSV   operator- (const hgeColorHSV &c) const
   {
     return hgeColorHSV(h - c.h, s - c.s, v - c.v, a - c.a);
   }
-  hgeColorHSV   operator+  (const hgeColorHSV &c) const
+  hgeColorHSV   operator+ (const hgeColorHSV &c) const
   {
     return hgeColorHSV(h + c.h, s + c.s, v + c.v, a + c.a);
   }
-  hgeColorHSV   operator*  (const hgeColorHSV &c) const
+  hgeColorHSV   operator* (const hgeColorHSV &c) const
   {
     return hgeColorHSV(h * c.h, s * c.s, v * c.v, a * c.a);
   }
@@ -169,11 +169,11 @@ public:
   bool operator== (const hgeColorHSV &c) const;
   bool operator!= (const hgeColorHSV &c) const;
 
-  hgeColorHSV   operator/  (const float scalar) const
+  hgeColorHSV   operator/ (const float scalar) const
   {
     return hgeColorHSV(h / scalar, s / scalar, v / scalar, a / scalar);
   }
-  hgeColorHSV   operator*  (const float scalar) const
+  hgeColorHSV   operator* (const float scalar) const
   {
     return hgeColorHSV(h * scalar, s * scalar, v * scalar, a * scalar);
   }

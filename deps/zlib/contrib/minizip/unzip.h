@@ -147,7 +147,7 @@ typedef struct unz_file_info_s {
   tm_unz tmu_date;
 } unz_file_info;
 
-extern int ZEXPORT unzStringFileNameCompare OF ((const char *fileName1,
+extern int ZEXPORT unzStringFileNameCompare OF((const char *fileName1,
     const char *fileName2,
     int iCaseSensitivity));
 /*
@@ -416,12 +416,12 @@ extern int ZEXPORT unzGetLocalExtrafield OF((unzFile file,
 /***************************************************************************/
 
 /* Get the current file offset */
-extern ZPOS64_T ZEXPORT unzGetOffset64 (unzFile file);
-extern uLong ZEXPORT unzGetOffset (unzFile file);
+extern ZPOS64_T ZEXPORT unzGetOffset64(unzFile file);
+extern uLong ZEXPORT unzGetOffset(unzFile file);
 
 /* Set the current file offset */
-extern int ZEXPORT unzSetOffset64 (unzFile file, ZPOS64_T pos);
-extern int ZEXPORT unzSetOffset (unzFile file, uLong pos);
+extern int ZEXPORT unzSetOffset64(unzFile file, ZPOS64_T pos);
+extern int ZEXPORT unzSetOffset(unzFile file, uLong pos);
 
 
 

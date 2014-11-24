@@ -73,7 +73,7 @@ extern int unlink OF((const char *));
    The strwinerror function does not change the current setting
    of GetLastError.  */
 
-static char *strwinerror (error)
+static char *strwinerror(error)
 DWORD error;
 {
   static char buf[1024];
@@ -97,8 +97,8 @@ DWORD error;
       msgbuf[chars] = 0;
     }
 
-    if (chars > sizeof (buf) - 1) {
-      chars = sizeof (buf) - 1;
+    if (chars > sizeof(buf) - 1) {
+      chars = sizeof(buf) - 1;
       msgbuf[chars] = 0;
     }
 
@@ -112,13 +112,13 @@ DWORD error;
   return buf;
 }
 
-static void pwinerror (s)
+static void pwinerror(s)
 const char *s;
 {
   if (s && *s) {
-    fprintf(stderr, "%s: %s\n", s, strwinerror(GetLastError ()));
+    fprintf(stderr, "%s: %s\n", s, strwinerror(GetLastError()));
   } else {
-    fprintf(stderr, "%s\n", strwinerror(GetLastError ()));
+    fprintf(stderr, "%s\n", strwinerror(GetLastError()));
   }
 }
 
@@ -275,7 +275,7 @@ FILE   *out;
     len = gzread(in, buf, sizeof(buf));
 
     if (len < 0) {
-      error (gzerror(in, &err));
+      error(gzerror(in, &err));
     }
 
     if (len == 0) {

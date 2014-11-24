@@ -48,7 +48,7 @@ uLong *bytesRecovered;
     int offset = 0;
     int offsetCD = 0;
 
-    while ( fread(header, 1, 30, fpZip) == 30 ) {
+    while (fread(header, 1, 30, fpZip) == 30) {
       int currentOffset = offset;
 
       /* File entry */
@@ -261,7 +261,7 @@ uLong *bytesRecovered;
         int nRead;
         char buffer[8192];
 
-        while ( (nRead = (int)fread(buffer, 1, sizeof(buffer), fpOutCD)) > 0) {
+        while ((nRead = (int)fread(buffer, 1, sizeof(buffer), fpOutCD)) > 0) {
           if ((int)fwrite(buffer, 1, nRead, fpOut) != nRead) {
             err = Z_ERRNO;
             break;

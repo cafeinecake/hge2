@@ -329,33 +329,33 @@ public:
   virtual void    CALL  System_Snapshot(const char *filename = 0) = 0;
 
 private:
-  virtual void    CALL  System_SetStateBool  (hgeBoolState   state, bool        value) = 0;
-  virtual void    CALL  System_SetStateFunc  (hgeFuncState   state, hgeCallback value) = 0;
-  virtual void    CALL  System_SetStateHwnd  (hgeHwndState   state, HWND        value) = 0;
-  virtual void    CALL  System_SetStateInt   (hgeIntState    state, int         value) = 0;
+  virtual void    CALL  System_SetStateBool(hgeBoolState   state, bool        value) = 0;
+  virtual void    CALL  System_SetStateFunc(hgeFuncState   state, hgeCallback value) = 0;
+  virtual void    CALL  System_SetStateHwnd(hgeHwndState   state, HWND        value) = 0;
+  virtual void    CALL  System_SetStateInt(hgeIntState    state, int         value) = 0;
   virtual void    CALL  System_SetStateString(hgeStringState state, const char *value) = 0;
-  virtual bool    CALL  System_GetStateBool  (hgeBoolState   state) = 0;
-  virtual hgeCallback CALL  System_GetStateFunc  (hgeFuncState   state) = 0;
-  virtual HWND    CALL  System_GetStateHwnd  (hgeHwndState   state) = 0;
-  virtual int     CALL  System_GetStateInt   (hgeIntState    state) = 0;
+  virtual bool    CALL  System_GetStateBool(hgeBoolState   state) = 0;
+  virtual hgeCallback CALL  System_GetStateFunc(hgeFuncState   state) = 0;
+  virtual HWND    CALL  System_GetStateHwnd(hgeHwndState   state) = 0;
+  virtual int     CALL  System_GetStateInt(hgeIntState    state) = 0;
   virtual const char *CALL  System_GetStateString(hgeStringState state) = 0;
 
 public:
   inline void         System_SetState(hgeBoolState   state, bool        value)
   {
-    System_SetStateBool  (state, value);
+    System_SetStateBool(state, value);
   }
   inline void         System_SetState(hgeFuncState   state, hgeCallback value)
   {
-    System_SetStateFunc  (state, value);
+    System_SetStateFunc(state, value);
   }
   inline void         System_SetState(hgeHwndState   state, HWND        value)
   {
-    System_SetStateHwnd  (state, value);
+    System_SetStateHwnd(state, value);
   }
   inline void         System_SetState(hgeIntState    state, int         value)
   {
-    System_SetStateInt   (state, value);
+    System_SetStateInt(state, value);
   }
   inline void         System_SetState(hgeStringState state, const char *value)
   {
@@ -363,19 +363,19 @@ public:
   }
   inline bool         System_GetState(hgeBoolState   state)
   {
-    return System_GetStateBool  (state);
+    return System_GetStateBool(state);
   }
   inline hgeCallback      System_GetState(hgeFuncState   state)
   {
-    return System_GetStateFunc  (state);
+    return System_GetStateFunc(state);
   }
   inline HWND         System_GetState(hgeHwndState   state)
   {
-    return System_GetStateHwnd  (state);
+    return System_GetStateHwnd(state);
   }
   inline int          System_GetState(hgeIntState    state)
   {
-    return System_GetStateInt   (state);
+    return System_GetStateInt(state);
   }
   inline const char      *System_GetState(hgeStringState state)
   {

@@ -67,7 +67,7 @@ static int oggcb_seek(void *datasource, ogg_int64_t offset, int whence)
     return -1;
   }
 
-  if ( (pos < 0) || (pos > (static_cast<ogg_int64_t>(data->size))) ) {
+  if ((pos < 0) || (pos > (static_cast<ogg_int64_t>(data->size)))) {
     return -1;
   }
 
@@ -99,7 +99,7 @@ static void *decompress_vorbis(const uint8_t *data, const uint32_t size, ALsizei
 
   oggcbdata cbdata = { data, size, 0 };
   OggVorbis_File vf;
-  memset(&vf, '\0', sizeof (vf));
+  memset(&vf, '\0', sizeof(vf));
 
   if (ov_open_callbacks(&cbdata, &vf, NULL, 0, oggcb) == 0) {
     int bitstream = 0;
@@ -119,7 +119,7 @@ static void *decompress_vorbis(const uint8_t *data, const uint32_t size, ALsizei
     size_t allocated = 64 * 1024;
     uint8_t *retval = new ALubyte [allocated];
 
-    while ( (rc = ov_read(&vf, buf, sizeof (buf), bigendian, 2, 1, &bitstream)) != 0 ) {
+    while ((rc = ov_read(&vf, buf, sizeof(buf), bigendian, 2, 1, &bitstream)) != 0) {
       if (rc > 0) {
         *decompressed_size += rc;
 
@@ -202,9 +202,9 @@ HEFFECT CALL HGE_Impl::Effect_Load(const char *filename, uint32_t size)
     }
 
     const uint8_t *magic = static_cast<const uint8_t *>(data);
-    const bool isOgg = ( (_size > 4) &&
-                         (magic[0] == 'O') && (magic[1] == 'g') &&
-                         (magic[2] == 'g') && (magic[3] == 'S') );
+    const bool isOgg = ((_size > 4) &&
+                        (magic[0] == 'O') && (magic[1] == 'g') &&
+                        (magic[2] == 'g') && (magic[3] == 'S'));
 
     // !!! FIXME: we currently expect Ogg Vorbis, since this is all we
     // !!! FIXME:  need at the moment.
@@ -524,7 +524,7 @@ bool HGE_Impl::_SoundInit()
   bSilent = false;
 
   sidcount = 0;
-  memset(sids, '\0', sizeof (sids));
+  memset(sids, '\0', sizeof(sids));
 
   System_Log("Starting OpenAL init");
 
@@ -576,7 +576,7 @@ void HGE_Impl::_SoundDone()
 
     alDeleteSources(sidcount, sids);
     sidcount = 0;
-    memset(sids, '\0', sizeof (sids));
+    memset(sids, '\0', sizeof(sids));
 
     ALCcontext *ctx = alcGetCurrentContext();
     ALCdevice *dev = alcGetContextsDevice(ctx);

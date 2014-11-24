@@ -516,7 +516,7 @@ RGBQUAD CxImage::RGBtoRGBQUAD(COLORREF cr)
   return c;
 }
 ////////////////////////////////////////////////////////////////////////////////
-COLORREF CxImage::RGBQUADtoRGB (RGBQUAD c)
+COLORREF CxImage::RGBQUADtoRGB(RGBQUAD c)
 {
   return RGB(c.rgbRed, c.rgbGreen, c.rgbBlue);
 }

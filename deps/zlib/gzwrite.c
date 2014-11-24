@@ -326,7 +326,7 @@ const char *str;
 #include <stdarg.h>
 
 /* -- see zlib.h -- */
-int ZEXPORTVA gzprintf (gzFile file, const char *format, ...)
+int ZEXPORTVA gzprintf(gzFile file, const char *format, ...)
 {
   int size, len;
   gz_statep state;
@@ -409,8 +409,8 @@ int ZEXPORTVA gzprintf (gzFile file, const char *format, ...)
 #else /* !STDC */
 
 /* -- see zlib.h -- */
-int ZEXPORTVA gzprintf (file, format, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10,
-                        a11, a12, a13, a14, a15, a16, a17, a18, a19, a20)
+int ZEXPORTVA gzprintf(file, format, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10,
+                       a11, a12, a13, a14, a15, a16, a17, a18, a19, a20)
 gzFile file;
 const char *format;
 int a1, a2, a3, a4, a5, a6, a7, a8, a9, a10,

@@ -129,7 +129,7 @@ void HGE_Impl::_LoadIniFile(const char *fname)
 
         if (end != NULL) {
           *end = '\0';
-          snprintf(section, sizeof (section), "%s", start);
+          snprintf(section, sizeof(section), "%s", start);
         }
       } else if (section[0] != '\0') {
         char *eq = strchr(start, '=');
@@ -139,7 +139,7 @@ void HGE_Impl::_LoadIniFile(const char *fname)
           eq++;
           char tmpbuf[128];
 
-          if (!_GetPrivateProfileString(section, start, "", tmpbuf, sizeof (tmpbuf), fname)) {
+          if (!_GetPrivateProfileString(section, start, "", tmpbuf, sizeof(tmpbuf), fname)) {
             _WritePrivateProfileString(section, start, eq, fname);
           }
         }

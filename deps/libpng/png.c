@@ -154,7 +154,7 @@ png_zalloc(voidpf png_ptr, uInt items, uInt size)
   png_uint_32 num_bytes;
 
   if (items > PNG_UINT_32_MAX / size) {
-    png_warning (png_ptr, "Potential overflow in png_zalloc()");
+    png_warning(png_ptr, "Potential overflow in png_zalloc()");
     return (NULL);
   }
 
@@ -316,7 +316,7 @@ png_info_init_3(png_infopp ptr_ptr, png_size_t png_info_struct_size)
   }
 
   /* set everything to 0 */
-  png_memset(info_ptr, 0, png_sizeof (png_info));
+  png_memset(info_ptr, 0, png_sizeof(png_info));
 }
 
 #ifdef PNG_FREE_ME_SUPPORTED
@@ -809,7 +809,7 @@ png_access_version_number(void)
 /* GRR:  could add this:   && defined(PNG_MMX_CODE_SUPPORTED) */
 /* this INTERNAL function was added to libpng 1.2.0 */
 void /* PRIVATE */
-png_init_mmx_flags (png_structp png_ptr)
+png_init_mmx_flags(png_structp png_ptr)
 {
   png_ptr->mmx_rowbytes_threshold = 0;
   png_ptr->mmx_bitdepth_threshold = 0;
@@ -838,15 +838,15 @@ png_init_mmx_flags (png_structp png_ptr)
     png_ptr->mmx_bitdepth_threshold = PNG_MMX_BITDEPTH_THRESHOLD_DEFAULT;
 #    endif
   } else {
-    png_ptr->asm_flags &= ~( PNG_ASM_FLAG_MMX_SUPPORT_IN_CPU
-                             | PNG_MMX_READ_FLAGS
-                             | PNG_MMX_WRITE_FLAGS );
+    png_ptr->asm_flags &= ~(PNG_ASM_FLAG_MMX_SUPPORT_IN_CPU
+                            | PNG_MMX_READ_FLAGS
+                            | PNG_MMX_WRITE_FLAGS);
   }
 
 #  else /* !((PNGVCRD || PNGGCCRD) && PNG_ASSEMBLER_CODE_SUPPORTED)) */
 
   /* clear all MMX flags; no support is compiled in */
-  png_ptr->asm_flags &= ~( PNG_MMX_FLAGS );
+  png_ptr->asm_flags &= ~(PNG_MMX_FLAGS);
 
 #  endif /* ?(PNGVCRD || PNGGCCRD) */
 }

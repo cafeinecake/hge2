@@ -154,7 +154,7 @@ bool convert(char *filename)
   fclose(hf);
 
   if (!strncmp(desc, signature1, strlen(signature1)) ||
-      !strncmp(desc, signature2, strlen(signature2)) ) {
+      !strncmp(desc, signature2, strlen(signature2))) {
     printf("Already converted\n");
     return false;
   }

@@ -119,13 +119,13 @@ const char *dirname;
   ret = _mkdir(dirname);
 #else
 #ifdef unix
-  ret = mkdir (dirname, 0775);
+  ret = mkdir(dirname, 0775);
 #endif
 #endif
   return ret;
 }
 
-int makedir (newdir)
+int makedir(newdir)
 char *newdir;
 {
   char *buffer ;
@@ -466,7 +466,7 @@ const char *password;
     }
 
     if (err == UNZ_OK) {
-      err = unzCloseCurrentFile (uf);
+      err = unzCloseCurrentFile(uf);
 
       if (err != UNZ_OK) {
         printf("error %d with zipfile in unzCloseCurrentFile\n", err);

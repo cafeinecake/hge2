@@ -16,15 +16,15 @@ void CALL HGE_Impl::Gfx_Clear(uint32_t color)
 {
   if (pCurTarget) {
     if (pCurTarget->pDepth) {
-      pD3DDevice->Clear( 0, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, color, 1.0f, 0 );
+      pD3DDevice->Clear(0, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, color, 1.0f, 0);
     } else {
-      pD3DDevice->Clear( 0, NULL, D3DCLEAR_TARGET, color, 1.0f, 0 );
+      pD3DDevice->Clear(0, NULL, D3DCLEAR_TARGET, color, 1.0f, 0);
     }
   } else {
     if (bZBuffer) {
-      pD3DDevice->Clear( 0, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, color, 1.0f, 0 );
+      pD3DDevice->Clear(0, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, color, 1.0f, 0);
     } else {
-      pD3DDevice->Clear( 0, NULL, D3DCLEAR_TARGET, color, 1.0f, 0 );
+      pD3DDevice->Clear(0, NULL, D3DCLEAR_TARGET, color, 1.0f, 0);
     }
   }
 }
@@ -169,17 +169,17 @@ bool CALL HGE_Impl::Gfx_BeginScene(HTARGET targ)
       pSurf->Release();
 
       if (target->pDepth) {
-        pD3DDevice->SetRenderState( D3DRS_ZENABLE, D3DZB_TRUE );
+        pD3DDevice->SetRenderState(D3DRS_ZENABLE, D3DZB_TRUE);
       } else {
-        pD3DDevice->SetRenderState( D3DRS_ZENABLE, D3DZB_FALSE );
+        pD3DDevice->SetRenderState(D3DRS_ZENABLE, D3DZB_FALSE);
       }
 
       _SetProjectionMatrix(target->width, target->height);
     } else {
       if (bZBuffer) {
-        pD3DDevice->SetRenderState( D3DRS_ZENABLE, D3DZB_TRUE );
+        pD3DDevice->SetRenderState(D3DRS_ZENABLE, D3DZB_TRUE);
       } else {
-        pD3DDevice->SetRenderState( D3DRS_ZENABLE, D3DZB_FALSE );
+        pD3DDevice->SetRenderState(D3DRS_ZENABLE, D3DZB_FALSE);
       }
 
       _SetProjectionMatrix(nScreenWidth, nScreenHeight);
@@ -193,7 +193,7 @@ bool CALL HGE_Impl::Gfx_BeginScene(HTARGET targ)
   }
 
   pD3DDevice->BeginScene();
-  pVB->Lock( 0, 0, (uint8_t **)&VertArray, 0 );
+  pVB->Lock(0, 0, (uint8_t **)&VertArray, 0);
 
   return true;
 }
@@ -204,7 +204,7 @@ void CALL HGE_Impl::Gfx_EndScene()
   pD3DDevice->EndScene();
 
   if (!pCurTarget) {
-    pD3DDevice->Present( NULL, NULL, NULL, NULL );
+    pD3DDevice->Present(NULL, NULL, NULL, NULL);
   }
 }
 
@@ -255,7 +255,7 @@ void CALL HGE_Impl::Gfx_RenderTriple(const hgeTriple *triple)
       }
 
       if (triple->tex != CurTexture) {
-        pD3DDevice->SetTexture( 0, (LPDIRECT3DTEXTURE8)triple->tex );
+        pD3DDevice->SetTexture(0, (LPDIRECT3DTEXTURE8)triple->tex);
         CurTexture = triple->tex;
       }
     }
@@ -280,7 +280,7 @@ void CALL HGE_Impl::Gfx_RenderQuad(const hgeQuad *quad)
       }
 
       if (quad->tex != CurTexture) {
-        pD3DDevice->SetTexture( 0, (LPDIRECT3DTEXTURE8)quad->tex );
+        pD3DDevice->SetTexture(0, (LPDIRECT3DTEXTURE8)quad->tex);
         CurTexture = quad->tex;
       }
     }
@@ -302,7 +302,7 @@ hgeVertex *CALL HGE_Impl::Gfx_StartBatch(int prim_type, HTEXTURE tex, int blend,
     }
 
     if (tex != CurTexture) {
-      pD3DDevice->SetTexture( 0, (LPDIRECT3DTEXTURE8)tex );
+      pD3DDevice->SetTexture(0, (LPDIRECT3DTEXTURE8)tex);
       CurTexture = tex;
     }
 
@@ -398,12 +398,12 @@ HTEXTURE CALL HGE_Impl::Texture_Create(int width, int height)
 {
   LPDIRECT3DTEXTURE8 pTex;
 
-  if ( FAILED( D3DXCreateTexture( pD3DDevice, width, height,
-                                  1,          // Mip levels
-                                  0,          // Usage
-                                  D3DFMT_A8R8G8B8,  // Format
-                                  D3DPOOL_MANAGED,  // Memory pool
-                                  &pTex ) ) ) {
+  if (FAILED(D3DXCreateTexture(pD3DDevice, width, height,
+                               1,          // Mip levels
+                               0,          // Usage
+                               D3DFMT_A8R8G8B8,  // Format
+                               D3DPOOL_MANAGED,  // Memory pool
+                               &pTex))) {
     _PostError("Can't create texture");
     return NULL;
   }
@@ -440,29 +440,29 @@ HTEXTURE CALL HGE_Impl::Texture_Load(const char *filename, uint32_t size, bool b
   }
 
 //  if( FAILED( D3DXCreateTextureFromFileInMemory( pD3DDevice, data, _size, &pTex ) ) ) pTex=NULL;
-  if ( FAILED( D3DXCreateTextureFromFileInMemoryEx( pD3DDevice, data, _size,
+  if (FAILED(D3DXCreateTextureFromFileInMemoryEx(pD3DDevice, data, _size,
+             D3DX_DEFAULT, D3DX_DEFAULT,
+             bMipmap ? 0 : 1,  // Mip levels
+             0,          // Usage
+             fmt1,       // Format
+             D3DPOOL_MANAGED,  // Memory pool
+             D3DX_FILTER_NONE, // Filter
+             D3DX_DEFAULT,   // Mip filter
+             0,          // Color key
+             &info, NULL,
+             &pTex)))
+
+    if (FAILED(D3DXCreateTextureFromFileInMemoryEx(pD3DDevice, data, _size,
                D3DX_DEFAULT, D3DX_DEFAULT,
                bMipmap ? 0 : 1,  // Mip levels
                0,          // Usage
-               fmt1,       // Format
+               fmt2,       // Format
                D3DPOOL_MANAGED,  // Memory pool
                D3DX_FILTER_NONE, // Filter
                D3DX_DEFAULT,   // Mip filter
                0,          // Color key
                &info, NULL,
-               &pTex ) ) )
-
-    if ( FAILED( D3DXCreateTextureFromFileInMemoryEx( pD3DDevice, data, _size,
-                 D3DX_DEFAULT, D3DX_DEFAULT,
-                 bMipmap ? 0 : 1,  // Mip levels
-                 0,          // Usage
-                 fmt2,       // Format
-                 D3DPOOL_MANAGED,  // Memory pool
-                 D3DX_FILTER_NONE, // Filter
-                 D3DX_DEFAULT,   // Mip filter
-                 0,          // Color key
-                 &info, NULL,
-                 &pTex ) ) )
+               &pTex)))
 
     {
       _PostError("Can't create texture");
@@ -640,7 +640,7 @@ void HGE_Impl::_render_batch(bool bEndScene)
     if (bEndScene) {
       VertArray = 0;
     } else {
-      pVB->Lock( 0, 0, (uint8_t **)&VertArray, 0 );
+      pVB->Lock(0, 0, (uint8_t **)&VertArray, 0);
     }
   }
 }
@@ -806,9 +806,9 @@ bool HGE_Impl::_GfxInit()
 
 // Create D3D Device
 
-  if ( FAILED( pD3D->CreateDevice( D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, hwnd,
-                                   D3DCREATE_SOFTWARE_VERTEXPROCESSING,
-                                   d3dpp, &pD3DDevice ) ) ) {
+  if (FAILED(pD3D->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, hwnd,
+                                D3DCREATE_SOFTWARE_VERTEXPROCESSING,
+                                d3dpp, &pD3DDevice))) {
     _PostError("Can't create D3D device");
     return false;
   }
@@ -950,7 +950,7 @@ void HGE_Impl::_GfxDone()
       VertArray = 0;
     }
 
-    pD3DDevice->SetStreamSource( 0, NULL, sizeof(hgeVertex) );
+    pD3DDevice->SetStreamSource(0, NULL, sizeof(hgeVertex));
     pVB->Release();
     pVB = 0;
   }
@@ -1000,7 +1000,7 @@ bool HGE_Impl::_GfxRestore()
   }
 
   if (pVB) {
-    pD3DDevice->SetStreamSource( 0, NULL, sizeof(hgeVertex) );
+    pD3DDevice->SetStreamSource(0, NULL, sizeof(hgeVertex));
     pVB->Release();
   }
 
@@ -1044,30 +1044,30 @@ bool HGE_Impl::_init_lost()
 
 // Create Vertex buffer
 
-  if ( FAILED (pD3DDevice->CreateVertexBuffer(VERTEX_BUFFER_SIZE * sizeof(hgeVertex),
-               D3DUSAGE_WRITEONLY,
-               D3DFVF_HGEVERTEX,
-               D3DPOOL_DEFAULT, &pVB ))) {
+  if (FAILED(pD3DDevice->CreateVertexBuffer(VERTEX_BUFFER_SIZE * sizeof(hgeVertex),
+             D3DUSAGE_WRITEONLY,
+             D3DFVF_HGEVERTEX,
+             D3DPOOL_DEFAULT, &pVB))) {
     _PostError("Can't create D3D vertex buffer");
     return false;
   }
 
-  pD3DDevice->SetVertexShader( D3DFVF_HGEVERTEX );
-  pD3DDevice->SetStreamSource( 0, pVB, sizeof(hgeVertex) );
+  pD3DDevice->SetVertexShader(D3DFVF_HGEVERTEX);
+  pD3DDevice->SetStreamSource(0, pVB, sizeof(hgeVertex));
 
 // Create and setup Index buffer
 
-  if ( FAILED( pD3DDevice->CreateIndexBuffer(VERTEX_BUFFER_SIZE * 6 / 4 * sizeof(WORD),
-               D3DUSAGE_WRITEONLY,
-               D3DFMT_INDEX16,
-               D3DPOOL_DEFAULT, &pIB ) ) ) {
+  if (FAILED(pD3DDevice->CreateIndexBuffer(VERTEX_BUFFER_SIZE * 6 / 4 * sizeof(WORD),
+             D3DUSAGE_WRITEONLY,
+             D3DFMT_INDEX16,
+             D3DPOOL_DEFAULT, &pIB))) {
     _PostError("Can't create D3D index buffer");
     return false;
   }
 
   WORD *pIndices, n = 0;
 
-  if ( FAILED( pIB->Lock( 0, 0, (uint8_t **)&pIndices, 0 ) ) ) {
+  if (FAILED(pIB->Lock(0, 0, (uint8_t **)&pIndices, 0))) {
     _PostError("Can't lock D3D index buffer");
     return false;
   }
@@ -1088,24 +1088,24 @@ bool HGE_Impl::_init_lost()
 // Set common render states
 
   //pD3DDevice->SetRenderState( D3DRS_LASTPIXEL, FALSE );
-  pD3DDevice->SetRenderState( D3DRS_CULLMODE, D3DCULL_NONE );
-  pD3DDevice->SetRenderState( D3DRS_LIGHTING, FALSE );
+  pD3DDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
+  pD3DDevice->SetRenderState(D3DRS_LIGHTING, FALSE);
 
-  pD3DDevice->SetRenderState( D3DRS_ALPHABLENDENABLE,   TRUE );
-  pD3DDevice->SetRenderState( D3DRS_SRCBLEND,  D3DBLEND_SRCALPHA );
-  pD3DDevice->SetRenderState( D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA );
+  pD3DDevice->SetRenderState(D3DRS_ALPHABLENDENABLE,   TRUE);
+  pD3DDevice->SetRenderState(D3DRS_SRCBLEND,  D3DBLEND_SRCALPHA);
+  pD3DDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
 
-  pD3DDevice->SetRenderState( D3DRS_ALPHATESTENABLE, TRUE );
-  pD3DDevice->SetRenderState( D3DRS_ALPHAREF,        0x01 );
-  pD3DDevice->SetRenderState( D3DRS_ALPHAFUNC, D3DCMP_GREATEREQUAL );
+  pD3DDevice->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);
+  pD3DDevice->SetRenderState(D3DRS_ALPHAREF,        0x01);
+  pD3DDevice->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATEREQUAL);
 
-  pD3DDevice->SetTextureStageState( 0, D3DTSS_COLOROP,   D3DTOP_MODULATE );
-  pD3DDevice->SetTextureStageState( 0, D3DTSS_COLORARG1, D3DTA_TEXTURE );
-  pD3DDevice->SetTextureStageState( 0, D3DTSS_COLORARG2, D3DTA_DIFFUSE );
+  pD3DDevice->SetTextureStageState(0, D3DTSS_COLOROP,   D3DTOP_MODULATE);
+  pD3DDevice->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
+  pD3DDevice->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_DIFFUSE);
 
-  pD3DDevice->SetTextureStageState( 0, D3DTSS_ALPHAOP,   D3DTOP_MODULATE );
-  pD3DDevice->SetTextureStageState( 0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE );
-  pD3DDevice->SetTextureStageState( 0, D3DTSS_ALPHAARG2, D3DTA_DIFFUSE );
+  pD3DDevice->SetTextureStageState(0, D3DTSS_ALPHAOP,   D3DTOP_MODULATE);
+  pD3DDevice->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
+  pD3DDevice->SetTextureStageState(0, D3DTSS_ALPHAARG2, D3DTA_DIFFUSE);
 
   pD3DDevice->SetTextureStageState(0, D3DTSS_MIPFILTER, D3DTEXF_POINT);
 

@@ -80,7 +80,7 @@ bool CxImagePCX::Decode(CxFile *hFile)
     // Create the image
     if (pcxHeader.ColorPlanes >= 3 && pcxHeader.BitsPerPixel == 8)
     {
-      Create (static_cast<uint32_t>(Width),
+      Create(static_cast<uint32_t>(Width),
       static_cast<uint32_t>(Height),
       24, CXIMAGE_FORMAT_PCX);
 #if CXIMAGE_SUPPORT_ALPHA
@@ -92,12 +92,12 @@ bool CxImagePCX::Decode(CxFile *hFile)
 #endif //CXIMAGE_SUPPORT_ALPHA
     } else if (pcxHeader.ColorPlanes == 4 && pcxHeader.BitsPerPixel == 1)
     {
-      Create (static_cast<uint32_t>(Width),
-              static_cast<uint32_t>(Height),
-              4, CXIMAGE_FORMAT_PCX);
+      Create(static_cast<uint32_t>(Width),
+             static_cast<uint32_t>(Height),
+             4, CXIMAGE_FORMAT_PCX);
     } else
     {
-      Create (static_cast<uint32_t>(Width),
+      Create(static_cast<uint32_t>(Width),
       static_cast<uint32_t>(Height),
       static_cast<uint32_t>(pcxHeader.BitsPerPixel),
       CXIMAGE_FORMAT_PCX);
@@ -333,7 +333,7 @@ bool CxImagePCX::Encode(CxFile *hFile)
 
     PCX_toh(&pcxHeader);
 
-    if (hFile->Write(&pcxHeader, sizeof(pcxHeader), 1) == 0 )
+    if (hFile->Write(&pcxHeader, sizeof(pcxHeader), 1) == 0)
     {
       cx_throw("cannot write PCX header");
     }
@@ -421,15 +421,15 @@ bool CxImagePCX::Encode(CxFile *hFile)
       for (y = head.biHeight - 1; y >= 0 ; y--)
       {
 
-        for ( x = 0; x < head.biWidth; x++) {
+        for (x = 0; x < head.biWidth; x++) {
           raw[x] = (uint8_t)GetPixelIndex(x, y);
         }
 
-        if (binvert) for ( x = 0; x < head.biWidth; x++) {
+        if (binvert) for (x = 0; x < head.biWidth; x++) {
             raw[x] = 1 - raw[x];
           }
 
-        for ( x = 0; x < pcxHeader.ColorPlanes; x++ ) {
+        for (x = 0; x < pcxHeader.ColorPlanes; x++) {
           PCX_PixelsToPlanes(raw, head.biWidth, plane, x);
           PCX_PackPlanes(plane, pcxHeader.BytesPerLine, buffer);
         }
@@ -599,7 +599,7 @@ void CxImagePCX::PCX_PackPlanes(uint8_t *buff, const int32_t size, CxFile &f)
     }
 
     if (count > 1 || (previous & 0xc0) == 0xc0) {
-      f.PutC( count | 0xc0 );
+      f.PutC(count | 0xc0);
     }
 
     f.PutC(previous);
@@ -623,13 +623,13 @@ void CxImagePCX::PCX_PixelsToPlanes(uint8_t *raw, int32_t width, uint8_t *buf, i
   mask = 1 << plane;
   cbit = -1;
 
-  for ( x = 0; x < width; x++ ) {
-    if ( cbit < 0 ) {
+  for (x = 0; x < width; x++) {
+    if (cbit < 0) {
       cbit = 7;
       *++cp = 0;
     }
 
-    if ( raw[x] & mask ) {
+    if (raw[x] & mask) {
       *cp |= (1 << cbit);
     }
 

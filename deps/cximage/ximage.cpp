@@ -239,7 +239,7 @@ void *CxImage::Create(uint32_t dwWidth, uint32_t dwHeight, uint32_t wBpp, uint32
   }
 
   // Make sure bits per pixel is valid
-  if    (wBpp <= 1) {
+  if (wBpp <= 1) {
     wBpp = 1;
   } else if (wBpp <= 4) {
     wBpp = 4;

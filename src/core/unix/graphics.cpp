@@ -91,14 +91,14 @@ static uint32_t *_DecodeImage(uint8_t *data, const char *fname, uint32_t size, i
   uint32_t *pixels = NULL;
   const size_t fnamelen = fname ? strlen(fname) : 0;
 
-  if ( (fnamelen > 5) && (strcasecmp((fname + fnamelen) - 5, ".rgba") == 0) ) {
+  if ((fnamelen > 5) && (strcasecmp((fname + fnamelen) - 5, ".rgba") == 0)) {
     uint32_t *ptr = reinterpret_cast<uint32_t *>(data);
     uint32_t w = ptr[0];
     uint32_t h = ptr[1];
     BYTESWAP(w);
     BYTESWAP(h);
 
-    if ( ((w * h * 4) + 8) == size ) { // not truncated?
+    if (((w * h * 4) + 8) == size) {   // not truncated?
       width = static_cast<int>(w);
       height = static_cast<int>(h);
       pixels = new uint32_t[width * height];
@@ -166,7 +166,7 @@ void HGE_Impl::_BindTexture(gltexture *t)
                       t->pixels);
   }
 
-  if ( (reinterpret_cast<HTEXTURE>(t)) != CurTexture ) {
+  if ((reinterpret_cast<HTEXTURE>(t)) != CurTexture) {
     pOpenGLDevice->glBindTexture(pOpenGLDevice->TextureTarget, t ? t->name : 0);
     CurTexture = reinterpret_cast<HTEXTURE>(t);
   }
@@ -176,7 +176,7 @@ void CALL HGE_Impl::Gfx_Clear(uint32_t color)
 {
   GLbitfield flags = GL_COLOR_BUFFER_BIT;
 
-  if ( ((pCurTarget) && (pCurTarget->depth)) || bZBuffer ) {
+  if (((pCurTarget) && (pCurTarget->depth)) || bZBuffer) {
     flags |= GL_DEPTH_BUFFER_BIT;
   }
 
@@ -296,7 +296,7 @@ bool CALL HGE_Impl::Gfx_BeginScene(HTARGET targ)
       pOpenGLDevice->glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, (target) ? target->frame : 0);
     }
 
-    if ( ((target) && (target->depth)) || (bZBuffer) ) {
+    if (((target) && (target->depth)) || (bZBuffer)) {
       pOpenGLDevice->glEnable(GL_DEPTH_TEST);
     } else {
       pOpenGLDevice->glDisable(GL_DEPTH_TEST);
@@ -457,10 +457,10 @@ void CALL HGE_Impl::Gfx_RenderTriple(const hgeTriple *triple)
       const int bottommost = static_cast<int>(std::max(std::max(v[0].y, v[1].y),
                                               v[2].y));
 
-      if ( ((clipX < leftmost) || (clipX > rightmost)) &&
-           ((maxX < leftmost) || (maxX > rightmost)) &&
-           ((clipY < topmost) || (clipY > bottommost)) &&
-           ((maxY < topmost) || (maxY > bottommost)) ) {
+      if (((clipX < leftmost) || (clipX > rightmost)) &&
+          ((maxX < leftmost) || (maxX > rightmost)) &&
+          ((clipY < topmost) || (clipY > bottommost)) &&
+          ((maxY < topmost) || (maxY > bottommost))) {
         return;  // no, this is really totally clipped.
       }
     }
@@ -501,10 +501,10 @@ void CALL HGE_Impl::Gfx_RenderQuad(const hgeQuad *quad)
       const int bottommost = static_cast<int32_t>(
                                std::max(std::max(std::max(v[0].y, v[1].y), v[2].y), v[3].y));
 
-      if ( ((clipX < leftmost) || (clipX > rightmost)) &&
-           ((maxX < leftmost) || (maxX > rightmost)) &&
-           ((clipY < topmost) || (clipY > bottommost)) &&
-           ((maxY < topmost) || (maxY > bottommost)) ) {
+      if (((clipX < leftmost) || (clipX > rightmost)) &&
+          ((maxX < leftmost) || (maxX > rightmost)) &&
+          ((clipY < topmost) || (clipY > bottommost)) &&
+          ((maxY < topmost) || (maxY > bottommost))) {
         return;  // no, this is really totally clipped.
       }
     }
@@ -596,7 +596,7 @@ HTARGET CALL HGE_Impl::Target_Create(int width, int height, bool zbuffer)
 {
   bool okay = false;
   CRenderTargetList *pTarget = new CRenderTargetList;
-  memset(pTarget, '\0', sizeof (CRenderTargetList));
+  memset(pTarget, '\0', sizeof(CRenderTargetList));
 
   pTarget->tex = _BuildTexture(width, height, NULL);
   gltexture *gltex = reinterpret_cast<gltexture *>(pTarget->tex);
@@ -766,7 +766,7 @@ void HGE_Impl::_ConfigureTexture(gltexture *t, int width, int height, uint32_t *
 HTEXTURE HGE_Impl::_BuildTexture(int width, int height, uint32_t *pixels)
 {
   gltexture *retval = new gltexture;
-  memset(retval, '\0', sizeof (gltexture));
+  memset(retval, '\0', sizeof(gltexture));
   retval->lost = true;  // we'll actually generate a texture and upload when forced.
   retval->width = static_cast<uint32_t>(width);
   retval->height = static_cast<uint32_t>(height);
@@ -777,7 +777,7 @@ HTEXTURE HGE_Impl::_BuildTexture(int width, int height, uint32_t *pixels)
 HTEXTURE CALL HGE_Impl::Texture_Create(int width, int height)
 {
   uint32_t *pixels = new uint32_t[width * height];
-  memset(pixels, '\0', sizeof (uint32_t) * static_cast<uint32_t>(width * height));
+  memset(pixels, '\0', sizeof(uint32_t) * static_cast<uint32_t>(width * height));
   HTEXTURE retval = _BuildTexture(width, height, pixels);
 
   // the Direct3D renderer doesn't add these to the (textures) list, but we need them for when we "lose" the GL context.
@@ -1045,7 +1045,7 @@ uint32_t *CALL HGE_Impl::Texture_Lock(HTEXTURE tex, bool bReadOnly, int left, in
                                 GL_UNSIGNED_BYTE, upsideDown);
 
     for (int i = 0; i < height; i++) {
-      memcpy(dst, src, static_cast<uint32_t>(width) * sizeof (uint32_t));
+      memcpy(dst, src, static_cast<uint32_t>(width) * sizeof(uint32_t));
       dst += width;
       src -= width;
     }
@@ -1056,7 +1056,7 @@ uint32_t *CALL HGE_Impl::Texture_Lock(HTEXTURE tex, bool bReadOnly, int left, in
                                     + static_cast<uint32_t>(left));
 
     for (int i = 0; i < height; i++) {
-      memcpy(dst, src, static_cast<uint32_t>(width) * sizeof (uint32_t));
+      memcpy(dst, src, static_cast<uint32_t>(width) * sizeof(uint32_t));
       dst += width;
       src += pTex->width;
     }
@@ -1081,7 +1081,7 @@ void CALL HGE_Impl::Texture_Unlock(HTEXTURE tex)
                                     + static_cast<uint32_t>(pTex->lock_x));
 
     for (int i = 0; i < pTex->lock_height; i++) {
-      memcpy(dst, src, static_cast<uint32_t>(pTex->lock_width) * sizeof (uint32_t));
+      memcpy(dst, src, static_cast<uint32_t>(pTex->lock_width) * sizeof(uint32_t));
       dst += pTex->width;
       src += pTex->lock_width;
     }
@@ -1144,8 +1144,8 @@ void HGE_Impl::_render_batch(bool bEndScene)
           texwmult = pTex->width;
           texhmult = pTex->height;
         } else if ((pTex->potw != 0) && (pTex->poth != 0)) {
-          texwmult = ( static_cast<float>(pTex->width) / static_cast<float>(pTex->potw) );
-          texhmult = ( static_cast<float>(pTex->height) / static_cast<float>(pTex->poth) );
+          texwmult = (static_cast<float>(pTex->width) / static_cast<float>(pTex->potw));
+          texhmult = (static_cast<float>(pTex->height) / static_cast<float>(pTex->poth));
         }
       }
 
@@ -1315,7 +1315,7 @@ bool HGE_Impl::_LoadOpenGLEntryPoints()
   int min = 0;
   sscanf(verstr, "%d.%d", &maj, &min);
 
-  if ( (maj < 1) || ((maj == 1) && (min < 2)) ) {
+  if ((maj < 1) || ((maj == 1) && (min < 2))) {
     _PostError("OpenGL implementation must be at least version 1.2");
     _UnloadOpenGLEntryPoints();
     return false;
@@ -1619,7 +1619,7 @@ bool HGE_Impl::_init_lost()
     pOpenGLDevice->glGenBuffersARB(1, &IndexBufferObject);
     pOpenGLDevice->glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER, IndexBufferObject);
     pOpenGLDevice->glBufferDataARB(GL_ELEMENT_ARRAY_BUFFER,
-                                   sizeof (GLushort) * ((VERTEX_BUFFER_SIZE * 6) / 4), pIB, GL_STATIC_DRAW);
+                                   sizeof(GLushort) * ((VERTEX_BUFFER_SIZE * 6) / 4), pIB, GL_STATIC_DRAW);
     delete[] pIB;
     pIB = 0;
   }
@@ -1627,9 +1627,9 @@ bool HGE_Impl::_init_lost()
 #endif
 
   // always use client-side arrays; set it up once at startup.
-  pOpenGLDevice->glVertexPointer(3, GL_FLOAT, sizeof (hgeVertex), &pVB[0].x);
-  pOpenGLDevice->glColorPointer(4, GL_UNSIGNED_BYTE, sizeof (hgeVertex), &pVB[0].col);
-  pOpenGLDevice->glTexCoordPointer(2, GL_FLOAT, sizeof (hgeVertex), &pVB[0].tx);
+  pOpenGLDevice->glVertexPointer(3, GL_FLOAT, sizeof(hgeVertex), &pVB[0].x);
+  pOpenGLDevice->glColorPointer(4, GL_UNSIGNED_BYTE, sizeof(hgeVertex), &pVB[0].col);
+  pOpenGLDevice->glTexCoordPointer(2, GL_FLOAT, sizeof(hgeVertex), &pVB[0].tx);
   pOpenGLDevice->glEnableClientState(GL_VERTEX_ARRAY);
   pOpenGLDevice->glEnableClientState(GL_COLOR_ARRAY);
   pOpenGLDevice->glEnableClientState(GL_TEXTURE_COORD_ARRAY);

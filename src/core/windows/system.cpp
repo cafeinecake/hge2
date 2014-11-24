@@ -193,8 +193,8 @@ bool CALL HGE_Impl::System_Initiate()
 
 #ifdef DEMO
 
-  bool      (*func)();
-  bool      (*rfunc)();
+  bool (*func)();
+  bool (*rfunc)();
   HWND      hwndTmp;
 
   if (pHGE->bDMO) {

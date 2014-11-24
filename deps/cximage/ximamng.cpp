@@ -16,7 +16,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // memory allocation; data must be zeroed
 static mng_ptr
-mymngalloc( mng_size_t size )
+mymngalloc(mng_size_t size)
 {
   return (mng_ptr)calloc(1, size);
 }
@@ -52,23 +52,23 @@ static mng_bool mymngreadstream(mng_handle mng, mng_ptr buffer, mng_uint32 size,
 {
   mngstuff *mymng = (mngstuff *)mng_get_userdata(mng);
   // read the requested amount of data from the file
-  *bytesread = mymng->file->Read( buffer, sizeof(uint8_t), size);
+  *bytesread = mymng->file->Read(buffer, sizeof(uint8_t), size);
   return MNG_TRUE;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-static mng_bool mymngwritestream (mng_handle mng, mng_ptr pBuf, mng_uint32 iSize,
-                                  mng_uint32 *iWritten)
+static mng_bool mymngwritestream(mng_handle mng, mng_ptr pBuf, mng_uint32 iSize,
+                                 mng_uint32 *iWritten)
 {
   mngstuff *mymng = (mngstuff *)mng_get_userdata(mng);
   // write it
-  *iWritten = mymng->file->Write (pBuf, 1, iSize);
+  *iWritten = mymng->file->Write(pBuf, 1, iSize);
   return MNG_TRUE;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 // the header's been read. set up the display stuff
-static mng_bool mymngprocessheader( mng_handle mng, mng_uint32 width, mng_uint32 height )
+static mng_bool mymngprocessheader(mng_handle mng, mng_uint32 width, mng_uint32 height)
 {
   // normally the image buffer is allocated here,
   // but in this module we don't know nothing about
@@ -92,10 +92,10 @@ static mng_bool mymngprocessheader( mng_handle mng, mng_uint32 width, mng_uint32
 
   // tell the mng decoder about our bit-depth choice
 #if CXIMAGE_SUPPORT_ALPHA
-  mng_set_canvasstyle( mng, MNG_CANVAS_RGB8_A8 );
+  mng_set_canvasstyle(mng, MNG_CANVAS_RGB8_A8);
   mymng->alpha = (uint8_t *)malloc(height * width);
 #else
-  mng_set_canvasstyle( mng, MNG_CANVAS_BGR8);
+  mng_set_canvasstyle(mng, MNG_CANVAS_BGR8);
   mymng->alpha = NULL;
 #endif
   return MNG_TRUE;
@@ -103,14 +103,14 @@ static mng_bool mymngprocessheader( mng_handle mng, mng_uint32 width, mng_uint32
 
 ////////////////////////////////////////////////////////////////////////////////
 // return a row pointer for the decoder to fill
-static mng_ptr mymnggetcanvasline( mng_handle mng, mng_uint32 line )
+static mng_ptr mymnggetcanvasline(mng_handle mng, mng_uint32 line)
 {
   mngstuff *mymng = (mngstuff *)mng_get_userdata(mng);
   return (mng_ptr)(mymng->image + (mymng->effwdt * (mymng->height - 1 - line)));
 }
 ////////////////////////////////////////////////////////////////////////////////
 // return a row pointer for the decoder to fill for alpha channel
-static mng_ptr mymnggetalphaline( mng_handle mng, mng_uint32 line )
+static mng_ptr mymnggetalphaline(mng_handle mng, mng_uint32 line)
 {
   mngstuff *mymng = (mngstuff *)mng_get_userdata(mng);
   return (mng_ptr)(mymng->alpha + (mymng->width * (mymng->height - 1 - line)));
@@ -245,13 +245,13 @@ bool CxImageMNG::Decode(CxFile *hFile)
     mnginfo.file = hFile;
 
     // Set the colorprofile, lcms uses this:
-    mng_set_srgb(hmng, MNG_TRUE );
+    mng_set_srgb(hmng, MNG_TRUE);
     // Set white as background color:
     uint16_t Red, Green, Blue;
     Red = Green = Blue = (255 << 8) + 255;
-    mng_set_bgcolor(hmng, Red, Green, Blue );
+    mng_set_bgcolor(hmng, Red, Green, Blue);
     // If PNG Background is available, use it:
-    mng_set_usebkgd(hmng, MNG_TRUE );
+    mng_set_usebkgd(hmng, MNG_TRUE);
 
     // No need to store chunks:
     mng_set_storechunks(hmng, MNG_FALSE);
@@ -395,14 +395,14 @@ bool CxImageMNG::Encode(CxFile *hFile)
       cx_throw("could not initialize libmng");
     }
 
-    mng_setcb_openstream(hmng, mymngopenstreamwrite );
+    mng_setcb_openstream(hmng, mymngopenstreamwrite);
     mng_setcb_closestream(hmng, mymngclosestream);
     mng_setcb_writedata(hmng, mymngwritestream);
 
     // Write File:
     mng_create(hmng);
     // Just a single Frame (save a normal PNG):
-    WritePNG(hmng, 0, 1 );
+    WritePNG(hmng, 0, 1);
     // Now write file:
     mng_write(hmng);
 
@@ -418,20 +418,20 @@ bool CxImageMNG::Encode(CxFile *hFile)
 }
 ////////////////////////////////////////////////////////////////////////////////
 // Writes a single PNG datastream
-void CxImageMNG::WritePNG( mng_handle hMNG, int32_t Frame, int32_t FrameCount )
+void CxImageMNG::WritePNG(mng_handle hMNG, int32_t Frame, int32_t FrameCount)
 {
   mngstuff *mymng = (mngstuff *)mng_get_userdata(hMNG);
 
   int32_t OffsetX = 0, OffsetY = 0, OffsetW = mymng->width, OffsetH = mymng->height;
 
-  uint8_t *tmpbuffer = new uint8_t[ (mymng->effwdt + 1) * mymng->height];
+  uint8_t *tmpbuffer = new uint8_t[(mymng->effwdt + 1) * mymng->height];
 
-  if ( tmpbuffer == 0 ) {
+  if (tmpbuffer == 0) {
     return;
   }
 
   // Write DEFI chunk.
-  mng_putchunk_defi( hMNG, 0, 0, 0, MNG_TRUE, OffsetX, OffsetY, MNG_FALSE, 0, 0, 0, 0 );
+  mng_putchunk_defi(hMNG, 0, 0, 0, MNG_TRUE, OffsetX, OffsetY, MNG_FALSE, 0, 0, 0, 0);
 
   // Write Header:
   mng_putchunk_ihdr(
@@ -445,7 +445,7 @@ void CxImageMNG::WritePNG( mng_handle hMNG, int32_t Frame, int32_t FrameCount )
   );
 
   // transfer data, add Filterbyte:
-  for ( int32_t Row = 0; Row < OffsetH; Row++ ) {
+  for (int32_t Row = 0; Row < OffsetH; Row++) {
     // First Byte in each Scanline is Filterbyte: Currently 0 -> No Filter.
     tmpbuffer[Row * (mymng->effwdt + 1)] = 0;
     // Copy the scanline: (reverse order)
@@ -458,7 +458,7 @@ void CxImageMNG::WritePNG( mng_handle hMNG, int32_t Frame, int32_t FrameCount )
   // Compress data with ZLib (Deflate):
   uint8_t *dstbuffer = new uint8_t[(mymng->effwdt + 1)*OffsetH];
 
-  if ( dstbuffer == 0 ) {
+  if (dstbuffer == 0) {
     return;
   }
 
@@ -466,12 +466,12 @@ void CxImageMNG::WritePNG( mng_handle hMNG, int32_t Frame, int32_t FrameCount )
 
   // Compress data:
   if (Z_OK != compress2((Bytef *)dstbuffer, (ULONG *)&dstbufferSize, (const Bytef *)tmpbuffer,
-                        (ULONG) (mymng->effwdt + 1)*OffsetH, 9 )) {
+                        (ULONG)(mymng->effwdt + 1)*OffsetH, 9)) {
     return;
   }
 
   // Write Data into MNG File:
-  mng_putchunk_idat( hMNG, dstbufferSize, (mng_ptr *)dstbuffer);
+  mng_putchunk_idat(hMNG, dstbufferSize, (mng_ptr *)dstbuffer);
   mng_putchunk_iend(hMNG);
 
   // Free the stuff:

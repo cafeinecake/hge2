@@ -88,7 +88,7 @@ public:
   mng_handle hmng;
   mngstuff mnginfo;
 protected:
-  void WritePNG(mng_handle hMNG, int32_t Frame, int32_t FrameCount );
+  void WritePNG(mng_handle hMNG, int32_t Frame, int32_t FrameCount);
   void SetCallbacks(mng_handle mng);
 };
 

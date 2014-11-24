@@ -45,7 +45,7 @@ bool CxImageRAW::Decode(CxFile *hFile)
     }
 
     // set return point for error handling
-    if (setjmp (dcr.failure))
+    if (setjmp(dcr.failure))
     {
       cx_throw("");
     }
@@ -89,20 +89,20 @@ bool CxImageRAW::Decode(CxFile *hFile)
     // install custom camera matrix
     if (dcr.opt.use_camera_matrix && dcr.cmatrix[0][0] > 0.25)
     {
-      memcpy (dcr.rgb_cam, dcr.cmatrix, sizeof dcr.cmatrix);
+      memcpy(dcr.rgb_cam, dcr.cmatrix, sizeof dcr.cmatrix);
       dcr.raw_color = 0;
     } else {
       dcr.opt.use_camera_wb = 1;
     }
 
     // allocate memory for the image
-    dcr.image = (ushort (*)[4]) calloc (dcr.iheight * dcr.iwidth, sizeof * dcr.image);
-    dcr_merror (&dcr, dcr.image, szClass);
+    dcr.image = (ushort(*)[4]) calloc(dcr.iheight * dcr.iwidth, sizeof * dcr.image);
+    dcr_merror(&dcr, dcr.image, szClass);
 
     if (dcr.meta_length)
     {
-      dcr.meta_data = (char *) malloc (dcr.meta_length);
-      dcr_merror (&dcr, dcr.meta_data, szClass);
+      dcr.meta_data = (char *) malloc(dcr.meta_length);
+      dcr_merror(&dcr, dcr.meta_data, szClass);
     }
 
     // start image decoder
@@ -119,7 +119,7 @@ bool CxImageRAW::Decode(CxFile *hFile)
 
     if (dcr.opt.dark_frame)
     {
-      dcr_subtract (&dcr, dcr.opt.dark_frame);
+      dcr_subtract(&dcr, dcr.opt.dark_frame);
     }
 
     dcr.quality = 2 + !dcr.fuji_width;
@@ -206,7 +206,7 @@ bool CxImageRAW::Decode(CxFile *hFile)
 
     if (dcr.opt.cam_profile)
     {
-      dcr_apply_profile (dcr.opt.cam_profile, dcr.opt.out_profile);
+      dcr_apply_profile(dcr.opt.cam_profile, dcr.opt.out_profile);
     }
 
 #endif
@@ -233,21 +233,21 @@ bool CxImageRAW::Decode(CxFile *hFile)
       cx_throw("");
     }
 
-    uchar  *ppm = (uchar *) calloc (dcr.width, dcr.colors *dcr.opt.output_bps / 8);
+    uchar  *ppm = (uchar *) calloc(dcr.width, dcr.colors *dcr.opt.output_bps / 8);
     ushort *ppm2 = (ushort *) ppm;
-    dcr_merror (&dcr, ppm, szClass);
+    dcr_merror(&dcr, ppm, szClass);
 
     uchar lut[0x10000];
 
     if (dcr.opt.output_bps == 8)
     {
-      dcr_gamma_lut (&dcr, lut);
+      dcr_gamma_lut(&dcr, lut);
     }
 
     int32_t c, row, col, soff, rstep, cstep;
-    soff  = dcr_flip_index (&dcr, 0, 0);
-    cstep = dcr_flip_index (&dcr, 0, 1) - soff;
-    rstep = dcr_flip_index (&dcr, 1, 0) - dcr_flip_index (&dcr, 0, dcr.width);
+    soff  = dcr_flip_index(&dcr, 0, 0);
+    cstep = dcr_flip_index(&dcr, 0, 1) - soff;
+    rstep = dcr_flip_index(&dcr, 1, 0) - dcr_flip_index(&dcr, 0, dcr.width);
 
     for (row = 0; row < dcr.height; row++, soff += rstep)
     {
@@ -264,10 +264,10 @@ bool CxImageRAW::Decode(CxFile *hFile)
 
       if (dcr.opt.output_bps == 16 && !dcr.opt.output_tiff && htons(0x55aa) != 0x55aa)
 #if defined(_LINUX) || defined(__APPLE__)
-        swab ((char *)ppm2, (char *)ppm2, dcr.width * dcr.colors * 2);
+        swab((char *)ppm2, (char *)ppm2, dcr.width * dcr.colors * 2);
 
 #else
-        _swab ((char *)ppm2, (char *)ppm2, dcr.width * dcr.colors * 2);
+        _swab((char *)ppm2, (char *)ppm2, dcr.width * dcr.colors * 2);
 #endif
 
       uint32_t size = dcr.width * (dcr.colors * dcr.opt.output_bps / 8);
@@ -275,7 +275,7 @@ bool CxImageRAW::Decode(CxFile *hFile)
       memcpy(GetBits(dcr.height - 1 - row), ppm, min(size, GetEffWidth()));
     }
 
-    free (ppm);
+    free(ppm);
 
 
     dcr_cleanup_dcraw(&dcr);
@@ -331,7 +331,7 @@ bool CxImageRAW::GetExifThumbnail(const TCHAR *filename, const TCHAR *outname, i
     }
 
     // set return point for error handling
-    if (setjmp (dcr.failure))
+    if (setjmp(dcr.failure))
     {
       cx_throw("");
     }

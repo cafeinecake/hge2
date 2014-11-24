@@ -232,14 +232,14 @@ png_text_compress(png_structp png_ptr,
           old_ptr = comp->output_ptr;
           comp->output_ptr = (png_charpp)png_malloc(png_ptr,
                              (png_uint_32)(comp->max_output_ptr *
-                                           png_sizeof (png_charpp)));
+                                           png_sizeof(png_charpp)));
           png_memcpy(comp->output_ptr, old_ptr, old_max
-                     * png_sizeof (png_charp));
+                     * png_sizeof(png_charp));
           png_free(png_ptr, old_ptr);
         } else
           comp->output_ptr = (png_charpp)png_malloc(png_ptr,
                              (png_uint_32)(comp->max_output_ptr *
-                                           png_sizeof (png_charp)));
+                                           png_sizeof(png_charp)));
       }
 
       /* save the data */
@@ -279,14 +279,14 @@ png_text_compress(png_structp png_ptr,
             /* This could be optimized to realloc() */
             comp->output_ptr = (png_charpp)png_malloc(png_ptr,
                                (png_uint_32)(comp->max_output_ptr *
-                                             png_sizeof (png_charpp)));
+                                             png_sizeof(png_charpp)));
             png_memcpy(comp->output_ptr, old_ptr,
-                       old_max * png_sizeof (png_charp));
+                       old_max * png_sizeof(png_charp));
             png_free(png_ptr, old_ptr);
           } else
             comp->output_ptr = (png_charpp)png_malloc(png_ptr,
                                (png_uint_32)(comp->max_output_ptr *
-                                             png_sizeof (png_charp)));
+                                             png_sizeof(png_charp)));
         }
 
         /* save off the data */
@@ -1732,8 +1732,8 @@ png_write_start_row(png_structp png_ptr)
     png_memset(png_ptr->prev_row, 0, buf_size);
 
     if (png_ptr->do_filter & PNG_FILTER_UP) {
-      png_ptr->up_row = (png_bytep )png_malloc(png_ptr,
-                        (png_ptr->rowbytes + 1));
+      png_ptr->up_row = (png_bytep)png_malloc(png_ptr,
+                                              (png_ptr->rowbytes + 1));
       png_ptr->up_row[0] = PNG_FILTER_VALUE_UP;
     }
 
@@ -1744,7 +1744,7 @@ png_write_start_row(png_structp png_ptr)
     }
 
     if (png_ptr->do_filter & PNG_FILTER_PAETH) {
-      png_ptr->paeth_row = (png_bytep )png_malloc(png_ptr,
+      png_ptr->paeth_row = (png_bytep)png_malloc(png_ptr,
                            (png_ptr->rowbytes + 1));
       png_ptr->paeth_row[0] = PNG_FILTER_VALUE_PAETH;
     }

@@ -147,7 +147,7 @@ bool CxImageTGA::Decode(CxFile *hFile)
       if (bCompressed) {
         rleLeftover = ExpandCompressedLine(pDest, &tgaHead, hFile, tgaHead.ImageWidth, y, rleLeftover);
       } else {
-        ExpandUncompressedLine  (pDest, &tgaHead, hFile, tgaHead.ImageWidth, y, 0);
+        ExpandUncompressedLine(pDest, &tgaHead, hFile, tgaHead.ImageWidth, y, 0);
       }
     }
 
@@ -271,7 +271,7 @@ uint8_t CxImageTGA::ExpandCompressedLine(uint8_t *pDest, TGAHEADER *ptgaHead, Cx
   uint8_t rle;
   int32_t filePos = 0;
 
-  for (int32_t x = 0; x < width; ) {
+  for (int32_t x = 0; x < width;) {
     if (rleLeftover != 255) {
       rle = rleLeftover;
       rleLeftover = 255;
@@ -319,9 +319,9 @@ uint8_t CxImageTGA::ExpandCompressedLine(uint8_t *pDest, TGAHEADER *ptgaHead, Cx
         uint16_t pixel;
         hFile->Read(&pixel, 2, 1);
         rgb_color triple;
-        triple.r = static_cast<uint8_t>(( pixel & 0x1F ) * 8);     // red
-        triple.g = static_cast<uint8_t>(( pixel >> 2 ) & 0x0F8);   // green
-        triple.b = static_cast<uint8_t>(( pixel >> 7 ) & 0x0F8);   // blue
+        triple.r = static_cast<uint8_t>((pixel & 0x1F) * 8);       // red
+        triple.g = static_cast<uint8_t>((pixel >> 2) & 0x0F8);     // green
+        triple.b = static_cast<uint8_t>((pixel >> 7) & 0x0F8);     // blue
 
         for (int32_t ix = 0; ix < rle; ix++) {
           memcpy(&pDest[3 * ix], &triple, 3);
@@ -381,9 +381,9 @@ void CxImageTGA::ExpandUncompressedLine(uint8_t *pDest, TGAHEADER *ptgaHead, CxF
 
     for (int32_t x = 0; x < width; x++) {
       hFile->Read(&pixel, 2, 1);
-      *dst++ = static_cast<uint8_t>(( pixel & 0x1F ) * 8);     // blue
-      *dst++ = static_cast<uint8_t>(( pixel >> 2 ) & 0x0F8);   // green
-      *dst++ = static_cast<uint8_t>(( pixel >> 7 ) & 0x0F8);   // red
+      *dst++ = static_cast<uint8_t>((pixel & 0x1F) * 8);       // blue
+      *dst++ = static_cast<uint8_t>((pixel >> 2) & 0x0F8);     // green
+      *dst++ = static_cast<uint8_t>((pixel >> 7) & 0x0F8);     // red
     }
 
     break;

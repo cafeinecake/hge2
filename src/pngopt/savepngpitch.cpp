@@ -6,14 +6,14 @@
 class PNGError {};
 
 static void WarningCallback(png_structp /*png_ptr*/,
-                     png_const_charp msg)
+                            png_const_charp msg)
 {
   hge->System_Log("LIBPNG Warning: %s", msg);
 }
 
 static void HGE_NORETURN
 ErrorCallback(png_structp /*png_ptr*/,
-                   png_const_charp msg)
+              png_const_charp msg)
 {
   hge->System_Log("LIBPNG Error: %s", msg);
   throw PNGError();
@@ -45,27 +45,27 @@ bool Write32BitPNGWithPitch(FILE *fp, void *pBits, bool bNeedAlpha, int nWidth, 
     png_init_io(png_ptr, fp);
 
     //  setup params
-    if ( bNeedAlpha ) {
-      png_set_IHDR( png_ptr, info_ptr,
-                    static_cast<uint32_t>(nWidth),
-                    static_cast<uint32_t>(nHeight),
-                    8,
-                    PNG_COLOR_TYPE_RGB_ALPHA,
-                    PNG_INTERLACE_NONE,
-                    PNG_COMPRESSION_TYPE_DEFAULT, PNG_FILTER_TYPE_DEFAULT);
+    if (bNeedAlpha) {
+      png_set_IHDR(png_ptr, info_ptr,
+                   static_cast<uint32_t>(nWidth),
+                   static_cast<uint32_t>(nHeight),
+                   8,
+                   PNG_COLOR_TYPE_RGB_ALPHA,
+                   PNG_INTERLACE_NONE,
+                   PNG_COMPRESSION_TYPE_DEFAULT, PNG_FILTER_TYPE_DEFAULT);
     } else {
-      png_set_IHDR( png_ptr, info_ptr,
-                    static_cast<uint32_t>(nWidth),
-                    static_cast<uint32_t>(nHeight),
-                    8,
-                    PNG_COLOR_TYPE_RGB,
-                    PNG_INTERLACE_NONE,
-                    PNG_COMPRESSION_TYPE_DEFAULT, PNG_FILTER_TYPE_DEFAULT);
+      png_set_IHDR(png_ptr, info_ptr,
+                   static_cast<uint32_t>(nWidth),
+                   static_cast<uint32_t>(nHeight),
+                   8,
+                   PNG_COLOR_TYPE_RGB,
+                   PNG_INTERLACE_NONE,
+                   PNG_COMPRESSION_TYPE_DEFAULT, PNG_FILTER_TYPE_DEFAULT);
     }
 
     png_write_info(png_ptr, info_ptr);
 
-    if ( !bNeedAlpha ) {
+    if (!bNeedAlpha) {
       png_set_filler(png_ptr, 0, PNG_FILLER_AFTER);  // strip alpha
     }
 
@@ -74,8 +74,8 @@ bool Write32BitPNGWithPitch(FILE *fp, void *pBits, bool bNeedAlpha, int nWidth, 
     //  writing
     unsigned char *pSrc = reinterpret_cast<unsigned char *>(pBits);
 
-    for ( int i = 0; i < nHeight; i++, pSrc += nPitch * 4 ) {
-      png_write_row( png_ptr, pSrc );
+    for (int i = 0; i < nHeight; i++, pSrc += nPitch * 4) {
+      png_write_row(png_ptr, pSrc);
     }
 
     png_write_end(png_ptr, info_ptr);
@@ -85,6 +85,6 @@ bool Write32BitPNGWithPitch(FILE *fp, void *pBits, bool bNeedAlpha, int nWidth, 
   }
 
   //  cleanup
-  png_destroy_write_struct( &png_ptr, (info_ptr == 0) ? NULL : &info_ptr);
+  png_destroy_write_struct(&png_ptr, (info_ptr == 0) ? NULL : &info_ptr);
   return true;
 }

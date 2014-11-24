@@ -70,7 +70,7 @@ typedef enum {
   finish_done     /* finish done, accept no more input or output */
 } block_state;
 
-typedef block_state (*compress_func) OF((deflate_state *s, int flush));
+typedef block_state(*compress_func) OF((deflate_state *s, int flush));
 /* Compression function. Returns the block state after the call. */
 
 local void fill_window    OF((deflate_state *s));
@@ -306,7 +306,7 @@ int stream_size;
   s->hash_bits = memLevel + 7;
   s->hash_size = 1 << s->hash_bits;
   s->hash_mask = s->hash_size - 1;
-  s->hash_shift =  ((s->hash_bits + MIN_MATCH - 1) / MIN_MATCH);
+  s->hash_shift = ((s->hash_bits + MIN_MATCH - 1) / MIN_MATCH);
 
   s->window = (Bytef *) ZALLOC(strm, s->w_size, 2 * sizeof(Byte));
   s->prev   = (Posf *)  ZALLOC(strm, s->w_size, sizeof(Pos));
@@ -324,7 +324,7 @@ int stream_size;
       s->pending_buf == Z_NULL) {
     s->status = FINISH_STATE;
     strm->msg = (char *)ERR_MSG(Z_MEM_ERROR);
-    deflateEnd (strm);
+    deflateEnd(strm);
     return Z_MEM_ERROR;
   }
 
@@ -339,7 +339,7 @@ int stream_size;
 }
 
 /* ========================================================================= */
-int ZEXPORT deflateSetDictionary (strm, dictionary, dictLength)
+int ZEXPORT deflateSetDictionary(strm, dictionary, dictLength)
 z_streamp strm;
 const Bytef *dictionary;
 uInt  dictLength;
@@ -393,7 +393,7 @@ uInt  dictLength;
 }
 
 /* ========================================================================= */
-int ZEXPORT deflateReset (strm)
+int ZEXPORT deflateReset(strm)
 z_streamp strm;
 {
   deflate_state *s;
@@ -430,7 +430,7 @@ z_streamp strm;
 }
 
 /* ========================================================================= */
-int ZEXPORT deflateSetHeader (strm, head)
+int ZEXPORT deflateSetHeader(strm, head)
 z_streamp strm;
 gz_headerp head;
 {
@@ -447,7 +447,7 @@ gz_headerp head;
 }
 
 /* ========================================================================= */
-int ZEXPORT deflatePrime (strm, bits, value)
+int ZEXPORT deflatePrime(strm, bits, value)
 z_streamp strm;
 int bits;
 int value;
@@ -631,7 +631,7 @@ uLong sourceLen;
  * IN assertion: the stream state is correct and there is enough room in
  * pending_buf.
  */
-local void putShortMSB (s, b)
+local void putShortMSB(s, b)
 deflate_state *s;
 uInt b;
 {
@@ -671,7 +671,7 @@ z_streamp strm;
 }
 
 /* ========================================================================= */
-int ZEXPORT deflate (strm, flush)
+int ZEXPORT deflate(strm, flush)
 z_streamp strm;
 int flush;
 {
@@ -1042,7 +1042,7 @@ int flush;
 }
 
 /* ========================================================================= */
-int ZEXPORT deflateEnd (strm)
+int ZEXPORT deflateEnd(strm)
 z_streamp strm;
 {
   int status;
@@ -1080,7 +1080,7 @@ z_streamp strm;
  * To simplify the source, this is not supported for 16-bit MSDOS (which
  * doesn't have enough memory anyway to duplicate compression states).
  */
-int ZEXPORT deflateCopy (dest, source)
+int ZEXPORT deflateCopy(dest, source)
 z_streamp dest;
 z_streamp source;
 {
@@ -1118,7 +1118,7 @@ z_streamp source;
 
   if (ds->window == Z_NULL || ds->prev == Z_NULL || ds->head == Z_NULL ||
       ds->pending_buf == Z_NULL) {
-    deflateEnd (dest);
+    deflateEnd(dest);
     return Z_MEM_ERROR;
   }
 
@@ -1184,7 +1184,7 @@ unsigned size;
 /* ===========================================================================
  * Initialize the "longest match" routines for a new zlib stream
  */
-local void lm_init (s)
+local void lm_init(s)
 deflate_state *s;
 {
   s->window_size = (ulg)2L * s->w_size;
@@ -1775,7 +1775,7 @@ int flush;
        * of window index 0 (in particular we have to avoid a match
        * of the string with itself at the start of the input file).
        */
-      s->match_length = longest_match (s, hash_head);
+      s->match_length = longest_match(s, hash_head);
       /* longest_match() sets match_start */
     }
 
@@ -1822,7 +1822,7 @@ int flush;
     } else {
       /* No match, output a literal byte */
       Tracevv((stderr, "%c", s->window[s->strstart]));
-      _tr_tally_lit (s, s->window[s->strstart], bflush);
+      _tr_tally_lit(s, s->window[s->strstart], bflush);
       s->lookahead--;
       s->strstart++;
     }
@@ -1888,7 +1888,7 @@ int flush;
        * of window index 0 (in particular we have to avoid a match
        * of the string with itself at the start of the input file).
        */
-      s->match_length = longest_match (s, hash_head);
+      s->match_length = longest_match(s, hash_head);
       /* longest_match() sets match_start */
 
       if (s->match_length <= 5 && (s->strategy == Z_FILTERED
@@ -1967,7 +1967,7 @@ int flush;
     }
   }
 
-  Assert (flush != Z_NO_FLUSH, "no flush?");
+  Assert(flush != Z_NO_FLUSH, "no flush?");
 
   if (s->match_available) {
     Tracevv((stderr, "%c", s->window[s->strstart - 1]));
@@ -2047,7 +2047,7 @@ int flush;
     } else {
       /* No match, output a literal byte */
       Tracevv((stderr, "%c", s->window[s->strstart]));
-      _tr_tally_lit (s, s->window[s->strstart], bflush);
+      _tr_tally_lit(s, s->window[s->strstart], bflush);
       s->lookahead--;
       s->strstart++;
     }
@@ -2088,7 +2088,7 @@ int flush;
     /* Output a literal byte */
     s->match_length = 0;
     Tracevv((stderr, "%c", s->window[s->strstart]));
-    _tr_tally_lit (s, s->window[s->strstart], bflush);
+    _tr_tally_lit(s, s->window[s->strstart], bflush);
     s->lookahead--;
     s->strstart++;
 

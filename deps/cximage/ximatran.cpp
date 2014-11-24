@@ -2574,7 +2574,7 @@ bool CxImage::Dither(int32_t method)
       for (int32_t x = 0; x < head.biWidth; x++) {
         level = BlindGetPixelIndex(x, y) >> scale;
 
-        if (level > Bmatrix[ (x % order) + order * (y % order) ]) {
+        if (level > Bmatrix[(x % order) + order * (y % order) ]) {
           tmp.SetPixelIndex(x, y, 1);
         } else {
           tmp.SetPixelIndex(x, y, 0);
@@ -2730,8 +2730,8 @@ bool CxImage::Dither(int32_t method)
  * \param  iDst      : pointer to destination image (if 0, this image is modified)
  * \author  [VATI]
  */
-bool CxImage::CropRotatedRectangle( int32_t topx, int32_t topy, int32_t width, int32_t height,
-                                    float angle, CxImage *iDst)
+bool CxImage::CropRotatedRectangle(int32_t topx, int32_t topy, int32_t width, int32_t height,
+                                   float angle, CxImage *iDst)
 {
   if (!pDib) {
     return false;
@@ -2743,8 +2743,8 @@ bool CxImage::CropRotatedRectangle( int32_t topx, int32_t topy, int32_t width, i
   double sin_angle = sin(angle/*/57.295779513082320877*/);
 
   // if there is nothing special, call the original Crop():
-  if ( fabs(angle) < 0.0002 ) {
-    return Crop( topx, topy, topx + width, topy + height, iDst);
+  if (fabs(angle) < 0.0002) {
+    return Crop(topx, topy, topx + width, topy + height, iDst);
   }
 
   startx = std::min(topx, topx - static_cast<int32_t>(sin_angle * static_cast<double>(height)));
@@ -2753,8 +2753,8 @@ bool CxImage::CropRotatedRectangle( int32_t topx, int32_t topy, int32_t width, i
                                        + sin_angle * static_cast<double>(width));
 
   // check: corners of the rectangle must be inside
-  if ( IsInside( startx, topy ) == false ||
-       IsInside( endx, endy ) == false ) {
+  if (IsInside(startx, topy) == false ||
+      IsInside(endx, endy) == false) {
     return false;
   }
 
@@ -2767,15 +2767,15 @@ bool CxImage::CropRotatedRectangle( int32_t topx, int32_t topy, int32_t width, i
     return false;
   }
 
-  if (!tmp.Crop( startx, topy, endx, endy)) {
+  if (!tmp.Crop(startx, topy, endx, endy)) {
     strcpy(info.szLastError, tmp.GetLastError());
     return false;
   }
 
   // the midpoint of the image now became the same as the midpoint of the rectangle
   // rotate new image with minus angle amount
-  if ( false == tmp.Rotate( static_cast<float>(
-                              -angle * 57.295779513082320877) ) ) { // Rotate expects angle in degrees
+  if (false == tmp.Rotate(static_cast<float>(
+                            -angle * 57.295779513082320877))) {   // Rotate expects angle in degrees
     return false;
   }
 
@@ -2785,7 +2785,7 @@ bool CxImage::CropRotatedRectangle( int32_t topx, int32_t topy, int32_t width, i
   starty = (tmp.head.biHeight + height) / 2;
   endy   = (tmp.head.biHeight - height) / 2;
 
-  if ( false == tmp.Crop( startx, starty, endx, endy ) ) {
+  if (false == tmp.Crop(startx, starty, endx, endy)) {
     return false;
   }
 
@@ -3047,7 +3047,7 @@ bool CxImage::Expand(int32_t left, int32_t top, int32_t right, int32_t bottom, R
   case 8:
   case 24: {
     if (head.biBitCount == 8) {
-      uint8_t pixel = tmp.GetNearestIndex( canvascolor);
+      uint8_t pixel = tmp.GetNearestIndex(canvascolor);
       memset(tmp.info.pImage, pixel,
              static_cast<uint32_t>(tmp.info.dwEffWidth * static_cast<uint32_t>(newHeight)));
     } else {

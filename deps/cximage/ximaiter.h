@@ -42,17 +42,17 @@ protected:
   CxImage *ima;
 public:
   // Constructors
-  CImageIterator ( void );
-  CImageIterator ( CxImage *image );
+  CImageIterator(void);
+  CImageIterator(CxImage *image);
   operator CxImage *();
 
   // Iterators
-  BOOL ItOK ();
-  void Reset ();
-  void Upset ();
+  BOOL ItOK();
+  void Reset();
+  void Upset();
   void SetRow(uint8_t *buf, int32_t n);
   void GetRow(uint8_t *buf, int32_t n);
-  uint8_t GetByte( )
+  uint8_t GetByte()
   {
     return IterImage[Itx];
   }
@@ -116,7 +116,7 @@ CImageIterator::operator CxImage *()
   return ima;
 }
 /////////////////////////////////////////////////////////////////////
-inline BOOL CImageIterator::ItOK ()
+inline BOOL CImageIterator::ItOK()
 {
   if (ima) {
     return ima->IsInside(Itx, Ity);

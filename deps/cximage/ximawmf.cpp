@@ -187,7 +187,7 @@ bool CxImageWMF::Decode(CxFile *hFile, int32_t nForceWidth, int32_t nForceHeight
 
       if (iEntries) {
         if ((plogPal = (PLOGPALETTE)GlobalAlloc(GMEM_FIXED | GMEM_ZEROINIT,
-                                                sizeof(uint32_t) + sizeof(PALETTEENTRY) * iEntries )) == NULL) {
+                                                sizeof(uint32_t) + sizeof(PALETTEENTRY) * iEntries)) == NULL) {
           DeleteObject(hBitmap);
           DeleteDC(hDC);
           DeleteEnhMetaFile(hMeta);

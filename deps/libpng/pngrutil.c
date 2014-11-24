@@ -25,7 +25,7 @@ __inline double strtod(const char *nptr, char **endptr)
   len = MultiByteToWideChar(CP_ACP, 0, nptr, -1, NULL, 0);
   str = (wchar_t *)malloc(len * sizeof(wchar_t));
 
-  if ( NULL != str ) {
+  if (NULL != str) {
     MultiByteToWideChar(CP_ACP, 0, nptr, -1, str, len);
     result = wcstod(str, &end);
     len = WideCharToMultiByte(CP_ACP, 0, end, -1, NULL, 0, NULL, NULL);
@@ -1033,7 +1033,7 @@ png_handle_iCCP(png_structp png_ptr, png_infop info_ptr, png_uint_32 length)
 
   /* there should be at least one zero (the compression type byte)
      following the separator, and we should be on it  */
-  if ( profile >= chunkdata + slength) {
+  if (profile >= chunkdata + slength) {
     png_free(png_ptr, chunkdata);
     png_warning(png_ptr, "Malformed iCCP chunk");
     return;
@@ -1054,7 +1054,7 @@ png_handle_iCCP(png_structp png_ptr, png_infop info_ptr, png_uint_32 length)
 
   profile_length = data_length - prefix_length;
 
-  if ( prefix_length > data_length || profile_length < 4) {
+  if (prefix_length > data_length || profile_length < 4) {
     png_free(png_ptr, chunkdata);
     png_warning(png_ptr, "Profile size field missing from iCCP chunk");
     return;
@@ -1062,10 +1062,10 @@ png_handle_iCCP(png_structp png_ptr, png_infop info_ptr, png_uint_32 length)
 
   /* Check the profile_size recorded in the first 32 bits of the ICC profile */
   pC = (png_bytep)(chunkdata + prefix_length);
-  profile_size = ((*(pC  )) << 24) |
+  profile_size = ((*(pC)) << 24) |
                  ((*(pC + 1)) << 16) |
                  ((*(pC + 2)) << 8) |
-                 ((*(pC + 3))    );
+                 ((*(pC + 3)));
 
   if (profile_size < profile_length) {
     profile_length = profile_size;
@@ -1152,9 +1152,9 @@ png_handle_sPLT(png_structp png_ptr, png_infop info_ptr, png_uint_32 length)
     return;
   }
 
-  new_palette.nentries = (png_uint_32) (data_length / entry_size);
+  new_palette.nentries = (png_uint_32)(data_length / entry_size);
 
-  if ((png_uint_32) new_palette.nentries > (png_uint_32) (PNG_SIZE_MAX /
+  if ((png_uint_32) new_palette.nentries > (png_uint_32)(PNG_SIZE_MAX /
       png_sizeof(png_sPLT_entry))) {
     png_warning(png_ptr, "sPLT chunk too long");
     return;
@@ -2186,7 +2186,7 @@ png_handle_unknown(png_structp png_ptr, png_infop info_ptr, png_uint_32 length)
 
     if (png_ptr->read_user_chunk_fn != NULL) {
       /* callback to user unknown chunk handler */
-      if ((*(png_ptr->read_user_chunk_fn)) (png_ptr, &chunk) <= 0) {
+      if ((*(png_ptr->read_user_chunk_fn))(png_ptr, &chunk) <= 0) {
         if (!(png_ptr->chunk_name[0] & 0x20))
           if (png_handle_as_unknown(png_ptr, png_ptr->chunk_name) !=
               PNG_HANDLE_CHUNK_ALWAYS) {
@@ -2722,13 +2722,13 @@ png_read_filter_row(png_structp png_ptr, png_row_infop row_info, png_bytep row,
 
     for (i = 0; i < bpp; i++) {
       *rp = (png_byte)(((int)(*rp) +
-                        ((int)(*pp++) / 2 )) & 0xff);
+                        ((int)(*pp++) / 2)) & 0xff);
       rp++;
     }
 
     for (i = 0; i < istop; i++) {
       *rp = (png_byte)(((int)(*rp) +
-                        (int)(*pp++ + *lp++) / 2 ) & 0xff);
+                        (int)(*pp++ + *lp++) / 2) & 0xff);
       rp++;
     }
 

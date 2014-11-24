@@ -303,7 +303,7 @@ png_combine_row(png_structp png_ptr, png_bytep row, int mask)
 #if !defined(PNG_1_0_X)
 
         if ((png_ptr->asm_flags & PNG_ASM_FLAG_MMX_READ_COMBINE_ROW)
-            /* && mmx_supported */ )
+            /* && mmx_supported */)
 #else
         if (mmx_supported)
 #endif
@@ -405,7 +405,7 @@ png_combine_row(png_structp png_ptr, png_bytep row, int mask)
 #if !defined(PNG_1_0_X)
 
         if ((png_ptr->asm_flags & PNG_ASM_FLAG_MMX_READ_COMBINE_ROW)
-            /* && mmx_supported */ )
+            /* && mmx_supported */)
 #else
         if (mmx_supported)
 #endif
@@ -527,7 +527,7 @@ png_combine_row(png_structp png_ptr, png_bytep row, int mask)
 #if !defined(PNG_1_0_X)
 
         if ((png_ptr->asm_flags & PNG_ASM_FLAG_MMX_READ_COMBINE_ROW)
-            /* && mmx_supported */ )
+            /* && mmx_supported */)
 #else
         if (mmx_supported)
 #endif
@@ -660,7 +660,7 @@ png_combine_row(png_structp png_ptr, png_bytep row, int mask)
 #if !defined(PNG_1_0_X)
 
         if ((png_ptr->asm_flags & PNG_ASM_FLAG_MMX_READ_COMBINE_ROW)
-            /* && mmx_supported */ )
+            /* && mmx_supported */)
 #else
         if (mmx_supported)
 #endif
@@ -796,7 +796,7 @@ png_combine_row(png_structp png_ptr, png_bytep row, int mask)
 #if !defined(PNG_1_0_X)
 
         if ((png_ptr->asm_flags & PNG_ASM_FLAG_MMX_READ_COMBINE_ROW)
-            /* && mmx_supported */ )
+            /* && mmx_supported */)
 #else
         if (mmx_supported)
 #endif
@@ -1184,7 +1184,7 @@ png_do_read_interlace(png_structp png_ptr)
 #if !defined(PNG_1_0_X)
 
         if ((png_ptr->asm_flags & PNG_ASM_FLAG_MMX_READ_INTERLACE)
-            /* && mmx_supported */ )
+            /* && mmx_supported */)
 #else
         if (mmx_supported)
 #endif
@@ -1839,7 +1839,7 @@ png_do_read_interlace(png_structp png_ptr)
       } /* end of mmx_supported */
 
       else /* MMX not supported:  use modified C code - takes advantage
-            * of inlining of memcpy for a constant */
+          * of inlining of memcpy for a constant */
       {
         if (pixel_bytes == 1) {
           for (i = width; i; i--) {
@@ -2011,7 +2011,7 @@ png_read_filter_row_mmx_avg(png_row_infop row_info, png_bytep row
   } // end _asm block
 
   // Now do the math for the rest of the row
-  switch ( bpp ) {
+  switch (bpp) {
   case 3: {
       ActiveMask.use  = 0x0000000000ffffff;
       ShiftBpp.use = 24;    // == 3 * 8
@@ -2489,7 +2489,7 @@ png_read_filter_row_mmx_paeth(png_row_infop row_info, png_bytep row,
   } // end _asm block
 
   // Now do the math for the rest of the row
-  switch ( bpp ) {
+  switch (bpp) {
   case 3: {
       ActiveMask.use = 0x0000000000ffffff;
       ActiveMaskEnd.use = 0xffff000000000000;
@@ -3308,7 +3308,7 @@ png_read_filter_row_mmx_sub(png_row_infop row_info, png_bytep row)
   } // end _asm block
 
   // Now do the math for the rest of the row
-  switch ( bpp ) {
+  switch (bpp) {
   case 3: {
       ActiveMask.use  = 0x0000ffffff000000;
       ShiftBpp.use = 24;       // == 3 * 8

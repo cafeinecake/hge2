@@ -898,7 +898,7 @@ png_get_unknown_chunks(png_structp png_ptr, png_infop info_ptr,
 
 #if defined(PNG_READ_RGB_TO_GRAY_SUPPORTED)
 png_byte PNGAPI
-png_get_rgb_to_gray_status (png_structp png_ptr)
+png_get_rgb_to_gray_status(png_structp png_ptr)
 {
   return (png_byte)(png_ptr ? png_ptr->rgb_to_gray_status : 0);
 }
@@ -924,14 +924,14 @@ png_get_compression_buffer_size(png_structp png_ptr)
 #ifdef PNG_ASSEMBLER_CODE_SUPPORTED
 /* this function was added to libpng 1.2.0 and should exist by default */
 png_uint_32 PNGAPI
-png_get_asm_flags (png_structp png_ptr)
+png_get_asm_flags(png_structp png_ptr)
 {
   return (png_uint_32)(png_ptr ? png_ptr->asm_flags : 0L);
 }
 
 /* this function was added to libpng 1.2.0 and should exist by default */
 png_uint_32 PNGAPI
-png_get_asm_flagmask (int flag_select)
+png_get_asm_flagmask(int flag_select)
 {
   png_uint_32 settable_asm_flags = 0;
 
@@ -964,7 +964,7 @@ png_get_asm_flagmask (int flag_select)
 /* GRR:  could add this:   && defined(PNG_MMX_CODE_SUPPORTED) */
 /* this function was added to libpng 1.2.0 */
 png_uint_32 PNGAPI
-png_get_mmx_flagmask (int flag_select, int *compilerID)
+png_get_mmx_flagmask(int flag_select, int *compilerID)
 {
   png_uint_32 settable_mmx_flags = 0;
 
@@ -1003,14 +1003,14 @@ png_get_mmx_flagmask (int flag_select, int *compilerID)
 
 /* this function was added to libpng 1.2.0 */
 png_byte PNGAPI
-png_get_mmx_bitdepth_threshold (png_structp png_ptr)
+png_get_mmx_bitdepth_threshold(png_structp png_ptr)
 {
   return (png_byte)(png_ptr ? png_ptr->mmx_bitdepth_threshold : 0);
 }
 
 /* this function was added to libpng 1.2.0 */
 png_uint_32 PNGAPI
-png_get_mmx_rowbytes_threshold (png_structp png_ptr)
+png_get_mmx_rowbytes_threshold(png_structp png_ptr)
 {
   return (png_uint_32)(png_ptr ? png_ptr->mmx_rowbytes_threshold : 0L);
 }
@@ -1019,12 +1019,12 @@ png_get_mmx_rowbytes_threshold (png_structp png_ptr)
 #ifdef PNG_SET_USER_LIMITS_SUPPORTED
 /* these functions were added to libpng 1.2.6 */
 png_uint_32 PNGAPI
-png_get_user_width_max (png_structp png_ptr)
+png_get_user_width_max(png_structp png_ptr)
 {
   return (png_ptr ? png_ptr->user_width_max : 0);
 }
 png_uint_32 PNGAPI
-png_get_user_height_max (png_structp png_ptr)
+png_get_user_height_max(png_structp png_ptr)
 {
   return (png_ptr ? png_ptr->user_height_max : 0);
 }

@@ -37,7 +37,7 @@ struct DIBINFO : public BITMAPINFO {
 
 int32_t BytesPerLine(int32_t nWidth, int32_t nBitsPerPixel)
 {
-  return ( (nWidth * nBitsPerPixel + 31) & (~31) ) / 8;
+  return ((nWidth * nBitsPerPixel + 31) & (~31)) / 8;
 }
 
 int32_t NumColorEntries(int32_t nBitsPerPixel, int32_t nCompression, uint32_t biClrUsed)
@@ -380,7 +380,7 @@ bool CxImage::CreateFromHANDLE(HANDLE hMem)
           BOOL low_nibble = FALSE;
           CImageIterator iter(this);
 
-          for (BOOL bContinue = TRUE; bContinue; ) {
+          for (BOOL bContinue = TRUE; bContinue;) {
             status_byte = *(lpDIBBits++);
 
             switch (status_byte) {
@@ -440,7 +440,7 @@ bool CxImage::CreateFromHANDLE(HANDLE hMem)
                   low_nibble = !low_nibble;
                 }
 
-                if ((((status_byte + 1) >> 1) & 1 ) == 1) {
+                if ((((status_byte + 1) >> 1) & 1) == 1) {
                   second_byte = *(lpDIBBits++);
                 }
 
@@ -488,7 +488,7 @@ bool CxImage::CreateFromHANDLE(HANDLE hMem)
           int32_t bits = 0;
           CImageIterator iter(this);
 
-          for (BOOL bContinue = TRUE; bContinue; ) {
+          for (BOOL bContinue = TRUE; bContinue;) {
             status_byte = *(lpDIBBits++);
 
             if (status_byte == RLE_COMMAND) {
@@ -591,7 +591,7 @@ HICON CxImage::MakeIcon(HDC hdc, bool bTransparency)
   csDest.yHotspot = 0;
 
   // Assign HBITMAP with Transparency to ICON Info structure
-  csDest.hbmColor = MakeBitmap( hdc, bTransparency );
+  csDest.hbmColor = MakeBitmap(hdc, bTransparency);
 
   // Create Mask just in case we need a Mask for the Icons
   CxImage a_Mask;
@@ -621,7 +621,7 @@ HBITMAP CxImage::MakeBitmap(HDC hdc, bool bTransparency)
   }
 
   // Create HBITMAP with Trancparency
-  if ( (pAlpha != 0) && bTransparency ) {
+  if ((pAlpha != 0) && bTransparency) {
     HDC hMemDC;
 
     if (hdc) {
@@ -646,7 +646,7 @@ HBITMAP CxImage::MakeBitmap(HDC hdc, bool bTransparency)
     bi.bmiHeader.biClrImportant = 0;
 
     COLORREF *pCrBits = NULL;
-    HBITMAP hbmp = CreateDIBSection (
+    HBITMAP hbmp = CreateDIBSection(
                      hMemDC, &bi, DIB_RGB_COLORS, (void **)&pCrBits,
                      NULL, NULL);
 
@@ -656,7 +656,7 @@ HBITMAP CxImage::MakeBitmap(HDC hdc, bool bTransparency)
 
     DIBSECTION ds;
 
-    if (::GetObject (hbmp, sizeof (DIBSECTION), &ds) == 0) {
+    if (::GetObject(hbmp, sizeof(DIBSECTION), &ds) == 0) {
       return 0;
     }
 
@@ -664,8 +664,8 @@ HBITMAP CxImage::MakeBitmap(HDC hdc, bool bTransparency)
     RGBQUAD *pBit = (RGBQUAD *) ds.dsBm.bmBits;
     int32_t lPx, lPy;
 
-    for ( lPy = 0 ; lPy < bi.bmiHeader.biHeight ; ++lPy ) {
-      for ( lPx = 0 ; lPx < bi.bmiHeader.biWidth ; ++lPx ) {
+    for (lPy = 0 ; lPy < bi.bmiHeader.biHeight ; ++lPy) {
+      for (lPx = 0 ; lPx < bi.bmiHeader.biWidth ; ++lPx) {
         RGBQUAD lPixel = GetPixelColor(lPx, lPy, true);
         *pBit = lPixel;
         pBit++;
@@ -713,7 +713,7 @@ HBITMAP CxImage::MakeBitmap(HDC hdc, bool bTransparency)
  * \return true the bitmap has transparency
  * \author [brunom]
  */
-bool CxImage::IsHBITMAPAlphaValid( HBITMAP hbmp )
+bool CxImage::IsHBITMAPAlphaValid(HBITMAP hbmp)
 {
   bool lbAlphaValid = false;
 
@@ -723,7 +723,7 @@ bool CxImage::IsHBITMAPAlphaValid( HBITMAP hbmp )
     GetObject(hbmp, sizeof(BITMAP), (LPSTR) &bm);
 
     // for alpha there must bee 32 Bit's per Pixel ??
-    if ( bm.bmBitsPixel == 32 ) {
+    if (bm.bmBitsPixel == 32) {
       BITMAPINFO l_BitmapInfo;
       l_BitmapInfo.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
       l_BitmapInfo.bmiHeader.biWidth = bm.bmWidth;
@@ -744,9 +744,9 @@ bool CxImage::IsHBITMAPAlphaValid( HBITMAP hbmp )
           RGBQUAD *lpArrayEnd  = l_pRawBytes + (bm.bmWidth * bm.bmHeight);
 
           // check if Alpha Channel is realy valid (anny value not zero)
-          for ( ; lpArray != lpArrayEnd ; ++lpArray ) {
+          for (; lpArray != lpArrayEnd ; ++lpArray) {
             // any alpha value not zero
-            if ( lpArray->rgbReserved != 0 ) {
+            if (lpArray->rgbReserved != 0) {
               // must be vaid alph channel
               lbAlphaValid = true;
               break;
@@ -872,11 +872,11 @@ bool CxImage::CreateFromHICON(HICON hico, bool bTransparency)
   //BITMAP l_Bitmap;
   //GetObject(iinfo.hbmColor, sizeof(BITMAP), &l_Bitmap);
 
-  l_bResult =  CreateFromHBITMAP( iinfo.hbmColor, NULL, bTransparency );
+  l_bResult =  CreateFromHBITMAP(iinfo.hbmColor, NULL, bTransparency);
 
 #if CXIMAGE_SUPPORT_ALPHA
 
-  if (l_bResult && ((!IsHBITMAPAlphaValid(iinfo.hbmColor)) || (!bTransparency)) ) {
+  if (l_bResult && ((!IsHBITMAPAlphaValid(iinfo.hbmColor)) || (!bTransparency))) {
     CxImage mask;
     mask.CreateFromHBITMAP(iinfo.hbmMask);
     mask.GrayScale();
@@ -1710,7 +1710,7 @@ int32_t CxImage::Draw2(HDC hdc, int32_t x, int32_t y, int32_t cx, int32_t cy)
       SelectObject(dcImage, pOldBitmapImage);
       SelectObject(dcTrans, pOldBitmapTrans);
       SetBkColor(hdc, crOldBack);
-      DeleteObject( bitmapTrans );  // RG 29/01/2002
+      DeleteObject(bitmapTrans);    // RG 29/01/2002
       DeleteDC(dcImage);
       DeleteDC(dcTrans);
       DeleteObject(bm);
@@ -1897,7 +1897,7 @@ int32_t CxImage::DrawString(HDC hdc, int32_t x, int32_t y, const TCHAR *text, RG
 }
 ////////////////////////////////////////////////////////////////////////////////
 // <VATI>
-int32_t CxImage::DrawStringEx(HDC hdc, int32_t x, int32_t y, CXTEXTINFO *pTextType, bool bSetAlpha )
+int32_t CxImage::DrawStringEx(HDC hdc, int32_t x, int32_t y, CXTEXTINFO *pTextType, bool bSetAlpha)
 {
   if (!IsValid()) {
     return -1;
@@ -1928,26 +1928,26 @@ int32_t CxImage::DrawStringEx(HDC hdc, int32_t x, int32_t y, CXTEXTINFO *pTextTy
 
   //choose the font
   HFONT m_Font;
-  m_Font = CreateFontIndirect( &pTextType->lfont );
+  m_Font = CreateFontIndirect(&pTextType->lfont);
 
   // get colors in RGBQUAD
   RGBQUAD p_forecolor = RGBtoRGBQUAD(pTextType->fcolor);
   RGBQUAD p_backcolor = RGBtoRGBQUAD(pTextType->bcolor);
 
   // check alignment and re-set default if necessary
-  if ( pTextType->align != DT_CENTER &&
-       pTextType->align != DT_LEFT &&
-       pTextType->align != DT_RIGHT ) {
+  if (pTextType->align != DT_CENTER &&
+      pTextType->align != DT_LEFT &&
+      pTextType->align != DT_RIGHT) {
     pTextType->align = DT_CENTER;
   }
 
   // check rounding radius and re-set default if necessary
-  if ( pTextType->b_round > 50 ) {
+  if (pTextType->b_round > 50) {
     pTextType->b_round = 10;
   }
 
   // check opacity and re-set default if necessary
-  if ( pTextType->b_opacity > 1. || pTextType->b_opacity < .0 ) {
+  if (pTextType->b_opacity > 1. || pTextType->b_opacity < .0) {
     pTextType->b_opacity = 0.;
   }
 
@@ -1971,25 +1971,25 @@ int32_t CxImage::DrawStringEx(HDC hdc, int32_t x, int32_t y, CXTEXTINFO *pTextTy
   int32_t i = 0, numlines = 1, len = (int32_t)_tcsclen(pTextType->text);
 
   while (i < len) {
-    if ( pTextType->text[i++] == 13 ) {
+    if (pTextType->text[i++] == 13) {
       numlines++;
     }
   }
 
   ::DrawText(TmpDC, pTextType->text, len,
-             &pos, /*DT_EDITCONTROL|DT_EXTERNALLEADING|*/DT_NOPREFIX | DT_CALCRECT );
+             &pos, /*DT_EDITCONTROL|DT_EXTERNALLEADING|*/DT_NOPREFIX | DT_CALCRECT);
 
   // increase only if it's really italics, and only one line height
-  if ( pTextType->lfont.lfItalic ) {
+  if (pTextType->lfont.lfItalic) {
     pos.right += pos.bottom / 2 / numlines;
   }
 
   // background frame and rounding radius
   int32_t frame = 0, roundR = 0;
 
-  if ( pTextType->opaque ) {
-    roundR = (int32_t)(pos.bottom / numlines * pTextType->b_round / 100 ) ;
-    frame = (int32_t)(/*3.5 + */0.29289 * roundR ) ;
+  if (pTextType->opaque) {
+    roundR = (int32_t)(pos.bottom / numlines * pTextType->b_round / 100) ;
+    frame = (int32_t)(/*3.5 + */0.29289 * roundR) ;
     pos.right += pos.bottom / numlines / 3 ; // JUST FOR BEAUTY
   }
 
@@ -2010,7 +2010,7 @@ int32_t CxImage::DrawStringEx(HDC hdc, int32_t x, int32_t y, CXTEXTINFO *pTextTy
   memset(pbase, 0, height * ((((24 * width) + 31) / 32) * 4));
 
   ::DrawText(TmpDC, pTextType->text, len,
-             &pos, /*DT_EDITCONTROL|DT_EXTERNALLEADING|*/DT_NOPREFIX | pTextType->align );
+             &pos, /*DT_EDITCONTROL|DT_EXTERNALLEADING|*/DT_NOPREFIX | pTextType->align);
 
   CxImage itext;
   itext.CreateFromHBITMAP(TmpBmp);
@@ -2032,9 +2032,9 @@ int32_t CxImage::DrawStringEx(HDC hdc, int32_t x, int32_t y, CXTEXTINFO *pTextTy
   // DT_CENTER: cursor points to the center of text rectangle
   // DT_RIGHT:  cursor points to right side end of text rectangle
   // DT_LEFT:   cursor points to left end of text rectangle
-  if ( pTextType->align == DT_CENTER ) {
+  if (pTextType->align == DT_CENTER) {
     x -= width / 2;
-  } else if ( pTextType->align == DT_RIGHT ) {
+  } else if (pTextType->align == DT_RIGHT) {
     x -= width;
   }
 
@@ -2045,13 +2045,13 @@ int32_t CxImage::DrawStringEx(HDC hdc, int32_t x, int32_t y, CXTEXTINFO *pTextTy
   //draw the background first, if it exists
   int32_t ix, iy;
 
-  if ( pTextType->opaque ) {
+  if (pTextType->opaque) {
     int32_t ixf = 0;
 
     for (ix = 0; ix < width; ix++) {
-      if ( ix <= roundR ) {
+      if (ix <= roundR) {
         ixf = (int32_t)(.5 + roundR - sqrt((float)(roundR * roundR - (ix - roundR) * (ix - roundR))));
-      } else if ( ix >= width - roundR - 1 ) {
+      } else if (ix >= width - roundR - 1) {
         ixf = (int32_t)(.5 + roundR - sqrt((float)(roundR * roundR - (width - 1 - ix - roundR) *
                                            (width - 1 - ix - roundR))));
       } else {
@@ -2059,19 +2059,19 @@ int32_t CxImage::DrawStringEx(HDC hdc, int32_t x, int32_t y, CXTEXTINFO *pTextTy
       }
 
       for (iy = 0; iy < height; iy++) {
-        if ( (ix <= roundR && ( iy > height - ixf - 1 || iy < ixf )) ||
-             (ix >= width - roundR - 1 && ( iy > height - ixf - 1 || iy < ixf )) ) {
+        if ((ix <= roundR && (iy > height - ixf - 1 || iy < ixf)) ||
+            (ix >= width - roundR - 1 && (iy > height - ixf - 1 || iy < ixf))) {
           continue;
-        } else if ( pTextType->b_opacity > 0.0 && pTextType->b_opacity < 1.0 ) {
+        } else if (pTextType->b_opacity > 0.0 && pTextType->b_opacity < 1.0) {
           RGBQUAD bcolor, pcolor;
           // calculate a transition color from original image to background color:
           pcolor = GetPixelColor(x + ix, y + iy);
           bcolor.rgbBlue = (uint8_t)(pTextType->b_opacity * pcolor.rgbBlue + (1.0 - pTextType->b_opacity) *
-                                     p_backcolor.rgbBlue );
+                                     p_backcolor.rgbBlue);
           bcolor.rgbRed = (uint8_t)(pTextType->b_opacity * pcolor.rgbRed + (1.0 - pTextType->b_opacity) *
-                                    p_backcolor.rgbRed ) ;
+                                    p_backcolor.rgbRed) ;
           bcolor.rgbGreen = (uint8_t)(pTextType->b_opacity * pcolor.rgbGreen + (1.0 - pTextType->b_opacity) *
-                                      p_backcolor.rgbGreen ) ;
+                                      p_backcolor.rgbGreen) ;
           bcolor.rgbReserved = 0;
           SetPixelColor(x + ix, y + iy, bcolor, bSetAlpha);
         } else {
@@ -2089,9 +2089,9 @@ int32_t CxImage::DrawStringEx(HDC hdc, int32_t x, int32_t y, CXTEXTINFO *pTextTy
 
       if (tcolor.rgbBlue != 255) {
         float a = tcolor.rgbBlue / 255.0f;
-        pcolor.rgbBlue  = (uint8_t)(a * (pcolor.rgbBlue  - p_forecolor.rgbBlue)  + p_forecolor.rgbBlue );
-        pcolor.rgbRed   = (uint8_t)(a * (pcolor.rgbRed   - p_forecolor.rgbRed)   + p_forecolor.rgbRed ) ;
-        pcolor.rgbGreen = (uint8_t)(a * (pcolor.rgbGreen - p_forecolor.rgbGreen) + p_forecolor.rgbGreen );
+        pcolor.rgbBlue  = (uint8_t)(a * (pcolor.rgbBlue  - p_forecolor.rgbBlue)  + p_forecolor.rgbBlue);
+        pcolor.rgbRed   = (uint8_t)(a * (pcolor.rgbRed   - p_forecolor.rgbRed)   + p_forecolor.rgbRed) ;
+        pcolor.rgbGreen = (uint8_t)(a * (pcolor.rgbGreen - p_forecolor.rgbGreen) + p_forecolor.rgbGreen);
         pcolor.rgbReserved = 0;
         SetPixelColor(x + ix + frame, y + iy - frame, pcolor, bSetAlpha);
         //SetPixelColor(x+ix+frame,y+iy-frame,p_forecolor,bSetAlpha);
@@ -2111,10 +2111,10 @@ int32_t CxImage::DrawStringEx(HDC hdc, int32_t x, int32_t y, CXTEXTINFO *pTextTy
 }
 
 //////////////////////////////////////////////////////////////////////////////
-void CxImage::InitTextInfo( CXTEXTINFO *txt )
+void CxImage::InitTextInfo(CXTEXTINFO *txt)
 {
 
-  memset( txt, 0, sizeof(CXTEXTINFO));
+  memset(txt, 0, sizeof(CXTEXTINFO));
 
   // LOGFONT defaults
   txt->lfont.lfHeight        = -36;
@@ -2130,11 +2130,11 @@ void CxImage::InitTextInfo( CXTEXTINFO *txt )
   txt->lfont.lfClipPrecision = CLIP_DEFAULT_PRECIS;
   txt->lfont.lfQuality       = PROOF_QUALITY;
   txt->lfont.lfPitchAndFamily = DEFAULT_PITCH | FF_DONTCARE ;
-  _stprintf( txt->lfont.lfFaceName, _T("Arial")); //use TCHAR mappings <Cesar M>
+  _stprintf(txt->lfont.lfFaceName, _T("Arial"));  //use TCHAR mappings <Cesar M>
 
   // initial colors
-  txt->fcolor = RGB( 255, 255, 160 ); // default foreground: light goldyellow
-  txt->bcolor = RGB(   0, 80, 160 ); // default background: light blue
+  txt->fcolor = RGB(255, 255, 160);   // default foreground: light goldyellow
+  txt->bcolor = RGB(0, 80, 160);     // default background: light blue
 
   // background
   txt->opaque    = TRUE;  // text has a non-transparent background;
@@ -2143,7 +2143,7 @@ void CxImage::InitTextInfo( CXTEXTINFO *txt )
   txt->b_outline = 0;     // default: no outline (OUTLINE NOT IMPLEMENTED AT THIS TIME)
   txt->b_round   = 20;    // default: rounding radius is 20% of the rectangle height
   // the text
-  _stprintf( txt->text, _T("Sample Text 01234õû")); // text use TCHAR mappings <Cesar M>
+  _stprintf(txt->text, _T("Sample Text 01234õû"));  // text use TCHAR mappings <Cesar M>
   txt->align = DT_CENTER;
   return;
 }

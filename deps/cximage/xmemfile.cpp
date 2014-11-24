@@ -18,7 +18,7 @@ CxMemFile::~CxMemFile()
 //////////////////////////////////////////////////////////
 bool CxMemFile::Close()
 {
-  if ( (m_pBuffer) && (m_bFreeOnClose) ) {
+  if ((m_pBuffer) && (m_bFreeOnClose)) {
     free(m_pBuffer);
     m_pBuffer = NULL;
     m_Size = 0;
@@ -44,7 +44,7 @@ uint8_t *CxMemFile::GetBuffer(bool bDetachBuffer)
 {
   //can only detach, avoid inadvertantly attaching to
   // memory that may not be ours [Jason De Arte]
-  if ( bDetachBuffer ) {
+  if (bDetachBuffer) {
     m_bFreeOnClose = false;
   }
 

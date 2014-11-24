@@ -12,7 +12,7 @@ static bool PlaceSymbols(int nWidth, int nHeight, CSymbolRange *pRanges,
   int x = 1, y = 1;
 
   for (i = 0; i < nRangeCount; i++) {
-    for (j = pRanges[i].First; j <= pRanges[i].Last; j++ ) {
+    for (j = pRanges[i].First; j <= pRanges[i].Last; j++) {
       if (y + vChars[j].h + 1 >= nHeight) {
         return false;
       }
@@ -94,8 +94,8 @@ HTEXTURE FontGenerate(char *szFontName,
   // calculate symbols metrics
   GetTextMetrics(hBMDC, &tTextMetrics);
 
-  for (i = 0; i < nRangeCount; i++ ) {
-    for (j = pRanges[i].First; j <= pRanges[i].Last; j++ ) {
+  for (i = 0; i < nRangeCount; i++) {
+    for (j = pRanges[i].First; j <= pRanges[i].Last; j++) {
       GetCharABCWidthsFloat(hBMDC, j, j, &abc);
 
       // reserve pixels for antialiasing
@@ -148,8 +148,8 @@ HTEXTURE FontGenerate(char *szFontName,
   SelectObject(hBMDC, hBM);
 
   // draw symbols onto DC bitmap
-  for (i = 0; i < nRangeCount; i++ ) {
-    for (j = pRanges[i].First; j <= pRanges[i].Last; j++ ) {
+  for (i = 0; i < nRangeCount; i++) {
+    for (j = pRanges[i].First; j <= pRanges[i].Last; j++) {
       char c = (char)j;
       TextOut(hBMDC, vChars[j].x - vChars[j].a + nPaddingLft, vChars[j].y + nPaddingTop, &c, 1);
     }

@@ -77,15 +77,15 @@ public:
   virtual bool    CALL  System_Initiate();
   virtual void    CALL  System_Shutdown();
   virtual bool    CALL  System_Start();
-  virtual void    CALL  System_SetStateBool  (hgeBoolState   state, bool        value);
-  virtual void    CALL  System_SetStateFunc  (hgeFuncState   state, hgeCallback value);
-  virtual void    CALL  System_SetStateHwnd  (hgeHwndState   state, HWND        value);
-  virtual void    CALL  System_SetStateInt   (hgeIntState    state, int         value);
+  virtual void    CALL  System_SetStateBool(hgeBoolState   state, bool        value);
+  virtual void    CALL  System_SetStateFunc(hgeFuncState   state, hgeCallback value);
+  virtual void    CALL  System_SetStateHwnd(hgeHwndState   state, HWND        value);
+  virtual void    CALL  System_SetStateInt(hgeIntState    state, int         value);
   virtual void    CALL  System_SetStateString(hgeStringState state, const char *value);
-  virtual bool    CALL  System_GetStateBool  (hgeBoolState  );
-  virtual hgeCallback CALL  System_GetStateFunc  (hgeFuncState  );
-  virtual HWND    CALL  System_GetStateHwnd  (hgeHwndState  );
-  virtual int     CALL  System_GetStateInt   (hgeIntState   );
+  virtual bool    CALL  System_GetStateBool(hgeBoolState);
+  virtual hgeCallback CALL  System_GetStateFunc(hgeFuncState);
+  virtual HWND    CALL  System_GetStateHwnd(hgeHwndState);
+  virtual int     CALL  System_GetStateInt(hgeIntState);
   virtual const char *CALL  System_GetStateString(hgeStringState);
   virtual const char *CALL  System_GetErrorMessage();
   virtual void    CALL  System_Log(const char *format, ...);
@@ -215,12 +215,12 @@ public:
 
 
   // System States
-  bool        (*procFrameFunc)();
-  bool        (*procRenderFunc)();
-  bool        (*procFocusLostFunc)();
-  bool        (*procFocusGainFunc)();
-  bool        (*procGfxRestoreFunc)();
-  bool        (*procExitFunc)();
+  bool (*procFrameFunc)();
+  bool (*procRenderFunc)();
+  bool (*procFocusLostFunc)();
+  bool (*procFocusGainFunc)();
+  bool (*procGfxRestoreFunc)();
+  bool (*procExitFunc)();
   const char     *szIcon;
   char        szWinTitle[256];
   int         nScreenWidth;

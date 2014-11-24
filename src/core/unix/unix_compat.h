@@ -70,7 +70,7 @@ static inline char *itoa(const int i, char *s, const int radix)
 static inline char *_i64toa(const int64_t i, char *s, const int radix)
 {
   assert(radix == 10);
-  assert(sizeof (long long) == sizeof (int64_t));
+  assert(sizeof(long long) == sizeof(int64_t));
   sprintf(s, "%lld", static_cast<long long>(i));
   return s;
 }
@@ -88,7 +88,7 @@ static inline void Sleep(const int ms)
 static inline char *_gcvt(const double value, const int digits, char *buffer)
 {
   char fmt[32];
-  snprintf(fmt, sizeof (fmt), "%%.%dg", digits);
+  snprintf(fmt, sizeof(fmt), "%%.%dg", digits);
   sprintf(buffer, fmt, value);
   return buffer;
 }

@@ -631,8 +631,8 @@ RGBQUAD CxImage::RGBtoHSL(RGBQUAD lRGBColor)
   G = lRGBColor.rgbGreen;
   B = lRGBColor.rgbBlue;
 
-  cMax = max( max(R, G), B); /* calculate lightness */
-  cMin = min( min(R, G), B);
+  cMax = max(max(R, G), B);  /* calculate lightness */
+  cMin = min(min(R, G), B);
   L = (uint8_t)((((cMax + cMin) * HSLMAX) + RGBMAX) / (2 * RGBMAX));
 
   if (cMax == cMin) {   /* r=g=b --> achromatic case */
@@ -647,9 +647,9 @@ RGBQUAD CxImage::RGBtoHSL(RGBQUAD lRGBColor)
     }
 
     /* hue */
-    Rdelta = (uint16_t)((((cMax - R) * (HSLMAX / 6)) + ((cMax - cMin) / 2) ) / (cMax - cMin));
-    Gdelta = (uint16_t)((((cMax - G) * (HSLMAX / 6)) + ((cMax - cMin) / 2) ) / (cMax - cMin));
-    Bdelta = (uint16_t)((((cMax - B) * (HSLMAX / 6)) + ((cMax - cMin) / 2) ) / (cMax - cMin));
+    Rdelta = (uint16_t)((((cMax - R) * (HSLMAX / 6)) + ((cMax - cMin) / 2)) / (cMax - cMin));
+    Gdelta = (uint16_t)((((cMax - G) * (HSLMAX / 6)) + ((cMax - cMin) / 2)) / (cMax - cMin));
+    Bdelta = (uint16_t)((((cMax - B) * (HSLMAX / 6)) + ((cMax - cMin) / 2)) / (cMax - cMin));
 
     if (R == cMax) {
       H = (uint8_t)(Bdelta - Gdelta);
@@ -739,9 +739,9 @@ RGBQUAD CxImage::YUVtoRGB(RGBQUAD lYUVColor)
 //  R = (int32_t)(1.164 * Y + 2.018 * U);
 //  G = (int32_t)(1.164 * Y - 0.813 * V - 0.391 * U);
 //  B = (int32_t)(1.164 * Y + 1.596 * V);
-  R = (int32_t)( Y + 1.403f * V);
-  G = (int32_t)( Y - 0.344f * U - 0.714f * V);
-  B = (int32_t)( Y + 1.770f * U);
+  R = (int32_t)(Y + 1.403f * V);
+  G = (int32_t)(Y - 0.344f * U - 0.714f * V);
+  B = (int32_t)(Y + 1.770f * U);
 
   R = min(255, max(0, R));
   G = min(255, max(0, G));
@@ -778,9 +778,9 @@ RGBQUAD CxImage::YIQtoRGB(RGBQUAD lYIQColor)
   I = lYIQColor.rgbGreen - 128;
   Q = lYIQColor.rgbBlue - 128;
 
-  R = (int32_t)( Y + 0.956f * I + 0.621f * Q);
-  G = (int32_t)( Y - 0.273f * I - 0.647f * Q);
-  B = (int32_t)( Y - 1.104f * I + 1.701f * Q);
+  R = (int32_t)(Y + 0.956f * I + 0.621f * Q);
+  G = (int32_t)(Y - 0.273f * I - 0.647f * Q);
+  B = (int32_t)(Y - 1.104f * I + 1.701f * Q);
 
   R = min(255, max(0, R));
   G = min(255, max(0, G));
@@ -796,9 +796,9 @@ RGBQUAD CxImage::RGBtoYIQ(RGBQUAD lRGBColor)
   G = lRGBColor.rgbGreen;
   B = lRGBColor.rgbBlue;
 
-  Y = (int32_t)( 0.2992f * R + 0.5868f * G + 0.1140f * B);
-  I = (int32_t)( 0.5960f * R - 0.2742f * G - 0.3219f * B + 128);
-  Q = (int32_t)( 0.2109f * R - 0.5229f * G + 0.3120f * B + 128);
+  Y = (int32_t)(0.2992f * R + 0.5868f * G + 0.1140f * B);
+  I = (int32_t)(0.5960f * R - 0.2742f * G - 0.3219f * B + 128);
+  Q = (int32_t)(0.2109f * R - 0.5229f * G + 0.3120f * B + 128);
 
   Y = min(255, max(0, Y));
   I = min(255, max(0, I));
@@ -815,9 +815,9 @@ RGBQUAD CxImage::XYZtoRGB(RGBQUAD lXYZColor)
   Z = lXYZColor.rgbBlue;
   double k = 1.088751;
 
-  R = (int32_t)(  3.240479f * X - 1.537150f * Y - 0.498535f * Z * k);
-  G = (int32_t)( -0.969256f * X + 1.875992f * Y + 0.041556f * Z * k);
-  B = (int32_t)(  0.055648f * X - 0.204043f * Y + 1.057311f * Z * k);
+  R = (int32_t)(3.240479f * X - 1.537150f * Y - 0.498535f * Z * k);
+  G = (int32_t)(-0.969256f * X + 1.875992f * Y + 0.041556f * Z * k);
+  B = (int32_t)(0.055648f * X - 0.204043f * Y + 1.057311f * Z * k);
 
   R = min(255, max(0, R));
   G = min(255, max(0, G));
@@ -833,8 +833,8 @@ RGBQUAD CxImage::RGBtoXYZ(RGBQUAD lRGBColor)
   G = lRGBColor.rgbGreen;
   B = lRGBColor.rgbBlue;
 
-  X = (int32_t)( 0.412453f * R + 0.357580f * G + 0.180423f * B);
-  Y = (int32_t)( 0.212671f * R + 0.715160f * G + 0.072169f * B);
+  X = (int32_t)(0.412453f * R + 0.357580f * G + 0.180423f * B);
+  Y = (int32_t)(0.212671f * R + 0.715160f * G + 0.072169f * B);
   Z = (int32_t)((0.019334f * R + 0.119193f * G + 0.950227f * B) * 0.918483657f);
 
   //X= min(255,max(0,X));
@@ -1524,9 +1524,9 @@ void CxImage::Mix(CxImage &imgsrc2, ImageOpType op, int32_t lXOffset, int32_t lY
 
         switch (op) {
         case OpAvg:
-          rgbDest.rgbBlue =  (uint8_t)((rgb1.rgbBlue + rgb2.rgbBlue) / 2);
+          rgbDest.rgbBlue = (uint8_t)((rgb1.rgbBlue + rgb2.rgbBlue) / 2);
           rgbDest.rgbGreen = (uint8_t)((rgb1.rgbGreen + rgb2.rgbGreen) / 2);
-          rgbDest.rgbRed =   (uint8_t)((rgb1.rgbRed + rgb2.rgbRed) / 2);
+          rgbDest.rgbRed = (uint8_t)((rgb1.rgbRed + rgb2.rgbRed) / 2);
 
           if (bEditAlpha) {
             rgbDest.rgbReserved = (uint8_t)((rgb1.rgbReserved + rgb2.rgbReserved) / 2);
@@ -1661,7 +1661,7 @@ void CxImage::Mix(CxImage &imgsrc2, ImageOpType op, int32_t lXOffset, int32_t lY
             double dSmall = (lThresh - lAverage) / lThresh;
             double dSmallAmt = dSmall * ((double)rgb2.rgbBlue);
 
-            if ( lAverage < lThresh + 1) {
+            if (lAverage < lThresh + 1) {
               rgbDest.rgbBlue = (uint8_t)max(0, min(255, (int32_t)(dLarge * ((double)rgb1.rgbBlue) +
                                                     dSmallAmt)));
               rgbDest.rgbGreen = (uint8_t)max(0, min(255, (int32_t)(dLarge * ((double)rgb1.rgbGreen) +
@@ -1679,7 +1679,7 @@ void CxImage::Mix(CxImage &imgsrc2, ImageOpType op, int32_t lXOffset, int32_t lY
           if (rgb2.rgbReserved != 0) {
             // The lower value is almost transparent, or the overlying
             // almost transparent can not directly overlying the value taken
-            if ( (rgb1.rgbReserved < 5) || (rgb2.rgbReserved > 250) ) {
+            if ((rgb1.rgbReserved < 5) || (rgb2.rgbReserved > 250)) {
               rgbDest = rgb2;
             } else {
               // Alpha Blending with associative calculation merge
@@ -1698,9 +1698,9 @@ void CxImage::Mix(CxImage &imgsrc2, ImageOpType op, int32_t lXOffset, int32_t lY
               }
 
               // each color channel to calculate
-              rgbDest.rgbBlue   = (BYTE)((rgb2.rgbBlue  * a2  + a1 * rgb1.rgbBlue ) / a0);
+              rgbDest.rgbBlue   = (BYTE)((rgb2.rgbBlue  * a2  + a1 * rgb1.rgbBlue) / a0);
               rgbDest.rgbGreen  = (BYTE)((rgb2.rgbGreen * a2  + a1 * rgb1.rgbGreen) / a0);
-              rgbDest.rgbRed    = (BYTE)((rgb2.rgbRed * a2  + a1 * rgb1.rgbRed  ) / a0);
+              rgbDest.rgbRed    = (BYTE)((rgb2.rgbRed * a2  + a1 * rgb1.rgbRed) / a0);
             }
           } else {
             rgbDest = rgb1;
@@ -1822,7 +1822,7 @@ bool CxImage::Gamma(float gamma)
   uint8_t cTable[256]; //<nipper>
 
   for (int32_t i = 0; i < 256; i++) {
-    cTable[i] = (uint8_t)max(0, min(255, (int32_t)( pow((double)i, dinvgamma) / dMax)));
+    cTable[i] = (uint8_t)max(0, min(255, (int32_t)(pow((double)i, dinvgamma) / dMax)));
   }
 
   return Lut(cTable);
@@ -1860,7 +1860,7 @@ bool CxImage::GammaRGB(float gammaR, float gammaG, float gammaB)
   uint8_t cTableR[256];
 
   for (i = 0; i < 256; i++) {
-    cTableR[i] = (uint8_t)max(0, min(255, (int32_t)( pow((double)i, dinvgamma) / dMax)));
+    cTableR[i] = (uint8_t)max(0, min(255, (int32_t)(pow((double)i, dinvgamma) / dMax)));
   }
 
   dinvgamma = 1 / gammaG;
@@ -1868,7 +1868,7 @@ bool CxImage::GammaRGB(float gammaR, float gammaG, float gammaB)
   uint8_t cTableG[256];
 
   for (i = 0; i < 256; i++) {
-    cTableG[i] = (uint8_t)max(0, min(255, (int32_t)( pow((double)i, dinvgamma) / dMax)));
+    cTableG[i] = (uint8_t)max(0, min(255, (int32_t)(pow((double)i, dinvgamma) / dMax)));
   }
 
   dinvgamma = 1 / gammaB;
@@ -1876,7 +1876,7 @@ bool CxImage::GammaRGB(float gammaR, float gammaG, float gammaB)
   uint8_t cTableB[256];
 
   for (i = 0; i < 256; i++) {
-    cTableB[i] = (uint8_t)max(0, min(255, (int32_t)( pow((double)i, dinvgamma) / dMax)));
+    cTableB[i] = (uint8_t)max(0, min(255, (int32_t)(pow((double)i, dinvgamma) / dMax)));
   }
 
   return Lut(cTableR, cTableG, cTableB);
@@ -2241,10 +2241,10 @@ bool CxImage::FFT2(CxImage *srcReal, CxImage *srcImag, CxImage *dstReal, CxImage
   }
 
   for (k = 0; k < w; k++) {
-    free (grid[k]);
+    free(grid[k]);
   }
 
-  free (grid);
+  free(grid);
 
   if (srcReal == 0 && dstReal == 0) {
     delete tmpReal;
@@ -2792,7 +2792,7 @@ bool CxImage::Jitter(int32_t radius)
  * a two-pass gaussian blur.  Returns the length of the matrix.
  * \author [nipper]
  */
-int32_t CxImage::gen_convolve_matrix (float radius, float **cmatrix_p)
+int32_t CxImage::gen_convolve_matrix(float radius, float **cmatrix_p)
 {
   int32_t matrix_length;
   int32_t matrix_midpoint;
@@ -2841,9 +2841,9 @@ int32_t CxImage::gen_convolve_matrix (float radius, float **cmatrix_p)
     sum = 0;
 
     for (j = 1; j <= 50; j++) {
-      if ( base_x + 0.02 * j <= radius )
-        sum += (float)exp (-(base_x + 0.02 * j) * (base_x + 0.02 * j) /
-                           (2 * std_dev * std_dev));
+      if (base_x + 0.02 * j <= radius)
+        sum += (float)exp(-(base_x + 0.02 * j) * (base_x + 0.02 * j) /
+                          (2 * std_dev * std_dev));
     }
 
     cmatrix[i] = sum / 50;
@@ -2859,8 +2859,8 @@ int32_t CxImage::gen_convolve_matrix (float radius, float **cmatrix_p)
   sum = 0;
 
   for (j = 0; j <= 50; j++) {
-    sum += (float)exp (-(0.5 + 0.02 * j) * (0.5 + 0.02 * j) /
-                       (2 * std_dev * std_dev));
+    sum += (float)exp(-(0.5 + 0.02 * j) * (0.5 + 0.02 * j) /
+                      (2 * std_dev * std_dev));
   }
 
   cmatrix[matrix_length / 2] = sum / 51;
@@ -2886,7 +2886,7 @@ int32_t CxImage::gen_convolve_matrix (float radius, float **cmatrix_p)
  * value.
  * \author [nipper]
  */
-float *CxImage::gen_lookup_table (float *cmatrix, int32_t cmatrix_length)
+float *CxImage::gen_lookup_table(float *cmatrix, int32_t cmatrix_length)
 {
   float *lookup_table = new float[cmatrix_length * 256];
   float *lookup_table_p = lookup_table;
@@ -2909,8 +2909,8 @@ float *CxImage::gen_lookup_table (float *cmatrix, int32_t cmatrix_length)
  * in the processing of the lines, at least to the blur_line function.
  * \author [nipper]
  */
-void CxImage::blur_line (float *ctable, float *cmatrix, int32_t cmatrix_length, uint8_t *cur_col,
-                         uint8_t *dest_col, int32_t y, int32_t bytes)
+void CxImage::blur_line(float *ctable, float *cmatrix, int32_t cmatrix_length, uint8_t *cur_col,
+                        uint8_t *dest_col, int32_t y, int32_t bytes)
 {
   float scale;
   float sum;
@@ -3014,7 +3014,7 @@ void CxImage::blur_line (float *ctable, float *cmatrix, int32_t cmatrix_length, 
           sum += cur_col[(row + j - cmatrix_middle) * bytes + i] * cmatrix[j];
         }
 
-        dest_col[row * bytes + i] = (uint8_t) (0.5f + sum / scale);
+        dest_col[row * bytes + i] = (uint8_t)(0.5f + sum / scale);
       }
     }
   }
@@ -3023,8 +3023,8 @@ void CxImage::blur_line (float *ctable, float *cmatrix, int32_t cmatrix_length, 
 /**
  * \author [DP]
  */
-void CxImage::blur_text (uint8_t threshold, uint8_t decay, uint8_t max_depth, CxImage *iSrc,
-                         CxImage *iDst, uint8_t bytes)
+void CxImage::blur_text(uint8_t threshold, uint8_t decay, uint8_t max_depth, CxImage *iSrc,
+                        CxImage *iDst, uint8_t bytes)
 {
   int32_t x, y, z, m;
   uint8_t *pSrc, *pSrc2, *pSrc3, *pDst;
@@ -3398,7 +3398,7 @@ bool CxImage::SelectiveBlur(float radius, uint8_t threshold, CxImage *iDst)
   }
 
   //build the difference mask
-  uint8_t thresh_dw = (uint8_t)max( 0 , (int32_t)(128 - threshold));
+  uint8_t thresh_dw = (uint8_t)max(0 , (int32_t)(128 - threshold));
   uint8_t thresh_up = (uint8_t)min(255, (int32_t)(128 + threshold));
   int32_t kernel[] = { -100, -100, -100, -100, 801, -100, -100, -100, -100};
 
@@ -4559,7 +4559,7 @@ bool CxImage::Trace(RGBQUAD color_target, RGBQUAD color_trace)
 
       if (color.rgbRed   == color_target.rgbRed   &&
           color.rgbGreen == color_target.rgbGreen &&
-          color.rgbBlue  == color_target.rgbBlue  ) {
+          color.rgbBlue  == color_target.rgbBlue) {
         bFindStartPoint = true;
         CurrentPoint.x = StartPoint.x = x;
         CurrentPoint.y = StartPoint.y = y;
@@ -4578,7 +4578,7 @@ bool CxImage::Trace(RGBQUAD color_target, RGBQUAD color_trace)
       if (IsInside(x, y) &&
           color.rgbRed   == color_target.rgbRed   &&
           color.rgbGreen == color_target.rgbGreen &&
-          color.rgbBlue  == color_target.rgbBlue  ) {
+          color.rgbBlue  == color_target.rgbBlue) {
         nFindPoint = 0;
         CurrentPoint.x = x;
         CurrentPoint.y = y;
@@ -4698,7 +4698,7 @@ bool CxImage::FloodFill(const int32_t xStart, const int32_t yStart, const RGBQUA
             uint8_t idx = BlindGetPixelIndex(x, y);
             uint8_t *pFill = pFillMask + x + y * head.biWidth;
 
-            if (*pFill == 0 && idxMin <= idx && idx <= idxMax ) {
+            if (*pFill == 0 && idxMin <= idx && idx <= idxMax) {
               if (nOpacity > 0) {
                 if (nOpacity == 255) {
                   BlindSetPixelIndex(x, y, idxFill);
@@ -4745,7 +4745,7 @@ bool CxImage::FloodFill(const int32_t xStart, const int32_t yStart, const RGBQUA
             if (*pFill == 0 &&
                 cRefMin.rgbRed   <= cc.rgbRed   && cc.rgbRed   <= cRefMax.rgbRed   &&
                 cRefMin.rgbGreen <= cc.rgbGreen && cc.rgbGreen <= cRefMax.rgbGreen &&
-                cRefMin.rgbBlue  <= cc.rgbBlue  && cc.rgbBlue  <= cRefMax.rgbBlue ) {
+                cRefMin.rgbBlue  <= cc.rgbBlue  && cc.rgbBlue  <= cRefMax.rgbBlue) {
               if (nOpacity > 0) {
                 if (nOpacity == 255) {
                   BlindSetPixelColor(x, y, cFillColor);

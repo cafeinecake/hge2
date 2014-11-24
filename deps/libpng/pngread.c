@@ -274,7 +274,7 @@ png_read_init_3(png_structpp ptr_ptr, png_const_charp user_png_ver,
 
 #ifdef PNG_SETJMP_SUPPORTED
   /* save jump buffer and error functions */
-  png_memcpy(tmp_jmp, png_ptr->jmpbuf, png_sizeof (jmp_buf));
+  png_memcpy(tmp_jmp, png_ptr->jmpbuf, png_sizeof(jmp_buf));
 #endif
 
   if (png_sizeof(png_struct) > png_struct_size) {
@@ -284,11 +284,11 @@ png_read_init_3(png_structpp ptr_ptr, png_const_charp user_png_ver,
   }
 
   /* reset all variables to 0 */
-  png_memset(png_ptr, 0, png_sizeof (png_struct));
+  png_memset(png_ptr, 0, png_sizeof(png_struct));
 
 #ifdef PNG_SETJMP_SUPPORTED
   /* restore jump buffer */
-  png_memcpy(png_ptr->jmpbuf, tmp_jmp, png_sizeof (jmp_buf));
+  png_memcpy(png_ptr->jmpbuf, tmp_jmp, png_sizeof(jmp_buf));
 #endif
 
   /* added at libpng-1.2.6 */
@@ -1459,7 +1459,7 @@ png_read_destroy(png_structp png_ptr, png_infop info_ptr, png_infop end_info_ptr
    * being used again.
    */
 #ifdef PNG_SETJMP_SUPPORTED
-  png_memcpy(tmp_jmp, png_ptr->jmpbuf, png_sizeof (jmp_buf));
+  png_memcpy(tmp_jmp, png_ptr->jmpbuf, png_sizeof(jmp_buf));
 #endif
 
   error_fn = png_ptr->error_fn;
@@ -1469,7 +1469,7 @@ png_read_destroy(png_structp png_ptr, png_infop info_ptr, png_infop end_info_ptr
   free_fn = png_ptr->free_fn;
 #endif
 
-  png_memset(png_ptr, 0, png_sizeof (png_struct));
+  png_memset(png_ptr, 0, png_sizeof(png_struct));
 
   png_ptr->error_fn = error_fn;
   png_ptr->warning_fn = warning_fn;
@@ -1479,7 +1479,7 @@ png_read_destroy(png_structp png_ptr, png_infop info_ptr, png_infop end_info_ptr
 #endif
 
 #ifdef PNG_SETJMP_SUPPORTED
-  png_memcpy(png_ptr->jmpbuf, tmp_jmp, png_sizeof (jmp_buf));
+  png_memcpy(png_ptr->jmpbuf, tmp_jmp, png_sizeof(jmp_buf));
 #endif
 
 }

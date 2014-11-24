@@ -440,7 +440,7 @@ extern "C" {
  * the version above.
  */
 #ifdef PNG_USE_GLOBAL_ARRAYS
-PNG_EXPORT_VAR (const char) png_libpng_ver[18];
+PNG_EXPORT_VAR(const char) png_libpng_ver[18];
 /* need room for 99.99.99beta99z */
 #else
 #define png_libpng_ver png_get_header_ver(NULL)
@@ -449,14 +449,14 @@ PNG_EXPORT_VAR (const char) png_libpng_ver[18];
 #ifdef PNG_USE_GLOBAL_ARRAYS
 /* This was removed in version 1.0.5c */
 /* Structures to facilitate easy interlacing.  See png.c for more details */
-PNG_EXPORT_VAR (const int FARDATA) png_pass_start[7];
-PNG_EXPORT_VAR (const int FARDATA) png_pass_inc[7];
-PNG_EXPORT_VAR (const int FARDATA) png_pass_ystart[7];
-PNG_EXPORT_VAR (const int FARDATA) png_pass_yinc[7];
-PNG_EXPORT_VAR (const int FARDATA) png_pass_mask[7];
-PNG_EXPORT_VAR (const int FARDATA) png_pass_dsp_mask[7];
+PNG_EXPORT_VAR(const int FARDATA) png_pass_start[7];
+PNG_EXPORT_VAR(const int FARDATA) png_pass_inc[7];
+PNG_EXPORT_VAR(const int FARDATA) png_pass_ystart[7];
+PNG_EXPORT_VAR(const int FARDATA) png_pass_yinc[7];
+PNG_EXPORT_VAR(const int FARDATA) png_pass_mask[7];
+PNG_EXPORT_VAR(const int FARDATA) png_pass_dsp_mask[7];
 #ifdef PNG_HAVE_ASSEMBLER_COMBINE_ROW
-PNG_EXPORT_VAR (const int FARDATA) png_pass_width[7];
+PNG_EXPORT_VAR(const int FARDATA) png_pass_width[7];
 #endif
 /* This isn't currently used.  If you need it, see png.c for more details.
 PNG_EXPORT_VAR (const int FARDATA) png_pass_height[7];
@@ -1050,7 +1050,7 @@ typedef void (PNGAPI *png_unknown_chunk_ptr) PNGARG((png_structp));
 #define PNG_FLAG_MNG_FILTER_64      0x04
 #define PNG_ALL_MNG_FEATURES        0x05
 
-typedef png_voidp (*png_malloc_ptr) PNGARG((png_structp, png_size_t));
+typedef png_voidp(*png_malloc_ptr) PNGARG((png_structp, png_size_t));
 typedef void (*png_free_ptr) PNGARG((png_structp, png_voidp));
 
 /* The structure that holds the information to read and write PNG files.
@@ -1491,10 +1491,10 @@ extern PNG_EXPORT(void, png_set_gray_to_rgb) PNGARG((png_structp png_ptr));
 /* Reduce RGB to grayscale. */
 #ifdef PNG_FLOATING_POINT_SUPPORTED
 extern PNG_EXPORT(void, png_set_rgb_to_gray) PNGARG((png_structp png_ptr,
-    int error_action, double red, double green ));
+    int error_action, double red, double green));
 #endif
 extern PNG_EXPORT(void, png_set_rgb_to_gray_fixed) PNGARG((png_structp png_ptr,
-    int error_action, png_fixed_point red, png_fixed_point green ));
+    int error_action, png_fixed_point red, png_fixed_point green));
 extern PNG_EXPORT(png_byte, png_get_rgb_to_gray_status) PNGARG((png_structp
     png_ptr));
 #endif
@@ -2695,7 +2695,7 @@ extern PNG_EXPORT(png_uint_32, png_get_user_height_max) PNGARG((png_structp
 #if !defined(PNG_NO_EXTERN) || defined(PNG_ALWAYS_EXTERN)
 /* place to hold the signature string for a PNG file. */
 #ifdef PNG_USE_GLOBAL_ARRAYS
-PNG_EXPORT_VAR (const png_byte FARDATA) png_sig[8];
+PNG_EXPORT_VAR(const png_byte FARDATA) png_sig[8];
 #else
 #define png_sig png_sig_bytes(NULL)
 #endif
@@ -2728,27 +2728,27 @@ PNG_EXPORT_VAR (const png_byte FARDATA) png_sig[8];
 #define PNG_zTXt const png_byte png_zTXt[5] = {122,  84,  88, 116, '\0'}
 
 #ifdef PNG_USE_GLOBAL_ARRAYS
-PNG_EXPORT_VAR (const png_byte FARDATA) png_IHDR[5];
-PNG_EXPORT_VAR (const png_byte FARDATA) png_IDAT[5];
-PNG_EXPORT_VAR (const png_byte FARDATA) png_IEND[5];
-PNG_EXPORT_VAR (const png_byte FARDATA) png_PLTE[5];
-PNG_EXPORT_VAR (const png_byte FARDATA) png_bKGD[5];
-PNG_EXPORT_VAR (const png_byte FARDATA) png_cHRM[5];
-PNG_EXPORT_VAR (const png_byte FARDATA) png_gAMA[5];
-PNG_EXPORT_VAR (const png_byte FARDATA) png_hIST[5];
-PNG_EXPORT_VAR (const png_byte FARDATA) png_iCCP[5];
-PNG_EXPORT_VAR (const png_byte FARDATA) png_iTXt[5];
-PNG_EXPORT_VAR (const png_byte FARDATA) png_oFFs[5];
-PNG_EXPORT_VAR (const png_byte FARDATA) png_pCAL[5];
-PNG_EXPORT_VAR (const png_byte FARDATA) png_sCAL[5];
-PNG_EXPORT_VAR (const png_byte FARDATA) png_pHYs[5];
-PNG_EXPORT_VAR (const png_byte FARDATA) png_sBIT[5];
-PNG_EXPORT_VAR (const png_byte FARDATA) png_sPLT[5];
-PNG_EXPORT_VAR (const png_byte FARDATA) png_sRGB[5];
-PNG_EXPORT_VAR (const png_byte FARDATA) png_tEXt[5];
-PNG_EXPORT_VAR (const png_byte FARDATA) png_tIME[5];
-PNG_EXPORT_VAR (const png_byte FARDATA) png_tRNS[5];
-PNG_EXPORT_VAR (const png_byte FARDATA) png_zTXt[5];
+PNG_EXPORT_VAR(const png_byte FARDATA) png_IHDR[5];
+PNG_EXPORT_VAR(const png_byte FARDATA) png_IDAT[5];
+PNG_EXPORT_VAR(const png_byte FARDATA) png_IEND[5];
+PNG_EXPORT_VAR(const png_byte FARDATA) png_PLTE[5];
+PNG_EXPORT_VAR(const png_byte FARDATA) png_bKGD[5];
+PNG_EXPORT_VAR(const png_byte FARDATA) png_cHRM[5];
+PNG_EXPORT_VAR(const png_byte FARDATA) png_gAMA[5];
+PNG_EXPORT_VAR(const png_byte FARDATA) png_hIST[5];
+PNG_EXPORT_VAR(const png_byte FARDATA) png_iCCP[5];
+PNG_EXPORT_VAR(const png_byte FARDATA) png_iTXt[5];
+PNG_EXPORT_VAR(const png_byte FARDATA) png_oFFs[5];
+PNG_EXPORT_VAR(const png_byte FARDATA) png_pCAL[5];
+PNG_EXPORT_VAR(const png_byte FARDATA) png_sCAL[5];
+PNG_EXPORT_VAR(const png_byte FARDATA) png_pHYs[5];
+PNG_EXPORT_VAR(const png_byte FARDATA) png_sBIT[5];
+PNG_EXPORT_VAR(const png_byte FARDATA) png_sPLT[5];
+PNG_EXPORT_VAR(const png_byte FARDATA) png_sRGB[5];
+PNG_EXPORT_VAR(const png_byte FARDATA) png_tEXt[5];
+PNG_EXPORT_VAR(const png_byte FARDATA) png_tIME[5];
+PNG_EXPORT_VAR(const png_byte FARDATA) png_tRNS[5];
+PNG_EXPORT_VAR(const png_byte FARDATA) png_zTXt[5];
 #endif /* PNG_USE_GLOBAL_ARRAYS */
 
 

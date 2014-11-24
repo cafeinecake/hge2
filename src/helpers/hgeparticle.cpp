@@ -30,7 +30,7 @@ hgeParticleSystem::hgeParticleSystem(const char *filename, hgeSprite *sprite, fl
   }
 
   char *ptr = reinterpret_cast<char *>(psi);
-  memset(&info, '\0', sizeof (info));
+  memset(&info, '\0', sizeof(info));
   info.sprite = sprite;
   ptr += 4;  // skip these bytes.
 

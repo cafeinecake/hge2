@@ -362,7 +362,7 @@ bool HGE_Impl::_WildcardMatch(const char *str, const char *wildcard)
 
         ptr++;
       }
-    } else if ( (toupper(strch)) != (toupper(wildch)) ) {
+    } else if ((toupper(strch)) != (toupper(wildch))) {
       return false;
     }
 
@@ -429,7 +429,7 @@ char *HGE_Impl::_DoEnumIteration(const bool wantdir)
     }
 
     char fullpath[_MAX_PATH];
-    snprintf(fullpath, sizeof (fullpath), "%s/%s", szSearchDir, dent->d_name);
+    snprintf(fullpath, sizeof(fullpath), "%s/%s", szSearchDir, dent->d_name);
     struct stat statbuf;
 
     if (stat(fullpath, &statbuf) == -1) { // this follows symlinks.

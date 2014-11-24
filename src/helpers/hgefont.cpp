@@ -46,9 +46,9 @@ hgeFont::hgeFont(const char *szFont, bool bMipmap)
   nBlend = BLEND_COLORMUL | BLEND_ALPHABLEND | BLEND_NOZWRITE;
   dwCol = 0xFFFFFFFF;
 
-  ZeroMemory( &letters, sizeof(letters) );
-  ZeroMemory( &pre, sizeof(pre) );
-  ZeroMemory( &post, sizeof(post) );
+  ZeroMemory(&letters, sizeof(letters));
+  ZeroMemory(&pre, sizeof(pre));
+  ZeroMemory(&post, sizeof(post));
 
   // Load font description
 
@@ -76,7 +76,7 @@ hgeFont::hgeFont(const char *szFont, bool bMipmap)
   while (
     (pdesc = _get_line(pdesc, linebuf))
   ) {
-    if (!strncmp(linebuf, FNTBITMAPTAG, sizeof(FNTBITMAPTAG) - 1 )) {
+    if (!strncmp(linebuf, FNTBITMAPTAG, sizeof(FNTBITMAPTAG) - 1)) {
       strcpy(buf, szFont);
       pbuf = strrchr(buf, '\\');
 
@@ -102,7 +102,7 @@ hgeFont::hgeFont(const char *szFont, bool bMipmap)
       }
     }
 
-    else if (!strncmp(linebuf, FNTCHARTAG, sizeof(FNTCHARTAG) - 1 )) {
+    else if (!strncmp(linebuf, FNTCHARTAG, sizeof(FNTCHARTAG) - 1)) {
       pbuf = strchr(linebuf, '=');
 
       if (!pbuf) {

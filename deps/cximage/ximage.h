@@ -535,10 +535,10 @@ public:
                      bool bSetAlpha = false);
   // <VATI> extensions
   int32_t    DrawStringEx(HDC hdc, int32_t x, int32_t y, CXTEXTINFO *pTextType,
-                          bool bSetAlpha = false );
-  void    InitTextInfo( CXTEXTINFO *txt );
+                          bool bSetAlpha = false);
+  void    InitTextInfo(CXTEXTINFO *txt);
 protected:
-  bool IsHBITMAPAlphaValid( HBITMAP hbmp );
+  bool IsHBITMAPAlphaValid(HBITMAP hbmp);
 public:
 #endif //CXIMAGE_SUPPORT_WINDOWS
 //@}
@@ -580,10 +580,10 @@ public:
   bool Encode(CxFile *hFile, uint32_t imagetype);
   bool Encode(CxFile *hFile, CxImage **pImages, int32_t pagecount, uint32_t imagetype);
   bool Encode(FILE *hFile, CxImage **pImages, int32_t pagecount, uint32_t imagetype);
-  bool Encode(uint8_t*&buffer, int32_t &size, uint32_t imagetype);
+  bool Encode(uint8_t *&buffer, int32_t &size, uint32_t imagetype);
 
   bool Encode2RGBA(CxFile *hFile, bool bFlipY = false);
-  bool Encode2RGBA(uint8_t*&buffer, int32_t &size, bool bFlipY = false);
+  bool Encode2RGBA(uint8_t *&buffer, int32_t &size, bool bFlipY = false);
 //@}
 #endif //CXIMAGE_SUPPORT_ENCODE
 
@@ -627,8 +627,8 @@ public:
   bool Dither(int32_t method = 0);
   bool Crop(int32_t left, int32_t top, int32_t right, int32_t bottom, CxImage *iDst = NULL);
   bool Crop(const RECT &rect, CxImage *iDst = NULL);
-  bool CropRotatedRectangle( int32_t topx, int32_t topy, int32_t width, int32_t height, float angle,
-                             CxImage *iDst = NULL);
+  bool CropRotatedRectangle(int32_t topx, int32_t topy, int32_t width, int32_t height, float angle,
+                            CxImage *iDst = NULL);
   bool Skew(float xgain, float ygain, int32_t xpivot = 0, int32_t ypivot = 0,
             bool bEnableInterpolation = false);
   bool Expand(int32_t left, int32_t top, int32_t right, int32_t bottom, RGBQUAD canvascolor,
@@ -704,12 +704,12 @@ protected:
   bool DFT(int32_t dir, int32_t m, double *x1, double *y1, double *x2, double *y2);
   bool RepairChannel(CxImage *ch, float radius);
   // <nipper>
-  int32_t gen_convolve_matrix (float radius, float **cmatrix_p);
-  float *gen_lookup_table (float *cmatrix, int32_t cmatrix_length);
-  void blur_line (float *ctable, float *cmatrix, int32_t cmatrix_length, uint8_t *cur_col,
-                  uint8_t *dest_col, int32_t y, int32_t bytes);
-  void blur_text (uint8_t threshold, uint8_t decay, uint8_t max_depth, CxImage *iSrc, CxImage *iDst,
-                  uint8_t bytes);
+  int32_t gen_convolve_matrix(float radius, float **cmatrix_p);
+  float *gen_lookup_table(float *cmatrix, int32_t cmatrix_length);
+  void blur_line(float *ctable, float *cmatrix, int32_t cmatrix_length, uint8_t *cur_col,
+                 uint8_t *dest_col, int32_t y, int32_t bytes);
+  void blur_text(uint8_t threshold, uint8_t decay, uint8_t max_depth, CxImage *iSrc, CxImage *iDst,
+                 uint8_t bytes);
 //@}
 
 public:
@@ -731,7 +731,7 @@ public:
   static RGBQUAD RGBtoXYZ(RGBQUAD lRGBColor);
 #endif //CXIMAGE_SUPPORT_DSP
   static RGBQUAD RGBtoRGBQUAD(COLORREF cr);
-  static COLORREF RGBQUADtoRGB (RGBQUAD c);
+  static COLORREF RGBQUADtoRGB(RGBQUAD c);
 //@}
 
   /** \addtogroup Selection */ //@{

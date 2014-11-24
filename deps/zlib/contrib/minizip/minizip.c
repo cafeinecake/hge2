@@ -420,22 +420,22 @@ char *argv[];
         /*if it did, windows/xp and dynazip couldn't read the zip file. */
         savefilenameinzip = filenameinzip;
 
-        while ( savefilenameinzip[0] == '\\' || savefilenameinzip[0] == '/' ) {
+        while (savefilenameinzip[0] == '\\' || savefilenameinzip[0] == '/') {
           savefilenameinzip++;
         }
 
         /*should the zip file contain any path at all?*/
-        if ( opt_exclude_path ) {
+        if (opt_exclude_path) {
           const char *tmpptr;
           const char *lastslash = 0;
 
-          for ( tmpptr = savefilenameinzip; *tmpptr; tmpptr++) {
-            if ( *tmpptr == '\\' || *tmpptr == '/') {
+          for (tmpptr = savefilenameinzip; *tmpptr; tmpptr++) {
+            if (*tmpptr == '\\' || *tmpptr == '/') {
               lastslash = tmpptr;
             }
           }
 
-          if ( lastslash != NULL ) {
+          if (lastslash != NULL) {
             savefilenameinzip = lastslash + 1; // base filename follows last slash.
           }
         }
@@ -472,7 +472,7 @@ char *argv[];
               }
 
             if (size_read > 0) {
-              err = zipWriteInFileInZip (zf, buf, size_read);
+              err = zipWriteInFileInZip(zf, buf, size_read);
 
               if (err < 0) {
                 printf("error in writing %s in the zipfile\n",
