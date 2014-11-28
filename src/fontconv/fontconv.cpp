@@ -10,7 +10,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#ifndef PLATFORM_UNIX
+#ifndef HGE_UNIX
 #include <windows.h>
 #endif
 
@@ -43,7 +43,7 @@ int main(int argc, char *argv[])
     printf("should be available along with font description files.\n\n");
     return 0;
   } else {
-#ifdef PLATFORM_UNIX
+#ifdef HGE_UNIX
 #else
     HANDLE        hSearch;
     bool        done = false;
@@ -235,7 +235,7 @@ bool convert(char *filename)
   fclose(hf);
   free(desc);
 
-#ifdef PLATFORM_UNIX
+#ifdef HGE_UNIX
 #else
 
   if (!DeleteFile(filename)) {

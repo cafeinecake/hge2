@@ -48,7 +48,7 @@ int main(int argc, char *argv [])
     printf("rotated or rendered into not integer coordinates.\n\n");
     return 0;
   } else {
-#ifdef PLATFORM_UNIX
+#ifdef HGE_UNIX
     argv[0] = *argv;
 #else
     bool        done = false;

@@ -13,7 +13,7 @@
 #include "common/hge_utils.h"
 using namespace hgeut;
 
-#ifndef PLATFORM_UNIX
+#ifndef HGE_UNIX
 #include <windows.h>
 #endif
 #include <string>
@@ -416,7 +416,7 @@ void cmdChangePreset(int n)
   state.nPreset = n;
 }
 
-#ifdef PLATFORM_UNIX
+#ifdef HGE_UNIX
 void cmdSavePreset(int /*n*/)
 {
   if (!state.ps) {
@@ -463,14 +463,13 @@ void cmdSavePreset(int n)
 */
 void cmdLoadPreset(int n)
 {
-  uint32_t col1, col2;
-
   if (!state.ps) {
     n = 0;
     return;
   }
 
-#ifdef PLATFORM_UNIX
+#ifdef HGE_UNIX
+  uint32_t col1, col2;
 #else
   HANDLE hF;
   DWORD size, col1, col2;

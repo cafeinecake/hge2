@@ -163,7 +163,7 @@ static bool RenderFunc()
   return false;
 }
 
-#ifdef PLATFORM_UNIX
+#ifdef HGE_UNIX
 int main(int /*argc*/, char * /*argv*/ [])
 #else
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
@@ -196,7 +196,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
     }
   }
 
-#ifdef PLATFORM_UNIX
+#ifdef HGE_UNIX
   else {
     fprintf(stderr, "Error: %s\n", hge->System_GetErrorMessage());
   }

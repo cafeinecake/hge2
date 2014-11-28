@@ -26,7 +26,7 @@ static bool FrameFunc()
   return false;
 }
 
-#ifdef PLATFORM_UNIX
+#ifdef HGE_UNIX
 int main(int /*argc*/, char * /*argv*/ [])
 #else
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
@@ -63,7 +63,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
     hge->System_Start();
   } else {
     // If HGE initialization failed show error message
-#ifdef PLATFORM_UNIX
+#ifdef HGE_UNIX
     fprintf(stderr, "Error: %s\n", hge->System_GetErrorMessage());
 #else
     MessageBox(NULL, hge->System_GetErrorMessage(), "Error", MB_OK | MB_ICONERROR | MB_APPLMODAL);

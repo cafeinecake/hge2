@@ -387,7 +387,7 @@ public:
     return System_GetStateString(state);
   }
 
-  virtual void   *CALL  Resource_Load(const char *filename, uint32_t *size = 0) = 0;
+  virtual hgeResHandle CALL  Resource_Load(const char *filename, uint32_t *size = 0) = 0;
   virtual void    CALL  Resource_Free(void *res) = 0;
   virtual bool    CALL  Resource_AttachPack(const char *filename, const char *password = 0) = 0;
   virtual void    CALL  Resource_RemovePack(const char *filename) = 0;

@@ -193,7 +193,8 @@ bool CxImagePNG::Decode(CxFile *hFile)
           uint32_t ip;
 
           for (ip = 0;
-               ip < std::min(head.biClrUsed, static_cast<uint32_t>(info_ptr->num_trans));
+               ip < std::min<uint32_t>(head.biClrUsed, 
+                                       static_cast<uint32_t>(info_ptr->num_trans));
                ip++) {
             pal[ip].rgbReserved = info_ptr->trans[ip];
           }

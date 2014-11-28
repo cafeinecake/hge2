@@ -17,7 +17,7 @@ const char *HGE_Impl::_BuildProfilePath(const char *section, const char *name,
   strcpy(path, home);
   mkdir(path, S_IRWXU);
 
-#if PLATFORM_MACOSX
+#if HGE_MACOSX
   strcat(path, "/Library");
   mkdir(path, S_IRWXU);
   strcat(path, "/Application Support");

@@ -6,14 +6,17 @@
 ** Common core implementation header
 */
 
-#ifndef HGE_IMPL_UNIX_H
-#define HGE_IMPL_UNIX_H
+#pragma once
 
 #include "unix_compat.h"
 
 #include "../../include/hge.h"
 #include <stdio.h>
-#include <dirent.h>
+
+#ifndef HGE_WINDOWS
+#   include <dirent.h>
+#endif
+
 #include "SDL.h"
 
 #define GL_GLEXT_LEGACY 1
@@ -409,8 +412,3 @@ private:
 };
 
 extern HGE_Impl    *pHGE;
-
-#endif  // include-once blocker
-
-// end of hg_impl_unix.h ...
-

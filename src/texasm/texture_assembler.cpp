@@ -90,7 +90,7 @@ void CTextureAssembler::AccumulateRMResources(hgeResourceManager *rm, int resgro
 }
 
 
-#ifdef PLATFORM_UNIX
+#ifdef HGE_UNIX
 void CTextureAssembler::AccumulateFileResources(char * /*wildcard*/,
     int /*resgroup*/,
     char * /*mask_set*/,

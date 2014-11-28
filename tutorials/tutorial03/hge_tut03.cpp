@@ -129,7 +129,7 @@ static bool RenderFunc()
 }
 
 
-#ifdef PLATFORM_UNIX
+#ifdef HGE_UNIX
 int main(int /*argc*/, char * /*argv*/ [])
 #else
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
@@ -150,7 +150,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
   if (hge->System_Initiate()) {
 
     // Load sound and texture
-#ifdef PLATFORM_UNIX
+#ifdef HGE_UNIX
     snd = hge->Effect_Load("menu.ogg");
 #else
     snd = hge->Effect_Load("menu.wav");
@@ -160,7 +160,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
     if (!snd || !tex) {
       // If one of the data files is not found, display
       // an error message and shutdown.
-#ifdef PLATFORM_UNIX
+#ifdef HGE_UNIX
       fprintf(stderr,
               "Error: Can't load one of the following files:\nmenu.wav, particles.png, font1.fnt, font1.png, trail.psi\n");
 #else

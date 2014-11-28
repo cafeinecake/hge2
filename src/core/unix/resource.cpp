@@ -103,7 +103,7 @@ void CALL HGE_Impl::Resource_RemoveAllPacks()
   res = 0;
 }
 
-void *CALL HGE_Impl::Resource_Load(const char *filename, uint32_t *size)
+hgeResHandle CALL HGE_Impl::Resource_Load(const char *filename, uint32_t *size)
 {
   const char *res_err = "Can't load resource: %s";
 

@@ -188,7 +188,7 @@ static bool RenderFunc()
 }
 
 
-#ifdef PLATFORM_UNIX
+#ifdef HGE_UNIX
 int main(int /*argc*/, char * /*argv*/ [])
 #else
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
@@ -213,7 +213,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
     if (!InitSimulation()) {
       // If one of the data files is not found, display an error message and shutdown
-#ifdef PLATFORM_UNIX
+#ifdef HGE_UNIX
       fprintf(stderr, "Error: Can't load resources. See log for details.\n");
 #else
       MessageBox(NULL, "Can't load resources. See log for details.", "Error",
@@ -238,7 +238,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 static float GetTime()
 {
-#ifdef PLATFORM_UNIX
+#ifdef HGE_UNIX
   struct tm *t = 0;
   time_t tt = time(NULL);
   t = localtime(&tt);

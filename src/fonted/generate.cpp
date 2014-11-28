@@ -4,7 +4,7 @@
 
 CHAR_DESC vChars[256];
 
-#ifndef PLATFORM_UNIX
+#ifndef HGE_UNIX
 static bool PlaceSymbols(int nWidth, int nHeight, CSymbolRange *pRanges,
                          int nRangeCount)
 {
@@ -36,7 +36,7 @@ static bool PlaceSymbols(int nWidth, int nHeight, CSymbolRange *pRanges,
 }
 #endif
 
-#ifdef PLATFORM_UNIX
+#ifdef HGE_UNIX
 HTEXTURE FontGenerate(char * /*szFontName*/,
                       int /*nSize*/,
                       int /*nPaddingTop*/, int /*nPaddingBtm*/,

@@ -10,8 +10,11 @@
 
 // Useful to sprinkle around the codebase without a bunch of #ifdefs...
 #ifdef _WINDOWS
-#define BYTESWAP(x)
-#define STUBBED(x)
+#   define BYTESWAP(x)
+#   define STUBBED(x)
+#   define HGE_WINDOWS 1
+
+#   include <SDL.h>
 #endif
 
 // don't want rest of this header on Windows, etc.

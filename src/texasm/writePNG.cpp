@@ -9,7 +9,7 @@ static void WarningCallback(png_structp /*png_ptr*/,
   SysLog("LIBPNG Warning: %s\n", msg);
 }
 
-static void HGE_NORETURN ErrorCallback(png_structp /*png_ptr*/,
+static void /*HGE_NORETURN*/ ErrorCallback(png_structp /*png_ptr*/,
                                        png_const_charp msg)
 {
   SysLog("LIBPNG Error: %s\n", msg);

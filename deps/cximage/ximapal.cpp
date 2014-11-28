@@ -555,7 +555,7 @@ void CxImage::SetPalette(uint32_t n, uint8_t *r, uint8_t *g, uint8_t *b)
   }
 
   RGBQUAD *ppal = GetPalette();
-  uint32_t m = std::min(n, head.biClrUsed);
+  uint32_t m = std::min<uint32_t>(n, head.biClrUsed);
 
   for (uint32_t i = 0; i < m; i++) {
     ppal[i].rgbRed = r[i];
@@ -573,7 +573,7 @@ void CxImage::SetPalette(rgb_color *rgb, uint32_t nColors)
   }
 
   RGBQUAD *ppal = GetPalette();
-  uint32_t m = std::min(nColors, head.biClrUsed);
+  uint32_t m = std::min<uint32_t>(nColors, head.biClrUsed);
 
   for (uint32_t i = 0; i < m; i++) {
     ppal[i].rgbRed = rgb[i].r;

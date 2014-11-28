@@ -138,7 +138,7 @@ static bool RenderFunc()
   return false;
 }
 
-#ifdef PLATFORM_UNIX
+#ifdef HGE_UNIX
 int main(int /*argc*/, char * /*argv*/ [])
 #else
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
@@ -161,7 +161,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
   if (hge->System_Initiate()) {
     // Load sound and texture
-#ifdef PLATFORM_UNIX
+#ifdef HGE_UNIX
     snd = hge->Effect_Load("menu.ogg");
 #else
     snd = hge->Effect_Load("menu.wav");
@@ -171,7 +171,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
     if (!snd || !quad.tex) {
       // If one of the data files is not found, display
       // an error message and shutdown.
-#ifdef PLATFORM_UNIX
+#ifdef HGE_UNIX
       fprintf(stderr, "Error: Can't load menu.wav or particles.png\n");
 #else
       MessageBox(NULL, "Can't load menu.wav or particles.png", "Error",
@@ -211,7 +211,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
     hge->Texture_Free(quad.tex);
     hge->Effect_Free(snd);
   } else {
-#ifdef PLATFORM_UNIX
+#ifdef HGE_UNIX
     fprintf(stderr, "Error: %s\n", hge->System_GetErrorMessage());
 #else
     MessageBox(NULL, hge->System_GetErrorMessage(), "Error", MB_OK | MB_ICONERROR | MB_SYSTEMMODAL);

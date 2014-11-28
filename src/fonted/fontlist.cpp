@@ -26,7 +26,7 @@ CFontList::~CFontList()
 
 void CFontList::BuildList()
 {
-#ifdef PLATFORM_UNIX
+#ifdef HGE_UNIX
 #else
   HDC hdc = CreateCompatibleDC(0);
   LOGFONT lf;
@@ -112,7 +112,7 @@ void CFontList::FindSortAdd(char *family)
   nFonts++;
 }
 
-#ifdef PLATFORM_UNIX
+#ifdef HGE_UNIX
 int EnumFontFamiliesEx(int * /*lpelfe*/, int * /*lpntme*/, uint32_t /*FontType*/,
                        void * /*lParam*/)
 {

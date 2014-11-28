@@ -116,20 +116,20 @@ void hgeResourceManager::Purge(int groupid)
   }
 }
 
-void *hgeResourceManager::GetResource(const char *name, int resgroup)
+hgeResHandle hgeResourceManager::GetResource(const char *name, int resgroup)
 {
-  void *reshandle;
+  hgeResHandle reshandle;
   RResource *resource;
   IResource *Res = FindRes(this, RES_RESOURCE, name);
 
   if (Res) {
-    return reinterpret_cast<void *>(Res->Get(this));
+    return Res->Get(this);
   } else {
     reshandle = hge->Resource_Load(name);
 
     if (reshandle) {
       resource = new RResource();
-      resource->handle = reinterpret_cast<size_t>(reshandle);
+      resource->handle = reinterpret_cast<hgeResHandle>(reshandle);
       resource->resgroup = resgroup;
       strcpy(resource->name, name);
       strcpy(resource->filename, name);
@@ -155,7 +155,7 @@ HTEXTURE hgeResourceManager::GetTexture(const char *name, int resgroup)
 
     if (reshandle) {
       resource = new RTexture();
-      resource->handle = reshandle;
+      resource->handle = reinterpret_cast<hgeResHandle>(reshandle);
       resource->resgroup = resgroup;
       resource->mipmap = false;
       strcpy(resource->name, name);
@@ -182,7 +182,7 @@ HEFFECT hgeResourceManager::GetEffect(const char *name, int resgroup)
 
     if (reshandle) {
       resource = new REffect();
-      resource->handle = reshandle;
+      resource->handle = reinterpret_cast<hgeResHandle>(reshandle);
       resource->resgroup = resgroup;
       strcpy(resource->name, name);
       strcpy(resource->filename, name);
@@ -208,7 +208,7 @@ HMUSIC hgeResourceManager::GetMusic(const char *name, int resgroup)
 
     if (reshandle) {
       resource = new RMusic();
-      resource->handle = reshandle;
+      resource->handle = reinterpret_cast<hgeResHandle>(reshandle);
       resource->resgroup = resgroup;
       strcpy(resource->name, name);
       strcpy(resource->filename, name);
@@ -234,7 +234,7 @@ HSTREAM hgeResourceManager::GetStream(const char *name, int resgroup)
 
     if (reshandle) {
       resource = new RStream();
-      resource->handle = reshandle;
+      resource->handle = reinterpret_cast<hgeResHandle>(reshandle);
       resource->resgroup = resgroup;
       strcpy(resource->name, name);
       strcpy(resource->filename, name);

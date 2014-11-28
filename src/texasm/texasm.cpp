@@ -11,7 +11,7 @@
 
 #include "../../include/hgeresource.h"
 
-#ifndef PLATFORM_UNIX
+#ifndef HGE_UNIX
 #include <direct.h>
 #endif
 
@@ -94,7 +94,7 @@ int main(int argc, char *argv[])
 
   bool bScript;
 
-  void *script = hge->Resource_Load(argv[1]);
+  hgeResHandle script = hge->Resource_Load(argv[1]);
 
   if (script) {
     bScript = true;

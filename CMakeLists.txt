@@ -116,6 +116,7 @@ include_directories(
     ${JPEG_INCLUDE_DIR}
     ${PNG_INCLUDE_DIR} 
     ${PROJECT_SOURCE_DIR}/deps
+    ${PROJECT_SOURCE_DIR}/deps/libsdl2/include
     ${PROJECT_SOURCE_DIR}/include
     ${PROJECT_SOURCE_DIR}/core
 )

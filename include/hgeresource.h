@@ -66,7 +66,7 @@ public:
   bool        Precache(int groupid = 0);
   void        Purge(int groupid = 0);
 
-  void       *GetResource(const char *name, int resgroup = 0);
+  hgeResHandle  GetResource(const char *name, int resgroup = 0);
   HTEXTURE      GetTexture(const char *name, int resgroup = 0);
   HEFFECT       GetEffect(const char *name, int resgroup = 0);
   HMUSIC        GetMusic(const char *name, int resgroup = 0);

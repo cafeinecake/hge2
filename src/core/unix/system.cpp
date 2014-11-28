@@ -9,7 +9,7 @@
 
 #include "hge_impl.h"
 
-#if PLATFORM_MACOSX
+#if HGE_MACOSX
 #include <Carbon/Carbon.h>
 #include <sys/types.h>
 #include <sys/sysctl.h>
@@ -83,7 +83,7 @@ bool CALL HGE_Impl::System_Initiate()
 
   MacOSXVersion = 0x0000;
 
-#if PLATFORM_MACOSX
+#if HGE_MACOSX
   SInt32 ver = 0x0000;
   char verbuf[16] = { '\0' };
 
@@ -188,7 +188,7 @@ bool CALL HGE_Impl::System_Initiate()
 
   SDL_ShowCursor(bHideMouse ? SDL_DISABLE : SDL_ENABLE);
 
-#if !PLATFORM_MACOSX
+#if !HGE_MACOSX
   SDL_Surface *icon = SDL_LoadBMP("hgeicon.bmp");  // HACK.
 
   if (icon) {
@@ -865,7 +865,7 @@ void CALL HGE_Impl::System_Log(const char *szFormat, ...)
   fclose(hf);
 }
 
-#if PLATFORM_MACOSX
+#if HGE_MACOSX
 bool CALL HGE_Impl::System_Launch(const char *url)
 {
   CFURLRef cfurl = CFURLCreateWithBytes(NULL, (const UInt8 *) url,
@@ -1071,7 +1071,7 @@ bool HGE_Impl::_ProcessSDLEvent(const SDL_Event &e)
   case SDL_KEYDOWN:
     keymods = e.key.keysym.mod;
 
-#if PLATFORM_MACOSX  // handle Apple-Q hotkey, etc.
+#if HGE_MACOSX  // handle Apple-Q hotkey, etc.
 
     if (keymods & KMOD_META) {
       if (e.key.keysym.sym == SDLK_q) {
@@ -1123,9 +1123,13 @@ bool HGE_Impl::_ProcessSDLEvent(const SDL_Event &e)
       pHGE->_BuildEvent(INPUT_MBUTTONDOWN, HGEK_RBUTTON, 0, 0, e.button.x, e.button.y);
     } else if (e.button.button == SDL_BUTTON_MIDDLE) {
       pHGE->_BuildEvent(INPUT_MBUTTONDOWN, HGEK_MBUTTON, 0, 0, e.button.x, e.button.y);
-    } else if (e.button.button == SDL_BUTTON_WHEELUP) {
+    }
+    break;
+
+  case SDL_MOUSEWHEEL:
+    if (e.wheel.y >= 0) {
       pHGE->_BuildEvent(INPUT_MOUSEWHEEL, 1, 0, 0, e.button.x, e.button.y);
-    } else if (e.button.button == SDL_BUTTON_WHEELDOWN) {
+    } else {
       pHGE->_BuildEvent(INPUT_MOUSEWHEEL, -1, 0, 0, e.button.x, e.button.y);
     }
 

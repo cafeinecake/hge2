@@ -11,7 +11,7 @@
 #include <cstdio>
 #include <string>
 
-#ifndef PLATFORM_UNIX
+#ifndef HGE_UNIX
 #include <windows.h>
 #endif
 
@@ -134,7 +134,7 @@ bool cmdGenerateFont()
 
 bool cmdSaveFont()
 {
-#ifdef PLATFORM_UNIX
+#ifdef HGE_UNIX
   return false;
 #else
   FILE *fp;

@@ -122,7 +122,7 @@ static bool RenderFunc()
 }
 
 
-#ifdef PLATFORM_UNIX
+#ifdef HGE_UNIX
 int main(int /*argc*/, char * /*argv*/ [])
 #else
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
@@ -148,7 +148,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
     if (!tex) {
       // If one of the data files is not found, display
       // an error message and shutdown.
-#ifdef PLATFORM_UNIX
+#ifdef HGE_UNIX
       fprintf(stderr, "Error: Can't load texture.jpg\n");
 #else
       MessageBox(NULL, "Can't load texture.jpg", "Error", MB_OK | MB_ICONERROR | MB_APPLMODAL);
