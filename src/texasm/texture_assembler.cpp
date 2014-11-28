@@ -3,6 +3,7 @@
 #include "sprite_object.h"
 
 #include "../../include/hgesprite.h"
+#include "common/hge_utils.h"
 
 
 

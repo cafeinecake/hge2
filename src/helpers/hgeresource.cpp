@@ -326,7 +326,7 @@ hgeStringTable *hgeResourceManager::GetStringTable(const char *name, int resgrou
 
     if (strtable) {
       resource = new RStringTable();
-      resource->handle = reinterpret_cast<size_t>(strtable);
+      resource->handle = reinterpret_cast<hgeResHandle>(strtable);
       resource->resgroup = resgroup;
       strcpy(resource->name, name);
       strcpy(resource->filename, name);

@@ -496,7 +496,7 @@ void RResource::Parse(hgeResourceManager *rm, RScriptParser *sp, const char *nam
 hgeResHandle RResource::Get(hgeResourceManager * /*rm*/)
 {
   if (!handle) {
-    handle = reinterpret_cast<size_t>(hge->Resource_Load(filename));
+    handle = reinterpret_cast<hgeResHandle>(hge->Resource_Load(filename));
   }
 
   return handle;
@@ -606,7 +606,7 @@ void REffect::Parse(hgeResourceManager *rm, RScriptParser *sp, const char *name,
 hgeResHandle REffect::Get(hgeResourceManager * /*rm*/)
 {
   if (!handle) {
-    handle = static_cast<hgeResHandle>(hge->Effect_Load(filename));
+    handle = reinterpret_cast<hgeResHandle>(hge->Effect_Load(filename));
   }
 
   return handle;
@@ -684,8 +684,8 @@ void RMusic::Parse(hgeResourceManager *rm, RScriptParser *sp, const char *name,
 hgeResHandle RMusic::Get(hgeResourceManager * /*rm*/)
 {
   if (!handle) {
-    handle = static_cast<hgeResHandle>(hge->Music_Load(filename));
-    hge->Music_SetAmplification(handle, amplify);
+    handle = reinterpret_cast<hgeResHandle>(hge->Music_Load(filename));
+    hge->Music_SetAmplification(reinterpret_cast<HMUSIC>(handle), amplify);
   }
 
   return handle;

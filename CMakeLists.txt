@@ -4,6 +4,7 @@ cmake_minimum_required(VERSION 2.8)
 option(BUILD_TUTORIALS   "Build the tutorial samples" ON)
 option(BUILD_TOOLS       "Build the library tools"    ON)
 option(USE_INTERNAL_ZLIB "Use the internal ZLib"      ON)
+option(USE_INTERNAL_LIBJPEG "Use the internal LibJPEG"   ON)
 
 SET( CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin       CACHE PATH "Single Directory for all executables." )
 SET( CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG ${CMAKE_SOURCE_DIR}/bin CACHE PATH "Single Directory for all executables." )
@@ -53,19 +54,6 @@ if(UNIX OR APPLE)
 		message(FATAL_ERROR "DevIL is not ready to be used yet")
 	endif(USE_CXIMAGE)
 
-	include_directories(
-		${SDL_INCLUDE_DIR}
-		${OPENAL_INCLUDE_DIR}
-		${VORBIS_INCLUDE_DIR}
-		${IL_INCLUDE_DIR}
-		${HGEZLIB_INCLUDE_DIR}
-		${JPEG_INCLUDE_DIR}
-		${PNG_INCLUDE_DIR}
-		${CMAKE_SOURCE_DIR}/include
-		${CMAKE_SOURCE_DIR}/core
-	)
-
-
 	# The libraries to link against for HGE, and also for applications using it
 	set(HGE2_LIBRARIES
 		${SDL_LIBRARY}
@@ -110,6 +98,28 @@ elseif(WIN32)
 else()
 	message(FATAL_ERROR "Unknown platform")
 endif(UNIX OR APPLE)
+
+# If we're using the external library, we must find it
+if(NOT USE_INTERNAL_LIBJPEG)
+	find_package(JPEG REQUIRED)
+else()
+	add_subdirectory( deps/libjpeg )
+endif(NOT USE_INTERNAL_LIBJPEG)
+
+#set(HGE2_SOURCE_DIR ${PROJECT_SOURCE_DIR})
+include_directories(
+    ${SDL_INCLUDE_DIR}
+    ${OPENAL_INCLUDE_DIR}
+    ${VORBIS_INCLUDE_DIR}
+    ${IL_INCLUDE_DIR}
+    ${HGEZLIB_INCLUDE_DIR}
+    ${JPEG_INCLUDE_DIR}
+    ${PNG_INCLUDE_DIR} 
+    ${PROJECT_SOURCE_DIR}/deps
+    ${PROJECT_SOURCE_DIR}/include
+    ${PROJECT_SOURCE_DIR}/core
+)
+
 
 if(WIN32)
 	set(HGE_LIBRARY hge2core ${HGE_LIBRARIES})

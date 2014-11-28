@@ -87,46 +87,15 @@
 // HGE Handle types
 // Made them structs to be incompatible, except where conversion exists
 //
-class HTEXTURE {
-public:
-  size_t value;
-  HTEXTURE() : value(0) {}
-  HTEXTURE(int) : value(0) {}
-  inline operator bool() { 
-    return value != 0; 
-  }
-};
-class HTARGET {
-public:
-  size_t value; 
-  HTARGET() : value(0) {}
-  HTARGET(int) : value(0) {}
-  inline operator bool() {
-    return value != 0;
-  }
-};
-class HEFFECT { 
-public:
-  size_t value; 
-  inline operator bool() {
-    return value != 0;
-  }
-};
-class HMUSIC { 
-public:
-  size_t value;
-};
-class HSTREAM {
-public:
-  size_t value;
-};
-class HCHANNEL {
-public:
-  size_t value; 
-};
-
-// internal any-handle wrapper, do not use
-typedef struct { size_t value; } hgeResHandle; 
+#define DEF_OPAQUE(Name, OpaqueName) struct Name; typedef Name * OpaqueName;
+DEF_OPAQUE(hgeTexture, HTEXTURE)
+DEF_OPAQUE(hgeTarget, HTARGET)
+DEF_OPAQUE(hgeEffect, HEFFECT)
+DEF_OPAQUE(hgeMusic, HMUSIC)
+DEF_OPAQUE(hgeStream, HSTREAM)
+DEF_OPAQUE(hgeChannel, HCHANNEL)
+DEF_OPAQUE(hgeResource, hgeResHandle)
+#undef DEF_OPAQUE
 
 
 /*

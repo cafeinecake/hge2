@@ -26,7 +26,7 @@ extern "C" {
 #undef _DLL
 #include <png.h>
 #else
-#include "../png/png.h"
+#include <libpng/png.h>
 #endif
 }
 

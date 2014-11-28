@@ -433,7 +433,7 @@ void cmdSavePreset(int n)
   }
 
   HANDLE hF;
-  uint32_t size;
+  DWORD size;
   char filename[_MAX_PATH];
 
   ZeroMemory(filename, _MAX_PATH);
@@ -473,7 +473,7 @@ void cmdLoadPreset(int n)
 #ifdef PLATFORM_UNIX
 #else
   HANDLE hF;
-  uint32_t size, col1, col2;
+  DWORD size, col1, col2;
   char filename[_MAX_PATH];
 
   ZeroMemory(filename, _MAX_PATH);
@@ -495,7 +495,7 @@ void cmdLoadPreset(int n)
 
   // I'm think this is what they were getting at for these two functions
   // ~losinggeneration 2011-08-18 13:13:42
-  sprParticles->SetFrame(static_cast<uint32_t>(
+  sprParticles->SetFrame(reinterpret_cast<uint32_t>(
                            state.ps->info.sprite->GetTexture()) & 0xFFFF);
   sprParticles->SetBlendMode(static_cast<uint32_t>(
                                state.ps->info.sprite->GetBlendMode()) >> 16);

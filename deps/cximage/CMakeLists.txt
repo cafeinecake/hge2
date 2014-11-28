@@ -43,12 +43,12 @@ set( HGECX_SRC
 	)
 
 #------ additional includes ------
-include_directories( ${HGE_SOURCE_DIR}/include )
-include_directories( ${HGE_SOURCE_DIR}/deps )
-include_directories( ${HGE_SOURCE_DIR}/deps/zlib-1.2.5 )
+include_directories( ${CMAKE_SOURCE_DIR}/include )
+include_directories( ${CMAKE_SOURCE_DIR}/deps )
+include_directories( ${CMAKE_SOURCE_DIR}/deps/zlib-1.2.5 )
 
 #------ link directories listed ------
-link_directories( ${HGE_SOURCE_DIR}/linklib )
+link_directories( ${CMAKE_SOURCE_DIR}/linklib )
 
 #------ target -----
 add_library( hgecximage STATIC ${HGECX_SRC} )

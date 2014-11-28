@@ -96,7 +96,7 @@ bool CxImageBMP::Decode(CxFile *hFile)
   BITMAPFILEHEADER   bf;
   uint32_t off = static_cast<uint32_t>(hFile->Tell()); //<CSC>
   cx_try {
-    if (hFile->Read(&bf, std::min(14ul, sizeof(bf)), 1) == 0)
+    if (hFile->Read(&bf, std::min<size_t>(14ul, sizeof(bf)), 1) == 0)
     {
       cx_throw("Not a BMP");
     }

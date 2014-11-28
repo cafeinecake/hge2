@@ -1,7 +1,7 @@
-#if !defined(__xmemfile_h)
-#define __xmemfile_h
+#pragma once
 
 #include "xfile.h"
+#include <stdint.h>
 
 //////////////////////////////////////////////////////////
 class DLL_EXP CxMemFile : public CxFile {
@@ -37,5 +37,3 @@ protected:
   int32_t m_Edge;   //buffer size
   bool  m_bEOF;
 };
-
-#endif
