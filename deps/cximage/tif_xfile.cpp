@@ -80,10 +80,10 @@ TIFFOpen(const char* name, const char* mode)
 {
   static const char module[] = "TIFFOpen";
    FILE* stream = fopen(name, mode);
-  if (stream == NULL)
+  if (stream == nullptr)
    {
     TIFFError(module, "%s: Cannot open", name);
-    return NULL;
+    return nullptr;
   }
   return (TIFFFdOpen((int)stream, name, mode));
 }
@@ -173,10 +173,10 @@ Win32WarningHandler(const char *module, const char *fmt, va_list ap)
   LPSTR szTmp;
   LPCSTR szTitleText = "%s Warning";
   LPCSTR szDefaultModule = "TIFFLIB";
-  szTmp = (module == NULL) ? (LPSTR)szDefaultModule : (LPSTR)module;
+  szTmp = (module == nullptr) ? (LPSTR)szDefaultModule : (LPSTR)module;
 
   if ((szTitle = (LPSTR)LocalAlloc(LMEM_FIXED, (strlen(szTmp) +
-                                   strlen(szTitleText) + strlen(fmt) + 128))) == NULL) {
+                                   strlen(szTitleText) + strlen(fmt) + 128))) == nullptr) {
     return;
   }
 
@@ -188,7 +188,7 @@ Win32WarningHandler(const char *module, const char *fmt, va_list ap)
   return;
 #else
 
-  if (module != NULL) {
+  if (module != nullptr) {
     fprintf(stderr, "%s: ", module);
   }
 
@@ -209,10 +209,10 @@ Win32ErrorHandler(const char *module, const char *fmt, va_list ap)
   LPSTR szTmp;
   LPCSTR szTitleText = "%s Error";
   LPCSTR szDefaultModule = "TIFFLIB";
-  szTmp = (module == NULL) ? (LPSTR)szDefaultModule : (LPSTR)module;
+  szTmp = (module == nullptr) ? (LPSTR)szDefaultModule : (LPSTR)module;
 
   if ((szTitle = (LPSTR)LocalAlloc(LMEM_FIXED, (strlen(szTmp) +
-                                   strlen(szTitleText) + strlen(fmt) + 128))) == NULL) {
+                                   strlen(szTitleText) + strlen(fmt) + 128))) == nullptr) {
     return;
   }
 
@@ -224,7 +224,7 @@ Win32ErrorHandler(const char *module, const char *fmt, va_list ap)
   return;
 #else
 
-  if (module != NULL) {
+  if (module != nullptr) {
     fprintf(stderr, "%s: ", module);
   }
 

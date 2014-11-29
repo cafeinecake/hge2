@@ -139,7 +139,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 #ifdef HGE_UNIX
       fprintf(stderr,  "Error: Can't load bg.png, cursor.png or menu.wav\n");
 #else
-      MessageBox(NULL, "Can't load bg.png, cursor.png or menu.wav", "Error",
+      MessageBox(nullptr, "Can't load bg.png, cursor.png or menu.wav", "Error",
                  MB_OK | MB_ICONERROR | MB_APPLMODAL);
 #endif
       hge->System_Shutdown();

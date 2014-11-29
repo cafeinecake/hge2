@@ -64,7 +64,7 @@ bool CxImageGIF::Decode(CxFile *fp)
   struct_image image;
   struct_TabCol TabCol;
 
-  if (fp == NULL) {
+  if (fp == nullptr) {
     return false;
   }
 
@@ -95,7 +95,7 @@ bool CxImageGIF::Decode(CxFile *fp)
   // 1) no global color map found
   // 2) (image.w, image.h) of the 1st image != (dscgif.scrwidth, dscgif.scrheight)
   int32_t bTrueColor = 0;
-  CxImage *imaRGB = NULL;
+  CxImage *imaRGB = nullptr;
 
   // Global colour map?
   if (dscgif.pflds & 0x80) {
@@ -123,7 +123,7 @@ bool CxImageGIF::Decode(CxFile *fp)
   char ch;
   bool bPreviousWasNull = true;
   int32_t  prevdispmeth = 0;
-  CxImage *previousFrame = NULL;
+  CxImage *previousFrame = nullptr;
 
   for (BOOL bContinue = TRUE; bContinue;) {
     if (fp->Read(&ch, sizeof(ch), 1) != 1) {
@@ -298,7 +298,7 @@ bool CxImageGIF::Decode(CxFile *fp)
           info.nFrame = info.nNumFrames - 1;
 
           //build the RGB image
-          if (imaRGB == NULL) {
+          if (imaRGB == nullptr) {
             imaRGB = new CxImage(dscgif.scrwidth, dscgif.scrheight, 24, CXIMAGE_FORMAT_GIF);
           }
 
@@ -320,13 +320,13 @@ bool CxImageGIF::Decode(CxFile *fp)
           fp->Seek(-(ibfmax - ibf - 1), SEEK_CUR);
         }
 
-        if (info.bGetAllFrames && imaRGB == NULL) {
+        if (info.bGetAllFrames && imaRGB == nullptr) {
           if (iImage == 0) {
             DestroyFrames();
             ppFrames = new CxImage*[info.nNumFrames];
 
             for (int32_t frameIdx = 0; frameIdx < info.nNumFrames; frameIdx++) {
-              ppFrames[frameIdx] = NULL;
+              ppFrames[frameIdx] = nullptr;
             }
           }
 
@@ -428,7 +428,7 @@ bool CxImageGIF::DecodeExtension(CxFile *fp)
 
             if (bContinue) {
               uint8_t *dati = new uint8_t [count];
-              bContinue = (dati != NULL);
+              bContinue = (dati != nullptr);
 
               if (bContinue) {
                 bContinue = (1 == fp->Read(dati, count, 1));
@@ -492,7 +492,7 @@ int32_t CxImageGIF::get_byte(CxFile *file)
 */
 int32_t CxImageGIF::out_line(CImageIterator *iter, uint8_t *pixels, int32_t linelen)
 {
-  if (iter == NULL || pixels == NULL) {
+  if (iter == nullptr || pixels == nullptr) {
     return -1;
   }
 
@@ -580,12 +580,12 @@ bool CxImageGIF::Encode(CxFile *fp, CxImage **pImages, int32_t pagecount, bool b
                         bool bLocalDispMeth)
 {
   cx_try {
-    if (fp == NULL)
+    if (fp == nullptr)
     {
       cx_throw("invalid file pointer");
     }
 
-    if (pImages == NULL || pagecount <= 0 || pImages[0] == NULL)
+    if (pImages == nullptr || pagecount <= 0 || pImages[0] == nullptr)
     {
       cx_throw("multipage GIF, no images!");
     }
@@ -594,7 +594,7 @@ bool CxImageGIF::Encode(CxFile *fp, CxImage **pImages, int32_t pagecount, bool b
 
     for (i = 0; i < pagecount; i++)
     {
-      if (pImages[i] == NULL) {
+      if (pImages[i] == nullptr) {
         cx_throw("Bad image pointer");
       }
 
@@ -1316,7 +1316,7 @@ int16_t CxImageGIF::decoder(CxFile *file, CImageIterator *iter, int16_t linewidt
   oc = fc = 0;
 
   /* Allocate space for the decode buffer */
-  if ((buf = new uint8_t[linewidth + 1]) == NULL) {
+  if ((buf = new uint8_t[linewidth + 1]) == nullptr) {
     return (OUT_OF_MEMORY);
   }
 

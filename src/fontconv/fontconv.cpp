@@ -134,7 +134,7 @@ bool convert(char *filename)
   printf("%s - ", filename);
   hf = fopen(filename, "r");
 
-  if (hf == NULL) {
+  if (hf == nullptr) {
     printf("Can't open file\n");
     return false;
   }
@@ -144,7 +144,7 @@ bool convert(char *filename)
   rewind(hf);
   desc = new char [size];
 
-  if (desc == NULL) {
+  if (desc == nullptr) {
     printf("Can't allocate buffer\n");
     fclose(hf);
     return false;
@@ -162,7 +162,7 @@ bool convert(char *filename)
   pdesc = desc;
   hf = fopen(tempfile, "w");
 
-  if (hf == NULL) {
+  if (hf == nullptr) {
     printf("Can't create temporary file\n");
     free(desc);
     return false;

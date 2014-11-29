@@ -16,7 +16,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 bool CxImageWBMP::Decode(CxFile *hFile)
 {
-  if (hFile == NULL) {
+  if (hFile == nullptr) {
     return false;
   }
 

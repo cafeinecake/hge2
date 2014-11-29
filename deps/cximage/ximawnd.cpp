@@ -128,28 +128,28 @@ int32_t GetDIBits(
   dibInfo.bmiColors[0].rgbReserved = 0;
 
   //3.2 Create bitmap and receive pointer to points into pBuffer
-  HDC hDC = ::GetDC(NULL);
+  HDC hDC = ::GetDC(nullptr);
   ASSERT(hDC);
   hTargetBitmap = CreateDIBSection(
                     hDC,
                     (const BITMAPINFO *)dibInfo,
                     DIB_RGB_COLORS,
                     (void **)&pBuffer,
-                    NULL,
+                    nullptr,
                     0);
 
-  ::ReleaseDC(NULL, hDC);
+  ::ReleaseDC(nullptr, hDC);
 
   //4. Copy source bitmap into the target bitmap.
 
   //4.1 Create 2 device contexts
-  HDC memDc = CreateCompatibleDC(NULL);
+  HDC memDc = CreateCompatibleDC(nullptr);
 
   if (!memDc) {
     ASSERT(FALSE);
   }
 
-  HDC targetDc = CreateCompatibleDC(NULL);
+  HDC targetDc = CreateCompatibleDC(nullptr);
 
   if (!targetDc) {
     ASSERT(FALSE);
@@ -199,7 +199,7 @@ int32_t CxImage::Blt(HDC pDC, int32_t x, int32_t y)
   HBRUSH brOld = (HBRUSH) SelectObject(pDC, brImage);
   PatBlt(pDC, x, y, head.biWidth, head.biHeight, PATCOPY);
   SelectObject(pDC, brOld);
-  SetBrushOrgEx(pDC, pt.x, pt.y, NULL);
+  SetBrushOrgEx(pDC, pt.x, pt.y, nullptr);
   DeleteObject(brImage);
   return 1;
 }
@@ -209,7 +209,7 @@ int32_t CxImage::Blt(HDC pDC, int32_t x, int32_t y)
  */
 HANDLE CxImage::CopyToHandle()
 {
-  HANDLE hMem = NULL;
+  HANDLE hMem = nullptr;
 
   if (pDib) {
     hMem = GlobalAlloc(GHND, GetSize());
@@ -576,7 +576,7 @@ bool CxImage::CreateFromHANDLE(HANDLE hMem)
  * Transfer the image in a icon handle, with transparency.
  * \param hdc: target device context (the screen, usually)
  * \param bTransparency : (optional) exports trancparency
- * \return icon handle, or NULL if an error occurs.
+ * \return icon handle, or nullptr if an error occurs.
  * \sa MakeBitmap
  * \author [brunom]
  */
@@ -610,14 +610,14 @@ HICON CxImage::MakeIcon(HDC hdc, bool bTransparency)
  * Transfer the image in a  bitmap handle
  * \param hdc: target device context (the screen, usually)
  * \param bTransparency : (optional) exports trancparency
- * \return bitmap handle, or NULL if an error occurs.
+ * \return bitmap handle, or nullptr if an error occurs.
  * \sa Draw2HBITMAP, MakeIcon
  * \author []; changes [brunom]
  */
 HBITMAP CxImage::MakeBitmap(HDC hdc, bool bTransparency)
 {
   if (!pDib) {
-    return NULL;
+    return nullptr;
   }
 
   // Create HBITMAP with Trancparency
@@ -627,7 +627,7 @@ HBITMAP CxImage::MakeBitmap(HDC hdc, bool bTransparency)
     if (hdc) {
       hMemDC = hdc;
     } else {
-      hMemDC = CreateCompatibleDC(NULL);
+      hMemDC = CreateCompatibleDC(nullptr);
     }
 
     BITMAPINFO bi;
@@ -645,10 +645,10 @@ HBITMAP CxImage::MakeBitmap(HDC hdc, bool bTransparency)
     bi.bmiHeader.biClrUsed = 0;
     bi.bmiHeader.biClrImportant = 0;
 
-    COLORREF *pCrBits = NULL;
+    COLORREF *pCrBits = nullptr;
     HBITMAP hbmp = CreateDIBSection(
                      hMemDC, &bi, DIB_RGB_COLORS, (void **)&pCrBits,
-                     NULL, NULL);
+                     nullptr, nullptr);
 
     if (!hdc) {
       DeleteDC(hMemDC);
@@ -681,9 +681,9 @@ HBITMAP CxImage::MakeBitmap(HDC hdc, bool bTransparency)
     // // Create a device-independent bitmap <CSC>
     //  return CreateBitmap(head.biWidth,head.biHeight, 1, head.biBitCount, GetBits());
     // use instead this code
-    HDC hMemDC = CreateCompatibleDC(NULL);
+    HDC hMemDC = CreateCompatibleDC(nullptr);
     LPVOID pBit32;
-    HBITMAP bmp = CreateDIBSection(hMemDC, (LPBITMAPINFO)pDib, DIB_RGB_COLORS, &pBit32, NULL, 0);
+    HBITMAP bmp = CreateDIBSection(hMemDC, (LPBITMAPINFO)pDib, DIB_RGB_COLORS, &pBit32, nullptr, 0);
 
     if (pBit32) {
       memcpy(pBit32, GetBits(), head.biSizeImage);
@@ -698,7 +698,7 @@ HBITMAP CxImage::MakeBitmap(HDC hdc, bool bTransparency)
   //  GetBits(), (LPBITMAPINFO)pDib, DIB_RGB_COLORS);
   // this alternative works also with _WIN32_WCE
   LPVOID pBit32;
-  HBITMAP bmp = CreateDIBSection(hdc, (LPBITMAPINFO)pDib, DIB_RGB_COLORS, &pBit32, NULL, 0);
+  HBITMAP bmp = CreateDIBSection(hdc, (LPBITMAPINFO)pDib, DIB_RGB_COLORS, &pBit32, nullptr, 0);
 
   if (pBit32) {
     memcpy(pBit32, GetBits(), head.biSizeImage);
@@ -735,7 +735,7 @@ bool CxImage::IsHBITMAPAlphaValid(HBITMAP hbmp)
       // create Buffer for Image
       RGBQUAD *l_pRawBytes = new RGBQUAD[bm.bmWidth * bm.bmHeight];
 
-      HDC dc = ::GetDC(NULL);
+      HDC dc = ::GetDC(nullptr);
 
       if (dc) {
         // Get Pixel Data from Image
@@ -754,7 +754,7 @@ bool CxImage::IsHBITMAPAlphaValid(HBITMAP hbmp)
           }
         }
 
-        ::ReleaseDC(NULL, dc);
+        ::ReleaseDC(nullptr, dc);
       }
 
       // free temporary Memory
@@ -798,7 +798,7 @@ bool CxImage::CreateFromHBITMAP(HBITMAP hbmp, HPALETTE hpal, bool bTransparency)
 
       RGBQUAD *l_pRawBytes = new RGBQUAD[bm.bmWidth * bm.bmHeight];
 
-      HDC dc = ::GetDC(NULL);
+      HDC dc = ::GetDC(nullptr);
 
       if (dc) {
         if (GetDIBits(dc, hbmp, 0, bm.bmHeight, l_pRawBytes, &l_BitmapInfo, DIB_RGB_COLORS)) {
@@ -808,7 +808,7 @@ bool CxImage::CreateFromHBITMAP(HBITMAP hbmp, HPALETTE hpal, bool bTransparency)
           l_bResult = false;
         }
 
-        ::ReleaseDC(NULL, dc);
+        ::ReleaseDC(nullptr, dc);
       } else {
         l_bResult = false;
       }
@@ -823,7 +823,7 @@ bool CxImage::CreateFromHBITMAP(HBITMAP hbmp, HPALETTE hpal, bool bTransparency)
       }
 
       // create a device context for the bitmap
-      HDC dc = ::GetDC(NULL);
+      HDC dc = ::GetDC(nullptr);
 
       if (!dc) {
         return false;
@@ -838,11 +838,11 @@ bool CxImage::CreateFromHBITMAP(HBITMAP hbmp, HPALETTE hpal, bool bTransparency)
       if (GetDIBits(dc, hbmp, 0, head.biHeight, info.pImage,
                     (LPBITMAPINFO)pDib, DIB_RGB_COLORS) == 0) { //replace &head with pDib <Wil Stark>
         strcpy(info.szLastError, "GetDIBits failed");
-        ::ReleaseDC(NULL, dc);
+        ::ReleaseDC(nullptr, dc);
         return false;
       }
 
-      ::ReleaseDC(NULL, dc);
+      ::ReleaseDC(nullptr, dc);
       return true;
     }
   }
@@ -872,7 +872,7 @@ bool CxImage::CreateFromHICON(HICON hico, bool bTransparency)
   //BITMAP l_Bitmap;
   //GetObject(iinfo.hbmColor, sizeof(BITMAP), &l_Bitmap);
 
-  l_bResult =  CreateFromHBITMAP(iinfo.hbmColor, NULL, bTransparency);
+  l_bResult =  CreateFromHBITMAP(iinfo.hbmColor, nullptr, bTransparency);
 
 #if CXIMAGE_SUPPORT_ALPHA
 
@@ -1282,7 +1282,7 @@ int32_t CxImage::Draw(HDC hdc, int32_t x, int32_t y, int32_t cx, int32_t cy, REC
  * \param pClipRect : limit the drawing operations inside a given rectangle in the output device context.
  * \param bSmooth : activates a bilinear filter that will enhance the appearence for zommed pictures.
  *                   Quite slow. Needs CXIMAGE_SUPPORT_INTERPOLATION.
- * \return HBITMAP handle, NULL in case of error
+ * \return HBITMAP handle, nullptr in case of error
  * \sa MakeBitmap
  */
 HBITMAP CxImage::Draw2HBITMAP(HDC hdc, int32_t x, int32_t y, int32_t cx, int32_t cy,
@@ -1685,7 +1685,7 @@ int32_t CxImage::Draw2(HDC hdc, int32_t x, int32_t y, int32_t cx, int32_t cy)
                     info.pImage, (BITMAPINFO *)pDib, DIB_RGB_COLORS, SRCCOPY);
 
       // Create the mask bitmap
-      HBITMAP bitmapTrans = CreateBitmap(nWidth, nHeight, 1, 1, NULL);
+      HBITMAP bitmapTrans = CreateBitmap(nWidth, nHeight, 1, 1, nullptr);
       // Select the mask bitmap into the appropriate dc
       HBITMAP pOldBitmapTrans = (HBITMAP)SelectObject(dcTrans, bitmapTrans);
       // Build mask based on transparent colour
@@ -1805,17 +1805,17 @@ int32_t CxImage::DrawString(HDC hdc, int32_t x, int32_t y, const TCHAR *text, RG
       pDC = ::GetDC(0);
     }
 
-    if (pDC == NULL) {
+    if (pDC == nullptr) {
       return 0;
     }
 
     HDC TmpDC = CreateCompatibleDC(pDC);
 
-    if (hdc == NULL) {
+    if (hdc == nullptr) {
       ::ReleaseDC(0, pDC);
     }
 
-    if (TmpDC == NULL) {
+    if (TmpDC == nullptr) {
       return 0;
     }
 
@@ -1831,7 +1831,7 @@ int32_t CxImage::DrawString(HDC hdc, int32_t x, int32_t y, const TCHAR *text, RG
     m_pLF->lfUnderline = bUnderline;
     m_Font = CreateFontIndirect(m_pLF);
     //select the font in the dc
-    HFONT pOldFont = NULL;
+    HFONT pOldFont = nullptr;
 
     if (m_Font) {
       pOldFont = (HFONT)SelectObject(TmpDC, m_Font);
@@ -1912,17 +1912,17 @@ int32_t CxImage::DrawStringEx(HDC hdc, int32_t x, int32_t y, CXTEXTINFO *pTextTy
     pDC = ::GetDC(0);
   }
 
-  if (pDC == NULL) {
+  if (pDC == nullptr) {
     return 0;
   }
 
   HDC TmpDC = CreateCompatibleDC(pDC);
 
-  if (hdc == NULL) {
+  if (hdc == nullptr) {
     ::ReleaseDC(0, pDC);
   }
 
-  if (TmpDC == NULL) {
+  if (TmpDC == nullptr) {
     return 0;
   }
 
@@ -1952,7 +1952,7 @@ int32_t CxImage::DrawStringEx(HDC hdc, int32_t x, int32_t y, CXTEXTINFO *pTextTy
   }
 
   //select the font in the dc
-  HFONT pOldFont = NULL;
+  HFONT pOldFont = nullptr;
 
   if (m_Font) {
     pOldFont = (HFONT)SelectObject(TmpDC, m_Font);

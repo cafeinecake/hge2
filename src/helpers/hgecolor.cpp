@@ -10,7 +10,7 @@
 #include "../../include/hgecolor.h"
 #include <math.h>
 
-#include "../common/hge_utils.h"
+#include "common/hge_utils.h"
 using namespace hgeut;
 
 //#ifndef min

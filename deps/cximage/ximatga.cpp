@@ -27,7 +27,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 bool CxImageTGA::Decode(CxFile *hFile)
 {
-  if (hFile == NULL) {
+  if (hFile == nullptr) {
     return false;
   }
 
@@ -134,7 +134,7 @@ bool CxImageTGA::Decode(CxFile *hFile)
         cx_throw("Cancelled");  // <vho> - cancel decoding
       }
 
-      if (hFile == NULL || hFile->Eof()) {
+      if (hFile == nullptr || hFile->Eof()) {
         cx_throw("corrupted TGA");
       }
 

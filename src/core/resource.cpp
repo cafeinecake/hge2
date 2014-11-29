@@ -136,7 +136,7 @@ hgeResHandle CALL HGE_Impl::Resource_Load(const char *filename, uint32_t *size)
     done = unzGoToFirstFile(zip);
 
     while (done == UNZ_OK) {
-      unzGetCurrentFileInfo(zip, &file_info, szZipName, sizeof(szZipName), NULL, 0, NULL, 0);
+      unzGetCurrentFileInfo(zip, &file_info, szZipName, sizeof(szZipName), nullptr, 0, nullptr, 0);
       strupr(szZipName);
 
       for (i = 0; szZipName[i]; i++) {
@@ -195,7 +195,7 @@ _fromfile:
 
   hF = fopen(Resource_MakePath(filename), "rb");
 
-  if (hF == NULL) {
+  if (hF == nullptr) {
     sprintf(szName, res_err, filename);
     _PostError(szName);
     return 0;
@@ -249,9 +249,9 @@ void CALL HGE_Impl::Resource_Free(void *res0)
 //  (also zlib-licensed.)
 static int locateOneElement(char *buf)
 {
-  char *ptr = NULL;
-  DIR *dirp = NULL;
-  struct dirent *dent = NULL;
+  char *ptr = nullptr;
+  DIR *dirp = nullptr;
+  struct dirent *dent = nullptr;
 
   if (access(buf, F_OK) == 0) {
     return 1;  /* quick rejection: exists in current case. */
@@ -259,7 +259,7 @@ static int locateOneElement(char *buf)
 
   ptr = strrchr(buf, '/');  /* find entry at end of path. */
 
-  if (ptr == NULL) {
+  if (ptr == nullptr) {
     dirp = opendir(".");
     ptr = buf;
   } else {
@@ -269,7 +269,7 @@ static int locateOneElement(char *buf)
     ptr++;  /* point past dirsep to entry itself. */
   }
 
-  while ((dent = readdir(dirp)) != NULL) {
+  while ((dent = readdir(dirp)) != nullptr) {
     if (strcasecmp(dent->d_name, ptr) == 0) {
       strcpy(ptr, dent->d_name); /* found a match. Overwrite with this case. */
       closedir(dirp);
@@ -332,7 +332,7 @@ char *CALL HGE_Impl::Resource_MakePath(const char *filename)
 // !!! FIXME: kinda messy, and probably doesn't get all the corner cases right.
 bool HGE_Impl::_WildcardMatch(const char *str, const char *wildcard)
 {
-  if ((str == NULL) || (wildcard == NULL)) {
+  if ((str == nullptr) || (wildcard == nullptr)) {
     return false;
   }
 
@@ -386,9 +386,9 @@ bool HGE_Impl::_PrepareFileEnum(const char *wildcard)
 
   char *madepath = Resource_MakePath(wildcard);
   const char *fname = strrchr(madepath, '/');
-  const char *dir = NULL;
+  const char *dir = nullptr;
 
-  if (fname == NULL) {
+  if (fname == nullptr) {
     dir = ".";
     fname = madepath;
   } else {
@@ -414,7 +414,7 @@ char *HGE_Impl::_DoEnumIteration(const bool wantdir)
   while (true) {
     struct dirent *dent = readdir(hSearch);
 
-    if (dent == NULL) {
+    if (dent == nullptr) {
       closedir(hSearch);
       hSearch = 0;
       return 0;

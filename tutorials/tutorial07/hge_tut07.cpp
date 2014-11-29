@@ -198,7 +198,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 #ifdef HGE_UNIX
       fprintf(stderr, "Error: Can't load bg2.png or zazaka.png\n");
 #else
-      MessageBox(NULL, "Can't load bg2.png or zazaka.png", "Error", MB_OK | MB_ICONERROR | MB_APPLMODAL);
+      MessageBox(nullptr, "Can't load bg2.png or zazaka.png", "Error", MB_OK | MB_ICONERROR | MB_APPLMODAL);
 #endif
       hge->System_Shutdown();
       hge->Release();

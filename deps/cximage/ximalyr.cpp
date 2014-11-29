@@ -135,16 +135,16 @@ void CxImage::LayerDeleteAll()
  */
 CxImage *CxImage::GetLayer(int32_t position)
 {
-  if (ppLayers == NULL) {
-    return NULL;
+  if (ppLayers == nullptr) {
+    return nullptr;
   }
 
   if (info.nNumLayers == 0) {
-    return NULL;
+    return nullptr;
   }
 
   if (position >= info.nNumLayers) {
-    return NULL;
+    return nullptr;
   }
 
   if (position < 0) {

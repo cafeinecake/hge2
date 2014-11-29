@@ -362,7 +362,7 @@ void RScript::Parse(hgeResourceManager *rm, RScriptParser *sp, const char *sname
 
         else if (np->tokentype == TTRES_INCLUDE) {
           np->get_token();
-          RScript::Parse(rm, np, np->tkn_string(), NULL);
+          RScript::Parse(rm, np, np->tkn_string(), nullptr);
         }
 
         else if (np->tokentype > TTRES__FIRST && np->tokentype < TTRES__LAST) {

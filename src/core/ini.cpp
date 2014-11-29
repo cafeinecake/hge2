@@ -52,7 +52,7 @@ bool HGE_Impl::_WritePrivateProfileString(const char *section, const char *name,
   const char *path = _BuildProfilePath(section, name, ini_file);
   FILE *io = fopen(path, "wb");
 
-  if (io == NULL) {
+  if (io == nullptr) {
     return false;
   }
 
@@ -72,7 +72,7 @@ bool HGE_Impl::_GetPrivateProfileString(const char *section, const char *name, c
   const char *path = _BuildProfilePath(section, name, ini_file);
   FILE *io = fopen(path, "rb");
 
-  if (io != NULL) {
+  if (io != nullptr) {
     const size_t rc = fread(buf, 1, bufsize - 1, io);
     retval = (ferror(io) == 0);
     fclose(io);
@@ -127,14 +127,14 @@ void HGE_Impl::_LoadIniFile(const char *fname)
         start++;
         char *end = strchr(start, ']');
 
-        if (end != NULL) {
+        if (end != nullptr) {
           *end = '\0';
           snprintf(section, sizeof(section), "%s", start);
         }
       } else if (section[0] != '\0') {
         char *eq = strchr(start, '=');
 
-        if (eq != NULL) {
+        if (eq != nullptr) {
           *eq = '\0';
           eq++;
           char tmpbuf[128];

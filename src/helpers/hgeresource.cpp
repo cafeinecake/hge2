@@ -37,7 +37,7 @@ void hgeResourceManager::_parse_script(const char *scriptname)
   IResource *rc, *rcnext;
 
   if (scriptname) {
-    RScript::Parse(this, NULL, scriptname, NULL);
+    RScript::Parse(this, nullptr, scriptname, nullptr);
 
     rc = res[RES_SCRIPT];
 

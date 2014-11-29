@@ -77,7 +77,7 @@ bool CALL HGE_Impl::System_Initiate()
 
   System_Log("hge-unix version: %X.%X", HGE_VERSION >> 8, HGE_VERSION & 0xFF);
 
-  time_t t = time(NULL);
+  time_t t = time(nullptr);
   System_Log("Date: %s", asctime(localtime(&t)));
 
   System_Log("Application: %s", szWinTitle);
@@ -111,7 +111,7 @@ bool CALL HGE_Impl::System_Initiate()
   size_t len = sizeof(phys);
   int mib[2] = { CTL_HW, HW_PHYSMEM };
 
-  if ((sysctl(mib, 2, &phys, &len, NULL, 0) != 0) || (len != sizeof(phys))) {
+  if ((sysctl(mib, 2, &phys, &len, nullptr, 0) != 0) || (len != sizeof(phys))) {
     phys = 0;  // oh well.
   }
 
@@ -140,7 +140,7 @@ bool CALL HGE_Impl::System_Initiate()
     return false;
   }
 
-  if (SDL_GL_LoadLibrary(NULL) == -1) {
+  if (SDL_GL_LoadLibrary(nullptr) == -1) {
     char buffer[1024];
     snprintf(buffer, sizeof(buffer), "SDL_GL_LoadLibrary() failed: %s\n", SDL_GetError());
     _PostError(buffer);
@@ -198,7 +198,7 @@ bool CALL HGE_Impl::System_Initiate()
 
   //if (icon) {
   //  SDL_SetColorKey(icon, SDL_SRCCOLORKEY, SDL_MapRGB(icon->format, 255, 0, 255));
-  //  SDL_WM_SetIcon(icon, NULL);
+  //  SDL_WM_SetIcon(icon, nullptr);
   //  SDL_FreeSurface(icon);
   //}
 
@@ -759,7 +759,7 @@ hgeCallback CALL HGE_Impl::System_GetStateFunc(hgeFuncState state)
     return nullptr;
   }
 
-  return NULL;
+  return nullptr;
 }
 
 HWND CALL HGE_Impl::System_GetStateHwnd(hgeHwndState state)
@@ -855,7 +855,7 @@ const char *CALL HGE_Impl::System_GetStateString(hgeStringState state)
     break;
   }
 
-  return NULL;
+  return nullptr;
 }
 
 const char *CALL HGE_Impl::System_GetErrorMessage()
@@ -865,7 +865,7 @@ const char *CALL HGE_Impl::System_GetErrorMessage()
 
 void CALL HGE_Impl::System_Log(const char *szFormat, ...)
 {
-  FILE *hf = NULL;
+  FILE *hf = nullptr;
   va_list ap;
 
   if (!szLogFile[0]) {
@@ -890,9 +890,9 @@ void CALL HGE_Impl::System_Log(const char *szFormat, ...)
 #if HGE_MACOSX
 bool CALL HGE_Impl::System_Launch(const char *url)
 {
-  CFURLRef cfurl = CFURLCreateWithBytes(NULL, (const UInt8 *) url,
-                                        strlen(url), kCFStringEncodingUTF8, NULL);
-  const OSStatus err = LSOpenCFURLRef(cfurl, NULL);
+  CFURLRef cfurl = CFURLCreateWithBytes(nullptr, (const UInt8 *) url,
+                                        strlen(url), kCFStringEncodingUTF8, nullptr);
+  const OSStatus err = LSOpenCFURLRef(cfurl, nullptr);
   CFRelease(cfurl);
   return (err == noErr);
 }
@@ -1024,7 +1024,7 @@ HGE_Impl::HGE_Impl()
   bForceTextureCompression = false;
 
   STUBBED("get basedir");
-//  GetModuleFileName(GetModuleHandle(NULL), szAppPath, sizeof(szAppPath));
+//  GetModuleFileName(GetModuleHandle(nullptr), szAppPath, sizeof(szAppPath));
   szAppPath[0] = '\0';
   int i;
 

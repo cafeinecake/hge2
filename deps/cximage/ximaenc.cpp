@@ -74,12 +74,12 @@
 ////////////////////////////////////////////////////////////////////////////////
 bool CxImage::EncodeSafeCheck(CxFile *hFile)
 {
-  if (hFile == NULL) {
+  if (hFile == nullptr) {
     strcpy(info.szLastError, CXIMAGE_ERR_NOFILE);
     return true;
   }
 
-  if (pDib == NULL) {
+  if (pDib == nullptr) {
     strcpy(info.szLastError, CXIMAGE_ERR_NOIMAGE);
     return true;
   }
@@ -91,7 +91,7 @@ bool CxImage::EncodeSafeCheck(CxFile *hFile)
 //bool CxImage::Save(LPCWSTR filename, uint32_t imagetype)
 //{
 //  FILE* hFile;  //file handle to write the image
-//  if ((hFile=_wfopen(filename,L"wb"))==NULL)  return false;
+//  if ((hFile=_wfopen(filename,L"wb"))==nullptr)  return false;
 //  bool bOK = Encode(hFile,imagetype);
 //  fclose(hFile);
 //  return bOK;
@@ -111,13 +111,13 @@ bool CxImage::Save(const TCHAR *filename, uint32_t imagetype)
 
 #ifdef WIN32
 
-  if ((hFile = _tfopen(filename, _T("wb"))) == NULL) {
+  if ((hFile = _tfopen(filename, _T("wb"))) == nullptr) {
     return false;  // For UNICODE support
   }
 
 #else
 
-  if ((hFile = fopen(filename, "wb")) == NULL) {
+  if ((hFile = fopen(filename, "wb")) == nullptr) {
     return false;
   }
 
@@ -142,7 +142,7 @@ bool CxImage::Encode(FILE *hFile, uint32_t imagetype)
 ////////////////////////////////////////////////////////////////////////////////
 /**
  * Saves to memory buffer the image in a specific format.
- * \param buffer: output memory buffer pointer. Must be NULL,
+ * \param buffer: output memory buffer pointer. Must be nullptr,
  * the function allocates and fill the memory,
  * the application must free the buffer, see also FreeMemory().
  * \param size: output memory buffer size.
@@ -151,7 +151,7 @@ bool CxImage::Encode(FILE *hFile, uint32_t imagetype)
  */
 bool CxImage::Encode(uint8_t *&buffer, int32_t &size, uint32_t imagetype)
 {
-  if (buffer != NULL) {
+  if (buffer != nullptr) {
     strcpy(info.szLastError, "the buffer must be empty");
     return false;
   }
@@ -630,7 +630,7 @@ bool CxImage::Encode(CxFile *hFile, CxImage **pImages, int32_t pagecount, uint32
 ////////////////////////////////////////////////////////////////////////////////
 /**
  * exports the image into a RGBA buffer, Useful for OpenGL applications.
- * \param buffer: output memory buffer pointer. Must be NULL,
+ * \param buffer: output memory buffer pointer. Must be nullptr,
  * the function allocates and fill the memory,
  * the application must free the buffer, see also FreeMemory().
  * \param size: output memory buffer size.
@@ -639,7 +639,7 @@ bool CxImage::Encode(CxFile *hFile, CxImage **pImages, int32_t pagecount, uint32
  */
 bool CxImage::Encode2RGBA(uint8_t *&buffer, int32_t &size, bool bFlipY)
 {
-  if (buffer != NULL) {
+  if (buffer != nullptr) {
     strcpy(info.szLastError, "the buffer must be empty");
     return false;
   }
@@ -704,7 +704,7 @@ bool CxImage::Load(const TCHAR *filename, uint32_t imagetype)
 //bool CxImage::Load(const char * filename, uint32_t imagetype)
 {
   /*FILE* hFile;  //file handle to read the image
-  if ((hFile=fopen(filename,"rb"))==NULL)  return false;
+  if ((hFile=fopen(filename,"rb"))==nullptr)  return false;
   bool bOK = Decode(hFile,imagetype);
   fclose(hFile);*/
 
@@ -716,13 +716,13 @@ bool CxImage::Load(const TCHAR *filename, uint32_t imagetype)
 
 #ifdef WIN32
 
-    if ((hFile = _tfopen(filename, _T("rb"))) == NULL) {
+    if ((hFile = _tfopen(filename, _T("rb"))) == nullptr) {
       return false;  // For UNICODE support
     }
 
 #else
 
-    if ((hFile = fopen(filename, "rb")) == NULL) {
+    if ((hFile = fopen(filename, "rb")) == nullptr) {
       return false;
     }
 
@@ -744,13 +744,13 @@ bool CxImage::Load(const TCHAR *filename, uint32_t imagetype)
 
 #ifdef WIN32
 
-  if ((hFile = _tfopen(filename, _T("rb"))) == NULL) {
+  if ((hFile = _tfopen(filename, _T("rb"))) == nullptr) {
     return false;  // For UNICODE support
   }
 
 #else
 
-  if ((hFile = fopen(filename, "rb")) == NULL) {
+  if ((hFile = fopen(filename, "rb")) == nullptr) {
     return false;
   }
 
@@ -770,7 +770,7 @@ bool CxImage::Load(const TCHAR *filename, uint32_t imagetype)
 //bool CxImage::Load(LPCWSTR filename, uint32_t imagetype)
 //{
 //  /*FILE* hFile;  //file handle to read the image
-//  if ((hFile=_wfopen(filename, L"rb"))==NULL)  return false;
+//  if ((hFile=_wfopen(filename, L"rb"))==nullptr)  return false;
 //  bool bOK = Decode(hFile,imagetype);
 //  fclose(hFile);*/
 //
@@ -778,7 +778,7 @@ bool CxImage::Load(const TCHAR *filename, uint32_t imagetype)
 //  bool bOK = false;
 //  if ( GetTypeIndexFromId(imagetype) ){
 //    FILE* hFile;  //file handle to read the image
-//    if ((hFile=_wfopen(filename,L"rb"))==NULL)  return false;
+//    if ((hFile=_wfopen(filename,L"rb"))==nullptr)  return false;
 //    bOK = Decode(hFile,imagetype);
 //    fclose(hFile);
 //    if (bOK) return bOK;
@@ -789,7 +789,7 @@ bool CxImage::Load(const TCHAR *filename, uint32_t imagetype)
 //
 //  // if failed, try automatic recognition of the file...
 //  FILE* hFile;  //file handle to read the image
-//  if ((hFile=_wfopen(filename,L"rb"))==NULL)  return false;
+//  if ((hFile=_wfopen(filename,L"rb"))==nullptr)  return false;
 //  bOK = Decode(hFile,CXIMAGE_FORMAT_UNKNOWN);
 //  fclose(hFile);
 //
@@ -802,7 +802,7 @@ bool CxImage::Load(const TCHAR *filename, uint32_t imagetype)
  * Loads an image from the application resources.
  * \param hRes: the resource handle returned by FindResource().
  * \param imagetype: file format, see ENUM_CXIMAGE_FORMATS.
- * \param hModule: NULL for internal resource, or external application/DLL hinstance returned by LoadLibray.
+ * \param hModule: nullptr for internal resource, or external application/DLL hinstance returned by LoadLibray.
  * \return true if everything is ok
  */
 bool CxImage::LoadResource(HRSRC hRes, uint32_t imagetype, HMODULE hModule)
@@ -925,7 +925,7 @@ bool CxImage::Decode(FILE *hFile, uint32_t imagetype)
  */
 bool CxImage::Decode(CxFile *hFile, uint32_t imagetype)
 {
-  if (hFile == NULL) {
+  if (hFile == nullptr) {
     strcpy(info.szLastError, CXIMAGE_ERR_NOFILE);
     return false;
   }
@@ -1419,7 +1419,7 @@ bool CxImage::CheckFormat(CxFile *hFile, uint32_t imagetype)
 ////////////////////////////////////////////////////////////////////////////////
 bool CxImage::CheckFormat(uint8_t *buffer, uint32_t size, uint32_t imagetype)
 {
-  if (buffer == NULL || ! size) {
+  if (buffer == nullptr || ! size) {
     strcpy(info.szLastError, "invalid or empty buffer");
     return false;
   }

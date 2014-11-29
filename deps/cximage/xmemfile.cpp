@@ -20,7 +20,7 @@ bool CxMemFile::Close()
 {
   if ((m_pBuffer) && (m_bFreeOnClose)) {
     free(m_pBuffer);
-    m_pBuffer = NULL;
+    m_pBuffer = nullptr;
     m_Size = 0;
   }
 
@@ -53,11 +53,11 @@ uint8_t *CxMemFile::GetBuffer(bool bDetachBuffer)
 //////////////////////////////////////////////////////////
 size_t CxMemFile::Read(void *buffer, size_t size, size_t count)
 {
-  if (buffer == NULL) {
+  if (buffer == nullptr) {
     return 0;
   }
 
-  if (m_pBuffer == NULL) {
+  if (m_pBuffer == nullptr) {
     return 0;
   }
 
@@ -91,11 +91,11 @@ size_t CxMemFile::Write(const void *buffer, size_t size, size_t count)
 {
   m_bEOF = false;
 
-  if (m_pBuffer == NULL) {
+  if (m_pBuffer == nullptr) {
     return 0;
   }
 
-  if (buffer == NULL) {
+  if (buffer == nullptr) {
     return 0;
   }
 
@@ -126,7 +126,7 @@ bool CxMemFile::Seek(int32_t offset, int32_t origin)
 {
   m_bEOF = false;
 
-  if (m_pBuffer == NULL) {
+  if (m_pBuffer == nullptr) {
     return false;
   }
 
@@ -152,7 +152,7 @@ bool CxMemFile::Seek(int32_t offset, int32_t origin)
 //////////////////////////////////////////////////////////
 int32_t CxMemFile::Tell()
 {
-  if (m_pBuffer == NULL) {
+  if (m_pBuffer == nullptr) {
     return -1;
   }
 
@@ -161,7 +161,7 @@ int32_t CxMemFile::Tell()
 //////////////////////////////////////////////////////////
 int32_t CxMemFile::Size()
 {
-  if (m_pBuffer == NULL) {
+  if (m_pBuffer == nullptr) {
     return -1;
   }
 
@@ -170,7 +170,7 @@ int32_t CxMemFile::Size()
 //////////////////////////////////////////////////////////
 bool CxMemFile::Flush()
 {
-  if (m_pBuffer == NULL) {
+  if (m_pBuffer == nullptr) {
     return false;
   }
 
@@ -179,7 +179,7 @@ bool CxMemFile::Flush()
 //////////////////////////////////////////////////////////
 bool CxMemFile::Eof()
 {
-  if (m_pBuffer == NULL) {
+  if (m_pBuffer == nullptr) {
     return true;
   }
 
@@ -188,7 +188,7 @@ bool CxMemFile::Eof()
 //////////////////////////////////////////////////////////
 int32_t CxMemFile::Error()
 {
-  if (m_pBuffer == NULL) {
+  if (m_pBuffer == nullptr) {
     return -1;
   }
 
@@ -199,7 +199,7 @@ bool CxMemFile::PutC(uint8_t c)
 {
   m_bEOF = false;
 
-  if (m_pBuffer == NULL) {
+  if (m_pBuffer == nullptr) {
     return false;
   }
 
@@ -220,7 +220,7 @@ bool CxMemFile::PutC(uint8_t c)
 //////////////////////////////////////////////////////////
 int32_t CxMemFile::GetC()
 {
-  if (m_pBuffer == NULL || m_Position >= static_cast<int32_t>(m_Size)) {
+  if (m_pBuffer == nullptr || m_Position >= static_cast<int32_t>(m_Size)) {
     m_bEOF = true;
     return EOF;
   }
@@ -265,7 +265,7 @@ bool CxMemFile::Alloc(uint32_t dwNewLen)
     uint32_t dwNewBufferSize = static_cast<uint32_t>(((dwNewLen >> 16) + 1) << 16);
 
     // allocate new buffer
-    if (m_pBuffer == NULL) {
+    if (m_pBuffer == nullptr) {
       m_pBuffer = new uint8_t [dwNewBufferSize];
     } else {
       m_pBuffer = reinterpret_cast<uint8_t *>(realloc(m_pBuffer, dwNewBufferSize));

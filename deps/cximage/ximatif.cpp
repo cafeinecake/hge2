@@ -33,7 +33,7 @@ CxImageTIF::~CxImageTIF()
 bool CxImageTIF::Decode(CxFile *hFile)
 {
   //Comment this line if you need more information on errors
-  // TIFFSetErrorHandler(NULL); //<Patrick Hoffmann>
+  // TIFFSetErrorHandler(nullptr); //<Patrick Hoffmann>
 
   //Open file and fill the TIFF structure
   // m_tif = TIFFOpen(imageFileName,"rb");
@@ -205,7 +205,7 @@ bool CxImageTIF::Decode(CxFile *hFile)
 
       raster = (uint32 *)_TIFFmalloc(width * height * sizeof(uint32));
 
-      if (raster == NULL) {
+      if (raster == nullptr) {
         cx_throw("No space for raster buffer");
       }
 
@@ -260,7 +260,7 @@ bool CxImageTIF::Decode(CxFile *hFile)
       pal = (RGBQUAD *)calloc(BIG_palette ? 1 << bitspersample : 256, sizeof(RGBQUAD));
       // ! VK: it coasts nothing but more correct to use 256 as temp palette storage
       // ! VK: but for case of BIG palette it just copied
-      if (pal == NULL)
+      if (pal == nullptr)
       {
         cx_throw("Unable to allocate TIFF palette");
       }
@@ -334,7 +334,7 @@ bool CxImageTIF::Decode(CxFile *hFile)
       {
         SetPalette(pal,/*head.biClrUsed*/ 1 << bpp); //palette assign // * VK
         free(pal);
-        pal = NULL;
+        pal = nullptr;
       }
 
       // read the tiff lines and save them in the DIB
@@ -361,7 +361,7 @@ bool CxImageTIF::Decode(CxFile *hFile)
 
       int32_t tiled_image = TIFFIsTiled(m_tif);
       uint32 tw = 0, tl = 0;
-      uint8_t *tilebuf = NULL;
+      uint8_t *tilebuf = nullptr;
 
       if (tiled_image)
       {
@@ -373,7 +373,7 @@ bool CxImageTIF::Decode(CxFile *hFile)
       }
 
       bits = (uint8_t *)malloc(bitspersample == 16 ? bitsize * 2 : bitsize); // * VK
-      uint8_t *bits16 = NULL;                       // + VK
+      uint8_t *bits16 = nullptr;                       // + VK
       int32_t line16    = 0;                        // + VK
 
       if (!tiled_image && bitspersample == 16)            // + VK +
@@ -384,7 +384,7 @@ bool CxImageTIF::Decode(CxFile *hFile)
         bits   = (uint8_t *)malloc(bitsize);
       }
 
-      if (bits == NULL)
+      if (bits == nullptr)
       {
         if (bits16) {
           free(bits16);  // + VK
@@ -402,7 +402,7 @@ bool CxImageTIF::Decode(CxFile *hFile)
       }
 
 #ifdef FIX_16BPP_DARKIMG // + VK: for each line, store shift count bits used to fix it
-      uint8_t *row_shifts = NULL;
+      uint8_t *row_shifts = nullptr;
 
       if (bits16)
       {
@@ -758,23 +758,23 @@ bool CxImageTIF::Decode(CxFile *hFile)
 bool CxImageTIF::Encode(CxFile *hFile, bool bAppend)
 {
   cx_try {
-    if (hFile == NULL)
+    if (hFile == nullptr)
     {
       cx_throw(CXIMAGE_ERR_NOFILE);
     }
 
-    if (pDib == NULL)
+    if (pDib == nullptr)
     {
       cx_throw(CXIMAGE_ERR_NOIMAGE);
     }
 
     // <RJ> replaced "w+b" with "a", to append an image directly on an existing file
-    if (m_tif2 == NULL)
+    if (m_tif2 == nullptr)
     {
       m_tif2 = _TIFFOpenEx(hFile, "a");
     }
 
-    if (m_tif2 == NULL)
+    if (m_tif2 == nullptr)
     {
       cx_throw("initialization fail");
     }
@@ -806,7 +806,7 @@ bool CxImageTIF::Encode(CxFile *hFile, bool bAppend)
     if (m_tif2)
     {
       TIFFClose(m_tif2);
-      m_tif2 = NULL;
+      m_tif2 = nullptr;
       m_multipage = false;
       m_pages = 0;
     }
@@ -816,7 +816,7 @@ bool CxImageTIF::Encode(CxFile *hFile, bool bAppend)
 
   if (!bAppend) {
     TIFFClose(m_tif2);
-    m_tif2 = NULL;
+    m_tif2 = nullptr;
     m_multipage = false;
     m_pages = 0;
   }
@@ -828,12 +828,12 @@ bool CxImageTIF::Encode(CxFile *hFile, bool bAppend)
 bool CxImageTIF::Encode(CxFile *hFile, CxImage **pImages, int32_t pagecount)
 {
   cx_try {
-    if (hFile == NULL)
+    if (hFile == nullptr)
     {
       cx_throw("invalid file pointer");
     }
 
-    if (pImages == NULL || pagecount <= 0)
+    if (pImages == nullptr || pagecount <= 0)
     {
       cx_throw("multipage TIFF, no images!");
     }
@@ -842,7 +842,7 @@ bool CxImageTIF::Encode(CxFile *hFile, CxImage **pImages, int32_t pagecount)
 
     for (i = 0; i < pagecount; i++)
     {
-      if (pImages[i] == NULL) {
+      if (pImages[i] == nullptr) {
         cx_throw("Bad image pointer");
       }
 
@@ -1209,7 +1209,7 @@ TIFF *CxImageTIF::TIFFOpenEx(CxFile *hFile)
     return _TIFFOpenEx(hFile, "rb");
   }
 
-  return NULL;
+  return nullptr;
 }
 ////////////////////////////////////////////////////////////////////////////////
 void CxImageTIF::TIFFCloseEx(TIFF *tif)

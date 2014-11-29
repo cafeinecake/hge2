@@ -88,7 +88,7 @@ static uint32_t *_DecodeImage(uint8_t *data, const char *fname, uint32_t size, i
 {
   width = height = 0;
 
-  uint32_t *pixels = NULL;
+  uint32_t *pixels = nullptr;
   const size_t fnamelen = fname ? strlen(fname) : 0;
 
   if ((fnamelen > 5) && (strcasecmp((fname + fnamelen) - 5, ".rgba") == 0)) {
@@ -159,7 +159,7 @@ void HGE_Impl::_BindTexture(gltexture *t)
 {
   // The Direct3D renderer is using managed textures, so they aren't every
   //  actually "lost" ... we may have to rebuild them here, though.
-  if ((t != NULL) && (t->lost)) {
+  if ((t != nullptr) && (t->lost)) {
     _ConfigureTexture(t,
                       static_cast<int>(t->width),
                       static_cast<int>(t->height),
@@ -333,7 +333,7 @@ void CALL HGE_Impl::Gfx_EndScene()
   if ((pCurTarget) && (!pOpenGLDevice->have_GL_EXT_framebuffer_object)) {
     gltexture *pTex = reinterpret_cast<gltexture *>(pCurTarget->tex);
 
-    if ((pTex != NULL) && (pTex->lost)) {
+    if ((pTex != nullptr) && (pTex->lost)) {
       _ConfigureTexture(pTex,
                         static_cast<int>(pTex->width),
                         static_cast<int>(pTex->height),
@@ -411,7 +411,7 @@ void CALL HGE_Impl::Gfx_RenderLine(float x1, float y1, float x2, float y2, uint3
         _SetBlendMode(BLEND_DEFAULT);
       }
 
-      _BindTexture(NULL);
+      _BindTexture(nullptr);
     }
 
     int i = nPrim * HGEPRIM_LINES;
@@ -598,11 +598,11 @@ HTARGET CALL HGE_Impl::Target_Create(int width, int height, bool zbuffer)
   CRenderTargetList *pTarget = new CRenderTargetList;
   memset(pTarget, '\0', sizeof(CRenderTargetList));
 
-  pTarget->tex = _BuildTexture(width, height, NULL);
+  pTarget->tex = _BuildTexture(width, height, nullptr);
   gltexture *gltex = reinterpret_cast<gltexture *>(pTarget->tex);
   gltex->is_render_target = true;
   gltex->lost = false;
-  _ConfigureTexture(gltex, width, height, NULL);
+  _ConfigureTexture(gltex, width, height, nullptr);
 
   pTarget->width = width;
   pTarget->height = height;
@@ -624,7 +624,7 @@ HTARGET CALL HGE_Impl::Target_Create(int width, int height, bool zbuffer)
 
 void CALL HGE_Impl::Target_Free(HTARGET target)
 {
-  CRenderTargetList *pTarget = pTargets, *pPrevTarget = NULL;
+  CRenderTargetList *pTarget = pTargets, *pPrevTarget = nullptr;
 
   while (pTarget) {
     if (reinterpret_cast<CRenderTargetList *>(target) == pTarget) {
@@ -701,20 +701,20 @@ void HGE_Impl::_ConfigureTexture(gltexture *t, int width, int height, uint32_t *
   t->poth = 0;
 
   // see if we're backed by a file and not RAM.
-  const bool loadFromFile = ((pixels == NULL) && (t->filename != NULL));
+  const bool loadFromFile = ((pixels == nullptr) && (t->filename != nullptr));
 
   if (loadFromFile) {
     uint32_t size = 0;
     uint8_t *data = reinterpret_cast<uint8_t *>(
                       pHGE->Resource_Load(t->filename, &size));
 
-    if (data != NULL) {
+    if (data != nullptr) {
       int w, h;
       pixels = _DecodeImage(data, t->filename, size, w, h);
 
       if ((w != width) || (h != height)) { // yikes, file changed?
         delete[] pixels;
-        pixels = NULL;
+        pixels = nullptr;
       }
 
       Resource_Free(data);
@@ -749,7 +749,7 @@ void HGE_Impl::_ConfigureTexture(gltexture *t, int width, int height, uint32_t *
                                 static_cast<GLsizei>(t->potw),
                                 static_cast<GLsizei>(t->poth),
                                 0, GL_RGBA,
-                                GL_UNSIGNED_BYTE, NULL);
+                                GL_UNSIGNED_BYTE, nullptr);
     pOpenGLDevice->glTexSubImage2D(pOpenGLDevice->TextureTarget, 0, 0, 0, width, height, GL_RGBA,
                                    GL_UNSIGNED_BYTE, pixels);
   }
@@ -802,7 +802,7 @@ HTEXTURE CALL HGE_Impl::Texture_Load(const char *filename, uint32_t size, bool /
   void *data;
   uint32_t _size;
   CTextureList *texItem;
-  const char *fname = NULL;
+  const char *fname = nullptr;
 
   if (size) {
     data = reinterpret_cast<void *>(const_cast<char *>(filename));
@@ -819,7 +819,7 @@ HTEXTURE CALL HGE_Impl::Texture_Load(const char *filename, uint32_t size, bool /
   uint32_t *pixels = _DecodeImage(reinterpret_cast<uint8_t *>(data),
                                   fname, _size, width, height);
 
-  if (pixels != NULL) {
+  if (pixels != nullptr) {
     retval = _BuildTexture(width, height, pixels);
   }
 
@@ -845,7 +845,7 @@ HTEXTURE CALL HGE_Impl::Texture_Load(const char *filename, uint32_t size, bool /
       _ConfigureTexture(t, static_cast<int32_t>(t->width),
                         static_cast<int32_t>(t->height), t->pixels);
       delete[] t->pixels;
-      t->pixels = NULL;
+      t->pixels = nullptr;
       t->filename = strcpy(new char[strlen(filename) + 1], filename);
     }
   }
@@ -855,7 +855,7 @@ HTEXTURE CALL HGE_Impl::Texture_Load(const char *filename, uint32_t size, bool /
 
 void CALL HGE_Impl::Texture_Free(HTEXTURE tex)
 {
-  if (pOpenGLDevice == NULL) {
+  if (pOpenGLDevice == nullptr) {
     return;  // in case we already shut down.
   }
 
@@ -953,7 +953,7 @@ bool CALL HGE_Impl::HGEEXT_Texture_PushYUV422(HTEXTURE tex, const uint8_t *yuv)
   // Any existing pixels aren't valid anymore.
   if (pTex->pixels) {
     delete[] pTex->pixels;
-    pTex->pixels = NULL;
+    pTex->pixels = nullptr;
   }
 
   pOpenGLDevice->glBindTexture(pOpenGLDevice->TextureTarget, pTex->name);
@@ -978,35 +978,35 @@ uint32_t *CALL HGE_Impl::Texture_Lock(HTEXTURE tex, bool bReadOnly, int left, in
   }
 
   // see if we're backed by a file and not RAM.
-  const bool loadFromFile = ((pTex->pixels == NULL) && (pTex->filename != NULL));
+  const bool loadFromFile = ((pTex->pixels == nullptr) && (pTex->filename != nullptr));
 
   if (loadFromFile) {
     uint32_t size = 0;
     uint8_t *data = reinterpret_cast<uint8_t *>(pHGE->Resource_Load(pTex->filename, &size));
 
-    if (data != NULL) {
+    if (data != nullptr) {
       int w, h;
       pTex->pixels = _DecodeImage(data, pTex->filename, size, w, h);
 
       if ((static_cast<uint32_t>(w) != pTex->width)
           || (static_cast<uint32_t>(h) != pTex->height)) { // yikes, file changed?
         delete[] pTex->pixels;
-        pTex->pixels = NULL;
+        pTex->pixels = nullptr;
       }
 
       Resource_Free(data);
     }
 
-    if (pTex->pixels != NULL) {
+    if (pTex->pixels != nullptr) {
       // can't go back to file after we lock, since app might change data.
       if (!bReadOnly) {
         delete[] pTex->filename;
-        pTex->filename = NULL;
+        pTex->filename = nullptr;
       }
     }
   }
 
-  if ((pTex->pixels == NULL) && (!pTex->is_render_target)) { // can't lock this texture...?!
+  if ((pTex->pixels == nullptr) && (!pTex->is_render_target)) { // can't lock this texture...?!
     return 0;
   }
 
@@ -1070,7 +1070,7 @@ void CALL HGE_Impl::Texture_Unlock(HTEXTURE tex)
 {
   gltexture *pTex = reinterpret_cast<gltexture *>(tex);
 
-  if (pTex->lock_pixels == NULL) {
+  if (pTex->lock_pixels == nullptr) {
     return;  // not locked.
   }
 
@@ -1102,13 +1102,13 @@ void CALL HGE_Impl::Texture_Unlock(HTEXTURE tex)
   }
 
   // if we were read-only and we're backed by a file, ditch the uncompressed copy in system RAM.
-  if ((pTex->filename != NULL) && (pTex->lock_readonly)) {
+  if ((pTex->filename != nullptr) && (pTex->lock_readonly)) {
     delete[] pTex->pixels;
-    pTex->pixels = NULL;
+    pTex->pixels = nullptr;
   }
 
   delete[] pTex->lock_pixels;
-  pTex->lock_pixels = NULL;
+  pTex->lock_pixels = nullptr;
   pTex->lock_readonly = false;
   pTex->lock_x = -1;
   pTex->lock_y = -1;
@@ -1255,7 +1255,7 @@ void HGE_Impl::_SetProjectionMatrix(int width, int height)
 
 void HGE_Impl::_UnloadOpenGLEntryPoints()
 {
-#define GL_PROC(ext,fn,call,ret,params) pOpenGLDevice->fn = NULL;
+#define GL_PROC(ext,fn,call,ret,params) pOpenGLDevice->fn = nullptr;
 #include "hge_glfuncs.h"
 #undef GL_PROC
 }
@@ -1264,7 +1264,7 @@ bool HGE_Impl::_HaveOpenGLExtension(const char *extlist, const char *ext)
 {
   const char *ptr = strstr(extlist, ext);
 
-  if (ptr == NULL) {
+  if (ptr == nullptr) {
     return false;
   }
 
@@ -1292,7 +1292,7 @@ bool HGE_Impl::_LoadOpenGLEntryPoints()
 
 #define GL_PROC(ext,fn,call,ret,params) \
    if (pOpenGLDevice->have_##ext) { \
-     if ((pOpenGLDevice->fn = reinterpret_cast<_HGE_PFN_##fn>(SDL_GL_GetProcAddress(#fn))) == NULL) { \
+     if ((pOpenGLDevice->fn = reinterpret_cast<_HGE_PFN_##fn>(SDL_GL_GetProcAddress(#fn))) == nullptr) { \
        System_Log("Failed to load OpenGL entry point '" #fn "'"); \
        pOpenGLDevice->have_##ext = false; \
      } \
@@ -1434,7 +1434,7 @@ bool HGE_Impl::_GfxInit()
   CurTexture = 0;
 
 // Init OpenGL ... SDL should have created a context at this point.
-  assert(pOpenGLDevice == NULL);
+  assert(pOpenGLDevice == nullptr);
   pOpenGLDevice = new COpenGLDevice;
 
   if (!_LoadOpenGLEntryPoints()) {
@@ -1560,12 +1560,12 @@ bool HGE_Impl::_GfxRestore()
 
 bool HGE_Impl::_init_lost()
 {
-  _BindTexture(NULL);  // make sure nothing is bound, so everything that we do bind regenerates.
+  _BindTexture(nullptr);  // make sure nothing is bound, so everything that we do bind regenerates.
 
-  for (CTextureList *item = textures; item != NULL; item = item->next) {
+  for (CTextureList *item = textures; item != nullptr; item = item->next) {
     gltexture *t = reinterpret_cast<gltexture *>(item->tex);
 
-    if (t == NULL) {
+    if (t == nullptr) {
       continue;
     }
 
@@ -1578,7 +1578,7 @@ bool HGE_Impl::_init_lost()
   while (target) {
     gltexture *tex = reinterpret_cast<gltexture *>(target->tex);
     _BindTexture(tex);  // force texture recreation.
-    _BindTexture(NULL);
+    _BindTexture(nullptr);
     _BuildTarget(target, tex ? tex->name : 0, target->width, target->height, target->depth != 0);
     target = target->next;
   }

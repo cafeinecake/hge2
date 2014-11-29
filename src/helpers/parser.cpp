@@ -80,7 +80,7 @@ static keyword keytable[] = {
   { "RECT",   TTCON_RECT    },
   { "ALPHA",    TTCON_ALPHA   },
 
-  { NULL,     TTNONE      }
+  { nullptr,     TTNONE      }
 };
 
 RScriptParser::RScriptParser(char *name, char *scr)

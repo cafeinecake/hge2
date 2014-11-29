@@ -71,7 +71,7 @@ protected:
   {
     CxFile *hFile = static_cast<CxFile *>(png_get_io_ptr(png_ptr));
 
-    if (hFile == NULL || hFile->Read(data, 1, length) != length) {
+    if (hFile == nullptr || hFile->Read(data, 1, length) != length) {
       png_error(png_ptr, "Read Error");
     }
   }
@@ -80,7 +80,7 @@ protected:
   {
     CxFile *hFile = static_cast<CxFile *>(png_get_io_ptr(png_ptr));
 
-    if (hFile == NULL || hFile->Write(data, 1, length) != length) {
+    if (hFile == nullptr || hFile->Write(data, 1, length) != length) {
       png_error(png_ptr, "Write Error");
     }
   }
@@ -89,13 +89,13 @@ protected:
   {
     CxFile *hFile = static_cast<CxFile *>(png_get_io_ptr(png_ptr));
 
-    if (hFile == NULL || !hFile->Flush()) {
+    if (hFile == nullptr || !hFile->Flush()) {
       png_error(png_ptr, "Flush Error");
     }
   }
 
   static void PNGAPI user_error_fn(png_structp png_ptr, png_const_charp error_msg)
-  __attribute__((__noreturn__))
+  //__attribute__((__noreturn__))
   {
     strncpy(static_cast<char *>(png_ptr->error_ptr), error_msg, 255);
     longjmp(png_ptr->jmpbuf, 1);

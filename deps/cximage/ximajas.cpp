@@ -14,7 +14,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 bool CxImageJAS::Decode(CxFile *hFile, uint32_t imagetype)
 {
-  if (hFile == NULL) {
+  if (hFile == nullptr) {
     return false;
   }
 

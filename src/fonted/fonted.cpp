@@ -203,7 +203,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 #else
   else {
-    MessageBox(NULL, hge->System_GetErrorMessage(), "Error", MB_OK | MB_ICONERROR | MB_TASKMODAL);
+    MessageBox(nullptr, hge->System_GetErrorMessage(), "Error", MB_OK | MB_ICONERROR | MB_TASKMODAL);
   }
 
 #endif

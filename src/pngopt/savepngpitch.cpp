@@ -11,7 +11,7 @@ static void WarningCallback(png_structp /*png_ptr*/,
   hge->System_Log("LIBPNG Warning: %s", msg);
 }
 
-static void HGE_NORETURN
+static void //HGE_NORETURN
 ErrorCallback(png_structp /*png_ptr*/,
               png_const_charp msg)
 {
@@ -80,11 +80,11 @@ bool Write32BitPNGWithPitch(FILE *fp, void *pBits, bool bNeedAlpha, int nWidth, 
 
     png_write_end(png_ptr, info_ptr);
   } catch (PNGError) {
-    png_destroy_write_struct(&png_ptr, (info_ptr == 0) ? NULL : &info_ptr);
+    png_destroy_write_struct(&png_ptr, (info_ptr == 0) ? nullptr : &info_ptr);
     return false;
   }
 
   //  cleanup
-  png_destroy_write_struct(&png_ptr, (info_ptr == 0) ? NULL : &info_ptr);
+  png_destroy_write_struct(&png_ptr, (info_ptr == 0) ? nullptr : &info_ptr);
   return true;
 }

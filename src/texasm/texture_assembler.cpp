@@ -201,7 +201,7 @@ bool CTextureAssembler::GenerateTextures(char *wildcard)
 
   name = strrchr(wildcard, '\\');
 
-  if (name != NULL) {
+  if (name != nullptr) {
     name++;
   } else {
     name = wildcard;

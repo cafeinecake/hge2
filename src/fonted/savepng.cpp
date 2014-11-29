@@ -78,12 +78,12 @@ static bool Write32BitPNG(FILE *fp, void *pBits, bool bNeedAlpha, int nWidth, in
 
     png_write_end(png_ptr, info_ptr);
   } catch (PNGError) {
-    png_destroy_write_struct(&png_ptr, (info_ptr == 0) ? NULL : &info_ptr);
+    png_destroy_write_struct(&png_ptr, (info_ptr == 0) ? nullptr : &info_ptr);
     return false;
   }
 
   //  cleanup
-  png_destroy_write_struct(&png_ptr, (info_ptr == 0) ? NULL : &info_ptr);
+  png_destroy_write_struct(&png_ptr, (info_ptr == 0) ? nullptr : &info_ptr);
   return true;
 }
 

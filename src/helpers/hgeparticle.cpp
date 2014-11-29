@@ -12,7 +12,7 @@
 
 
 #include "../../include/hgeparticle.h"
-#include "../common/hge_utils.h"
+#include "common/hge_utils.h"
 using namespace hgeut;
 
 HGE *hgeParticleSystem::hge = 0;

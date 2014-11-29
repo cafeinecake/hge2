@@ -159,7 +159,7 @@ bool cmdSaveFont()
 
   if (!fp) {
     sprintf(szTemp, "Can't write to file:\n%s\nProbaby it is write protected.", szFile);
-    MessageBox(NULL, szTemp, "Can't write to file", MB_OK | MB_ICONEXCLAMATION | MB_TASKMODAL);
+    MessageBox(nullptr, szTemp, "Can't write to file", MB_OK | MB_ICONEXCLAMATION | MB_TASKMODAL);
     return false;
   }
 

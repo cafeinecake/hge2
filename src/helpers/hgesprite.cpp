@@ -10,7 +10,7 @@
 #include "../../include/hgesprite.h"
 #include <math.h>
 
-#include "../common/hge_utils.h"
+#include "common/hge_utils.h"
 using namespace hgeut;
 
 HGE *hgeSprite::hge = 0;

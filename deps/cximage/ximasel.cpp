@@ -66,7 +66,7 @@ bool CxImage::SelectionDelete()
 {
   if (pSelection) {
     free(pSelection);
-    pSelection = NULL;
+    pSelection = nullptr;
   }
 
   info.rSelectionBox.left = head.biWidth;
@@ -81,7 +81,7 @@ bool CxImage::SelectionDelete()
 bool CxImage::SelectionIsInside(int32_t x, int32_t y)
 {
   if (IsInside(x, y)) {
-    if (pSelection == NULL) {
+    if (pSelection == nullptr) {
       return true;
     }
 
@@ -108,7 +108,7 @@ bool CxImage::BlindSelectionIsInside(int32_t x, int32_t y)
 #endif
 #endif
 
-  if (pSelection == NULL) {
+  if (pSelection == nullptr) {
     return true;
   }
 
@@ -120,11 +120,11 @@ bool CxImage::BlindSelectionIsInside(int32_t x, int32_t y)
  */
 bool CxImage::SelectionAddRect(RECT r, uint8_t level)
 {
-  if (pSelection == NULL) {
+  if (pSelection == nullptr) {
     SelectionCreate();
   }
 
-  if (pSelection == NULL) {
+  if (pSelection == nullptr) {
     return false;
   }
 
@@ -179,11 +179,11 @@ bool CxImage::SelectionAddRect(RECT r, uint8_t level)
  */
 bool CxImage::SelectionAddEllipse(RECT r, uint8_t level)
 {
-  if (pSelection == NULL) {
+  if (pSelection == nullptr) {
     SelectionCreate();
   }
 
-  if (pSelection == NULL) {
+  if (pSelection == nullptr) {
     return false;
   }
 
@@ -273,16 +273,16 @@ bool CxImage::SelectionInvert()
  */
 bool CxImage::SelectionCopy(CxImage &from)
 {
-  if (from.pSelection == NULL || head.biWidth != from.head.biWidth
+  if (from.pSelection == nullptr || head.biWidth != from.head.biWidth
       || head.biHeight != from.head.biHeight) {
     return false;
   }
 
-  if (pSelection == NULL) {
+  if (pSelection == nullptr) {
     pSelection = (uint8_t *)malloc(head.biWidth * head.biHeight);
   }
 
-  if (pSelection == NULL) {
+  if (pSelection == nullptr) {
     return false;
   }
 
@@ -298,15 +298,15 @@ bool CxImage::SelectionCopy(CxImage &from)
  */
 bool CxImage::SelectionAddPolygon(POINT *points, int32_t npoints, uint8_t level)
 {
-  if (points == NULL || npoints < 3) {
+  if (points == nullptr || npoints < 3) {
     return false;
   }
 
-  if (pSelection == NULL) {
+  if (pSelection == nullptr) {
     SelectionCreate();
   }
 
-  if (pSelection == NULL) {
+  if (pSelection == nullptr) {
     return false;
   }
 
@@ -315,8 +315,8 @@ bool CxImage::SelectionAddPolygon(POINT *points, int32_t npoints, uint8_t level)
 
   int32_t x, y, i = 0;
   POINT *current;
-  POINT *next = NULL;
-  POINT *start = NULL;
+  POINT *next = nullptr;
+  POINT *start = nullptr;
 
   //trace contour
   while (i < npoints) {
@@ -596,11 +596,11 @@ bool CxImage::SelectionAddPolygon(POINT *points, int32_t npoints, uint8_t level)
  */
 bool CxImage::SelectionAddColor(RGBQUAD c, uint8_t level)
 {
-  if (pSelection == NULL) {
+  if (pSelection == nullptr) {
     SelectionCreate();
   }
 
-  if (pSelection == NULL) {
+  if (pSelection == nullptr) {
     return false;
   }
 
@@ -658,11 +658,11 @@ bool CxImage::SelectionAddColor(RGBQUAD c, uint8_t level)
  */
 bool CxImage::SelectionAddPixel(int32_t x, int32_t y, uint8_t level)
 {
-  if (pSelection == NULL) {
+  if (pSelection == nullptr) {
     SelectionCreate();
   }
 
-  if (pSelection == NULL) {
+  if (pSelection == nullptr) {
     return false;
   }
 
@@ -732,14 +732,14 @@ bool CxImage::SelectionSet(CxImage &from)
     return false;
   }
 
-  if (pSelection == NULL) {
+  if (pSelection == nullptr) {
     pSelection = (uint8_t *)malloc(head.biWidth * head.biHeight);
   }
 
   uint8_t *src = from.info.pImage;
   uint8_t *dst = pSelection;
 
-  if (src == NULL || dst == NULL) {
+  if (src == nullptr || dst == nullptr) {
     strcpy(info.szLastError, "CxImage::SelectionSet: null pointer");
     return false;
   }
@@ -937,7 +937,7 @@ bool CxImage::SelectionToHRGN(HRGN &region)
 {
   if (pSelection && region) {
     for (int32_t y = 0; y < head.biHeight; y++) {
-      HRGN hTemp = NULL;
+      HRGN hTemp = nullptr;
       int32_t iStart = -1;
       int32_t x = 0;
 

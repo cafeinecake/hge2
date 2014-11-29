@@ -216,7 +216,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 #ifdef HGE_UNIX
       fprintf(stderr, "Error: Can't load resources. See log for details.\n");
 #else
-      MessageBox(NULL, "Can't load resources. See log for details.", "Error",
+      MessageBox(nullptr, "Can't load resources. See log for details.", "Error",
                  MB_OK | MB_ICONERROR | MB_APPLMODAL);
 #endif
       hge->System_Shutdown();
@@ -240,7 +240,7 @@ static float GetTime()
 {
 #ifdef HGE_UNIX
   struct tm *t = 0;
-  time_t tt = time(NULL);
+  time_t tt = time(nullptr);
   t = localtime(&tt);
   float tmp = 0;
 

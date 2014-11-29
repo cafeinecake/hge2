@@ -13,41 +13,37 @@ set(HGE_SRCS
 
 include_directories( ${CMAKE_SOURCE_DIR}/deps )
 
+set(HGE_SRCS
+	${HGE_SRCS}
+	graphics.cpp
+	ini.cpp
+	input.cpp
+	power.cpp
+	resource.cpp
+	system.cpp
+	)
+
 # Platform specific files
-#if(UNIX OR APPLE)
+if(UNIX OR APPLE)
 	# Unix/Linux and OS X share these
-	include_directories(unix)
 	set(HGE_SRCS
 		${HGE_SRCS}
-		unix/graphics.cpp
-		unix/ini.cpp
-		unix/input.cpp
-		unix/power.cpp
-		unix/resource.cpp
-		unix/sound_openal.cpp
-		unix/system.cpp
+		sound_openal.cpp
 	)
 
 	if(APPLE)
 		set(HGE_SRCS
 			${HGE_SRCS}
-			unix/macosx_support.mm
+			macosx_support.mm
 		)
 	endif(APPLE)
-#else(UNIX OR APPLE)
-#	# Win32, though it's probably broken to build
-#	include_directories(windows unix)
-#	set(HGE_SRCS
-#		${HGE_SRCS}
-#		windows/graphics.cpp
-#		windows/ini.cpp
-#		windows/input.cpp
-#		windows/power.cpp
-#		windows/resource.cpp
-#		windows/sound_libbass.cpp
-#		windows/system.cpp
-#	)
-#endif(UNIX OR APPLE)
+else(UNIX OR APPLE)
+	# Win32
+	set(HGE_SRCS
+	${HGE_SRCS}
+	sound_libbass.cpp
+	)
+endif(UNIX OR APPLE)
 
 set(HS ${CMAKE_SOURCE_DIR}/src/helpers)
 set(HGE_HELPER_SRCS

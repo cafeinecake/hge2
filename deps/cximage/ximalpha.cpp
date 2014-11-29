@@ -76,7 +76,7 @@ void CxImage::AlphaSet(uint8_t level)
  */
 bool CxImage::AlphaCreate()
 {
-  if (pAlpha == NULL) {
+  if (pAlpha == nullptr) {
     pAlpha = new uint8_t [head.biWidth * head.biHeight];
 
     if (pAlpha) {
@@ -113,16 +113,16 @@ void CxImage::AlphaInvert()
  */
 bool CxImage::AlphaCopy(CxImage &from)
 {
-  if (from.pAlpha == NULL || head.biWidth != from.head.biWidth
+  if (from.pAlpha == nullptr || head.biWidth != from.head.biWidth
       || head.biHeight != from.head.biHeight) {
     return false;
   }
 
-  if (pAlpha == NULL) {
+  if (pAlpha == nullptr) {
     pAlpha = new uint8_t [head.biWidth * head.biHeight];
   }
 
-  if (pAlpha == NULL) {
+  if (pAlpha == nullptr) {
     return false;
   }
 
@@ -141,14 +141,14 @@ bool CxImage::AlphaSet(CxImage &from)
     return false;
   }
 
-  if (pAlpha == NULL) {
+  if (pAlpha == nullptr) {
     pAlpha = new uint8_t [head.biWidth * head.biHeight];
   }
 
   uint8_t *src = from.info.pImage;
   uint8_t *dst = pAlpha;
 
-  if (src == NULL || dst == NULL) {
+  if (src == nullptr || dst == nullptr) {
     return false;
   }
 

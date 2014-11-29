@@ -181,14 +181,14 @@ inline void CImageIterator::SetRow(uint8_t *buf, int32_t n)
     n = std::min(n, static_cast<int32_t>(ima->GetEffWidth()));
   }
 
-  if ((IterImage != NULL) && (buf != NULL) && (n > 0)) {
+  if ((IterImage != nullptr) && (buf != nullptr) && (n > 0)) {
     memcpy(IterImage, buf, static_cast<size_t>(n));
   }
 }
 /////////////////////////////////////////////////////////////////////
 inline void CImageIterator::GetRow(uint8_t *buf, int32_t n)
 {
-  if ((IterImage != NULL) && (buf != NULL) && (n > 0)) {
+  if ((IterImage != nullptr) && (buf != nullptr) && (n > 0)) {
     memcpy(buf,
            IterImage,
            std::min(static_cast<uint32_t>(n),

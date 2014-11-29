@@ -91,7 +91,7 @@ typedef struct z_stream_s {
   uInt     avail_out; /* remaining free space at next_out */
   uLong    total_out; /* total nb of bytes output so far */
 
-  char     *msg;      /* last error message, NULL if no error */
+  char     *msg;      /* last error message, nullptr if no error */
   struct internal_state FAR *state; /* not visible by applications */
 
   alloc_func zalloc;  /* used to allocate the internal state */
@@ -1180,7 +1180,7 @@ ZEXTERN gzFile ZEXPORT gzopen OF((const char *path, const char *mode));
      gzopen can be used to read a file which is not in gzip format; in this
    case gzread will directly read from the file without decompression.
 
-     gzopen returns NULL if the file could not be opened, if there was
+     gzopen returns nullptr if the file could not be opened, if there was
    insufficient memory to allocate the gzFile state, or if an invalid mode was
    specified (an 'r', 'w', or 'a' was not provided, or '+' was provided).
    errno can be checked to determine if the reason gzopen failed was that the
@@ -1199,7 +1199,7 @@ ZEXTERN gzFile ZEXPORT gzdopen OF((int fd, const char *mode));
    mode);.  The duplicated descriptor should be saved to avoid a leak, since
    gzdopen does not close fd if it fails.
 
-     gzdopen returns NULL if there was insufficient memory to allocate the
+     gzdopen returns nullptr if there was insufficient memory to allocate the
    gzFile state, if an invalid mode was specified (an 'r', 'w', or 'a' was not
    provided, or '+' was provided), or if fd is -1.  The file descriptor is not
    used until the next gz* read, write, seek, or close operation, so gzdopen
@@ -1287,7 +1287,7 @@ ZEXTERN char *ZEXPORT gzgets OF((gzFile file, char *buf, int len));
    string is terminated with a null character.  If no characters are read due
    to an end-of-file or len < 1, then the buffer is left untouched.
 
-     gzgets returns buf which is a null-terminated string, or it returns NULL
+     gzgets returns buf which is a null-terminated string, or it returns nullptr
    for end-of-file or in case of error.  If there was an error, the contents at
    buf are indeterminate.
 */

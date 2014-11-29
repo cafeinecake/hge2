@@ -89,7 +89,7 @@ CxImageBMP::~CxImageBMP() {}
 
 bool CxImageBMP::Decode(CxFile *hFile)
 {
-  if (hFile == NULL) {
+  if (hFile == nullptr) {
     return false;
   }
 
@@ -520,7 +520,7 @@ bool CxImageBMP::Decode(CxFile *hFile)
  */
 bool CxImageBMP::DibReadBitmapInfo(CxFile *fh, BITMAPINFOHEADER *pdib)
 {
-  if ((fh == NULL) || (pdib == NULL)) {
+  if ((fh == nullptr) || (pdib == nullptr)) {
     return false;
   }
 

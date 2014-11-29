@@ -1057,7 +1057,7 @@ int CPSD::DecodeRawData(CxFile &pFile)
   int nPixels = nWidth * nHeight;
   int nTotalBytes = 0;
 
-  byte *pData = NULL;
+  byte *pData = nullptr;
 
   switch (header_info.nColourMode) {
   case 1: // Grayscale
@@ -1356,12 +1356,12 @@ CPSD::THUMBNAIL::THUMBNAIL()
 ////////////////////////////////////////////////////////////////////////////////
 bool CxImagePSD::Decode(CxFile *hFile)
 {
-  if (hFile == NULL) {
+  if (hFile == nullptr) {
     return false;
   }
 
 #if CXIMAGE_USE_LIBPSD
-  psd_context *context = NULL;
+  psd_context *context = nullptr;
 #endif
 
   cx_try {
@@ -1371,7 +1371,7 @@ bool CxImagePSD::Decode(CxFile *hFile)
 
     context = (psd_context *)malloc(sizeof(psd_context));
 
-    if (context == NULL)
+    if (context == nullptr)
     {
       cx_throw("CxImagePSD: psd_status_malloc_failed");
     }
@@ -1394,7 +1394,7 @@ bool CxImagePSD::Decode(CxFile *hFile)
     Create(context->width, context->height, 24, CXIMAGE_FORMAT_PSD);
 
     uint8_t *rgba = (uint8_t *)context->merged_image_data;
-    uint8_t *alpha = NULL;
+    uint8_t *alpha = nullptr;
 
     if (context->alpha_channel_info)
     {
@@ -1480,7 +1480,7 @@ bool CxImagePSD::Decode(CxFile *hFile)
 ////////////////////////////////////////////////////////////////////////////////
 bool CxImagePSD::Encode(CxFile *hFile)
 {
-  if (hFile == NULL) {
+  if (hFile == nullptr) {
     return false;
   }
 

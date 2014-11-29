@@ -437,21 +437,21 @@ void cmdSavePreset(int n)
   char filename[_MAX_PATH];
 
   ZeroMemory(filename, _MAX_PATH);
-  GetModuleFileName(GetModuleHandle(NULL), filename, _MAX_PATH);
+  GetModuleFileName(GetModuleHandle(nullptr), filename, _MAX_PATH);
   string s(filename);
   s = s.substr(0, s.rfind('\\')) + "\\" + "particle" + char('1' + n) + ".psi";
   strcpy(filename, s.c_str());
 
   state.ps->info.sprite = (hgeSprite *)(sprParticles->GetFrame() | sprParticles->GetBlendMode() <<
                                         16);
-  hF = CreateFile(filename, GENERIC_WRITE, FILE_SHARE_WRITE, NULL, CREATE_ALWAYS,
-                  FILE_ATTRIBUTE_NORMAL, NULL);
+  hF = CreateFile(filename, GENERIC_WRITE, FILE_SHARE_WRITE, nullptr, CREATE_ALWAYS,
+                  FILE_ATTRIBUTE_NORMAL, nullptr);
 
   if (hF == INVALID_HANDLE_VALUE) {
     return;
   }
 
-  WriteFile(hF, &state.ps->info, sizeof(hgeParticleSystemInfo), &size, NULL);
+  WriteFile(hF, &state.ps->info, sizeof(hgeParticleSystemInfo), &size, nullptr);
   CloseHandle(hF);
 
   state.ps->info.sprite = sprParticles;
@@ -476,19 +476,19 @@ void cmdLoadPreset(int n)
   char filename[_MAX_PATH];
 
   ZeroMemory(filename, _MAX_PATH);
-  GetModuleFileName(GetModuleHandle(NULL), filename, _MAX_PATH);
+  GetModuleFileName(GetModuleHandle(nullptr), filename, _MAX_PATH);
   string s(filename);
   s = s.substr(0, s.rfind('\\')) + "\\" + "particle" + char('1' + n) + ".psi";
   strcpy(filename, s.c_str());
 
-  hF = CreateFile(filename, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING,
-                  FILE_ATTRIBUTE_NORMAL, NULL);
+  hF = CreateFile(filename, GENERIC_READ, FILE_SHARE_READ, nullptr, OPEN_EXISTING,
+                  FILE_ATTRIBUTE_NORMAL, nullptr);
 
   if (hF == INVALID_HANDLE_VALUE) {
     return;
   }
 
-  ReadFile(hF, &state.ps->info, sizeof(hgeParticleSystemInfo), &size, NULL);
+  ReadFile(hF, &state.ps->info, sizeof(hgeParticleSystemInfo), &size, nullptr);
   CloseHandle(hF);
 #endif
 

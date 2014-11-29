@@ -19,7 +19,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 bool CxImageRAW::Decode(CxFile *hFile)
 {
-  if (hFile == NULL) {
+  if (hFile == nullptr) {
     return false;
   }
 
@@ -61,7 +61,7 @@ bool CxImageRAW::Decode(CxFile *hFile)
       cx_throw("CxImageRAW: not a raw image");
     }
 
-    if (dcr.load_raw == NULL)
+    if (dcr.load_raw == nullptr)
     {
       cx_throw("CxImageRAW: missing raw decoder");
     }
@@ -347,7 +347,7 @@ bool CxImageRAW::GetExifThumbnail(const TCHAR *filename, const TCHAR *outname, i
       cx_throw("CxImageRAW: not a raw image");
     }
 
-    if (dcr.load_raw == NULL)
+    if (dcr.load_raw == nullptr)
     {
       cx_throw("CxImageRAW: missing raw decoder");
     }
@@ -414,7 +414,7 @@ bool CxImageRAW::GetExifThumbnail(const TCHAR *filename, const TCHAR *outname, i
 ////////////////////////////////////////////////////////////////////////////////
 bool CxImageRAW::Encode(CxFile *hFile)
 {
-  if (hFile == NULL) {
+  if (hFile == nullptr) {
     return false;
   }
 

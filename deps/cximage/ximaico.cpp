@@ -14,7 +14,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 bool CxImageICO::Decode(CxFile *hFile)
 {
-  if (hFile == NULL) {
+  if (hFile == nullptr) {
     return false;
   }
 
@@ -293,12 +293,12 @@ bool CxImageICO::Decode(CxFile *hFile)
 bool CxImageICO::Encode(CxFile *hFile, CxImage **pImages, int32_t nPageCount)
 {
   cx_try {
-    if (hFile == NULL)
+    if (hFile == nullptr)
     {
       cx_throw("invalid file pointer");
     }
 
-    if (pImages == NULL || nPageCount <= 0)
+    if (pImages == nullptr || nPageCount <= 0)
     {
       cx_throw("multipage ICO, no images!");
     }
@@ -307,7 +307,7 @@ bool CxImageICO::Encode(CxFile *hFile, CxImage **pImages, int32_t nPageCount)
 
     for (i = 0; i < nPageCount; i++)
     {
-      if (pImages[i] == NULL) {
+      if (pImages[i] == nullptr) {
         cx_throw("Bad image pointer");
       }
 
@@ -374,7 +374,7 @@ bool CxImageICO::Encode(CxFile *hFile, bool bAppend, int32_t nPageCount)
   //prepare the palette struct
   RGBQUAD *pal = GetPalette();
 
-  if (head.biBitCount <= 8 && pal == NULL) {
+  if (head.biBitCount <= 8 && pal == nullptr) {
     return false;
   }
 

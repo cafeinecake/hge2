@@ -13,7 +13,7 @@
 
 #include "../../include/hgeparticle.h"
 
-#include "../common/hge_utils.h"
+#include "common/hge_utils.h"
 using namespace hgeut;
 
 hgeParticleManager::hgeParticleManager(const float fps)

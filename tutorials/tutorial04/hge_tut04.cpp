@@ -191,7 +191,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
       fprintf(stderr,
               "Error: Can't load one of the following files:\nmenu.wav, particles.png, font1.fnt, font1.png, trail.psi\n");
 #else
-      MessageBox(NULL,
+      MessageBox(nullptr,
                  "Can't load one of the following files:\nmenu.wav, particles.png, font1.fnt, font1.png, trail.psi",
                  "Error", MB_OK | MB_ICONERROR | MB_APPLMODAL);
 #endif

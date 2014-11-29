@@ -14,7 +14,8 @@
 #define LOADBASSFUNCTION(f) *((void**)&f)=(void*)SDL_LoadFunction(hBass,#f)
 #else
 #define BASSDEF(f) (WINAPI *f)  // define the functions as pointers
-#define LOADBASSFUNCTION(f) *((void**)&f)=(void*)GetProcAddress(hBass,#f)
+#define LOADBASSFUNCTION(f) \
+  *(reinterpret_cast<void**>(&f))=reinterpret_cast<void*>(GetProcAddress(hBass,#f))
 #endif
 #include "BASS/bass.h"
 
@@ -29,7 +30,7 @@ HEFFECT CALL HGE_Impl::Effect_Load(const char *filename, uint32_t size)
 
   if (hBass) {
     if (bSilent) {
-      return 1;
+      return reinterpret_cast<HEFFECT>(1);
     }
 
     if (size) {
@@ -39,7 +40,7 @@ HEFFECT CALL HGE_Impl::Effect_Load(const char *filename, uint32_t size)
       data = Resource_Load(filename, &_size);
 
       if (!data) {
-        return NULL;
+        return nullptr;
       }
     }
 
@@ -598,9 +599,10 @@ bool HGE_Impl::_SoundInit()
 
   bSilent = false;
 
-  if (!BASS_Init(-1, nSampleRate, 0, hwnd, NULL)) {
+  auto hwnd = System_GetStateHwnd(HGE_HWND);
+  if (!BASS_Init(-1, nSampleRate, 0, hwnd, nullptr)) {
     System_Log("BASS Init failed, using no sound");
-    BASS_Init(0, nSampleRate, 0, hwnd, NULL);
+    BASS_Init(0, nSampleRate, 0, hwnd, nullptr);
     bSilent = true;
   } else {
     System_Log("Sound Device: %s", BASS_GetDeviceDescription(1));
@@ -630,7 +632,7 @@ void HGE_Impl::_SoundDone()
 #if PLATFORM_UNIX
     SDL_UnloadObject(hBass);
 #else
-    FreeLibrary(hBass);
+    FreeLibrary(reinterpret_cast<HMODULE>(hBass));
 #endif
     hBass = 0;
 

@@ -172,12 +172,12 @@ enum hgeBoolState {
 };
 
 enum hgeFuncState {
-  HGE_FRAMEFUNC   = 8,    // bool*()  frame function    (default: NULL) (you MUST set this)
-  HGE_RENDERFUNC    = 9,    // bool*()  render function   (default: NULL)
-  HGE_FOCUSLOSTFUNC = 10,   // bool*()  focus lost function (default: NULL)
-  HGE_FOCUSGAINFUNC = 11,   // bool*()  focus gain function (default: NULL)
-  HGE_GFXRESTOREFUNC  = 12,   // bool*()  exit function   (default: NULL)
-  HGE_EXITFUNC    = 13,   // bool*()  exit function   (default: NULL)
+  HGE_FRAMEFUNC   = 8,    // bool*()  frame function    (default: nullptr) (you MUST set this)
+  HGE_RENDERFUNC    = 9,    // bool*()  render function   (default: nullptr)
+  HGE_FOCUSLOSTFUNC = 10,   // bool*()  focus lost function (default: nullptr)
+  HGE_FOCUSGAINFUNC = 11,   // bool*()  focus gain function (default: nullptr)
+  HGE_GFXRESTOREFUNC  = 12,   // bool*()  exit function   (default: nullptr)
+  HGE_EXITFUNC    = 13,   // bool*()  exit function   (default: nullptr)
 
   HGEFUNCSTATE_FORCE_DWORD = 0x7FFFFFFF
 };
@@ -210,11 +210,11 @@ enum hgeIntState {
 };
 
 enum hgeStringState {
-  HGE_ICON      = 26,   // char*  icon resource   (default: NULL)
+  HGE_ICON      = 26,   // char*  icon resource   (default: nullptr)
   HGE_TITLE     = 27,   // char*  window title    (default: "HGE")
 
-  HGE_INIFILE     = 28,   // char*  ini file      (default: NULL) (meaning no file)
-  HGE_LOGFILE     = 29,   // char*  log file      (default: NULL) (meaning no file)
+  HGE_INIFILE     = 28,   // char*  ini file      (default: nullptr) (meaning no file)
+  HGE_LOGFILE     = 29,   // char*  log file      (default: nullptr) (meaning no file)
 
   HGESTRINGSTATE_FORCE_DWORD = 0x7FFFFFFF
 };
