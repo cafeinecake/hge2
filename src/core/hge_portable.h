@@ -30,6 +30,13 @@ namespace hgeos {
 
 #   define hgeAssert _ASSERTE
 
+#   include <sys/types.h>
+#   include <sys/stat.h>
+namespace hgeos {
+  typedef struct ::stat hgeStat;
+  using ::stat;
+}
+
 #endif
 
 // don't want rest of this header on Windows, etc.
@@ -186,19 +193,29 @@ namespace hgeos {
 
   class Finder {
   public:
+    Finder(const char *apppath);
     ~Finder();
-    bool        _WildcardMatch(const char *str, const char *wildcard);
-    bool        _PrepareFileEnum(const char *wildcard);
-    char       *_DoEnumIteration(const bool wantdir);
+
+    bool _WildcardMatch(const char *str, const char *wildcard);
+    bool _PrepareFileEnum(const char *wildcard);
+    char *_DoEnumIteration(const bool wantdir);
+    char *Resource_MakePath(const char *filename);
+
     char        szSearchDir[HGE_MAX_PATH];
     char        szSearchWildcard[HGE_MAX_PATH];
     char        szSearchResult[HGE_MAX_PATH];
+    char        szTmpFilename[HGE_MAX_PATH];
+    char        szAppPath[HGE_MAX_PATH];
 
 #ifdef HGE_WINDOWS
-    HANDLE      hSearch;
+    HANDLE          m_search;
+    WIN32_FIND_DATA m_fdfile;
 #else
     DIR        *hSearch;
 #endif
+  private:
+    static int locateOneElement(char *buf);
+    static int locateCorrectCase(char *buf);
   };
 
 }

@@ -180,7 +180,7 @@ hgeResHandle CALL HGE_Impl::Resource_Load(const char *filename, uint32_t *size)
           *size = static_cast<uint32_t>(file_info.uncompressed_size);
         }
 
-        return ptr;
+        return reinterpret_cast<hgeResHandle>(ptr);
       }
 
       done = unzGoToNextFile(zip);
@@ -234,7 +234,7 @@ _fromfile:
     *size = static_cast<uint32_t>(file_info.uncompressed_size);
   }
 
-  return ptr;
+  return reinterpret_cast<hgeResHandle>(ptr);
 }
 
 
@@ -245,226 +245,29 @@ void CALL HGE_Impl::Resource_Free(void *res0)
   }
 }
 
-// this is from PhysicsFS originally ( http://icculus.org/physfs/ )
-//  (also zlib-licensed.)
-static int locateOneElement(char *buf)
-{
-  char *ptr = nullptr;
-  DIR *dirp = nullptr;
-  struct dirent *dent = nullptr;
-
-  if (access(buf, F_OK) == 0) {
-    return 1;  /* quick rejection: exists in current case. */
-  }
-
-  ptr = strrchr(buf, '/');  /* find entry at end of path. */
-
-  if (ptr == nullptr) {
-    dirp = opendir(".");
-    ptr = buf;
-  } else {
-    *ptr = '\0';
-    dirp = opendir(buf);
-    *ptr = '/';
-    ptr++;  /* point past dirsep to entry itself. */
-  }
-
-  while ((dent = readdir(dirp)) != nullptr) {
-    if (strcasecmp(dent->d_name, ptr) == 0) {
-      strcpy(ptr, dent->d_name); /* found a match. Overwrite with this case. */
-      closedir(dirp);
-      return 1;
-    }
-  }
-
-  /* no match at all... */
-  closedir(dirp);
-  return 0;
-}
-
-static int locateCorrectCase(char *buf)
-{
-  char *ptr = buf;
-  //char *prevptr = buf;
-
-  while ((ptr = strchr(ptr + 1, '/'))) {
-    *ptr = '\0';  /* block this path section off */
-
-    if (!locateOneElement(buf)) {
-      *ptr = '/'; /* restore path separator */
-      return -2;  /* missing element in path. */
-    }
-
-    *ptr = '/'; /* restore path separator */
-  }
-
-  /* check final element... */
-  return locateOneElement(buf) ? 0 : -1;
-}
-
 char *CALL HGE_Impl::Resource_MakePath(const char *filename)
 {
-  int i;
-
-  if (!filename) {
-    strcpy(szTmpFilename, szAppPath);
-  } else if (filename[0] == '\\' || filename[0] == '/' || filename[1] == ':') {
-    strcpy(szTmpFilename, filename);
-  } else {
-    strcpy(szTmpFilename, szAppPath);
-
-    if (filename) {
-      strcat(szTmpFilename, filename);
-    }
-  }
-
-  for (i = 0; szTmpFilename[i]; i++) {
-    if (szTmpFilename[i] == '\\') {
-      szTmpFilename[i] = '/';
-    }
-  }
-
-  locateCorrectCase(szTmpFilename);
-
-  return szTmpFilename;
-}
-
-// !!! FIXME: kinda messy, and probably doesn't get all the corner cases right.
-bool HGE_Impl::_WildcardMatch(const char *str, const char *wildcard)
-{
-  if ((str == nullptr) || (wildcard == nullptr)) {
-    return false;
-  }
-
-  while ((*str) && (*wildcard)) {
-    const char wildch = *wildcard;
-    const char strch = *str;
-
-    if (wildch == '?')
-      ; // okay.
-    else if (wildch == '*') {
-      do {
-        wildcard++;
-      } while (((*wildcard == '*') || (*wildcard == '?')) && (*wildcard != '\0'));
-
-      const char newwild = *wildcard;
-
-      if (newwild == '\0') {
-        return true;
-      }
-
-      const char *ptr = str;
-
-      while (*ptr) { // find the greediest match possible...
-        if (*ptr == newwild) {
-          str = ptr;
-        }
-
-        ptr++;
-      }
-    } else if ((toupper(strch)) != (toupper(wildch))) {
-      return false;
-    }
-
-    str++;
-    wildcard++;
-  }
-
-  while (*wildcard == '*') {
-    wildcard++;
-  }
-
-  return ((*str == '\0') && (*wildcard == '\0'));
-}
-
-bool HGE_Impl::_PrepareFileEnum(const char *wildcard)
-{
-  if (hSearch) {
-    closedir(hSearch);
-    hSearch = 0;
-  }
-
-  char *madepath = Resource_MakePath(wildcard);
-  const char *fname = strrchr(madepath, '/');
-  const char *dir = nullptr;
-
-  if (fname == nullptr) {
-    dir = ".";
-    fname = madepath;
-  } else {
-    dir = madepath;
-    char *ptr = const_cast<char *>(fname); // what is this? remove const?
-    *ptr = '\0';  // split dir and filename.
-    fname++;
-  }
-
-  strcpy(szSearchDir, dir);
-  strcpy(szSearchWildcard, fname);
-
-  hSearch = opendir(dir);
-  return (hSearch != 0);
-}
-
-char *HGE_Impl::_DoEnumIteration(const bool wantdir)
-{
-  if (!hSearch) {
-    return 0;
-  }
-
-  while (true) {
-    struct dirent *dent = readdir(hSearch);
-
-    if (dent == nullptr) {
-      closedir(hSearch);
-      hSearch = 0;
-      return 0;
-    }
-
-    if ((strcmp(dent->d_name, ".") == 0) || (strcmp(dent->d_name, "..") == 0)) {
-      continue;
-    }
-
-    if (!_WildcardMatch(dent->d_name, szSearchWildcard)) {
-      continue;
-    }
-
-    char fullpath[_MAX_PATH];
-    snprintf(fullpath, sizeof(fullpath), "%s/%s", szSearchDir, dent->d_name);
-    struct stat statbuf;
-
-    if (stat(fullpath, &statbuf) == -1) { // this follows symlinks.
-      continue;
-    }
-
-    const bool isdir = ((S_ISDIR(statbuf.st_mode)) != 0);
-
-    if (isdir == wantdir) { // this treats pipes, devs, etc, as "files" ...
-      strcpy(szSearchResult, dent->d_name);
-      return szSearchResult;
-    }
-  }
-
-  //return 0;
+  return m_file_finder.Resource_MakePath(filename);
 }
 
 char *CALL HGE_Impl::Resource_EnumFiles(const char *wildcard)
 {
   if (wildcard) {
-    if (!_PrepareFileEnum(wildcard)) {
+    if (!m_file_finder._PrepareFileEnum(wildcard)) {
       return 0;
     }
   }
 
-  return _DoEnumIteration(false);
+  return m_file_finder._DoEnumIteration(false);
 }
 
 char *CALL HGE_Impl::Resource_EnumFolders(const char *wildcard)
 {
   if (wildcard) {
-    if (!_PrepareFileEnum(wildcard)) {
+    if (!m_file_finder._PrepareFileEnum(wildcard)) {
       return 0;
     }
   }
 
-  return _DoEnumIteration(true);
+  return m_file_finder._DoEnumIteration(true);
 }

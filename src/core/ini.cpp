@@ -94,9 +94,9 @@ bool HGE_Impl::_GetPrivateProfileString(const char *section, const char *name, c
 void HGE_Impl::_LoadIniFile(const char *fname)
 {
   char section[128] = { 0 };
-  struct stat statbuf;
+  hgeos::hgeStat statbuf;
 
-  if (stat(fname, &statbuf) == -1) {
+  if (hgeos::stat(fname, &statbuf) == -1) {
     return;
   }
 

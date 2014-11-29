@@ -271,7 +271,8 @@ private:
   int         nScreenWidth;
   int         nScreenHeight;
   //int         nOrigScreenWidth;
-  //int         nOrigScreenHeight;
+  //
+  int         nOrigScreenHeight;
   int         nScreenBPP;
   bool        bWindowed;
   bool        bVsync;
@@ -382,7 +383,6 @@ private:
   bool        _ProcessSDLEvent(const SDL_Event &e);
 
   // Resources
-  char        szTmpFilename[_MAX_PATH];
   CResourceList    *res;
 
   hgeos::Finder m_file_finder;

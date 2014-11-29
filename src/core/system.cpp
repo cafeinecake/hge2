@@ -51,7 +51,7 @@ void CALL HGE_Impl::Release()
   nRef--;
 
   if (!nRef) {
-    if (pHGE->hwnd) {
+    if (pHGE->m_window) {
       pHGE->System_Shutdown();
     }
 
