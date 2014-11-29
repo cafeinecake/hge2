@@ -8,6 +8,7 @@
 
 
 #include "hge_impl.h"
+#include "SDL_syswm.h"
 
 #if HGE_MACOSX
 #include <Carbon/Carbon.h>
@@ -153,7 +154,17 @@ bool CALL HGE_Impl::System_Initiate()
   System_Log("Screen: %dx%d\n", nOrigScreenWidth, nOrigScreenHeight);
 
   // Create window
-  SDL_WM_SetCaption(szWinTitle, szWinTitle);
+  uint32_t window_flags = SDL_WINDOW_OPENGL;
+  if (!bWindowed) {
+    window_flags |= SDL_WINDOW_FULLSCREEN;
+  }
+  SDL_Window* m_window = SDL_CreateWindow(szWinTitle,
+                                          SDL_WINDOWPOS_UNDEFINED,
+                                          SDL_WINDOWPOS_UNDEFINED,
+                                          nScreenWidth,
+                                          nScreenHeight,
+                                          window_flags);
+
   SDL_GL_SetAttribute(SDL_GL_RED_SIZE, nScreenBPP >= 32 ? 8 : 4);
   SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, nScreenBPP >= 32 ? 8 : 4);
   SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, nScreenBPP >= 32 ? 8 : 4);
@@ -161,16 +172,10 @@ bool CALL HGE_Impl::System_Initiate()
   SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, bZBuffer ? 16 : 0);
   SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1);
   SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-  SDL_GL_SetAttribute(SDL_GL_SWAP_CONTROL, bVsync ? 1 : 0);
-  Uint32 flags = SDL_OPENGL;
+  SDL_GL_SetSwapInterval(bVsync ? 1 : 0);
+  //hwnd = SDL_SetVideoMode(nScreenWidth, nScreenHeight, nScreenBPP, flags);
 
-  if (!bWindowed) {
-    flags |= SDL_FULLSCREEN;
-  }
-
-  hwnd = SDL_SetVideoMode(nScreenWidth, nScreenHeight, nScreenBPP, flags);
-
-  if (!hwnd) {
+  if (!m_window) {
     char buffer[1024];
     snprintf(buffer, sizeof(buffer), "SDL_SetVideoMode() failed: %s\n", SDL_GetError());
     _PostError(buffer);
@@ -189,13 +194,13 @@ bool CALL HGE_Impl::System_Initiate()
   SDL_ShowCursor(bHideMouse ? SDL_DISABLE : SDL_ENABLE);
 
 #if !HGE_MACOSX
-  SDL_Surface *icon = SDL_LoadBMP("hgeicon.bmp");  // HACK.
+  //SDL_Surface *icon = SDL_LoadBMP("hgeicon.bmp");  // HACK.
 
-  if (icon) {
-    SDL_SetColorKey(icon, SDL_SRCCOLORKEY, SDL_MapRGB(icon->format, 255, 0, 255));
-    SDL_WM_SetIcon(icon, NULL);
-    SDL_FreeSurface(icon);
-  }
+  //if (icon) {
+  //  SDL_SetColorKey(icon, SDL_SRCCOLORKEY, SDL_MapRGB(icon->format, 255, 0, 255));
+  //  SDL_WM_SetIcon(icon, NULL);
+  //  SDL_FreeSurface(icon);
+  //}
 
 #endif
 
@@ -420,13 +425,22 @@ void CALL HGE_Impl::System_SetStateBool(hgeBoolState state, bool value)
       //if(_format_id(d3dpp->BackBufferFormat) < 4) nScreenBPP=16;
       //else nScreenBPP=32;
 
-      Uint32 flags = SDL_OPENGL;
+      Uint32 window_flags = SDL_WINDOW_OPENGL;
 
       if (!bWindowed) {
-        flags |= SDL_FULLSCREEN;
+        window_flags = SDL_WINDOW_FULLSCREEN;
       }
 
-      hwnd = SDL_SetVideoMode(nScreenWidth, nScreenHeight, nScreenBPP, flags);
+      if (m_window) {
+        SDL_DestroyWindow(m_window);
+      }
+      m_window = SDL_CreateWindow(szWinTitle,
+                                  SDL_WINDOWPOS_UNDEFINED,
+                                  SDL_WINDOWPOS_UNDEFINED,
+                                  nScreenWidth, 
+                                  nScreenHeight, 
+                                  window_flags);
+      //screen = SDL_GetWindowSurface(m_window);
       _GfxRestore();
 
       if (!bWindowed) {
@@ -480,7 +494,7 @@ void CALL HGE_Impl::System_SetStateBool(hgeBoolState state, bool value)
   case HGE_HIDEMOUSE:
     bHideMouse = value;
 
-    if (pHGE->hwnd) {
+    if (pHGE->m_window) {
       SDL_ShowCursor(bHideMouse ? SDL_DISABLE : SDL_ENABLE);
     }
 
@@ -542,7 +556,7 @@ void CALL HGE_Impl::System_SetStateHwnd(hgeHwndState state, HWND value)
       System_Log("WARNING: You will not get the behaviour you expect\n");
     }
 
-    if (!hwnd) {
+    if (!m_window) {
       hwndParent = value;
     }
 
@@ -606,7 +620,8 @@ void CALL HGE_Impl::System_SetStateInt(hgeIntState state, int value)
     bVsync = (value == HGEFPS_VSYNC);
 
     if (pOpenGLDevice) {
-      SDL_GL_SetAttribute(SDL_GL_SWAP_CONTROL, bVsync ? 1 : 0);
+      //SDL_GL_SetAttribute(SDL_GL_SWAP_CONTROL, bVsync ? 1 : 0);
+      SDL_GL_SetSwapInterval(bVsync ? 1 : 0);
     }
 
     nHGEFPS = value;
@@ -647,8 +662,8 @@ void CALL HGE_Impl::System_SetStateString(hgeStringState state, const char *valu
   case HGE_TITLE:
     strcpy(szWinTitle, value);
 
-    if (pHGE->hwnd) {
-      SDL_WM_SetCaption(value, value);
+    if (pHGE->m_window) {
+      SDL_SetWindowTitle(pHGE->m_window, value);
     }
 
     break;
@@ -750,9 +765,16 @@ hgeCallback CALL HGE_Impl::System_GetStateFunc(hgeFuncState state)
 HWND CALL HGE_Impl::System_GetStateHwnd(hgeHwndState state)
 {
   switch (state) {
-  case HGE_HWND:
-    return hwnd;
-
+  case HGE_HWND: {
+    SDL_SysWMinfo info;
+    if (SDL_GetWindowWMInfo(m_window, &info)) {
+      switch (info.subsystem) {
+      case SDL_SYSWM_WINDOWS:
+        return info.info.win.window;
+      }
+    }
+    return 0;
+  }
   case HGE_HWNDPARENT:
     return hwndParent;
 
@@ -912,7 +934,7 @@ void CALL HGE_Impl::System_Snapshot(const char *filename)
 #endif
 
     pOpenGLDevice->glFinish();  // make sure screenshot is ready.
-    SDL_Surface *screen = SDL_GetVideoSurface();
+    SDL_Surface* screen = SDL_GetWindowSurface(m_window);
     SDL_Surface *surface = SDL_CreateRGBSurface(SDL_SWSURFACE, screen->w, screen->h, 24, rmask, gmask,
                            bmask, 0);
     pOpenGLDevice->glReadPixels(0, 0, screen->w, screen->h, GL_RGB, GL_UNSIGNED_BYTE, surface->pixels);
@@ -930,7 +952,7 @@ HGE_Impl::HGE_Impl()
   CurTexture = 0;
 
   //hInstance=GetModuleHandle(0);
-  hwnd = 0;
+  //hwnd = 0;
   bActive = false;
   szError[0] = 0;
 
@@ -949,7 +971,7 @@ HGE_Impl::HGE_Impl()
   bSilent = false;
   streams = 0;
 
-  hSearch = 0;
+  //hSearch = 0;
   res = 0;
 
   queue = 0;
@@ -1038,12 +1060,31 @@ void HGE_Impl::_FocusChange(bool bAct)
 bool HGE_Impl::_ProcessSDLEvent(const SDL_Event &e)
 {
   switch (e.type) {
-  case SDL_VIDEOEXPOSE:
-    if (pHGE->procRenderFunc && pHGE->bWindowed) {
-      procRenderFunc();
+  case SDL_WINDOWEVENT:
+    switch (e.window.event) {
+    case SDL_WINDOWEVENT_EXPOSED: {
+      if (pHGE->procRenderFunc && pHGE->bWindowed) {
+        procRenderFunc();
+      }
+    } break;
+    case SDL_WINDOWEVENT_FOCUS_GAINED:
+      if (pHGE->bActive != true) {
+        pHGE->_FocusChange(true);
+      }
+      break;
+    case SDL_WINDOWEVENT_ENTER:
+      bMouseOver = true;
+      break;
+    case SDL_WINDOWEVENT_FOCUS_LOST:
+      if (pHGE->bActive != false) {
+        pHGE->_FocusChange(false);
+      }
+      break;
+    case SDL_WINDOWEVENT_LEAVE:
+      bMouseOver = false;
+      break;
     }
-
-    break;
+  break; // end case windowevent
 
   case SDL_QUIT:
     if (pHGE->procExitFunc && !pHGE->procExitFunc()) {
@@ -1052,24 +1093,8 @@ bool HGE_Impl::_ProcessSDLEvent(const SDL_Event &e)
 
     return false;
 
-  case SDL_ACTIVEEVENT: {
-    const bool bActivating = (e.active.gain != 0);
-
-    if (e.active.state & SDL_APPINPUTFOCUS) {
-      if (pHGE->bActive != bActivating) {
-        pHGE->_FocusChange(bActivating);
-      }
-    }
-
-    if (e.active.state & SDL_APPMOUSEFOCUS) {
-      bMouseOver = bActivating;
-    }
-
-    break;
-  }
-
   case SDL_KEYDOWN:
-    keymods = e.key.keysym.mod;
+    keymods = static_cast<SDL_Keymod>(e.key.keysym.mod);
 
 #if HGE_MACOSX  // handle Apple-Q hotkey, etc.
 
@@ -1112,7 +1137,7 @@ bool HGE_Impl::_ProcessSDLEvent(const SDL_Event &e)
     break;
 
   case SDL_KEYUP:
-    keymods = e.key.keysym.mod;
+    keymods = static_cast<SDL_Keymod>(e.key.keysym.mod);
     pHGE->_BuildEvent(INPUT_KEYUP, e.key.keysym.sym, 0, 0, -1, -1);
     break;
 

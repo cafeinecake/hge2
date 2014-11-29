@@ -251,7 +251,7 @@ private:
                                        char *buf, size_t bufsize, const char *szIniFile);
 
   long        MacOSXVersion;
-  HWND        hwnd;
+  //HWND        hwnd;
   bool        bActive;
   char        szError[256];
   char        szAppPath[_MAX_PATH];
@@ -265,8 +265,9 @@ private:
   bool (*procFocusGainFunc)();
   bool (*procGfxRestoreFunc)();
   bool (*procExitFunc)();
-  const char     *szIcon;
+  const char  *szIcon;
   char        szWinTitle[256];
+  SDL_Window  *m_window;
   int         nScreenWidth;
   int         nScreenHeight;
   int         nOrigScreenWidth;
@@ -369,7 +370,7 @@ private:
   int         Zpos;
   float       Xpos;
   float       Ypos;
-  SDLMod        keymods;
+  SDL_Keymod  keymods;
   bool        bMouseOver;
   bool        bCaptured;
   char        keyz[256];
@@ -387,7 +388,7 @@ private:
   bool        _WildcardMatch(const char *str, const char *wildcard);
   bool        _PrepareFileEnum(const char *wildcard);
   char       *_DoEnumIteration(const bool wantdir);
-  DIR        *hSearch;
+  //DIR        *hSearch;
   char        szSearchDir[_MAX_PATH];
   char        szSearchWildcard[_MAX_PATH];
   char        szSearchResult[_MAX_PATH];

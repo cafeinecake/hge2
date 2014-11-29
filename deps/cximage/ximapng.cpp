@@ -81,7 +81,9 @@ bool CxImagePNG::Decode(CxFile *hFile)
 
     // use custom I/O functions
     png_set_read_fn(png_ptr, hFile, /*(png_rw_ptr)*/user_read_data);
-    png_set_error_fn(png_ptr, info.szLastError,/*(png_error_ptr)*/user_error_fn, NULL);
+    png_set_error_fn(png_ptr, info.szLastError,
+      /*(png_error_ptr)*/&CxImagePNG::user_error_fn, 
+      NULL);
 
     /* read the file information */
     png_read_info(png_ptr, info_ptr);
