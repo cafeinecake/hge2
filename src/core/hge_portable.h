@@ -1,18 +1,22 @@
 #pragma once
 
 #if (defined(__APPLE__) && defined(__MACH__))
-#define PLATFORM_MACOSX 1
+#   define HGE_MACOSX   1
+#   define HGE_POSIX    1
 #endif
 
 #if ( defined(unix) || defined(__linux__) || PLATFORM_MACOSX )
-#define PLATFORM_UNIX 1
+#   define HGE_UNIX   1
+#   define HGE_POSIX  1
 #endif
 
 // Useful to sprinkle around the codebase without a bunch of #ifdefs...
 #ifdef _WINDOWS
 #   define BYTESWAP(x)
 #   define STUBBED(x)
-#   define HGE_WINDOWS 1
+
+#   define HGE_WINDOWS  1
+
 
 #   include <SDL.h>
 #   include <Windows.h>
@@ -30,12 +34,6 @@ namespace hgeos {
 
 #   define hgeAssert _ASSERTE
 
-#   include <sys/types.h>
-#   include <sys/stat.h>
-namespace hgeos {
-  typedef struct ::stat hgeStat;
-  using ::stat;
-}
 
 #endif
 
@@ -187,35 +185,3 @@ SWAPPER8(BYTE)
 #define HGE_NORETURN __attribute__((__noreturn__))
 
 #endif  // PLATFORM_UNIX
-
-// Portable definitions
-namespace hgeos {
-
-  class Finder {
-  public:
-    Finder(const char *apppath);
-    ~Finder();
-
-    bool _WildcardMatch(const char *str, const char *wildcard);
-    bool _PrepareFileEnum(const char *wildcard);
-    char *_DoEnumIteration(const bool wantdir);
-    char *Resource_MakePath(const char *filename);
-
-    char        szSearchDir[HGE_MAX_PATH];
-    char        szSearchWildcard[HGE_MAX_PATH];
-    char        szSearchResult[HGE_MAX_PATH];
-    char        szTmpFilename[HGE_MAX_PATH];
-    char        szAppPath[HGE_MAX_PATH];
-
-#ifdef HGE_WINDOWS
-    HANDLE          m_search;
-    WIN32_FIND_DATA m_fdfile;
-#else
-    DIR        *hSearch;
-#endif
-  private:
-    static int locateOneElement(char *buf);
-    static int locateCorrectCase(char *buf);
-  };
-
-}

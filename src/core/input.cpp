@@ -82,10 +82,10 @@ static int SDLKeyToHGEKey(const int sdlkey)
   case SDLK_RALT:
     return HGEK_ALT;
 
-  case SDLK_LMETA:
+  case SDLK_LGUI:
     return HGEK_LWIN;
 
-  case SDLK_RMETA:
+  case SDLK_RGUI:
     return HGEK_RWIN;
 
   //case SDLK_APPS: return HGEK_APPS;
@@ -95,10 +95,10 @@ static int SDLKeyToHGEKey(const int sdlkey)
   case SDLK_CAPSLOCK:
     return HGEK_CAPSLOCK;
 
-  case SDLK_NUMLOCK:
+  case SDLK_NUMLOCKCLEAR:
     return HGEK_NUMLOCK;
 
-  case SDLK_SCROLLOCK:
+  case SDLK_SCROLLLOCK:
     return HGEK_SCROLLLOCK;
 
   case SDLK_PAGEUP:

@@ -35,6 +35,7 @@ set(HGE_SRCS
 	power.cpp
 	resource.cpp
 	system.cpp
+	hge_glfuncs.h hge_impl.h
 	)
 
 # Platform specific files

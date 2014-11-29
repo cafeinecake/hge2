@@ -8,6 +8,7 @@
 
 #include "hge_impl.h"
 
+#ifdef HGE_POSIX
 const char *HGE_Impl::_BuildProfilePath(const char *section, const char *name,
                                         const char *ini_file)
 {
@@ -45,7 +46,9 @@ const char *HGE_Impl::_BuildProfilePath(const char *section, const char *name,
 
   return path;
 }
+#endif // POSIX
 
+#ifdef HGE_POSIX
 bool HGE_Impl::_WritePrivateProfileString(const char *section, const char *name, const char *buf,
     const char *ini_file)
 {
@@ -64,7 +67,15 @@ bool HGE_Impl::_WritePrivateProfileString(const char *section, const char *name,
 
   return (rc == 1);
 }
+#else // WINDOWS
+bool HGE_Impl::_WritePrivateProfileString(const char *section, const char *name, const char *buf,
+  const char *ini_file)
+{
+  return WritePrivateProfileString(section, name, buf, ini_file);
+}
+#endif // POSIX
 
+#ifdef HGE_POSIX
 bool HGE_Impl::_GetPrivateProfileString(const char *section, const char *name, const char *deflt,
                                         char *buf, size_t bufsize, const char *ini_file)
 {
@@ -88,15 +99,23 @@ bool HGE_Impl::_GetPrivateProfileString(const char *section, const char *name, c
 
   return retval;
 }
+#else // WINDOWS
+bool HGE_Impl::_GetPrivateProfileString(const char *section, const char *name, const char *deflt,
+  char *buf, size_t bufsize, const char *ini_file)
+{
+  return GetPrivateProfileString(section, name, deflt, buf, bufsize, ini_file);
+}
+#endif // POSIX
 
+#ifdef POSIX
 // We parse the usual .ini files, and build them into our directory tree when items don't exist.
 // !!! FIXME: this code sort of stinks. In fact, the whole directory tree thing could be a mistake...
 void HGE_Impl::_LoadIniFile(const char *fname)
 {
   char section[128] = { 0 };
-  hgeos::hgeStat statbuf;
+  struct stat statbuf;
 
-  if (hgeos::stat(fname, &statbuf) == -1) {
+  if (stat(fname, &statbuf) == -1) {
     return;
   }
 
@@ -152,6 +171,7 @@ void HGE_Impl::_LoadIniFile(const char *fname)
 
   delete[] buf;
 }
+#endif
 
 void CALL HGE_Impl::Ini_SetInt(const char *section, const char *name, int value)
 {

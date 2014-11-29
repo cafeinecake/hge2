@@ -244,7 +244,9 @@ private:
 
   // ini ...
   void        _LoadIniFile(const char *fname);
+#ifdef HGE_POSIX
   const char     *_BuildProfilePath(const char *section, const char *name, const char *szIniFile);
+#endif
   bool        _WritePrivateProfileString(const char *section, const char *name, const char *buf,
                                          const char *szIniFile);
   bool        _GetPrivateProfileString(const char *section, const char *name, const char *deflt,
@@ -385,7 +387,24 @@ private:
   // Resources
   CResourceList    *res;
 
-  hgeos::Finder m_file_finder;
+  // File finder
+#ifdef HGE_POSIX
+  bool _WildcardMatch(const char *str, const char *wildcard);
+  bool _PrepareFileEnum(const char *wildcard);
+  char *_DoEnumIteration(const bool wantdir);
+#endif
+
+  char        szSearchDir[HGE_MAX_PATH];
+  char        szSearchWildcard[HGE_MAX_PATH];
+  char        szSearchResult[HGE_MAX_PATH];
+  char        szTmpFilename[HGE_MAX_PATH];
+
+#ifdef HGE_WINDOWS
+  HANDLE          m_search;
+  WIN32_FIND_DATA m_find_data;
+#else
+  DIR             *m_search;
+#endif
 
   // Timer
   float       fTime;

@@ -77,22 +77,16 @@ elseif(WIN32)
     	add_definitions(-DSUPPORT_CXIMAGE)
     	add_subdirectory( deps/cximage )
 
-	set(HGE_LIBRARIES
-		## d3d8
-		winmm
-	)
+	add_subdirectory( deps/libpng )
 
-	if(MSVC AND NOT (CMAKE_BUILD_TYPE MATCHES Debug))
-#		set(HGE_LIBRARIES ${HGE_LIBRARIES}
-#			d3dx8
-#		)
-	else()
-#		#Sorry MinGW32, you're not currently allowed to make a "release"
-		add_definitions(-DDEBUG)
-#		set(HGE_LIBRARIES ${HGE_LIBRARIES}
-#			d3dx8d
-#		)
-	endif()
+	## d3d8
+	find_library(HGELIBPNG_LIBRARY hgelibpng)
+	set(HGE2_LIBRARIES
+		deps/libsdl2/libs/x86/SDL2
+		winmm
+		${HGELIBPNG_LIBRARY}
+		${HGEZLIB_LIBRARY}
+		)
 
 	set(USE_SHARED SHARED)
 else()
@@ -106,20 +100,19 @@ else()
 	add_subdirectory( deps/libjpeg )
 endif(NOT USE_INTERNAL_LIBJPEG)
 
-#set(HGE2_SOURCE_DIR ${PROJECT_SOURCE_DIR})
 include_directories(
-    ${SDL_INCLUDE_DIR}
-    ${OPENAL_INCLUDE_DIR}
-    ${VORBIS_INCLUDE_DIR}
-    ${IL_INCLUDE_DIR}
-    ${HGEZLIB_INCLUDE_DIR}
-    ${JPEG_INCLUDE_DIR}
-    ${PNG_INCLUDE_DIR} 
-    ${PROJECT_SOURCE_DIR}/deps
-    ${PROJECT_SOURCE_DIR}/deps/libsdl2/include
-    ${PROJECT_SOURCE_DIR}/include
-    ${PROJECT_SOURCE_DIR}/core
-)
+	${SDL_INCLUDE_DIR}	
+	${OPENAL_INCLUDE_DIR}
+	${VORBIS_INCLUDE_DIR}
+	${IL_INCLUDE_DIR}
+	${HGEZLIB_INCLUDE_DIR}
+	${JPEG_INCLUDE_DIR}
+	${PNG_INCLUDE_DIR} 
+	${PROJECT_SOURCE_DIR}/deps
+	${PROJECT_SOURCE_DIR}/deps/libsdl2/include
+	${PROJECT_SOURCE_DIR}/include
+	${PROJECT_SOURCE_DIR}/core
+	)
 
 
 if(WIN32)

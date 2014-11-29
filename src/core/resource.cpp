@@ -103,6 +103,7 @@ void CALL HGE_Impl::Resource_RemoveAllPacks()
   res = 0;
 }
 
+#ifdef HGE_POSIX
 hgeResHandle CALL HGE_Impl::Resource_Load(const char *filename, uint32_t *size)
 {
   const char *res_err = "Can't load resource: %s";
@@ -236,7 +237,136 @@ _fromfile:
 
   return reinterpret_cast<hgeResHandle>(ptr);
 }
+#endif
 
+#ifdef HGE_WINDOWS
+hgeResHandle CALL HGE_Impl::Resource_Load(const char *filename, uint32_t *size)
+{
+  const char *res_err = "Can't load resource: %s";
+
+  CResourceList *resItem = res;
+  char szName[HGE_MAX_PATH];
+  char szZipName[HGE_MAX_PATH];
+  unzFile zip;
+  unz_file_info file_info;
+  int done, i;
+  void *ptr;
+  HANDLE hF;
+
+  if (filename[0] == '\\' || filename[0] == '/' || filename[1] == ':') {
+    goto _fromfile;  // skip absolute paths
+  }
+
+  // Load from pack
+
+  strcpy(szName, filename);
+  strupr(szName);
+
+  for (i = 0; szName[i]; i++) {
+    if (szName[i] == '/') {
+      szName[i] = '\\';
+    }
+  }
+
+  while (resItem) {
+    zip = unzOpen(resItem->filename);
+    done = unzGoToFirstFile(zip);
+
+    while (done == UNZ_OK) {
+      unzGetCurrentFileInfo(zip, &file_info, szZipName, sizeof(szZipName), NULL, 0, NULL, 0);
+      strupr(szZipName);
+
+      for (i = 0; szZipName[i]; i++) {
+        if (szZipName[i] == '/') {
+          szZipName[i] = '\\';
+        }
+      }
+
+      if (!strcmp(szName, szZipName)) {
+        if (unzOpenCurrentFilePassword(zip, resItem->password[0] ? resItem->password : 0) != UNZ_OK) {
+          unzClose(zip);
+          sprintf(szName, res_err, filename);
+          _PostError(szName);
+          return 0;
+        }
+
+        ptr = malloc(file_info.uncompressed_size);
+
+        if (!ptr) {
+          unzCloseCurrentFile(zip);
+          unzClose(zip);
+          sprintf(szName, res_err, filename);
+          _PostError(szName);
+          return 0;
+        }
+
+        if (unzReadCurrentFile(zip, ptr, file_info.uncompressed_size) < 0) {
+          unzCloseCurrentFile(zip);
+          unzClose(zip);
+          free(ptr);
+          sprintf(szName, res_err, filename);
+          _PostError(szName);
+          return 0;
+        }
+
+        unzCloseCurrentFile(zip);
+        unzClose(zip);
+
+        if (size) {
+          *size = file_info.uncompressed_size;
+        }
+
+        return reinterpret_cast<hgeResHandle>(ptr);
+      }
+
+      done = unzGoToNextFile(zip);
+    }
+
+    unzClose(zip);
+    resItem = resItem->next;
+  }
+
+  // Load from file
+_fromfile:
+
+  hF = CreateFile(Resource_MakePath(filename), GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING,
+    FILE_ATTRIBUTE_NORMAL | FILE_FLAG_RANDOM_ACCESS, NULL);
+
+  if (hF == INVALID_HANDLE_VALUE) {
+    sprintf(szName, res_err, filename);
+    _PostError(szName);
+    return 0;
+  }
+
+  file_info.uncompressed_size = GetFileSize(hF, NULL);
+  ptr = malloc(file_info.uncompressed_size);
+
+  if (!ptr) {
+    CloseHandle(hF);
+    sprintf(szName, res_err, filename);
+    _PostError(szName);
+    return 0;
+  }
+
+  if (ReadFile(hF, ptr, file_info.uncompressed_size, 
+    (LPDWORD)&file_info.uncompressed_size, NULL) == 0) 
+  {
+    CloseHandle(hF);
+    free(ptr);
+    sprintf(szName, res_err, filename);
+    _PostError(szName);
+    return 0;
+  }
+
+  CloseHandle(hF);
+
+  if (size) {
+    *size = file_info.uncompressed_size;
+  }
+
+  return reinterpret_cast<hgeResHandle>(ptr);
+}
+#endif // WINDOWS
 
 void CALL HGE_Impl::Resource_Free(void *res0)
 {
@@ -245,29 +375,364 @@ void CALL HGE_Impl::Resource_Free(void *res0)
   }
 }
 
+#ifdef HGE_WINDOWS
 char *CALL HGE_Impl::Resource_MakePath(const char *filename)
 {
-  return m_file_finder.Resource_MakePath(filename);
-}
+  int i;
 
+  if (!filename) {
+    strcpy(szTmpFilename, szAppPath);
+  }
+  else if (filename[0] == '\\' || filename[0] == '/' || filename[1] == ':') {
+    strcpy(szTmpFilename, filename);
+  }
+  else {
+    strcpy(szTmpFilename, szAppPath);
+
+    if (filename) {
+      strcat(szTmpFilename, filename);
+    }
+  }
+
+  for (i = 0; szTmpFilename[i]; i++) {
+    if (szTmpFilename[i] == '/') {
+      szTmpFilename[i] = '\\';
+    }
+  }
+
+  return szTmpFilename;
+}
+#endif // Windows
+
+#ifdef HGE_WINDOWS
 char *CALL HGE_Impl::Resource_EnumFiles(const char *wildcard)
 {
   if (wildcard) {
-    if (!m_file_finder._PrepareFileEnum(wildcard)) {
+    if (m_search) {
+      FindClose(m_search);
+      m_search = 0;
+    }
+
+    m_search = FindFirstFile(Resource_MakePath(wildcard), &m_find_data);
+
+    if (m_search == INVALID_HANDLE_VALUE) {
+      m_search = 0;
       return 0;
     }
+
+    if (!(m_find_data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)) {
+      return m_find_data.cFileName;
+    }
+    else {
+      return Resource_EnumFiles();
+    }
   }
+  else {
+    if (!m_search) {
+      return 0;
+    }
 
-  return m_file_finder._DoEnumIteration(false);
+    for (;;) {
+      if (!FindNextFile(m_search, &m_find_data)) {
+        FindClose(m_search);
+        m_search = 0;
+        return 0;
+      }
+
+      if (!(m_find_data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)) {
+        return m_find_data.cFileName;
+      }
+    }
+  }
 }
+#endif // WINDOWS
 
+#ifdef HGE_WINDOWS
 char *CALL HGE_Impl::Resource_EnumFolders(const char *wildcard)
 {
   if (wildcard) {
-    if (!m_file_finder._PrepareFileEnum(wildcard)) {
+    if (m_search) {
+      FindClose(m_search);
+      m_search = 0;
+    }
+
+    m_search = FindFirstFile(Resource_MakePath(wildcard), &m_find_data);
+
+    if (m_search == INVALID_HANDLE_VALUE) {
+      m_search = 0;
+      return 0;
+    }
+
+    if ((m_find_data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) &&
+      strcmp(m_find_data.cFileName, ".") && strcmp(m_find_data.cFileName, "..")) {
+      return m_find_data.cFileName;
+    }
+    else {
+      return Resource_EnumFolders();
+    }
+  }
+  else {
+    if (!m_search) {
+      return 0;
+    }
+
+    for (;;) {
+      if (!FindNextFile(m_search, &m_find_data)) {
+        FindClose(m_search);
+        m_search = 0;
+        return 0;
+      }
+
+      if ((m_find_data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) &&
+        strcmp(m_find_data.cFileName, ".") && strcmp(m_find_data.cFileName, "..")) {
+        return m_find_data.cFileName;
+      }
+    }
+  }
+}
+#endif // WINDOWS
+
+#ifdef HGE_POSIX
+// this is from PhysicsFS originally ( http://icculus.org/physfs/ )
+//  (also zlib-licensed.)
+static int locateOneElement(char *buf)
+{
+  char *ptr = NULL;
+  DIR *dirp = NULL;
+  struct dirent *dent = NULL;
+
+  if (access(buf, F_OK) == 0) {
+    return 1;  /* quick rejection: exists in current case. */
+  }
+
+  ptr = strrchr(buf, '/');  /* find entry at end of path. */
+
+  if (ptr == NULL) {
+    dirp = opendir(".");
+    ptr = buf;
+  }
+  else {
+    *ptr = '\0';
+    dirp = opendir(buf);
+    *ptr = '/';
+    ptr++;  /* point past dirsep to entry itself. */
+  }
+
+  while ((dent = readdir(dirp)) != NULL) {
+    if (strcasecmp(dent->d_name, ptr) == 0) {
+      strcpy(ptr, dent->d_name); /* found a match. Overwrite with this case. */
+      closedir(dirp);
+      return 1;
+    }
+  }
+
+  /* no match at all... */
+  closedir(dirp);
+  return 0;
+}
+#endif // POSIX
+
+#ifdef HGE_POSIX
+static int locateCorrectCase(char *buf)
+{
+  char *ptr = buf;
+  //char *prevptr = buf;
+
+  while ((ptr = strchr(ptr + 1, '/'))) {
+    *ptr = '\0';  /* block this path section off */
+
+    if (!locateOneElement(buf)) {
+      *ptr = '/'; /* restore path separator */
+      return -2;  /* missing element in path. */
+    }
+
+    *ptr = '/'; /* restore path separator */
+  }
+
+  /* check final element... */
+  return locateOneElement(buf) ? 0 : -1;
+}
+#endif //POSIX
+
+#ifdef HGE_POSIX
+char *CALL HGE_Impl::Resource_MakePath(const char *filename)
+{
+  int i;
+
+  if (!filename) {
+    strcpy(szTmpFilename, szAppPath);
+  }
+  else if (filename[0] == '\\' || filename[0] == '/' || filename[1] == ':') {
+    strcpy(szTmpFilename, filename);
+  }
+  else {
+    strcpy(szTmpFilename, szAppPath);
+
+    if (filename) {
+      strcat(szTmpFilename, filename);
+    }
+  }
+
+  for (i = 0; szTmpFilename[i]; i++) {
+    if (szTmpFilename[i] == '\\') {
+      szTmpFilename[i] = '/';
+    }
+  }
+
+  locateCorrectCase(szTmpFilename);
+
+  return szTmpFilename;
+}
+#endif // POSIX
+
+#ifdef HGE_POSIX
+// !!! FIXME: kinda messy, and probably doesn't get all the corner cases right.
+bool HGE_Impl::_WildcardMatch(const char *str, const char *wildcard)
+{
+  if ((str == NULL) || (wildcard == NULL)) {
+    return false;
+  }
+
+  while ((*str) && (*wildcard)) {
+    const char wildch = *wildcard;
+    const char strch = *str;
+
+    if (wildch == '?')
+      ; // okay.
+    else if (wildch == '*') {
+      do {
+        wildcard++;
+      } while (((*wildcard == '*') || (*wildcard == '?')) && (*wildcard != '\0'));
+
+      const char newwild = *wildcard;
+
+      if (newwild == '\0') {
+        return true;
+      }
+
+      const char *ptr = str;
+
+      while (*ptr) { // find the greediest match possible...
+        if (*ptr == newwild) {
+          str = ptr;
+        }
+
+        ptr++;
+      }
+    }
+    else if ((toupper(strch)) != (toupper(wildch))) {
+      return false;
+    }
+
+    str++;
+    wildcard++;
+  }
+
+  while (*wildcard == '*') {
+    wildcard++;
+  }
+
+  return ((*str == '\0') && (*wildcard == '\0'));
+}
+#endif // POSIX
+
+#ifdef HGE_POSIX
+bool HGE_Impl::_PrepareFileEnum(const char *wildcard)
+{
+  if (hSearch) {
+    closedir(hSearch);
+    hSearch = 0;
+  }
+
+  char *madepath = Resource_MakePath(wildcard);
+  const char *fname = strrchr(madepath, '/');
+  const char *dir = NULL;
+
+  if (fname == NULL) {
+    dir = ".";
+    fname = madepath;
+  }
+  else {
+    dir = madepath;
+    char *ptr = const_cast<char *>(fname); // what is this? remove const?
+    *ptr = '\0';  // split dir and filename.
+    fname++;
+  }
+
+  strcpy(szSearchDir, dir);
+  strcpy(szSearchWildcard, fname);
+
+  hSearch = opendir(dir);
+  return (hSearch != 0);
+}
+#endif // POSIX
+
+#ifdef HGE_POSIX
+char *HGE_Impl::_DoEnumIteration(const bool wantdir)
+{
+  if (!hSearch) {
+    return 0;
+  }
+
+  while (true) {
+    struct dirent *dent = readdir(hSearch);
+
+    if (dent == NULL) {
+      closedir(hSearch);
+      hSearch = 0;
+      return 0;
+    }
+
+    if ((strcmp(dent->d_name, ".") == 0) || (strcmp(dent->d_name, "..") == 0)) {
+      continue;
+    }
+
+    if (!_WildcardMatch(dent->d_name, szSearchWildcard)) {
+      continue;
+    }
+
+    char fullpath[_MAX_PATH];
+    snprintf(fullpath, sizeof(fullpath), "%s/%s", szSearchDir, dent->d_name);
+    struct stat statbuf;
+
+    if (stat(fullpath, &statbuf) == -1) { // this follows symlinks.
+      continue;
+    }
+
+    const bool isdir = ((S_ISDIR(statbuf.st_mode)) != 0);
+
+    if (isdir == wantdir) { // this treats pipes, devs, etc, as "files" ...
+      strcpy(szSearchResult, dent->d_name);
+      return szSearchResult;
+    }
+  }
+
+  //return 0;
+}
+#endif // POSIX
+
+#ifdef HGE_POSIX
+char *CALL HGE_Impl::Resource_EnumFiles(const char *wildcard)
+{
+  if (wildcard) {
+    if (!_PrepareFileEnum(wildcard)) {
       return 0;
     }
   }
 
-  return m_file_finder._DoEnumIteration(true);
+  return _DoEnumIteration(false);
 }
+#endif // POSIX
+
+#ifdef HGE_POSIX
+char *CALL HGE_Impl::Resource_EnumFolders(const char *wildcard)
+{
+  if (wildcard) {
+    if (!_PrepareFileEnum(wildcard)) {
+      return 0;
+    }
+  }
+
+  return _DoEnumIteration(true);
+}
+#endif // POSIX

@@ -127,14 +127,14 @@ png_set_cHRM_fixed(png_structp png_ptr, png_infop info_ptr,
   info_ptr->int_x_blue  = blue_x;
   info_ptr->int_y_blue  = blue_y;
 #ifdef PNG_FLOATING_POINT_SUPPORTED
-  info_ptr->x_white = static_cast<float>(white_x / 100000.);
-  info_ptr->y_white = static_cast<float>(white_y / 100000.);
-  info_ptr->x_red   = static_cast<float>(red_x / 100000.);
-  info_ptr->y_red   = static_cast<float>(red_y / 100000.);
-  info_ptr->x_green = static_cast<float>(green_x / 100000.);
-  info_ptr->y_green = static_cast<float>(green_y / 100000.);
-  info_ptr->x_blue  = static_cast<float>(blue_x / 100000.);
-  info_ptr->y_blue  = static_cast<float>(blue_y / 100000.);
+  info_ptr->x_white = (float)(white_x / 100000.);
+  info_ptr->y_white = (float)(white_y / 100000.);
+  info_ptr->x_red = (float)(red_x / 100000.);
+  info_ptr->y_red = (float)(red_y / 100000.);
+  info_ptr->x_green = (float)(green_x / 100000.);
+  info_ptr->y_green = (float)(green_y / 100000.);
+  info_ptr->x_blue  = (float)(blue_x / 100000.);
+  info_ptr->y_blue  = (float)(blue_y / 100000.);
 #endif
   info_ptr->valid |= PNG_INFO_cHRM;
 }
@@ -197,7 +197,7 @@ png_set_gAMA_fixed(png_structp png_ptr, png_infop info_ptr, png_fixed_point
   }
 
 #ifdef PNG_FLOATING_POINT_SUPPORTED
-  info_ptr->gamma = static_cast<float>(gamma / 100000.);
+  info_ptr->gamma = (float)(gamma / 100000.);
 #endif
 #ifdef PNG_FIXED_POINT_SUPPORTED
   info_ptr->int_gamma = gamma;
