@@ -270,34 +270,34 @@ static int SDLKeyToHGEKey(const int sdlkey)
   case SDLK_SLASH:
     return HGEK_SLASH;
 
-  case SDLK_KP0:
+  case SDLK_KP_0:
     return HGEK_NUMPAD0;
 
-  case SDLK_KP1:
+  case SDLK_KP_1:
     return HGEK_NUMPAD1;
 
-  case SDLK_KP2:
+  case SDLK_KP_2:
     return HGEK_NUMPAD2;
 
-  case SDLK_KP3:
+  case SDLK_KP_3:
     return HGEK_NUMPAD3;
 
-  case SDLK_KP4:
+  case SDLK_KP_4:
     return HGEK_NUMPAD4;
 
-  case SDLK_KP5:
+  case SDLK_KP_5:
     return HGEK_NUMPAD5;
 
-  case SDLK_KP6:
+  case SDLK_KP_6:
     return HGEK_NUMPAD6;
 
-  case SDLK_KP7:
+  case SDLK_KP_7:
     return HGEK_NUMPAD7;
 
-  case SDLK_KP8:
+  case SDLK_KP_8:
     return HGEK_NUMPAD8;
 
-  case SDLK_KP9:
+  case SDLK_KP_9:
     return HGEK_NUMPAD9;
 
   case SDLK_KP_MULTIPLY:
@@ -381,8 +381,9 @@ void CALL HGE_Impl::Input_GetMousePos(float *x, float *y)
 
 void CALL HGE_Impl::Input_SetMousePos(float x, float y)
 {
-  SDL_WarpMouse(static_cast<uint16_t>(x),
-                static_cast<uint16_t>(y));
+  SDL_WarpMouseInWindow(m_window,
+                        static_cast<uint16_t>(x),
+                        static_cast<uint16_t>(y));
 }
 
 int CALL HGE_Impl::Input_GetMouseWheel()

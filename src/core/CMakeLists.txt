@@ -9,7 +9,21 @@ set(HGE_SRCS
 	common/timer.cpp
 	common/hge2.cpp
 	common/hge_utils.h
-)
+	${CMAKE_SOURCE_DIR}/include/hge.h
+	${CMAKE_SOURCE_DIR}/include/hgeanim.h
+	${CMAKE_SOURCE_DIR}/include/hgecolor.h
+	${CMAKE_SOURCE_DIR}/include/hgedistort.h
+	${CMAKE_SOURCE_DIR}/include/hgefont.h
+	${CMAKE_SOURCE_DIR}/include/hgegui.h
+	${CMAKE_SOURCE_DIR}/include/hgeguictrls.h
+	${CMAKE_SOURCE_DIR}/include/hgeparticle.h
+	${CMAKE_SOURCE_DIR}/include/hgerect.h
+	${CMAKE_SOURCE_DIR}/include/hgeresource.h
+	${CMAKE_SOURCE_DIR}/include/hgesprite.h
+	${CMAKE_SOURCE_DIR}/include/hgestrings.h
+	${CMAKE_SOURCE_DIR}/include/hgevector.h
+	hge_portable.h hge_portable.cpp
+	)
 
 include_directories( ${CMAKE_SOURCE_DIR}/deps )
 

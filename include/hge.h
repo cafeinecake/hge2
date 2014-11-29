@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include "unix_compat.h"
+#include "hge_portable.h"
 #include <stdint.h>
 
 #ifdef _WINDOWS
@@ -91,10 +91,18 @@
 DEF_OPAQUE(hgeTexture, HTEXTURE)
 DEF_OPAQUE(hgeTarget, HTARGET)
 DEF_OPAQUE(hgeEffect, HEFFECT)
-DEF_OPAQUE(hgeMusic, HMUSIC)
-DEF_OPAQUE(hgeStream, HSTREAM)
-DEF_OPAQUE(hgeChannel, HCHANNEL)
 DEF_OPAQUE(hgeResource, hgeResHandle)
+
+#ifdef HGE_WINDOWS
+  // Bass compatible definitions instead of opaque pointers
+  typedef size_t HCHANNEL;
+  typedef size_t HSTREAM;
+  typedef size_t HMUSIC;
+#else
+  DEF_OPAQUE(hgeMusic, HMUSIC)
+  DEF_OPAQUE(hgeStream, HSTREAM)
+  DEF_OPAQUE(hgeChannel, HCHANNEL)
+#endif
 #undef DEF_OPAQUE
 
 

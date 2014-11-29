@@ -355,7 +355,7 @@ void CALL HGE_Impl::Gfx_EndScene()
   }
 
   if (!pCurTarget) {
-    SDL_GL_SwapBuffers();
+    SDL_GL_SwapWindow(m_window);
   }
 
   //const GLenum err = pOpenGLDevice->glGetError();
@@ -943,7 +943,7 @@ bool CALL HGE_Impl::HGEEXT_Texture_PushYUV422(HTEXTURE tex, const uint8_t *yuv)
   }
 
   gltexture *pTex = reinterpret_cast<gltexture *>(tex);
-  assert(!pTex->lock_pixels);
+  hgeAssert(!pTex->lock_pixels);
 
   if (pTex->lost) { // just reupload the whole thing.
     _ConfigureTexture(pTex, static_cast<int32_t>(pTex->width),
@@ -973,7 +973,7 @@ uint32_t *CALL HGE_Impl::Texture_Lock(HTEXTURE tex, bool bReadOnly, int left, in
   gltexture *pTex = reinterpret_cast<gltexture *>(tex);
 
   if (pTex->lock_pixels) {
-    assert(false && "multiple lock of texture...");
+    hgeAssert(false && "multiple lock of texture...");
     return 0;
   }
 
@@ -1017,14 +1017,14 @@ uint32_t *CALL HGE_Impl::Texture_Lock(HTEXTURE tex, bool bReadOnly, int left, in
   }
 
   // !!! FIXME: do something with this?
-  assert(width > 0);
-  assert(width <= static_cast<int32_t>(pTex->width));
-  assert(height > 0);
-  assert(height <= static_cast<int32_t>(pTex->height));
-  assert(left >= 0);
-  assert(left <= width);
-  assert(top >= 0);
-  assert(top <= height);
+  hgeAssert(width > 0);
+  hgeAssert(width <= static_cast<int32_t>(pTex->width));
+  hgeAssert(height > 0);
+  hgeAssert(height <= static_cast<int32_t>(pTex->height));
+  hgeAssert(left >= 0);
+  hgeAssert(left <= width);
+  hgeAssert(top >= 0);
+  hgeAssert(top <= height);
 
   pTex->lock_readonly = bReadOnly;
   pTex->lock_x = left;
@@ -1036,7 +1036,7 @@ uint32_t *CALL HGE_Impl::Texture_Lock(HTEXTURE tex, bool bReadOnly, int left, in
   uint32_t *dst = pTex->lock_pixels;
 
   if (pTex->is_render_target) {
-    assert(false && "need to bind fbo before glReadPixels...");
+    hgeAssert(false && "need to bind fbo before glReadPixels...");
     uint32_t *upsideDown = new uint32_t[width * height];
     uint32_t *src = upsideDown + ((height - 1) * width);
     pOpenGLDevice->glReadPixels(left,
@@ -1434,14 +1434,14 @@ bool HGE_Impl::_GfxInit()
   CurTexture = 0;
 
 // Init OpenGL ... SDL should have created a context at this point.
-  assert(pOpenGLDevice == nullptr);
+  hgeAssert(pOpenGLDevice == nullptr);
   pOpenGLDevice = new COpenGLDevice;
 
   if (!_LoadOpenGLEntryPoints()) {
     return false;  // already called _PostError().
   }
 
-  nScreenBPP = SDL_GetVideoSurface()->format->BitsPerPixel;
+  nScreenBPP = SDL_GetWindowSurface(m_window)->format->BitsPerPixel;
 
   _AdjustWindow();
 
@@ -1461,9 +1461,9 @@ bool HGE_Impl::_GfxInit()
 
   // make sure the framebuffers are cleared and force to screen
   pOpenGLDevice->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-  SDL_GL_SwapBuffers();
+  SDL_GL_SwapWindow(m_window);
   pOpenGLDevice->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-  SDL_GL_SwapBuffers();
+  SDL_GL_SwapWindow(m_window);
 
   return true;
 }

@@ -7,7 +7,7 @@
 */
 
 #include "fontlist.h"
-#include "unix_compat.h"
+#include "hge_portable.h"
 
 #ifdef _WINDOWS
 #include <wingdi.h>
@@ -116,7 +116,7 @@ void CFontList::FindSortAdd(char *family)
 int EnumFontFamiliesEx(int * /*lpelfe*/, int * /*lpntme*/, uint32_t /*FontType*/,
                        void * /*lParam*/)
 {
-  assert(true && "write me");
+  hgeAssert(true && "write me");
   return 1;
 }
 #else

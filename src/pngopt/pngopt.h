@@ -1,5 +1,5 @@
 #include "../../include/hge.h"
-#include "unix_compat.h"
+#include "hge_portable.h"
 
 #include <stdio.h>
 #include <stdlib.h>

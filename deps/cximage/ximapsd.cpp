@@ -278,7 +278,7 @@ inline int dti(double value)
   return (int)floor(value + .5f);
 }
 
-#define assert(a)
+#define hgeAssert(a)
 
 #define mypsd_fread(a, b, c, d) d.Read(a, b, c)
 #define mypsd_fseek(a, b, c) a.Seek(b, c)
@@ -426,7 +426,7 @@ bool CPSD::ReadLayerAndMaskInfoSection(CxFile &pFile) // Actually ignore it
     nBytesRead += nItemsRead * sizeof(data);
   }
 
-  assert(nBytesRead == nTotalBytes);
+  hgeAssert(nBytesRead == nTotalBytes);
 
   if (nBytesRead == nTotalBytes) {
     bSuccess = true;
@@ -453,7 +453,7 @@ bool CPSD::ReadImageResource(CxFile &pFile, IMAGE_RESOURCE &image_resource)
     nItemsRead = (int)(int)mypsd_fread(&image_resource.OSType, sizeof(image_resource.OSType), 1, pFile);
     nBytesRead += nItemsRead * sizeof(image_resource.OSType);
 
-    assert(0 == (nBytesRead % 2));
+    hgeAssert(0 == (nBytesRead % 2));
 
     if (::memcmp(image_resource.OSType, "8BIM", 4) == 0) {
       unsigned char ID[2];
@@ -557,8 +557,8 @@ bool CPSD::ReadImageResource(CxFile &pFile, IMAGE_RESOURCE &image_resource)
           nItemsRead = (int)mypsd_fread(&ShortValue, sizeof(ShortValue), 1, pFile);
           nBytesRead += nItemsRead * sizeof(ShortValue);
           display_info.Opacity = (short)Calculate(ShortValue, sizeof(display_info.Opacity));
-          assert(0 <= display_info.Opacity);
-          assert(100 >= display_info.Opacity);
+          hgeAssert(0 <= display_info.Opacity);
+          hgeAssert(100 >= display_info.Opacity);
 
           unsigned char c[1];
           nItemsRead = (int)mypsd_fread(&c, sizeof(c), 1, pFile);
@@ -568,7 +568,7 @@ bool CPSD::ReadImageResource(CxFile &pFile, IMAGE_RESOURCE &image_resource)
           nItemsRead = (int)mypsd_fread(&c, sizeof(c), 1, pFile);
           nBytesRead += nItemsRead * sizeof(c);
           display_info.padding = (unsigned int)Calculate(c, sizeof(c));
-          assert(0 == display_info.padding);
+          hgeAssert(0 == display_info.padding);
         }
         break;
 
@@ -676,7 +676,7 @@ bool CPSD::ReadImageResource(CxFile &pFile, IMAGE_RESOURCE &image_resource)
     }
   }
 
-  assert(nBytesRead == nTotalBytes);
+  hgeAssert(nBytesRead == nTotalBytes);
 
   if (nBytesRead == nTotalBytes) {
     bSuccess = true;

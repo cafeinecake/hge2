@@ -16,6 +16,8 @@
 #include <sys/sysctl.h>
 #endif
 
+#include <ctime>
+
 //#define LOWORDINT(n) ((int)((signed short)(LOWORD(n))))
 //#define HIWORDINT(n) ((int)((signed short)(HIWORD(n))))
 
@@ -77,8 +79,8 @@ bool CALL HGE_Impl::System_Initiate()
 
   System_Log("hge-unix version: %X.%X", HGE_VERSION >> 8, HGE_VERSION & 0xFF);
 
-  time_t t = time(nullptr);
-  System_Log("Date: %s", asctime(localtime(&t)));
+  time_t t = std::time(nullptr);
+  System_Log("Date: %s", std::asctime(std::localtime(&t)));
 
   System_Log("Application: %s", szWinTitle);
 
@@ -148,10 +150,10 @@ bool CALL HGE_Impl::System_Initiate()
     return false;
   }
 
-  const SDL_VideoInfo *vidinfo = SDL_GetVideoInfo();
-  nOrigScreenWidth = vidinfo->current_w;
-  nOrigScreenHeight = vidinfo->current_h;
-  System_Log("Screen: %dx%d\n", nOrigScreenWidth, nOrigScreenHeight);
+  //const SDL_VideoInfo *vidinfo = SDL_GetVideoInfo();
+  //nOrigScreenWidth = vidinfo->current_w;
+  //nOrigScreenHeight = vidinfo->current_h;
+  //System_Log("Screen: %dx%d\n", nOrigScreenWidth, nOrigScreenHeight);
 
   // Create window
   uint32_t window_flags = SDL_WINDOW_OPENGL;
@@ -262,18 +264,13 @@ void CALL HGE_Impl::System_Shutdown()
 {
   System_Log("\nFinishing..");
 
-  if (hSearch) {
-    closedir(hSearch);
-    hSearch = 0;
-  }
-
   _ClearQueue();
   _SoundDone();
   _GfxDone();
   _DonePowerStatus();
 
   SDL_Quit();
-  hwnd = 0;
+  m_window = nullptr;
 
   System_Log("The End.");
 }
@@ -281,7 +278,7 @@ void CALL HGE_Impl::System_Shutdown()
 
 bool CALL HGE_Impl::System_Start()
 {
-  if (!hwnd) {
+  if (! m_window) {
     _PostError("System_Start: System_Initiate wasn't called");
     return false;
   }
@@ -788,11 +785,11 @@ HWND CALL HGE_Impl::System_GetStateHwnd(hgeHwndState state)
 int CALL HGE_Impl::System_GetStateInt(hgeIntState state)
 {
   switch (state) {
-  case HGE_ORIGSCREENWIDTH:
-    return nOrigScreenWidth;
+  //case HGE_ORIGSCREENWIDTH:
+  //  return nOrigScreenWidth;
 
-  case HGE_ORIGSCREENHEIGHT:
-    return nOrigScreenHeight;
+  //case HGE_ORIGSCREENHEIGHT:
+  //  return nOrigScreenHeight;
 
   case HGE_SCREENWIDTH:
     return nScreenWidth;
@@ -993,8 +990,8 @@ HGE_Impl::HGE_Impl()
   procExitFunc = 0;
   szIcon = 0;
   strcpy(szWinTitle, "HGE");
-  nOrigScreenWidth = 800;
-  nOrigScreenHeight = 600;
+  //nOrigScreenWidth = 800;
+  //nOrigScreenHeight = 600;
   nScreenWidth = 800;
   nScreenHeight = 600;
   nScreenBPP = 32;

@@ -8,7 +8,7 @@
 
 #include "hge_impl.h"
 
-#ifndef strupr
+#ifndef HGE_WINDOWS
 static void strupr(char *s)
 {
   while (*s) {
@@ -18,7 +18,7 @@ static void strupr(char *s)
 }
 #endif
 
-#include <zlib.h>  // the system version is better here. HGE's is out of date.
+#include <zlib/zlib.h>
 
 //#define NOCRYPT
 //#define NOUNCRYPT

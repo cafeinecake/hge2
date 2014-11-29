@@ -15,6 +15,21 @@
 #   define HGE_WINDOWS 1
 
 #   include <SDL.h>
+#   include <Windows.h>
+#   include <wchar.h>
+
+#   define HGE_NORETURN /*no attribute on Windows platform*/
+#   define HGE_MAX_PATH MAX_PATH
+#   define snprintf hgeos::c99_snprintf
+namespace hgeos {
+  int c99_snprintf(char* str, size_t size, const char* format, ...);
+  int c99_vsnprintf(char* str, size_t size, const char* format, va_list ap);
+} // ns hgeos
+#   define strcasecmp _stricmp
+#   define strncasecmp _strnicmp 
+
+#   define hgeAssert _ASSERTE
+
 #endif
 
 // don't want rest of this header on Windows, etc.
@@ -25,7 +40,7 @@
 #include <string.h>
 #include <stdint.h>
 #include <unistd.h>
-#include <assert.h>
+#include <hgeAssert.h>
 #include <errno.h>
 #include <limits.h>
 #include <sys/stat.h>
@@ -34,8 +49,7 @@
 
 #include "SDL.h"
 
-#define _MAX_PATH PATH_MAX
-#define MAX_PATH PATH_MAX
+#define HGE_MAX_PATH PATH_MAX
 
 typedef void *HANDLE;
 typedef HANDLE HWND;
@@ -65,15 +79,15 @@ do { \
 
 static inline char *itoa(const int i, char *s, const int radix)
 {
-  assert(radix == 10);
+  hgeAssert(radix == 10);
   sprintf(s, "%d", i);
   return s;
 }
 
 static inline char *_i64toa(const int64_t i, char *s, const int radix)
 {
-  assert(radix == 10);
-  assert(sizeof(long long) == sizeof(int64_t));
+  hgeAssert(radix == 10);
+  hgeAssert(sizeof(long long) == sizeof(int64_t));
   sprintf(s, "%lld", static_cast<long long>(i));
   return s;
 }
@@ -166,3 +180,25 @@ SWAPPER8(BYTE)
 #define HGE_NORETURN __attribute__((__noreturn__))
 
 #endif  // PLATFORM_UNIX
+
+// Portable definitions
+namespace hgeos {
+
+  class Finder {
+  public:
+    ~Finder();
+    bool        _WildcardMatch(const char *str, const char *wildcard);
+    bool        _PrepareFileEnum(const char *wildcard);
+    char       *_DoEnumIteration(const bool wantdir);
+    char        szSearchDir[HGE_MAX_PATH];
+    char        szSearchWildcard[HGE_MAX_PATH];
+    char        szSearchResult[HGE_MAX_PATH];
+
+#ifdef HGE_WINDOWS
+    HANDLE      hSearch;
+#else
+    DIR        *hSearch;
+#endif
+  };
+
+}

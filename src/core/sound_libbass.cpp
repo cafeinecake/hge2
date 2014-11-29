@@ -15,7 +15,7 @@
 #else
 #define BASSDEF(f) (WINAPI *f)  // define the functions as pointers
 #define LOADBASSFUNCTION(f) \
-  *(reinterpret_cast<void**>(&f))=reinterpret_cast<void*>(GetProcAddress(hBass,#f))
+  *(reinterpret_cast<void**>(&f)) = reinterpret_cast<void*>(GetProcAddress(reinterpret_cast<HMODULE>(hBass), #f))
 #endif
 #include "BASS/bass.h"
 
@@ -83,7 +83,7 @@ HEFFECT CALL HGE_Impl::Effect_Load(const char *filename, uint32_t size)
       Resource_Free(data);
     }
 
-    return hs;
+    return reinterpret_cast<HEFFECT>(hs);
   } else {
     return 0;
   }
@@ -92,8 +92,7 @@ HEFFECT CALL HGE_Impl::Effect_Load(const char *filename, uint32_t size)
 HCHANNEL CALL HGE_Impl::Effect_Play(HEFFECT eff)
 {
   if (hBass) {
-    HCHANNEL chn;
-    chn = BASS_SampleGetChannel(eff, FALSE);
+    HCHANNEL chn = BASS_SampleGetChannel(reinterpret_cast<HSAMPLE>(eff), FALSE);
     BASS_ChannelPlay(chn, TRUE);
     return chn;
   } else {
@@ -106,9 +105,9 @@ HCHANNEL CALL HGE_Impl::Effect_PlayEx(HEFFECT eff, int volume, int pan, float pi
   if (hBass) {
     BASS_SAMPLE info;
     HCHANNEL chn;
-    BASS_SampleGetInfo(eff, &info);
+    BASS_SampleGetInfo(reinterpret_cast<HSAMPLE>(eff), &info);
 
-    chn = BASS_SampleGetChannel(eff, FALSE);
+    chn = BASS_SampleGetChannel(reinterpret_cast<HSAMPLE>(eff), FALSE);
     BASS_ChannelSetAttributes(chn, (int)(pitch * info.freq), volume, pan);
 
     info.flags &= ~BASS_SAMPLE_LOOP;
@@ -129,7 +128,7 @@ HCHANNEL CALL HGE_Impl::Effect_PlayEx(HEFFECT eff, int volume, int pan, float pi
 void CALL HGE_Impl::Effect_Free(HEFFECT eff)
 {
   if (hBass) {
-    BASS_SampleFree(eff);
+    BASS_SampleFree(reinterpret_cast<HSAMPLE>(eff));
   }
 }
 

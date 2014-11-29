@@ -129,36 +129,36 @@ typedef char JOCTET;
  * typedefs live at a different point on the speed/space tradeoff curve.)
  */
 
-/* UINT8 must hold at least the values 0..255. */
+/* uint8_t must hold at least the values 0..255. */
 
 #ifdef HAVE_UNSIGNED_CHAR
-typedef unsigned char UINT8;
+//typedef unsigned char uint8_t;
 #else /* not HAVE_UNSIGNED_CHAR */
 #ifdef CHAR_IS_UNSIGNED
-typedef char UINT8;
+typedef char uint8_t;
 #else /* not CHAR_IS_UNSIGNED */
-typedef short UINT8;
+typedef short uint8_t;
 #endif /* CHAR_IS_UNSIGNED */
 #endif /* HAVE_UNSIGNED_CHAR */
 
-/* UINT16 must hold at least the values 0..65535. */
+/* uint16_t must hold at least the values 0..65535. */
 
 #ifdef HAVE_UNSIGNED_SHORT
-typedef unsigned short UINT16;
+//typedef unsigned short uint16_t;
 #else /* not HAVE_UNSIGNED_SHORT */
-typedef unsigned int UINT16;
+//typedef unsigned int uint16_t;
 #endif /* HAVE_UNSIGNED_SHORT */
 
 /* INT16 must hold at least the values -32768..32767. */
 
 #ifndef XMD_H			/* X11/xmd.h correctly defines INT16 */
-typedef short INT16;
+//typedef short INT16;
 #endif
 
-/* INT32 must hold at least signed 32-bit values. */
+/* int32_t must hold at least signed 32-bit values. */
 
-#ifndef XMD_H			/* X11/xmd.h correctly defines INT32 */
-typedef long INT32;
+#ifndef XMD_H			/* X11/xmd.h correctly defines int32_t */
+//typedef long int32_t;
 #endif
 
 /* Datatype used for image dimensions.  The JPEG standard only supports

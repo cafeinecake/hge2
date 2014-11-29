@@ -11,7 +11,7 @@ static void WarningCallback(png_structp /*png_ptr*/,
   hge->System_Log("LIBPNG Warning: %s", msg);
 }
 
-static void //HGE_NORETURN
+static void HGE_NORETURN
 ErrorCallback(png_structp /*png_ptr*/,
               png_const_charp msg)
 {

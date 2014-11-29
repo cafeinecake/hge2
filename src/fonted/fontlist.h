@@ -10,7 +10,7 @@
 #ifndef FONTLIST_H
 #define FONTLIST_H
 
-#include "unix_compat.h"
+#include "hge_portable.h"
 
 #ifndef PLATFORM_UNIX
 #include <windows.h>

@@ -6,7 +6,7 @@
 ** Particle systems editor
 */
 
-#include "unix_compat.h"
+#include "hge_portable.h"
 #include "particleed.h"
 
 

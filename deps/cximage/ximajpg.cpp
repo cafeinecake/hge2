@@ -29,7 +29,7 @@ typedef jpg_error_mgr *jpg_error_ptr;
 ////////////////////////////////////////////////////////////////////////////////
 // Here's the routine that will replace the standard error_exit method:
 ////////////////////////////////////////////////////////////////////////////////
-static void __attribute__((__noreturn__))
+static void //__attribute__((__noreturn__))
 ima_jpeg_error_exit(j_common_ptr cinfo)
 {
   /* cinfo->err really points to a my_error_mgr struct, so coerce pointer */

@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include "unix_compat.h"
+#include "hge_portable.h"
 
 #include "../../include/hge.h"
 #include <stdio.h>
@@ -126,7 +126,7 @@ public:
   virtual bool    CALL  System_Launch(const char *url);
   virtual void    CALL  System_Snapshot(const char *filename = 0);
 
-  virtual void   *CALL  Resource_Load(const char *filename, uint32_t *size = 0);
+  virtual hgeResHandle CALL  Resource_Load(const char *filename, uint32_t *size = 0);
   virtual void    CALL  Resource_Free(void *res);
   virtual bool    CALL  Resource_AttachPack(const char *filename, const char *password = 0);
   virtual void    CALL  Resource_RemovePack(const char *filename);
@@ -270,8 +270,8 @@ private:
   SDL_Window  *m_window;
   int         nScreenWidth;
   int         nScreenHeight;
-  int         nOrigScreenWidth;
-  int         nOrigScreenHeight;
+  //int         nOrigScreenWidth;
+  //int         nOrigScreenHeight;
   int         nScreenBPP;
   bool        bWindowed;
   bool        bVsync;
@@ -385,13 +385,7 @@ private:
   char        szTmpFilename[_MAX_PATH];
   CResourceList    *res;
 
-  bool        _WildcardMatch(const char *str, const char *wildcard);
-  bool        _PrepareFileEnum(const char *wildcard);
-  char       *_DoEnumIteration(const bool wantdir);
-  //DIR        *hSearch;
-  char        szSearchDir[_MAX_PATH];
-  char        szSearchWildcard[_MAX_PATH];
-  char        szSearchResult[_MAX_PATH];
+  hgeos::Finder m_file_finder;
 
   // Timer
   float       fTime;

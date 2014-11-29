@@ -9,7 +9,7 @@
 
 #include "fonted.h"
 #include <stdio.h>
-#include "unix_compat.h"
+#include "hge_portable.h"
 
 HGE *hge = 0;
 

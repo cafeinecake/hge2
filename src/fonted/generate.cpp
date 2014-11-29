@@ -1,6 +1,6 @@
 
 #include "fonted.h"
-#include "unix_compat.h"
+#include "hge_portable.h"
 
 CHAR_DESC vChars[256];
 
@@ -70,7 +70,7 @@ HTEXTURE FontGenerate(char *szFontName,
   TEXTMETRIC  tTextMetrics;
 
   HTEXTURE  tex;
-  DWORD   *pPixels, *pTexData, dwPixel;
+  uint32_t *pPixels, *pTexData, dwPixel;
 
   // create font
   hFont = CreateFont(-nSize, 0, 0, 0, (bBold) ? FW_BOLD : FW_NORMAL,

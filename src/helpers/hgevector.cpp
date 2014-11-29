@@ -9,7 +9,7 @@
 
 #include "../../include/hgevector.h"
 
-#include "../common/hge_utils.h"
+#include "common/hge_utils.h"
 using namespace hgeut;
 
 float InvSqrt(float x)

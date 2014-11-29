@@ -12,9 +12,12 @@
 #include "ximaiter.h"
 
 #if defined (_WIN32_WCE)
-#define assert(s)
+#define hgeAssert(s)
 #else
 #include <assert.h>
+#ifdef _WIN32
+#   define hgeAssert _ASSERTE
+#endif // win32
 #endif
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -142,7 +145,7 @@ bool CxImageGIF::Decode(CxFile *fp)
       }
 
       case ',': { // image
-        assert(sizeof(image) == 9);
+        hgeAssert(sizeof(image) == 9);
         fp->Read(&image, sizeof(image), 1);
         //avoid byte order problems with Solaris <candan> <AMSN>
         image.l = m_ntohs(image.l);
@@ -166,7 +169,7 @@ bool CxImageGIF::Decode(CxFile *fp)
         // Local colour map?
         if (image.pf & 0x80) {
           palcount = static_cast<int16_t>(1 << ((image.pf & 0x07) + 1));
-          assert(3 == sizeof(struct rgb_color));
+          hgeAssert(3 == sizeof(struct rgb_color));
           fp->Read(locpal,
                    static_cast<size_t>(sizeof(struct rgb_color))
                    * static_cast<uint32_t>(palcount),
@@ -392,7 +395,7 @@ bool CxImageGIF::DecodeExtension(CxFile *fp)
       bContinue = (1 == fp->Read(&count, sizeof(count), 1));
 
       if (bContinue) {
-        assert(sizeof(gifgce) == 4);
+        hgeAssert(sizeof(gifgce) == 4);
         bContinue = (count == fp->Read(&gifgce, 1, sizeof(gifgce)));
         gifgce.delaytime = m_ntohs(gifgce.delaytime); // Avoid Byte order problem with Mac <AMSN>
 
@@ -1500,7 +1503,7 @@ int32_t CxImageGIF::get_num_frames(CxFile *fp, struct_TabCol *TabColSrc, struct_
 
       case ',': { // image
 
-        assert(sizeof(image) == 9);
+        hgeAssert(sizeof(image) == 9);
         //log << "Image header" << endl;
         fp->Read(&image, sizeof(image), 1);
 
@@ -1525,7 +1528,7 @@ int32_t CxImageGIF::get_num_frames(CxFile *fp, struct_TabCol *TabColSrc, struct_
         // Local colour map?
         if (image.pf & 0x80) {
           TempTabCol.sogct = static_cast<int16_t>(1 << ((image.pf & 0x07) + 1));
-          assert(3 == sizeof(struct rgb_color));
+          hgeAssert(3 == sizeof(struct rgb_color));
           fp->Read(TempTabCol.paleta,
                    sizeof(struct rgb_color) * static_cast<size_t>(TempTabCol.sogct),
                    1);

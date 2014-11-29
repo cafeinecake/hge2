@@ -8,7 +8,7 @@
 
 
 #include "particleed.h"
-#include "unix_compat.h"
+#include "hge_portable.h"
 
 #include "common/hge_utils.h"
 using namespace hgeut;
