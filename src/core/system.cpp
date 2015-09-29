@@ -176,10 +176,10 @@ bool HGE_CALL HGE_Impl::System_Initiate()
     return false;
   }
 
-  if (!_SoundInit()) {
+  /*if (!_SoundInit()) {
     System_Shutdown();
     return false;
-  }
+  }*/
 
   System_Log("Init done.\n");
 
@@ -231,7 +231,7 @@ void HGE_CALL HGE_Impl::System_Shutdown()
   }
 
   _ClearQueue();
-  _SoundDone();
+  //_SoundDone();
   _GfxDone();
   _DonePowerStatus();
 
@@ -461,7 +461,7 @@ void HGE_CALL HGE_Impl::System_SetStateBool(hgeBoolState state, bool value)
 
     break;
 
-  case HGE_USESOUND:
+  /*case HGE_USESOUND:
     if (bUseSound != value) {
       bUseSound = value;
 
@@ -473,8 +473,7 @@ void HGE_CALL HGE_Impl::System_SetStateBool(hgeBoolState state, bool value)
         _SoundDone();
       }
     }
-
-    break;
+    break;*/
 
   case HGE_HIDEMOUSE:
     bHideMouse = value;
@@ -558,6 +557,7 @@ void HGE_CALL HGE_Impl::System_SetStateInt(hgeIntState state, int value)
 
     break;
 
+	/*
   case HGE_SAMPLERATE:
     if (!hBass) {
       nSampleRate = value;
@@ -579,6 +579,7 @@ void HGE_CALL HGE_Impl::System_SetStateInt(hgeIntState state, int value)
     nStreamVolume = value;
     _SetStreamVolume(nStreamVolume);
     break;
+	*/
 
   case HGE_FPS:
     if (VertArray) {
@@ -893,9 +894,9 @@ HGE_Impl::HGE_Impl()
   VertArray = 0;
   textures = 0;
 
-  hBass = 0;
-  bSilent = false;
-  streams = 0;
+//  hBass = 0;
+//  bSilent = false;
+//  streams = 0;
 
   hSearch = 0;
   res = 0;

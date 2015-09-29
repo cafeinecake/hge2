@@ -116,7 +116,7 @@ bool HGE_CALL HGE_Impl::Gfx_BeginScene(HTARGET targ)
   hgeGAPISurface *pSurf = 0, * pDepth = 0;
 
   D3DDISPLAYMODE Mode;
-  CRenderTargetList *target = (CRenderTargetList *)targ;
+  CRenderTargetList *target = targ.as<CRenderTargetList *>();
 
   HRESULT hr = pD3DDevice->TestCooperativeLevel();
 
@@ -269,7 +269,7 @@ void HGE_CALL HGE_Impl::Gfx_RenderTriple(const hgeTriple *triple)
       }
 
       if (triple->tex != CurTexture) {
-        pD3DDevice->SetTexture(0, (hgeGAPITexture *)triple->tex);
+        pD3DDevice->SetTexture(0, triple->tex.as<hgeGAPITexture *>());
         CurTexture = triple->tex;
       }
     }
@@ -294,7 +294,7 @@ void HGE_CALL HGE_Impl::Gfx_RenderQuad(const hgeQuad *quad)
       }
 
       if (quad->tex != CurTexture) {
-        pD3DDevice->SetTexture(0, (hgeGAPITexture *)quad->tex);
+        pD3DDevice->SetTexture(0, quad->tex.as<hgeGAPITexture *>());
         CurTexture = quad->tex;
       }
     }
@@ -316,7 +316,7 @@ hgeVertex *HGE_CALL HGE_Impl::Gfx_StartBatch(int prim_type, HTEXTURE tex, int bl
     }
 
     if (tex != CurTexture) {
-      pD3DDevice->SetTexture(0, (hgeGAPITexture *)tex);
+      pD3DDevice->SetTexture(0, tex.as<hgeGAPITexture *>());
       CurTexture = tex;
     }
 
@@ -381,7 +381,7 @@ void HGE_CALL HGE_Impl::Target_Free(HTARGET target)
   CRenderTargetList *pTarget = pTargets, *pPrevTarget = NULL;
 
   while (pTarget) {
-    if ((CRenderTargetList *)target == pTarget) {
+    if (target.as<CRenderTargetList *>() == pTarget) {
       if (pPrevTarget) {
         pPrevTarget->next = pTarget->next;
       } else {
@@ -407,7 +407,7 @@ void HGE_CALL HGE_Impl::Target_Free(HTARGET target)
 
 HTEXTURE HGE_CALL HGE_Impl::Target_GetTexture(HTARGET target)
 {
-  CRenderTargetList *targ = (CRenderTargetList *)target;
+  CRenderTargetList *targ = target.as<CRenderTargetList *>();
 
   if (target) {
     return (HTEXTURE)targ->pTex;
@@ -512,7 +512,7 @@ HTEXTURE HGE_CALL HGE_Impl::Texture_Load(const char *filename, uint32_t size, bo
 
 void HGE_CALL HGE_Impl::Texture_Free(HTEXTURE tex)
 {
-  hgeGAPITexture *pTex = (hgeGAPITexture *)tex;
+  hgeGAPITexture *pTex = tex.as<hgeGAPITexture *>();
   CTextureList *texItem = textures, *texPrev = 0;
 
   while (texItem) {
@@ -539,7 +539,7 @@ void HGE_CALL HGE_Impl::Texture_Free(HTEXTURE tex)
 int HGE_CALL HGE_Impl::Texture_GetWidth(HTEXTURE tex, bool bOriginal)
 {
   D3DSURFACE_DESC TDesc;
-  hgeGAPITexture *pTex = (hgeGAPITexture *)tex;
+  hgeGAPITexture *pTex = tex.as<hgeGAPITexture *>();
   CTextureList *texItem = textures;
 
   if (bOriginal) {
@@ -565,7 +565,7 @@ int HGE_CALL HGE_Impl::Texture_GetWidth(HTEXTURE tex, bool bOriginal)
 int HGE_CALL HGE_Impl::Texture_GetHeight(HTEXTURE tex, bool bOriginal)
 {
   D3DSURFACE_DESC TDesc;
-  hgeGAPITexture *pTex = (hgeGAPITexture *)tex;
+  hgeGAPITexture *pTex = tex.as<hgeGAPITexture *>();
   CTextureList *texItem = textures;
 
   if (bOriginal) {
@@ -592,7 +592,7 @@ uint32_t *HGE_CALL HGE_Impl::Texture_Lock(HTEXTURE tex, bool bReadOnly, int left
     int width,
     int height)
 {
-  hgeGAPITexture *pTex = (hgeGAPITexture *)tex;
+  hgeGAPITexture *pTex = tex.as<hgeGAPITexture *>();
   D3DSURFACE_DESC TDesc;
   D3DLOCKED_RECT TRect;
   RECT region, *prec;
@@ -631,7 +631,7 @@ uint32_t *HGE_CALL HGE_Impl::Texture_Lock(HTEXTURE tex, bool bReadOnly, int left
 
 void HGE_CALL HGE_Impl::Texture_Unlock(HTEXTURE tex)
 {
-  hgeGAPITexture *pTex = (hgeGAPITexture *)tex;
+  hgeGAPITexture *pTex = tex.as<hgeGAPITexture *>();
   pTex->UnlockRect(0);
 }
 
@@ -1410,7 +1410,7 @@ void HGE_CALL HGE_Impl::Gfx_SetShader(HSHADER shader)
   if (CurShader != shader) {
     _render_batch();
     CurShader = shader;
-    pD3DDevice->SetPixelShader((LPDIRECT3DPIXELSHADER9)shader);
+    pD3DDevice->SetPixelShader(shader.as<LPDIRECT3DPIXELSHADER9>());
   }
 }
 #endif
@@ -1418,6 +1418,6 @@ void HGE_CALL HGE_Impl::Gfx_SetShader(HSHADER shader)
 #if HGE_DIRECTX_VER >= 9
 void HGE_CALL HGE_Impl::Shader_Free(HSHADER shader)
 {
-  ((LPDIRECT3DPIXELSHADER9)shader)->Release();
+  shader.as<LPDIRECT3DPIXELSHADER9>()->Release();
 }
 #endif

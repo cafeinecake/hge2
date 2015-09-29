@@ -53,6 +53,8 @@ public:
   HGEHANDLE(void *h) : _handle(h) {}
   HGEHANDLE() : _handle(nullptr) {}
   operator void *() const { return _handle;  }
+  template <typename T> const T as() const { return (const T)_handle; }
+  template <typename T> T as() { return (T)_handle; }
 };
 
 // FIXME: Won't compile in 64-bit mode due to handles (4 bytes) holding a pointer (8 bytes)

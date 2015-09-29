@@ -63,7 +63,7 @@ struct RTexture : public ResDesc {
   virtual void  Free();
 };
 
-struct REffect : public ResDesc {
+/*struct REffect : public ResDesc {
   char      filename[MAXRESCHARS];
 
   static  void  Parse(hgeResourceManager *rm, RScriptParser *sp, const char *name,
@@ -89,7 +89,7 @@ struct RStream : public ResDesc {
                       const char *basename);
   virtual void *Get(hgeResourceManager *rm);
   virtual void  Free();
-};
+};*/
 
 struct RTarget : public ResDesc {
   int     width;
