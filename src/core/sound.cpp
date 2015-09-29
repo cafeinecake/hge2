@@ -16,9 +16,9 @@
 #define LOADBASSFUNCTION(f) *((void**)&f)=(void*)GetProcAddress(hBass,#f)
 
 
-HEFFECT HGE_CALL HGE_Impl::Effect_Load(const char *filename, hgeU32 size)
+HEFFECT HGE_CALL HGE_Impl::Effect_Load(const char *filename, uint32_t size)
 {
-    hgeU32 _size, length, samples;
+    uint32_t _size, length, samples;
     HSAMPLE hs;
     HSTREAM hstrm;
     BASS_CHANNELINFO info;
@@ -43,7 +43,7 @@ HEFFECT HGE_CALL HGE_Impl::Effect_Load(const char *filename, hgeU32 size)
         if(!hs) {
             hstrm=BASS_StreamCreateFile(TRUE, data, 0, _size, BASS_STREAM_DECODE);
             if(hstrm) {
-                length=(hgeU32)BASS_ChannelGetLength(hstrm);
+                length=(uint32_t)BASS_ChannelGetLength(hstrm);
                 BASS_ChannelGetInfo(hstrm, &info);
                 samples=length;
                 if(info.chans < 2) {
@@ -119,10 +119,10 @@ void HGE_CALL HGE_Impl::Effect_Free(HEFFECT eff)
 }
 
 
-HMUSIC HGE_CALL HGE_Impl::Music_Load(const char *filename, hgeU32 size)
+HMUSIC HGE_CALL HGE_Impl::Music_Load(const char *filename, uint32_t size)
 {
     void *data;
-    hgeU32 _size;
+    uint32_t _size;
     HMUSIC hm;
 
     if(hBass) {
@@ -153,7 +153,7 @@ HMUSIC HGE_CALL HGE_Impl::Music_Load(const char *filename, hgeU32 size)
 HCHANNEL HGE_CALL HGE_Impl::Music_Play(HMUSIC mus, bool loop, int volume, int order, int row)
 {
     if(hBass) {
-        hgeU32 pos = BASS_MusicGetOrderPosition(mus);
+        uint32_t pos = BASS_MusicGetOrderPosition(mus);
         if(order == -1) {
             order = LOWORD(pos);
         }
@@ -222,7 +222,7 @@ void HGE_CALL HGE_Impl::Music_SetPos(HMUSIC music, int order, int row)
 bool HGE_CALL HGE_Impl::Music_GetPos(HMUSIC music, int *order, int *row)
 {
     if(hBass) {
-        hgeU32 pos;
+        uint32_t pos;
         pos = BASS_MusicGetOrderPosition(music);
         if(pos == -1) {
             return false;
@@ -267,10 +267,10 @@ int HGE_CALL HGE_Impl::Music_GetChannelVolume(HMUSIC music, int channel)
     }
 }
 
-HSTREAM HGE_CALL HGE_Impl::Stream_Load(const char *filename, hgeU32 size)
+HSTREAM HGE_CALL HGE_Impl::Stream_Load(const char *filename, uint32_t size)
 {
     void *data;
-    hgeU32 _size;
+    uint32_t _size;
     HSTREAM hs;
     CStreamList *stmItem;
 
@@ -469,7 +469,7 @@ void HGE_CALL HGE_Impl::Channel_SlideTo(HCHANNEL channel, float time, int volume
             freq = (int)(pitch*info.freq);
         }
 
-        BASS_ChannelSlideAttributes(channel, freq, volume, pan, hgeU32(time*1000));
+        BASS_ChannelSlideAttributes(channel, freq, volume, pan, uint32_t(time*1000));
     }
 }
 

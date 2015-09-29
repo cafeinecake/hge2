@@ -30,13 +30,13 @@ struct ResDesc
 {
 	char		name[MAXRESCHARS];
 	int			resgroup;
-	hgeU32		handle;
+	void	    *handle;
 	ResDesc*	next;
 
 	ResDesc()	{ hge=hgeCreate(HGE_VERSION); }
 	virtual ~ResDesc()	{ hge->Release(); }
 
-	virtual hgeU32 Get(hgeResourceManager *rm) = 0;
+	virtual void *Get(hgeResourceManager *rm) = 0;
 	virtual void  Free() = 0;
 
 protected:
@@ -58,9 +58,9 @@ public:
 
 	void*				GetResource(const char *name, int resgroup=0);
 	HTEXTURE			GetTexture(const char *name, int resgroup=0);
-	HEFFECT				GetEffect(const char *name, int resgroup=0);
-	HMUSIC				GetMusic(const char *name, int resgroup=0);
-	HSTREAM				GetStream(const char *name, int resgroup=0);
+	//HEFFECT				GetEffect(const char *name, int resgroup=0);
+	//HMUSIC				GetMusic(const char *name, int resgroup=0);
+	//HSTREAM				GetStream(const char *name, int resgroup=0);
 	HTARGET				GetTarget(const char *name);
 
 	hgeSprite*			GetSprite(const char *name);

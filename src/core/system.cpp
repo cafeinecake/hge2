@@ -24,7 +24,7 @@ HGE_Impl*   pHGE=0;
 
 
 
-BOOL APIENTRY DllMain(HANDLE, hgeU32, LPVOID)
+BOOL APIENTRY DllMain(HANDLE, uint32_t, LPVOID)
 {
     return TRUE;
 }
@@ -762,7 +762,7 @@ void HGE_CALL HGE_Impl::System_Log(const char *szFormat, ...)
 
 bool HGE_CALL HGE_Impl::System_Launch(const char *url)
 {
-    if((hgeU32)ShellExecute(pHGE->hwnd, NULL, url, NULL, NULL, SW_SHOWMAXIMIZED)>32) {
+    if((uint32_t)ShellExecute(pHGE->hwnd, NULL, url, NULL, NULL, SW_SHOWMAXIMIZED)>32) {
         return true;
     } else {
         return false;

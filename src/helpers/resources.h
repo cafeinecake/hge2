@@ -37,8 +37,8 @@ ResDesc*	FindRes(hgeResourceManager *rm, int type, const char *name);
 struct RScript : public ResDesc {
     static  void  Parse(hgeResourceManager *rm, RScriptParser *sp, const char *name,
                         const char *basename);
-    virtual hgeU32 Get(hgeResourceManager *rm) {
-        return 0;
+    virtual void *Get(hgeResourceManager *rm) {
+        return nullptr;
     }
     virtual void  Free() {}
 };
@@ -48,7 +48,7 @@ struct RResource : public ResDesc {
 
     static  void  Parse(hgeResourceManager *rm, RScriptParser *sp, const char *name,
                         const char *basename);
-    virtual hgeU32 Get(hgeResourceManager *rm);
+    virtual void *Get(hgeResourceManager *rm);
     virtual void  Free();
 };
 
@@ -58,7 +58,7 @@ struct RTexture : public ResDesc {
 
     static  void  Parse(hgeResourceManager *rm, RScriptParser *sp, const char *name,
                         const char *basename);
-    virtual hgeU32 Get(hgeResourceManager *rm);
+    virtual void *Get(hgeResourceManager *rm);
     virtual void  Free();
 };
 
@@ -67,7 +67,7 @@ struct REffect : public ResDesc {
 
     static  void  Parse(hgeResourceManager *rm, RScriptParser *sp, const char *name,
                         const char *basename);
-    virtual hgeU32 Get(hgeResourceManager *rm);
+    virtual void *Get(hgeResourceManager *rm);
     virtual void  Free();
 };
 
@@ -77,7 +77,7 @@ struct RMusic : public ResDesc {
 
     static  void  Parse(hgeResourceManager *rm, RScriptParser *sp, const char *name,
                         const char *basename);
-    virtual hgeU32 Get(hgeResourceManager *rm);
+    virtual void *Get(hgeResourceManager *rm);
     virtual void  Free();
 };
 
@@ -86,7 +86,7 @@ struct RStream : public ResDesc {
 
     static  void  Parse(hgeResourceManager *rm, RScriptParser *sp, const char *name,
                         const char *basename);
-    virtual hgeU32 Get(hgeResourceManager *rm);
+    virtual void *Get(hgeResourceManager *rm);
     virtual void  Free();
 };
 
@@ -97,7 +97,7 @@ struct RTarget : public ResDesc {
 
     static  void  Parse(hgeResourceManager *rm, RScriptParser *sp, const char *name,
                         const char *basename);
-    virtual hgeU32 Get(hgeResourceManager *rm);
+    virtual void *Get(hgeResourceManager *rm);
     virtual void  Free();
 };
 
@@ -106,7 +106,7 @@ struct RSprite : public ResDesc {
     float		tx, ty, w, h;
     float		hotx, hoty;
     int			blend;
-    hgeU32		color;
+    uint32_t		color;
     float		z;
     bool		bXFlip, bYFlip;
 //	float		x,y;
@@ -116,7 +116,7 @@ struct RSprite : public ResDesc {
 
     static  void  Parse(hgeResourceManager *rm, RScriptParser *sp, const char *name,
                         const char *basename);
-    virtual hgeU32 Get(hgeResourceManager *rm);
+    virtual void *Get(hgeResourceManager *rm);
     virtual void  Free();
 };
 
@@ -127,7 +127,7 @@ struct RAnimation : public RSprite {
 
     static  void  Parse(hgeResourceManager *rm, RScriptParser *sp, const char *name,
                         const char *basename);
-    virtual hgeU32 Get(hgeResourceManager *rm);
+    virtual void *Get(hgeResourceManager *rm);
     virtual void  Free();
 };
 
@@ -135,7 +135,7 @@ struct RFont : public ResDesc {
     char		filename[MAXRESCHARS];
     bool		mipmap;
     int			blend;
-    hgeU32		color;
+    uint32_t		color;
     float		z;
     float		scale;
     float		proportion;
@@ -145,7 +145,7 @@ struct RFont : public ResDesc {
 
     static  void  Parse(hgeResourceManager *rm, RScriptParser *sp, const char *name,
                         const char *basename);
-    virtual hgeU32 Get(hgeResourceManager *rm);
+    virtual void *Get(hgeResourceManager *rm);
     virtual void  Free();
 };
 
@@ -155,7 +155,7 @@ struct RParticle : public ResDesc {
 
     static  void  Parse(hgeResourceManager *rm, RScriptParser *sp, const char *name,
                         const char *basename);
-    virtual hgeU32 Get(hgeResourceManager *rm);
+    virtual void *Get(hgeResourceManager *rm);
     virtual void  Free();
 };
 
@@ -164,12 +164,12 @@ struct RDistort : public ResDesc {
     float		tx, ty, w, h;
     int			cols, rows;
     int			blend;
-    hgeU32		color;
+    uint32_t		color;
     float		z;
 
     static  void  Parse(hgeResourceManager *rm, RScriptParser *sp, const char *name,
                         const char *basename);
-    virtual hgeU32 Get(hgeResourceManager *rm);
+    virtual void *Get(hgeResourceManager *rm);
     virtual void  Free();
 };
 
@@ -179,7 +179,7 @@ struct RStringTable : public ResDesc {
 
     static  void  Parse(hgeResourceManager *rm, RScriptParser *sp, const char *name,
                         const char *basename);
-    virtual hgeU32 Get(hgeResourceManager *rm);
+    virtual void *Get(hgeResourceManager *rm);
     virtual void  Free();
 };
 

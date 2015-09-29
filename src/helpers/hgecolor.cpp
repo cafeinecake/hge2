@@ -11,7 +11,7 @@
 #include <math.h>
 
 
-void hgeColorHSV::SetHWColor(hgeU32 col)
+void hgeColorHSV::SetHWColor(uint32_t col)
 {
     float r, g, b;
     float minv, maxv, delta;
@@ -54,7 +54,7 @@ void hgeColorHSV::SetHWColor(hgeU32 col)
     }
 }
 
-hgeU32 hgeColorHSV::GetHWColor() const
+uint32_t hgeColorHSV::GetHWColor() const
 {
     float r, g, b;
     float xh, i, p1, p2, p3;
@@ -100,6 +100,6 @@ hgeU32 hgeColorHSV::GetHWColor() const
         }
     }
 
-    return (hgeU32(a*255.0f)<<24) + (hgeU32(r*255.0f)<<16) + (hgeU32(g*255.0f)<<8) + hgeU32(b*255.0f);
+    return (uint32_t(a*255.0f)<<24) + (uint32_t(r*255.0f)<<16) + (uint32_t(g*255.0f)<<8) + uint32_t(b*255.0f);
 }
 

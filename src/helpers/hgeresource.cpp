@@ -119,7 +119,7 @@ void* hgeResourceManager::GetResource(const char *name, int resgroup)
         reshandle=hge->Resource_Load(name);
         if(reshandle) {
             resource=new RResource();
-            resource->handle=(hgeU32)reshandle;
+            resource->handle=reshandle;
             resource->resgroup=resgroup;
             strcpy(resource->name, name);
             strcpy(resource->filename, name);
@@ -138,7 +138,7 @@ HTEXTURE hgeResourceManager::GetTexture(const char *name, int resgroup)
     RTexture *resource;
     ResDesc *Res=FindRes(this, RES_TEXTURE, name);
     if(Res) {
-        return (HTEXTURE)Res->Get(this);
+        return HTEXTURE(Res->Get(this));
     } else {
         reshandle=hge->Texture_Load(name);
         if(reshandle) {
@@ -157,7 +157,7 @@ HTEXTURE hgeResourceManager::GetTexture(const char *name, int resgroup)
     return 0;
 }
 
-HEFFECT hgeResourceManager::GetEffect(const char *name, int resgroup)
+/*HEFFECT hgeResourceManager::GetEffect(const char *name, int resgroup)
 {
     HEFFECT reshandle;
     REffect *resource;
@@ -179,9 +179,9 @@ HEFFECT hgeResourceManager::GetEffect(const char *name, int resgroup)
     }
 
     return 0;
-}
+}*/
 
-HMUSIC hgeResourceManager::GetMusic(const char *name, int resgroup)
+/*HMUSIC hgeResourceManager::GetMusic(const char *name, int resgroup)
 {
     HMUSIC reshandle;
     RMusic *resource;
@@ -203,9 +203,9 @@ HMUSIC hgeResourceManager::GetMusic(const char *name, int resgroup)
     }
 
     return 0;
-}
+}*/
 
-HSTREAM hgeResourceManager::GetStream(const char *name, int resgroup)
+/*HSTREAM hgeResourceManager::GetStream(const char *name, int resgroup)
 {
     HSTREAM reshandle;
     RStream *resource;
@@ -227,7 +227,7 @@ HSTREAM hgeResourceManager::GetStream(const char *name, int resgroup)
     }
 
     return 0;
-}
+}*/
 
 HTARGET hgeResourceManager::GetTarget(const char *name)
 {
@@ -299,7 +299,7 @@ hgeStringTable* hgeResourceManager::GetStringTable(const char *name, int resgrou
     } else {
         strtable=new hgeStringTable(name);
         resource=new RStringTable();
-        resource->handle=(hgeU32)strtable;
+        resource->handle=strtable;
         resource->resgroup=resgroup;
         strcpy(resource->name, name);
         strcpy(resource->filename, name);

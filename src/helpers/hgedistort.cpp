@@ -123,7 +123,7 @@ void hgeDistortionMesh::SetBlendMode(int blend)
     quad.blend=blend;
 }
 
-void hgeDistortionMesh::Clear(hgeU32 col, float z)
+void hgeDistortionMesh::Clear(uint32_t col, float z)
 {
     int i,j;
 
@@ -183,7 +183,7 @@ void hgeDistortionMesh::SetZ(int col, int row, float z)
     }
 }
 
-void hgeDistortionMesh::SetColor(int col, int row, hgeU32 color)
+void hgeDistortionMesh::SetColor(int col, int row, uint32_t color)
 {
     if(row<nRows && col<nCols) {
         disp_array[row*nCols+col].col=color;
@@ -220,7 +220,7 @@ float hgeDistortionMesh::GetZ(int col, int row) const
     }
 }
 
-hgeU32 hgeDistortionMesh::GetColor(int col, int row) const
+uint32_t hgeDistortionMesh::GetColor(int col, int row) const
 {
     if(row<nRows && col<nCols) {
         return disp_array[row*nCols+col].col;

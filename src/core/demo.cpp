@@ -200,17 +200,17 @@ void DDone()
 
 bool DFrame()
 {
-    hgeU8 alpha;
-    hgeU32 col;
+    uint8_t alpha;
+    uint32_t col;
 
     dtime+=pHGE->Timer_GetDelta();
 
     if(dtime<0.25) {
-        alpha=(hgeU8)((dtime*4)*0xFF);
+        alpha=(uint8_t)((dtime*4)*0xFF);
     } else if(dtime<1.0) {
         alpha=0xFF;
     } else if(dtime<1.25) {
-        alpha=(hgeU8)((1.0f-(dtime-1.0f)*4)*0xFF);
+        alpha=(uint8_t)((1.0f-(dtime-1.0f)*4)*0xFF);
     } else {
         return true;
     }
