@@ -19,7 +19,7 @@
 
 #define PNG_1_2_X
 
-/* 
+/*
  * PNG_USER_CONFIG has to be defined on the compiler command line. This
  * includes the resource compiler for Windows DLL configurations.
  */
@@ -29,7 +29,7 @@
 
 /*
  * Added at libpng-1.2.8
- *  
+ *
  * If you create a private DLL you need to define in "pngusr.h" the followings:
  * #define PNG_USER_PRIVATEBUILD <Describes by whom and why this version of
  *        the DLL was built>
@@ -40,8 +40,8 @@
  *        number and must match your private DLL name>
  *  e.g. // private DLL "libpng13gx.dll"
  *       #define PNG_USER_DLLFNAME_POSTFIX "gx"
- * 
- * The following macros are also at your disposal if you want to complete the 
+ *
+ * The following macros are also at your disposal if you want to complete the
  * DLL VERSIONINFO structure.
  * - PNG_USER_VERSIONINFO_COMMENTS
  * - PNG_USER_VERSIONINFO_COMPANYNAME
@@ -129,9 +129,9 @@
  * 'Cygwin' defines/defaults:
  *   PNG_BUILD_DLL -- (ignored) building the dll
  *   (no define)   -- (ignored) building an application, linking to the dll
- *   PNG_STATIC    -- (ignored) building the static lib, or building an 
+ *   PNG_STATIC    -- (ignored) building the static lib, or building an
  *                    application that links to the static lib.
- *   ALL_STATIC    -- (ignored) building various static libs, or building an 
+ *   ALL_STATIC    -- (ignored) building various static libs, or building an
  *                    application that links to the static libs.
  * Thus,
  * a cygwin user should define either PNG_BUILD_DLL or PNG_STATIC, and
@@ -144,12 +144,12 @@
  *   PNG_BUILD_DLL
  *   PNG_STATIC
  *   (nothing) == PNG_USE_DLL
- * 
+ *
  * CYGWIN (2002-01-20): The preceding is now obsolete. With the advent
- *   of auto-import in binutils, we no longer need to worry about 
+ *   of auto-import in binutils, we no longer need to worry about
  *   __declspec(dllexport) / __declspec(dllimport) and friends.  Therefore,
  *   we don't need to worry about PNG_STATIC or ALL_STATIC when it comes
- *   to __declspec() stuff.  However, we DO need to worry about 
+ *   to __declspec() stuff.  However, we DO need to worry about
  *   PNG_BUILD_DLL and PNG_STATIC because those change some defaults
  *   such as CONSOLE_IO and whether GLOBAL_ARRAYS are allowed.
  */
@@ -193,8 +193,8 @@
 #        if !defined(PNG_DLL)
 #          define PNG_DLL
 #        endif
-#      endif  
-#    endif  
+#      endif
+#    endif
 #  endif
 #endif
 
@@ -213,7 +213,7 @@
 
 #if defined(_WIN32_WCE)
 #  include <windows.h>
-   /* Console I/O functions are not supported on WindowsCE */
+/* Console I/O functions are not supported on WindowsCE */
 #  define PNG_NO_CONSOLE_IO
 #  ifdef PNG_DEBUG
 #    undef PNG_DEBUG
@@ -301,15 +301,15 @@
 #      undef _BSD_SOURCE
 #    endif
 #    ifdef _SETJMP_H
-     /* If you encounter a compiler error here, see the explanation
-      * near the end of INSTALL.
-      */
-         __png.h__ already includes setjmp.h;
-         __dont__ include it again.;
+/* If you encounter a compiler error here, see the explanation
+ * near the end of INSTALL.
+ */
+__png.h__ already includes setjmp.h;
+__dont__ include it again.;
 #    endif
 #  endif /* __linux__ */
 
-   /* include setjmp.h for error handling */
+/* include setjmp.h for error handling */
 #  include <setjmp.h>
 
 #  ifdef __linux__
@@ -346,10 +346,10 @@
 
 #if defined(PNG_FLOATING_POINT_SUPPORTED)
 #  if defined(MACOS)
-     /* We need to check that <math.h> hasn't already been included earlier
-      * as it seems it doesn't agree with <fp.h>, yet we should really use
-      * <fp.h> if possible.
-      */
+/* We need to check that <math.h> hasn't already been included earlier
+ * as it seems it doesn't agree with <fp.h>, yet we should really use
+ * <fp.h> if possible.
+ */
 #    if !defined(__MATH_H__) && !defined(__MATH_H) && !defined(__cmath__)
 #      include <fp.h>
 #    endif
@@ -357,9 +357,9 @@
 #    include <math.h>
 #  endif
 #  if defined(_AMIGA) && defined(__SASC) && defined(_M68881)
-     /* Amiga SAS/C: We must include builtin FPU functions when compiling using
-      * MATH=68881
-      */
+/* Amiga SAS/C: We must include builtin FPU functions when compiling using
+ * MATH=68881
+ */
 #    include <m68881.h>
 #  endif
 #endif
@@ -575,7 +575,7 @@
  !defined(PNG_PROGRESSIVE_READ_NOT_SUPPORTED)  /* if you don't do progressive */
 #  define PNG_PROGRESSIVE_READ_SUPPORTED     /* reading.  This is not talking */
 #endif                               /* about interlacing capability!  You'll */
-              /* still have interlacing unless you change the following line: */
+/* still have interlacing unless you change the following line: */
 
 #define PNG_READ_INTERLACING_SUPPORTED /* required for PNG-compliant decoders */
 
@@ -690,7 +690,7 @@
 #  define PNG_EASY_ACCESS_SUPPORTED
 #endif
 
-/* PNG_ASSEMBLER_CODE was enabled by default in version 1.2.0 
+/* PNG_ASSEMBLER_CODE was enabled by default in version 1.2.0
    even when PNG_USE_PNGVCRD or PNG_USE_PNGGCCRD is not defined */
 #if defined(PNG_READ_SUPPORTED) && !defined(PNG_NO_ASSEMBLER_CODE)
 #  ifndef PNG_ASSEMBLER_CODE_SUPPORTED
@@ -1033,7 +1033,7 @@
 /* need the time information for reading tIME chunks */
 #if defined(PNG_tIME_SUPPORTED)
 #  if !defined(_WIN32_WCE)
-     /* "time.h" functions are not supported on WindowsCE */
+/* "time.h" functions are not supported on WindowsCE */
 #    include <time.h>
 #  endif
 #endif
@@ -1056,10 +1056,10 @@ typedef unsigned char png_byte;
 /* This is usually size_t.  It is typedef'ed just in case you need it to
    change (I'm not sure if you will or not, so I thought I'd be safe) */
 #ifdef PNG_SIZE_T
-   typedef PNG_SIZE_T png_size_t;
+typedef PNG_SIZE_T png_size_t;
 #  define png_sizeof(x) png_convert_size(sizeof (x))
 #else
-   typedef size_t png_size_t;
+typedef size_t png_size_t;
 #  define png_sizeof(x) sizeof (x)
 #endif
 
@@ -1080,7 +1080,7 @@ typedef unsigned char png_byte;
 #  else
 #    define LDATA 0
 #  endif
-   /* GRR:  why is Cygwin in here?  Cygwin is not Borland C... */
+/* GRR:  why is Cygwin in here?  Cygwin is not Borland C... */
 #  if !defined(__WIN32__) && !defined(__FLAT__) && !defined(__CYGWIN__)
 #    define PNG_MAX_MALLOC_64K
 #    if (LDATA != 1)
@@ -1089,11 +1089,11 @@ typedef unsigned char png_byte;
 #      endif
 #      define USE_FAR_KEYWORD
 #    endif   /* LDATA != 1 */
-     /* Possibly useful for moving data out of default segment.
-      * Uncomment it if you want. Could also define FARDATA as
-      * const if your compiler supports it. (SJT)
+/* Possibly useful for moving data out of default segment.
+ * Uncomment it if you want. Could also define FARDATA as
+ * const if your compiler supports it. (SJT)
 #    define FARDATA FAR
-      */
+ */
 #  endif  /* __WIN32__, __FLAT__, __CYGWIN__ */
 #endif   /* __BORLANDC__ */
 
@@ -1127,43 +1127,43 @@ typedef unsigned char png_byte;
 typedef png_int_32 png_fixed_point;
 
 /* Add typedefs for pointers */
-typedef void            FAR * png_voidp;
-typedef png_byte        FAR * png_bytep;
-typedef png_uint_32     FAR * png_uint_32p;
-typedef png_int_32      FAR * png_int_32p;
-typedef png_uint_16     FAR * png_uint_16p;
-typedef png_int_16      FAR * png_int_16p;
-typedef PNG_CONST char  FAR * png_const_charp;
-typedef char            FAR * png_charp;
-typedef png_fixed_point FAR * png_fixed_point_p;
+typedef void            FAR *png_voidp;
+typedef png_byte        FAR *png_bytep;
+typedef png_uint_32     FAR *png_uint_32p;
+typedef png_int_32      FAR *png_int_32p;
+typedef png_uint_16     FAR *png_uint_16p;
+typedef png_int_16      FAR *png_int_16p;
+typedef PNG_CONST char  FAR *png_const_charp;
+typedef char            FAR *png_charp;
+typedef png_fixed_point FAR *png_fixed_point_p;
 
 #ifndef PNG_NO_STDIO
 #if defined(_WIN32_WCE)
 typedef HANDLE                png_FILE_p;
 #else
-typedef FILE                * png_FILE_p;
+typedef FILE                 *png_FILE_p;
 #endif
 #endif
 
 #ifdef PNG_FLOATING_POINT_SUPPORTED
-typedef double          FAR * png_doublep;
+typedef double          FAR *png_doublep;
 #endif
 
 /* Pointers to pointers; i.e. arrays */
-typedef png_byte        FAR * FAR * png_bytepp;
-typedef png_uint_32     FAR * FAR * png_uint_32pp;
-typedef png_int_32      FAR * FAR * png_int_32pp;
-typedef png_uint_16     FAR * FAR * png_uint_16pp;
-typedef png_int_16      FAR * FAR * png_int_16pp;
-typedef PNG_CONST char  FAR * FAR * png_const_charpp;
-typedef char            FAR * FAR * png_charpp;
-typedef png_fixed_point FAR * FAR * png_fixed_point_pp;
+typedef png_byte        FAR *FAR *png_bytepp;
+typedef png_uint_32     FAR *FAR *png_uint_32pp;
+typedef png_int_32      FAR *FAR *png_int_32pp;
+typedef png_uint_16     FAR *FAR *png_uint_16pp;
+typedef png_int_16      FAR *FAR *png_int_16pp;
+typedef PNG_CONST char  FAR *FAR *png_const_charpp;
+typedef char            FAR *FAR *png_charpp;
+typedef png_fixed_point FAR *FAR *png_fixed_point_pp;
 #ifdef PNG_FLOATING_POINT_SUPPORTED
-typedef double          FAR * FAR * png_doublepp;
+typedef double          FAR *FAR *png_doublepp;
 #endif
 
 /* Pointers to pointers to pointers; i.e., pointer to array */
-typedef char            FAR * FAR * FAR * png_charppp;
+typedef char            FAR *FAR *FAR *png_charppp;
 
 #if defined(PNG_1_0_X) || defined(PNG_1_2_X)
 /* SPC -  Is this stuff deprecated? */
@@ -1172,9 +1172,9 @@ typedef char            FAR * FAR * FAR * png_charppp;
  * or another compression library is used, then change these.
  * Eliminates need to change all the source files.
  */
-typedef charf *         png_zcharp;
-typedef charf * FAR *   png_zcharpp;
-typedef z_stream FAR *  png_zstreamp;
+typedef charf          *png_zcharp;
+typedef charf *FAR    *png_zcharpp;
+typedef z_stream FAR   *png_zstreamp;
 #endif /* (PNG_1_0_X) || defined(PNG_1_2_X) */
 
 /*
@@ -1239,7 +1239,7 @@ typedef z_stream FAR *  png_zstreamp;
 #  define PNGAPI __cdecl
 #  undef PNG_IMPEXP
 #  define PNG_IMPEXP
-#endif  
+#endif
 
 /* If you define PNGAPI, e.g., with compiler option "-DPNGAPI=__stdcall",
  * you may get warnings regarding the linkage of png_zalloc and png_zfree.
@@ -1280,7 +1280,7 @@ typedef z_stream FAR *  png_zstreamp;
 #     define PNG_EXPORT_TYPE1(type,symbol)  PNG_IMPEXP type PNGAPI symbol
 #     define PNG_EXPORT_TYPE2(type,symbol)  type PNG_IMPEXP PNGAPI symbol
 
-      /* Borland/Microsoft */
+/* Borland/Microsoft */
 #     if defined(_MSC_VER) || defined(__BORLANDC__)
 #        if (_MSC_VER >= 800) || (__BORLANDC__ >= 0x500)
 #           define PNG_EXPORT PNG_EXPORT_TYPE1
@@ -1290,7 +1290,7 @@ typedef z_stream FAR *  png_zstreamp;
 #              define PNG_IMPEXP __export
 #           else
 #              define PNG_IMPEXP /*__import */ /* doesn't exist AFAIK in
-                                                 VC++ */
+VC++ */
 #           endif                             /* Exists in Borland C++ for
                                                  C++ classes (== huge) */
 #        endif
@@ -1404,7 +1404,7 @@ typedef z_stream FAR *  png_zstreamp;
 #  define PNG_MMX_ROWBYTES_THRESHOLD_DEFAULT  128  /*  >=  */
 #endif
 #ifndef PNG_MMX_BITDEPTH_THRESHOLD_DEFAULT
-#  define PNG_MMX_BITDEPTH_THRESHOLD_DEFAULT  9    /*  >=  */   
+#  define PNG_MMX_BITDEPTH_THRESHOLD_DEFAULT  9    /*  >=  */
 #endif
 
 /* Set this in the makefile for VC++ on Pentium, not here. */

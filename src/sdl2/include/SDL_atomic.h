@@ -241,12 +241,12 @@ extern DECLSPEC SDL_bool SDLCALL SDL_AtomicCASPtr(void **a, void *oldval, void *
  *
  * \return The previous value of the pointer.
  */
-extern DECLSPEC void* SDLCALL SDL_AtomicSetPtr(void **a, void* v);
+extern DECLSPEC void *SDLCALL SDL_AtomicSetPtr(void **a, void *v);
 
 /**
  * \brief Get the value of a pointer atomically.
  */
-extern DECLSPEC void* SDLCALL SDL_AtomicGetPtr(void **a);
+extern DECLSPEC void *SDLCALL SDL_AtomicGetPtr(void **a);
 
 /* Ends C function definitions when using C++ */
 #ifdef __cplusplus

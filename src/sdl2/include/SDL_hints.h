@@ -142,7 +142,7 @@ extern "C" {
 #define SDL_HINT_RENDER_VSYNC               "SDL_RENDER_VSYNC"
 
 /**
- *  \brief  A variable controlling whether the screensaver is enabled. 
+ *  \brief  A variable controlling whether the screensaver is enabled.
  *
  *  This variable can be set to the following values:
  *    "0"       - Disable screensaver
@@ -237,7 +237,7 @@ extern "C" {
  *    "LandscapeLeft", "LandscapeRight", "Portrait" "PortraitUpsideDown"
  */
 #define SDL_HINT_ORIENTATIONS "SDL_IOS_ORIENTATIONS"
-    
+
 /**
  *  \brief  A variable controlling whether an Android built-in accelerometer should be
  *  listed as a joystick device, rather than listing actual joysticks only.
@@ -319,7 +319,7 @@ extern "C" {
 
 /**
  *  \brief A variable that determines whether ctrl+click should generate a right-click event on Mac
- *  
+ *
  *  If present, holding ctrl while left clicking will generate a right click
  *  event when on Mac.
  */
@@ -343,9 +343,9 @@ extern "C" {
 
 /**
 *  \brief  A variable that is the address of another SDL_Window* (as a hex string formatted with "%p").
-*  
+*
 *  If this hint is set before SDL_CreateWindowFrom() and the SDL_Window* it is set to has
-*  SDL_WINDOW_OPENGL set (and running on WGL only, currently), then two things will occur on the newly 
+*  SDL_WINDOW_OPENGL set (and running on WGL only, currently), then two things will occur on the newly
 *  created SDL_Window:
 *
 *  1. Its pixel format will be set to the same pixel format as this SDL_Window.  This is
@@ -439,11 +439,10 @@ extern "C" {
 /**
  *  \brief  An enumeration of hint priorities
  */
-typedef enum
-{
-    SDL_HINT_DEFAULT,
-    SDL_HINT_NORMAL,
-    SDL_HINT_OVERRIDE
+typedef enum {
+  SDL_HINT_DEFAULT,
+  SDL_HINT_NORMAL,
+  SDL_HINT_OVERRIDE
 } SDL_HintPriority;
 
 
@@ -457,8 +456,8 @@ typedef enum
  *  \return SDL_TRUE if the hint was set, SDL_FALSE otherwise
  */
 extern DECLSPEC SDL_bool SDLCALL SDL_SetHintWithPriority(const char *name,
-                                                         const char *value,
-                                                         SDL_HintPriority priority);
+    const char *value,
+    SDL_HintPriority priority);
 
 /**
  *  \brief Set a hint with normal priority
@@ -466,14 +465,14 @@ extern DECLSPEC SDL_bool SDLCALL SDL_SetHintWithPriority(const char *name,
  *  \return SDL_TRUE if the hint was set, SDL_FALSE otherwise
  */
 extern DECLSPEC SDL_bool SDLCALL SDL_SetHint(const char *name,
-                                             const char *value);
+    const char *value);
 
 /**
  *  \brief Get a hint
  *
  *  \return The string value of a hint variable.
  */
-extern DECLSPEC const char * SDLCALL SDL_GetHint(const char *name);
+extern DECLSPEC const char *SDLCALL SDL_GetHint(const char *name);
 
 /**
  *  \brief Add a function to watch a particular hint
@@ -482,10 +481,11 @@ extern DECLSPEC const char * SDLCALL SDL_GetHint(const char *name);
  *  \param callback The function to call when the hint value changes
  *  \param userdata A pointer to pass to the callback function
  */
-typedef void (*SDL_HintCallback)(void *userdata, const char *name, const char *oldValue, const char *newValue);
+typedef void (*SDL_HintCallback)(void *userdata, const char *name, const char *oldValue,
+                                 const char *newValue);
 extern DECLSPEC void SDLCALL SDL_AddHintCallback(const char *name,
-                                                 SDL_HintCallback callback,
-                                                 void *userdata);
+    SDL_HintCallback callback,
+    void *userdata);
 
 /**
  *  \brief Remove a function watching a particular hint
@@ -495,8 +495,8 @@ extern DECLSPEC void SDLCALL SDL_AddHintCallback(const char *name,
  *  \param userdata A pointer being passed to the callback function
  */
 extern DECLSPEC void SDLCALL SDL_DelHintCallback(const char *name,
-                                                 SDL_HintCallback callback,
-                                                 void *userdata);
+    SDL_HintCallback callback,
+    void *userdata);
 
 /**
  *  \brief  Clear all hints

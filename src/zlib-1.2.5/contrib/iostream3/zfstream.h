@@ -24,8 +24,7 @@
  *  (tricky). Otherwise, it attempts to be a drop-in replacement for the standard
  *  file streambuf.
 */
-class gzfilebuf : public std::streambuf
-{
+class gzfilebuf : public std::streambuf {
 public:
   //  Default constructor.
   gzfilebuf();
@@ -62,8 +61,8 @@ public:
    *  @param  mode  Open mode flags.
    *  @return  @c this on success, NULL on failure.
   */
-  gzfilebuf*
-  open(const char* name,
+  gzfilebuf *
+  open(const char *name,
        std::ios_base::openmode mode);
 
   /**
@@ -72,7 +71,7 @@ public:
    *  @param  mode  Open mode flags.
    *  @return  @c this on success, NULL on failure.
   */
-  gzfilebuf*
+  gzfilebuf *
   attach(int fd,
          std::ios_base::openmode mode);
 
@@ -80,7 +79,7 @@ public:
    *  @brief  Close gzipped file.
    *  @return  @c this on success, NULL on failure.
   */
-  gzfilebuf*
+  gzfilebuf *
   close();
 
 protected:
@@ -90,7 +89,7 @@ protected:
   */
   bool
   open_mode(std::ios_base::openmode mode,
-            char* c_mode) const;
+            char *c_mode) const;
 
   /**
    *  @brief  Number of characters available in stream buffer.
@@ -132,8 +131,8 @@ protected:
    *
    *  Call setbuf(0,0) to enable unbuffered output.
   */
-  virtual std::streambuf*
-  setbuf(char_type* p,
+  virtual std::streambuf *
+  setbuf(char_type *p,
          std::streamsize n);
 
   /**
@@ -204,7 +203,7 @@ private:
    *  For simplicity this remains allocated on the free store for the
    *  entire life span of the gzfilebuf object, unless replaced by setbuf.
   */
-  char_type* buffer;
+  char_type *buffer;
 
   /**
    *  @brief  Stream buffer size.
@@ -231,8 +230,7 @@ private:
  *  This class implements ifstream for gzipped files. Seeking and putback
  *  is not supported yet.
 */
-class gzifstream : public std::istream
-{
+class gzifstream : public std::istream {
 public:
   //  Default constructor
   gzifstream();
@@ -243,7 +241,7 @@ public:
    *  @param  mode  Open mode flags (forced to contain ios::in).
   */
   explicit
-  gzifstream(const char* name,
+  gzifstream(const char *name,
              std::ios_base::openmode mode = std::ios_base::in);
 
   /**
@@ -258,9 +256,9 @@ public:
   /**
    *  Obtain underlying stream buffer.
   */
-  gzfilebuf*
+  gzfilebuf *
   rdbuf() const
-  { return const_cast<gzfilebuf*>(&sb); }
+  { return const_cast<gzfilebuf *>(&sb); }
 
   /**
    *  @brief  Check if file is open.
@@ -282,7 +280,7 @@ public:
    *  convenience.
   */
   void
-  open(const char* name,
+  open(const char *name,
        std::ios_base::openmode mode = std::ios_base::in);
 
   /**
@@ -320,8 +318,7 @@ private:
  *  This class implements ofstream for gzipped files. Seeking and putback
  *  is not supported yet.
 */
-class gzofstream : public std::ostream
-{
+class gzofstream : public std::ostream {
 public:
   //  Default constructor
   gzofstream();
@@ -332,7 +329,7 @@ public:
    *  @param  mode  Open mode flags (forced to contain ios::out).
   */
   explicit
-  gzofstream(const char* name,
+  gzofstream(const char *name,
              std::ios_base::openmode mode = std::ios_base::out);
 
   /**
@@ -347,9 +344,9 @@ public:
   /**
    *  Obtain underlying stream buffer.
   */
-  gzfilebuf*
+  gzfilebuf *
   rdbuf() const
-  { return const_cast<gzfilebuf*>(&sb); }
+  { return const_cast<gzfilebuf *>(&sb); }
 
   /**
    *  @brief  Check if file is open.
@@ -371,7 +368,7 @@ public:
    *  convenience.
   */
   void
-  open(const char* name,
+  open(const char *name,
        std::ios_base::openmode mode = std::ios_base::out);
 
   /**
@@ -410,33 +407,32 @@ private:
  *  as base for the setcompression(int,int) manipulator.
 */
 template<typename T1, typename T2>
-  class gzomanip2
-  {
-  public:
-    // Allows insertor to peek at internals
-    template <typename Ta, typename Tb>
-      friend gzofstream&
-      operator<<(gzofstream&,
-                 const gzomanip2<Ta,Tb>&);
+class gzomanip2 {
+public:
+  // Allows insertor to peek at internals
+  template <typename Ta, typename Tb>
+  friend gzofstream &
+  operator<<(gzofstream &,
+             const gzomanip2<Ta, Tb> &);
 
-    // Constructor
-    gzomanip2(gzofstream& (*f)(gzofstream&, T1, T2),
-              T1 v1,
-              T2 v2);
-  private:
-    // Underlying manipulator function
-    gzofstream&
-    (*func)(gzofstream&, T1, T2);
+  // Constructor
+  gzomanip2(gzofstream & (*f)(gzofstream &, T1, T2),
+            T1 v1,
+            T2 v2);
+private:
+  // Underlying manipulator function
+  gzofstream &
+  (*func)(gzofstream &, T1, T2);
 
-    // Arguments for manipulator function
-    T1 val1;
-    T2 val2;
-  };
+  // Arguments for manipulator function
+  T1 val1;
+  T2 val2;
+};
 
 /*****************************************************************************/
 
 // Manipulator function thunks through to stream buffer
-inline gzofstream&
+inline gzofstream &
 setcompression(gzofstream &gzs, int l, int s = Z_DEFAULT_STRATEGY)
 {
   (gzs.rdbuf())->setcompression(l, s);
@@ -445,22 +441,22 @@ setcompression(gzofstream &gzs, int l, int s = Z_DEFAULT_STRATEGY)
 
 // Manipulator constructor stores arguments
 template<typename T1, typename T2>
-  inline
-  gzomanip2<T1,T2>::gzomanip2(gzofstream &(*f)(gzofstream &, T1, T2),
-                              T1 v1,
-                              T2 v2)
+inline
+gzomanip2<T1, T2>::gzomanip2(gzofstream & (*f)(gzofstream &, T1, T2),
+                             T1 v1,
+                             T2 v2)
   : func(f), val1(v1), val2(v2)
-  { }
+{ }
 
 // Insertor applies underlying manipulator function to stream
 template<typename T1, typename T2>
-  inline gzofstream&
-  operator<<(gzofstream& s, const gzomanip2<T1,T2>& m)
-  { return (*m.func)(s, m.val1, m.val2); }
+inline gzofstream &
+operator<<(gzofstream &s, const gzomanip2<T1, T2> &m)
+{ return (*m.func)(s, m.val1, m.val2); }
 
 // Insert this onto stream to simplify setting of compression level
-inline gzomanip2<int,int>
+inline gzomanip2<int, int>
 setcompression(int l, int s = Z_DEFAULT_STRATEGY)
-{ return gzomanip2<int,int>(&setcompression, l, s); }
+{ return gzomanip2<int, int>(&setcompression, l, s); }
 
 #endif // ZFSTREAM_H

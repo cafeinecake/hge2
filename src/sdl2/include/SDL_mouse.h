@@ -43,21 +43,20 @@ typedef struct SDL_Cursor SDL_Cursor;   /* Implementation dependent */
 /**
  * \brief Cursor types for SDL_CreateSystemCursor.
  */
-typedef enum
-{
-    SDL_SYSTEM_CURSOR_ARROW,     /**< Arrow */
-    SDL_SYSTEM_CURSOR_IBEAM,     /**< I-beam */
-    SDL_SYSTEM_CURSOR_WAIT,      /**< Wait */
-    SDL_SYSTEM_CURSOR_CROSSHAIR, /**< Crosshair */
-    SDL_SYSTEM_CURSOR_WAITARROW, /**< Small wait cursor (or Wait if not available) */
-    SDL_SYSTEM_CURSOR_SIZENWSE,  /**< Double arrow pointing northwest and southeast */
-    SDL_SYSTEM_CURSOR_SIZENESW,  /**< Double arrow pointing northeast and southwest */
-    SDL_SYSTEM_CURSOR_SIZEWE,    /**< Double arrow pointing west and east */
-    SDL_SYSTEM_CURSOR_SIZENS,    /**< Double arrow pointing north and south */
-    SDL_SYSTEM_CURSOR_SIZEALL,   /**< Four pointed arrow pointing north, south, east, and west */
-    SDL_SYSTEM_CURSOR_NO,        /**< Slashed circle or crossbones */
-    SDL_SYSTEM_CURSOR_HAND,      /**< Hand */
-    SDL_NUM_SYSTEM_CURSORS
+typedef enum {
+  SDL_SYSTEM_CURSOR_ARROW,     /**< Arrow */
+  SDL_SYSTEM_CURSOR_IBEAM,     /**< I-beam */
+  SDL_SYSTEM_CURSOR_WAIT,      /**< Wait */
+  SDL_SYSTEM_CURSOR_CROSSHAIR, /**< Crosshair */
+  SDL_SYSTEM_CURSOR_WAITARROW, /**< Small wait cursor (or Wait if not available) */
+  SDL_SYSTEM_CURSOR_SIZENWSE,  /**< Double arrow pointing northwest and southeast */
+  SDL_SYSTEM_CURSOR_SIZENESW,  /**< Double arrow pointing northeast and southwest */
+  SDL_SYSTEM_CURSOR_SIZEWE,    /**< Double arrow pointing west and east */
+  SDL_SYSTEM_CURSOR_SIZENS,    /**< Double arrow pointing north and south */
+  SDL_SYSTEM_CURSOR_SIZEALL,   /**< Four pointed arrow pointing north, south, east, and west */
+  SDL_SYSTEM_CURSOR_NO,        /**< Slashed circle or crossbones */
+  SDL_SYSTEM_CURSOR_HAND,      /**< Hand */
+  SDL_NUM_SYSTEM_CURSORS
 } SDL_SystemCursor;
 
 /* Function prototypes */
@@ -65,7 +64,7 @@ typedef enum
 /**
  *  \brief Get the window which currently has mouse focus.
  */
-extern DECLSPEC SDL_Window * SDLCALL SDL_GetMouseFocus(void);
+extern DECLSPEC SDL_Window *SDLCALL SDL_GetMouseFocus(void);
 
 /**
  *  \brief Retrieve the current state of the mouse.
@@ -95,8 +94,8 @@ extern DECLSPEC Uint32 SDLCALL SDL_GetRelativeMouseState(int *x, int *y);
  *
  *  \note This function generates a mouse motion event
  */
-extern DECLSPEC void SDLCALL SDL_WarpMouseInWindow(SDL_Window * window,
-                                                   int x, int y);
+extern DECLSPEC void SDLCALL SDL_WarpMouseInWindow(SDL_Window *window,
+    int x, int y);
 
 /**
  *  \brief Set relative mouse mode.
@@ -141,10 +140,10 @@ extern DECLSPEC SDL_bool SDLCALL SDL_GetRelativeMouseMode(void);
  *
  *  \sa SDL_FreeCursor()
  */
-extern DECLSPEC SDL_Cursor *SDLCALL SDL_CreateCursor(const Uint8 * data,
-                                                     const Uint8 * mask,
-                                                     int w, int h, int hot_x,
-                                                     int hot_y);
+extern DECLSPEC SDL_Cursor *SDLCALL SDL_CreateCursor(const Uint8 *data,
+    const Uint8 *mask,
+    int w, int h, int hot_x,
+    int hot_y);
 
 /**
  *  \brief Create a color cursor.
@@ -152,8 +151,8 @@ extern DECLSPEC SDL_Cursor *SDLCALL SDL_CreateCursor(const Uint8 * data,
  *  \sa SDL_FreeCursor()
  */
 extern DECLSPEC SDL_Cursor *SDLCALL SDL_CreateColorCursor(SDL_Surface *surface,
-                                                          int hot_x,
-                                                          int hot_y);
+    int hot_x,
+    int hot_y);
 
 /**
  *  \brief Create a system cursor.
@@ -165,7 +164,7 @@ extern DECLSPEC SDL_Cursor *SDLCALL SDL_CreateSystemCursor(SDL_SystemCursor id);
 /**
  *  \brief Set the active cursor.
  */
-extern DECLSPEC void SDLCALL SDL_SetCursor(SDL_Cursor * cursor);
+extern DECLSPEC void SDLCALL SDL_SetCursor(SDL_Cursor *cursor);
 
 /**
  *  \brief Return the active cursor.
@@ -182,7 +181,7 @@ extern DECLSPEC SDL_Cursor *SDLCALL SDL_GetDefaultCursor(void);
  *
  *  \sa SDL_CreateCursor()
  */
-extern DECLSPEC void SDLCALL SDL_FreeCursor(SDL_Cursor * cursor);
+extern DECLSPEC void SDLCALL SDL_FreeCursor(SDL_Cursor *cursor);
 
 /**
  *  \brief Toggle whether or not the cursor is shown.

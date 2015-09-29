@@ -67,34 +67,34 @@ typedef void (*SDLTest_TestCaseSetUpFp)(void *arg);
 typedef int (*SDLTest_TestCaseFp)(void *arg);
 
 /* !< Function pointer to a test case teardown function (run after every test) */
-typedef void  (*SDLTest_TestCaseTearDownFp)(void *arg);
+typedef void (*SDLTest_TestCaseTearDownFp)(void *arg);
 
 /**
  * Holds information about a single test case.
  */
 typedef struct SDLTest_TestCaseReference {
-    /* !< Func2Stress */
-    SDLTest_TestCaseFp testCase;
-    /* !< Short name (or function name) "Func2Stress" */
-    char *name;
-    /* !< Long name or full description "This test pushes func2() to the limit." */
-    char *description;
-    /* !< Set to TEST_ENABLED or TEST_DISABLED (test won't be run) */
-    int enabled;
+  /* !< Func2Stress */
+  SDLTest_TestCaseFp testCase;
+  /* !< Short name (or function name) "Func2Stress" */
+  char *name;
+  /* !< Long name or full description "This test pushes func2() to the limit." */
+  char *description;
+  /* !< Set to TEST_ENABLED or TEST_DISABLED (test won't be run) */
+  int enabled;
 } SDLTest_TestCaseReference;
 
 /**
  * Holds information about a test suite (multiple test cases).
  */
 typedef struct SDLTest_TestSuiteReference {
-    /* !< "PlatformSuite" */
-    char *name;
-    /* !< The function that is run before each test. NULL skips. */
-    SDLTest_TestCaseSetUpFp testSetUp;
-    /* !< The test cases that are run as part of the suite. Last item should be NULL. */
-    const SDLTest_TestCaseReference **testCases;
-    /* !< The function that is run after each test. NULL skips. */
-    SDLTest_TestCaseTearDownFp testTearDown;
+  /* !< "PlatformSuite" */
+  char *name;
+  /* !< The function that is run before each test. NULL skips. */
+  SDLTest_TestCaseSetUpFp testSetUp;
+  /* !< The test cases that are run as part of the suite. Last item should be NULL. */
+  const SDLTest_TestCaseReference **testCases;
+  /* !< The function that is run after each test. NULL skips. */
+  SDLTest_TestCaseTearDownFp testTearDown;
 } SDLTest_TestSuiteReference;
 
 
@@ -109,7 +109,8 @@ typedef struct SDLTest_TestSuiteReference {
  *
  * \returns Test run result; 0 when all tests passed, 1 if any tests failed.
  */
-int SDLTest_RunSuites(SDLTest_TestSuiteReference *testSuites[], const char *userRunSeed, Uint64 userExecKey, const char *filter, int testIterations);
+int SDLTest_RunSuites(SDLTest_TestSuiteReference *testSuites[], const char *userRunSeed,
+                      Uint64 userExecKey, const char *filter, int testIterations);
 
 
 /* Ends C function definitions when using C++ */

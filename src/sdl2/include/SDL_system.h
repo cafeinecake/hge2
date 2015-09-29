@@ -47,19 +47,20 @@ extern "C" {
    This adapter index can be passed to IDirect3D9::CreateDevice and controls
    on which monitor a full screen application will appear.
 */
-extern DECLSPEC int SDLCALL SDL_Direct3D9GetAdapterIndex( int displayIndex );
+extern DECLSPEC int SDLCALL SDL_Direct3D9GetAdapterIndex(int displayIndex);
 
 /* Returns the D3D device associated with a renderer, or NULL if it's not a D3D renderer.
    Once you are done using the device, you should release it to avoid a resource leak.
  */
 typedef struct IDirect3DDevice9 IDirect3DDevice9;
-extern DECLSPEC IDirect3DDevice9* SDLCALL SDL_RenderGetD3D9Device(SDL_Renderer * renderer);
+extern DECLSPEC IDirect3DDevice9 *SDLCALL SDL_RenderGetD3D9Device(SDL_Renderer *renderer);
 
-/* Returns the DXGI Adapter and Output indices for the specified display index. 
+/* Returns the DXGI Adapter and Output indices for the specified display index.
    These can be passed to EnumAdapters and EnumOutputs respectively to get the objects
    required to create a DX10 or DX11 device and swap chain.
  */
-extern DECLSPEC void SDLCALL SDL_DXGIGetOutputInfo( int displayIndex, int *adapterIndex, int *outputIndex );
+extern DECLSPEC void SDLCALL SDL_DXGIGetOutputInfo(int displayIndex, int *adapterIndex,
+    int *outputIndex);
 
 #endif /* __WIN32__ */
 
@@ -67,7 +68,8 @@ extern DECLSPEC void SDLCALL SDL_DXGIGetOutputInfo( int displayIndex, int *adapt
 /* Platform specific functions for iOS */
 #if defined(__IPHONEOS__) && __IPHONEOS__
 
-extern DECLSPEC int SDLCALL SDL_iPhoneSetAnimationCallback(SDL_Window * window, int interval, void (*callback)(void*), void *callbackParam);
+extern DECLSPEC int SDLCALL SDL_iPhoneSetAnimationCallback(SDL_Window *window, int interval,
+    void (*callback)(void *), void *callbackParam);
 extern DECLSPEC void SDLCALL SDL_iPhoneSetEventPump(SDL_bool enabled);
 
 #endif /* __IPHONEOS__ */
@@ -79,7 +81,7 @@ extern DECLSPEC void SDLCALL SDL_iPhoneSetEventPump(SDL_bool enabled);
 /* Get the JNI environment for the current thread
    This returns JNIEnv*, but the prototype is void* so we don't need jni.h
  */
-extern DECLSPEC void * SDLCALL SDL_AndroidGetJNIEnv();
+extern DECLSPEC void *SDLCALL SDL_AndroidGetJNIEnv();
 
 /* Get the SDL Activity object for the application
    This returns jobject, but the prototype is void* so we don't need jni.h
@@ -87,7 +89,7 @@ extern DECLSPEC void * SDLCALL SDL_AndroidGetJNIEnv();
    It is the caller's responsibility to properly release it
    (using env->Push/PopLocalFrame or manually with env->DeleteLocalRef)
  */
-extern DECLSPEC void * SDLCALL SDL_AndroidGetActivity();
+extern DECLSPEC void *SDLCALL SDL_AndroidGetActivity();
 
 /* See the official Android developer guide for more information:
    http://developer.android.com/guide/topics/data/data-storage.html
@@ -99,7 +101,7 @@ extern DECLSPEC void * SDLCALL SDL_AndroidGetActivity();
    This path is unique to your application and cannot be written to
    by other applications.
  */
-extern DECLSPEC const char * SDLCALL SDL_AndroidGetInternalStoragePath();
+extern DECLSPEC const char *SDLCALL SDL_AndroidGetInternalStoragePath();
 
 /* Get the current state of external storage, a bitmask of these values:
     SDL_ANDROID_EXTERNAL_STORAGE_READ
@@ -112,7 +114,7 @@ extern DECLSPEC int SDLCALL SDL_AndroidGetExternalStorageState();
    This path is unique to your application, but is public and can be
    written to by other applications.
  */
-extern DECLSPEC const char * SDLCALL SDL_AndroidGetExternalStoragePath();
+extern DECLSPEC const char *SDLCALL SDL_AndroidGetExternalStoragePath();
 
 #endif /* __ANDROID__ */
 
@@ -122,24 +124,23 @@ extern DECLSPEC const char * SDLCALL SDL_AndroidGetExternalStoragePath();
 /**
  *  \brief WinRT / Windows Phone path types
  */
-typedef enum
-{
-    /** \brief The installed app's root directory.
-        Files here are likely to be read-only. */
-    SDL_WINRT_PATH_INSTALLED_LOCATION,
+typedef enum {
+  /** \brief The installed app's root directory.
+      Files here are likely to be read-only. */
+  SDL_WINRT_PATH_INSTALLED_LOCATION,
 
-    /** \brief The app's local data store.  Files may be written here */
-    SDL_WINRT_PATH_LOCAL_FOLDER,
+  /** \brief The app's local data store.  Files may be written here */
+  SDL_WINRT_PATH_LOCAL_FOLDER,
 
-    /** \brief The app's roaming data store.  Unsupported on Windows Phone.
-        Files written here may be copied to other machines via a network
-        connection.
-    */
-    SDL_WINRT_PATH_ROAMING_FOLDER,
+  /** \brief The app's roaming data store.  Unsupported on Windows Phone.
+      Files written here may be copied to other machines via a network
+      connection.
+  */
+  SDL_WINRT_PATH_ROAMING_FOLDER,
 
-    /** \brief The app's temporary data store.  Unsupported on Windows Phone.
-        Files written here may be deleted at any time. */
-    SDL_WINRT_PATH_TEMP_FOLDER
+  /** \brief The app's temporary data store.  Unsupported on Windows Phone.
+      Files written here may be deleted at any time. */
+  SDL_WINRT_PATH_TEMP_FOLDER
 } SDL_WinRT_Path;
 
 
@@ -158,7 +159,7 @@ typedef enum
  *      SDL_WinRT_Path for more information on which path types are
  *      supported where.
  */
-extern DECLSPEC const wchar_t * SDLCALL SDL_WinRTGetFSPathUNICODE(SDL_WinRT_Path pathType);
+extern DECLSPEC const wchar_t *SDLCALL SDL_WinRTGetFSPathUNICODE(SDL_WinRT_Path pathType);
 
 /**
  *  \brief Retrieves a WinRT defined path on the local file system
@@ -175,7 +176,7 @@ extern DECLSPEC const wchar_t * SDLCALL SDL_WinRTGetFSPathUNICODE(SDL_WinRT_Path
  *      SDL_WinRT_Path for more information on which path types are
  *      supported where.
  */
-extern DECLSPEC const char * SDLCALL SDL_WinRTGetFSPathUTF8(SDL_WinRT_Path pathType);
+extern DECLSPEC const char *SDLCALL SDL_WinRTGetFSPathUTF8(SDL_WinRT_Path pathType);
 
 #endif /* __WINRT__ */
 

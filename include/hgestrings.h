@@ -17,31 +17,29 @@
 #define MAXSTRNAMELENGTH 64
 
 
-struct NamedString
-{
-	char			name[MAXSTRNAMELENGTH];
-	char			*string;
-	NamedString		*next;
+struct NamedString {
+  char      name[MAXSTRNAMELENGTH];
+  char      *string;
+  NamedString   *next;
 };
 
 /*
 ** HGE String table class
 */
-class hgeStringTable
-{
+class hgeStringTable {
 public:
-	hgeStringTable(const char *filename);
-	~hgeStringTable();
+  hgeStringTable(const char *filename);
+  ~hgeStringTable();
 
-	char			*GetString(const char *name);
+  char      *GetString(const char *name);
 
 private:
-	hgeStringTable(const hgeStringTable &);
-	hgeStringTable&	operator= (const hgeStringTable &);
+  hgeStringTable(const hgeStringTable &);
+  hgeStringTable &operator= (const hgeStringTable &);
 
-	NamedString		*strings;
+  NamedString   *strings;
 
-	static HGE		*hge;
+  static HGE    *hge;
 };
 
 

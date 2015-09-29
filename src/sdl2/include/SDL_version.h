@@ -48,11 +48,10 @@ extern "C" {
  *  \sa SDL_VERSION
  *  \sa SDL_GetVersion
  */
-typedef struct SDL_version
-{
-    Uint8 major;        /**< major version */
-    Uint8 minor;        /**< minor version */
-    Uint8 patch;        /**< update version */
+typedef struct SDL_version {
+  Uint8 major;        /**< major version */
+  Uint8 minor;        /**< minor version */
+  Uint8 patch;        /**< update version */
 } SDL_version;
 
 /* Printable format: "%d.%d.%d", MAJOR, MINOR, PATCHLEVEL
@@ -130,7 +129,7 @@ typedef struct SDL_version
  *
  *  \sa SDL_VERSION
  */
-extern DECLSPEC void SDLCALL SDL_GetVersion(SDL_version * ver);
+extern DECLSPEC void SDLCALL SDL_GetVersion(SDL_version *ver);
 
 /**
  *  \brief Get the code revision of SDL that is linked against your program.

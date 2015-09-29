@@ -12,281 +12,298 @@
 #include "resources.h"
 
 
-HGE *ResDesc::hge=0;
+HGE *ResDesc::hge = 0;
 
 
 /////////////// COMMON //
 
 void AddRes(hgeResourceManager *rm, int type, ResDesc *resource)
 {
-    resource->next=rm->res[type];
-    rm->res[type]=resource;
+  resource->next = rm->res[type];
+  rm->res[type] = resource;
 }
 
 ResDesc *FindRes(hgeResourceManager *rm, int type, const char *name)
 {
-    ResDesc *rc;
+  ResDesc *rc;
 
-    rc=rm->res[type];
-    while(rc) {
-        if(!strcmp(name, rc->name)) {
-            return rc;
-        }
-        rc=rc->next;
+  rc = rm->res[type];
+
+  while (rc) {
+    if (!strcmp(name, rc->name)) {
+      return rc;
     }
 
-    return 0;
+    rc = rc->next;
+  }
+
+  return 0;
 }
 
 bool ScriptSkipToNextParameter(RScriptParser *sp, bool bIgnore)
 {
-    bool bToBeIgnored=bIgnore;
-    if(bIgnore) {
+  bool bToBeIgnored = bIgnore;
+
+  if (bIgnore) {
+    sp->put_back();
+  }
+
+  for (;;) {
+    sp->get_token();
+
+    if (sp->tokentype == TTCLOSEBLOCK) {
+      if (bIgnore) {
         sp->put_back();
+        return true;
+      }
+
+      return false;
     }
 
-    for(;;) {
-        sp->get_token();
-        if(sp->tokentype == TTCLOSEBLOCK) {
-            if(bIgnore) {
-                sp->put_back();
-                return true;
-            }
-            return false;
-        }
-        if((sp->tokentype > TTRES__FIRST && sp->tokentype < TTRES__LAST)  || sp->tokentype == TTEND) {
-            sp->put_back();
-            if(bIgnore) {
-                return true;
-            }
-            sp->ScriptPostError("'}' missed, "," encountered.");
-            return false;
-        }
-        if((sp->tokentype <= TTPAR__FIRST && sp->tokentype >= TTPAR__LAST) || bToBeIgnored) {
-            bToBeIgnored=false;
-            sp->ScriptPostError("Unsupported resource parameter ",".");
-            do {
-                sp->get_token();
-            } while((sp->tokentype <= TTPAR__FIRST || sp->tokentype >= TTPAR__LAST) &&
-                    (sp->tokentype <= TTRES__FIRST || sp->tokentype >= TTRES__LAST) &&
-                    sp->tokentype != TTCLOSEBLOCK && sp->tokentype != TTEND);
-            sp->put_back();
-        } else {
-            if(bIgnore) {
-                sp->put_back();
-            }
-            return true;
-        }
+    if ((sp->tokentype > TTRES__FIRST && sp->tokentype < TTRES__LAST)  || sp->tokentype == TTEND) {
+      sp->put_back();
+
+      if (bIgnore) {
+        return true;
+      }
+
+      sp->ScriptPostError("'}' missed, ", " encountered.");
+      return false;
     }
+
+    if ((sp->tokentype <= TTPAR__FIRST && sp->tokentype >= TTPAR__LAST) || bToBeIgnored) {
+      bToBeIgnored = false;
+      sp->ScriptPostError("Unsupported resource parameter ", ".");
+
+      do {
+        sp->get_token();
+      } while ((sp->tokentype <= TTPAR__FIRST || sp->tokentype >= TTPAR__LAST) &&
+               (sp->tokentype <= TTRES__FIRST || sp->tokentype >= TTRES__LAST) &&
+               sp->tokentype != TTCLOSEBLOCK && sp->tokentype != TTEND);
+
+      sp->put_back();
+    } else {
+      if (bIgnore) {
+        sp->put_back();
+      }
+
+      return true;
+    }
+  }
 }
 
 void ScriptParseFileResource(hgeResourceManager *rm, RScriptParser *sp, const char *name,
                              const char *basename, ResDesc *rr, int restype)
 {
-    RResource *rc=(RResource *)rr, *base;
+  RResource *rc = (RResource *)rr, *base;
 
-    base = (RResource *)FindRes(rm, restype, basename);
-    if(base) {
-        *rc=*base;
-    } else {
-        rc->resgroup=0;
-        rc->filename[0]=0;
+  base = (RResource *)FindRes(rm, restype, basename);
+
+  if (base) {
+    *rc = *base;
+  } else {
+    rc->resgroup = 0;
+    rc->filename[0] = 0;
+  }
+
+  rc->handle = 0;
+  strcpy(rc->name, name);
+
+  while (ScriptSkipToNextParameter(sp, false)) {
+    switch (sp->tokentype) {
+    case TTPAR_FILENAME:
+      sp->get_token();
+      sp->get_token();
+      strcpy(rc->filename, sp->tkn_string());
+      break;
+
+    case TTPAR_RESGROUP:
+      sp->get_token();
+      sp->get_token();
+      rc->resgroup = sp->tkn_int();
+      break;
+
+    default:
+      ScriptSkipToNextParameter(sp, true);
+      break;
     }
-    rc->handle=0;
-    strcpy(rc->name, name);
+  }
 
-    while(ScriptSkipToNextParameter(sp,false)) {
-        switch(sp->tokentype) {
-        case TTPAR_FILENAME:
-            sp->get_token();
-            sp->get_token();
-            strcpy(rc->filename, sp->tkn_string());
-            break;
-
-        case TTPAR_RESGROUP:
-            sp->get_token();
-            sp->get_token();
-            rc->resgroup=sp->tkn_int();
-            break;
-
-        default:
-            ScriptSkipToNextParameter(sp,true);
-            break;
-        }
-    }
-
-    AddRes(rm, restype, rc);
+  AddRes(rm, restype, rc);
 }
 
 void ScriptParseBlendMode(RScriptParser *sp, int *blend)
 {
-    for(;;) {
-        sp->get_token();
-        if(sp->tokentype != TTEQUALS && sp->tokentype != TTSEPARATOR) {
-            sp->put_back();
-            return;
-        }
+  for (;;) {
+    sp->get_token();
 
-        switch(sp->get_token()) {
-        case TTCON_COLORMUL:
-            *blend &= ~BLEND_COLORADD;
-            break;
-
-        case TTCON_COLORADD:
-            *blend |= BLEND_COLORADD;
-            break;
-
-        case TTCON_ALPHABLND:
-            *blend |= BLEND_ALPHABLEND;
-            break;
-
-        case TTCON_ALPHAADD:
-            *blend &= ~BLEND_ALPHABLEND;
-            break;
-
-        case TTCON_ZWRITE:
-            *blend |= BLEND_ZWRITE;
-            break;
-
-        case TTCON_NOZWRITE:
-            *blend &= ~BLEND_ZWRITE;
-            break;
-
-        default:
-            sp->ScriptPostError("Unsupported value ",".");
-            break;
-        }
+    if (sp->tokentype != TTEQUALS && sp->tokentype != TTSEPARATOR) {
+      sp->put_back();
+      return;
     }
+
+    switch (sp->get_token()) {
+    case TTCON_COLORMUL:
+      *blend &= ~BLEND_COLORADD;
+      break;
+
+    case TTCON_COLORADD:
+      *blend |= BLEND_COLORADD;
+      break;
+
+    case TTCON_ALPHABLND:
+      *blend |= BLEND_ALPHABLEND;
+      break;
+
+    case TTCON_ALPHAADD:
+      *blend &= ~BLEND_ALPHABLEND;
+      break;
+
+    case TTCON_ZWRITE:
+      *blend |= BLEND_ZWRITE;
+      break;
+
+    case TTCON_NOZWRITE:
+      *blend &= ~BLEND_ZWRITE;
+      break;
+
+    default:
+      sp->ScriptPostError("Unsupported value ", ".");
+      break;
+    }
+  }
 }
 
 void ScriptParseSpriteAnim(RScriptParser *sp, RSprite *rc, bool anim)
 {
-    while(ScriptSkipToNextParameter(sp,false)) {
-        switch(sp->tokentype) {
-        case TTPAR_TEXTURE:
-            sp->get_token();
-            sp->get_token();
-            strcpy(rc->texname,sp->tkn_string());
+  while (ScriptSkipToNextParameter(sp, false)) {
+    switch (sp->tokentype) {
+    case TTPAR_TEXTURE:
+      sp->get_token();
+      sp->get_token();
+      strcpy(rc->texname, sp->tkn_string());
+      break;
+
+    case TTPAR_RECT:
+      sp->get_token();
+      sp->get_token();
+      rc->tx = sp->tkn_float();
+      sp->get_token();
+      sp->get_token();
+      rc->ty = sp->tkn_float();
+      sp->get_token();
+      sp->get_token();
+      rc->w = sp->tkn_float();
+      sp->get_token();
+      sp->get_token();
+      rc->h = sp->tkn_float();
+      break;
+
+    case TTPAR_HOTSPOT:
+      sp->get_token();
+      sp->get_token();
+      rc->hotx = sp->tkn_float();
+      sp->get_token();
+      sp->get_token();
+      rc->hoty = sp->tkn_float();
+      break;
+
+    case TTPAR_BLENDMODE:
+      ScriptParseBlendMode(sp, &rc->blend);
+      break;
+
+    case TTPAR_COLOR:
+      sp->get_token();
+      sp->get_token();
+      rc->color = sp->tkn_hex();
+      break;
+
+    case TTPAR_ZORDER:
+      sp->get_token();
+      sp->get_token();
+      rc->z = sp->tkn_float();
+      break;
+
+    case TTPAR_FLIP:
+      sp->get_token();
+      sp->get_token();
+      rc->bXFlip = sp->tkn_bool();
+      sp->get_token();
+      sp->get_token();
+      rc->bYFlip = sp->tkn_bool();
+      break;
+
+    case TTPAR_RESGROUP:
+      sp->get_token();
+      sp->get_token();
+      rc->resgroup = sp->tkn_int();
+      break;
+
+    case TTPAR_FRAMES:
+      if (anim) {
+        sp->get_token();
+        sp->get_token();
+        ((RAnimation *)rc)->frames = sp->tkn_int();
+        break;
+      }
+
+    case TTPAR_FPS:
+      if (anim) {
+        sp->get_token();
+        sp->get_token();
+        ((RAnimation *)rc)->fps = sp->tkn_float();
+        break;
+      }
+
+    case TTPAR_MODE:
+      if (anim) {
+        for (;;) {
+          sp->get_token();
+
+          if (sp->tokentype != TTEQUALS && sp->tokentype != TTSEPARATOR) {
+            sp->put_back();
+            break;
+          }
+
+          switch (sp->get_token()) {
+          case TTCON_FORWARD:
+            ((RAnimation *)rc)->mode &= ~HGEANIM_REV;
             break;
 
-        case TTPAR_RECT:
-            sp->get_token();
-            sp->get_token();
-            rc->tx=sp->tkn_float();
-            sp->get_token();
-            sp->get_token();
-            rc->ty=sp->tkn_float();
-            sp->get_token();
-            sp->get_token();
-            rc->w=sp->tkn_float();
-            sp->get_token();
-            sp->get_token();
-            rc->h=sp->tkn_float();
+          case TTCON_REVERSE:
+            ((RAnimation *)rc)->mode |= HGEANIM_REV;
             break;
 
-        case TTPAR_HOTSPOT:
-            sp->get_token();
-            sp->get_token();
-            rc->hotx=sp->tkn_float();
-            sp->get_token();
-            sp->get_token();
-            rc->hoty=sp->tkn_float();
+          case TTCON_NOPINGPONG:
+            ((RAnimation *)rc)->mode &= ~HGEANIM_PINGPONG;
             break;
 
-        case TTPAR_BLENDMODE:
-            ScriptParseBlendMode(sp, &rc->blend);
+          case TTCON_PINGPONG:
+            ((RAnimation *)rc)->mode |= HGEANIM_PINGPONG;
             break;
 
-        case TTPAR_COLOR:
-            sp->get_token();
-            sp->get_token();
-            rc->color=sp->tkn_hex();
+          case TTCON_NOLOOP:
+            ((RAnimation *)rc)->mode &= ~HGEANIM_LOOP;
             break;
 
-        case TTPAR_ZORDER:
-            sp->get_token();
-            sp->get_token();
-            rc->z=sp->tkn_float();
+          case TTCON_LOOP:
+            ((RAnimation *)rc)->mode |= HGEANIM_LOOP;
             break;
 
-        case TTPAR_FLIP:
-            sp->get_token();
-            sp->get_token();
-            rc->bXFlip=sp->tkn_bool();
-            sp->get_token();
-            sp->get_token();
-            rc->bYFlip=sp->tkn_bool();
+          default:
+            sp->ScriptPostError("Unsupported value ", ".");
             break;
-
-        case TTPAR_RESGROUP:
-            sp->get_token();
-            sp->get_token();
-            rc->resgroup=sp->tkn_int();
-            break;
-
-        case TTPAR_FRAMES:
-            if(anim) {
-                sp->get_token();
-                sp->get_token();
-                ((RAnimation *)rc)->frames=sp->tkn_int();
-                break;
-            }
-
-        case TTPAR_FPS:
-            if(anim) {
-                sp->get_token();
-                sp->get_token();
-                ((RAnimation *)rc)->fps=sp->tkn_float();
-                break;
-            }
-
-        case TTPAR_MODE:
-            if(anim) {
-                for(;;) {
-                    sp->get_token();
-                    if(sp->tokentype != TTEQUALS && sp->tokentype != TTSEPARATOR) {
-                        sp->put_back();
-                        break;
-                    }
-
-                    switch(sp->get_token()) {
-                    case TTCON_FORWARD:
-                        ((RAnimation *)rc)->mode &= ~HGEANIM_REV;
-                        break;
-
-                    case TTCON_REVERSE:
-                        ((RAnimation *)rc)->mode |= HGEANIM_REV;
-                        break;
-
-                    case TTCON_NOPINGPONG:
-                        ((RAnimation *)rc)->mode &= ~HGEANIM_PINGPONG;
-                        break;
-
-                    case TTCON_PINGPONG:
-                        ((RAnimation *)rc)->mode |= HGEANIM_PINGPONG;
-                        break;
-
-                    case TTCON_NOLOOP:
-                        ((RAnimation *)rc)->mode &= ~HGEANIM_LOOP;
-                        break;
-
-                    case TTCON_LOOP:
-                        ((RAnimation *)rc)->mode |= HGEANIM_LOOP;
-                        break;
-
-                    default:
-                        sp->ScriptPostError("Unsupported value ",".");
-                        break;
-                    }
-                }
-                break;
-            }
-
-        default:
-            ScriptSkipToNextParameter(sp,true);
-            break;
+          }
         }
+
+        break;
+      }
+
+    default:
+      ScriptSkipToNextParameter(sp, true);
+      break;
     }
+  }
 }
 
 
@@ -295,137 +312,161 @@ void ScriptParseSpriteAnim(RScriptParser *sp, RSprite *rc, bool anim)
 void RScript::Parse(hgeResourceManager *rm, RScriptParser *sp, const char *sname,
                     const char *sbasename)
 {
-    RScriptParser *np;
-    RScript *res_script;
-    void *data;
-    uint32_t size;
-    char *script, lname[MAXRESCHARS], basename[MAXRESCHARS];
-    int restype;
+  RScriptParser *np;
+  RScript *res_script;
+  void *data;
+  uint32_t size;
+  char *script, lname[MAXRESCHARS], basename[MAXRESCHARS];
+  int restype;
 
-    if(!FindRes(rm, RES_SCRIPT, sname)) {
-        res_script = new RScript(); // hack! we need an instance of RScript to access hge
-        // if all ok, this object is used later to keep the script
+  if (!FindRes(rm, RES_SCRIPT, sname)) {
+    res_script = new RScript(); // hack! we need an instance of RScript to access hge
+    // if all ok, this object is used later to keep the script
 
-        data=hge->Resource_Load(sname, &size);
-        if(!data) {
-            if(sp) {
-                sp->ScriptPostError("Script "," not found.");
-            } else {
-                hge->System_Log("Script '%s' not found.",sname);
-            }
-            delete res_script;
-            return;
-        } else {
-            script= new char[size+1];
-            memcpy(script, data, size);
-            script[size]=0;
-            hge->Resource_Free(data);
+    data = hge->Resource_Load(sname, &size);
 
-            strcpy(res_script->name, sname);
-            AddRes(rm, RES_SCRIPT, res_script);
-            np = new RScriptParser(res_script->name, script);
+    if (!data) {
+      if (sp) {
+        sp->ScriptPostError("Script ", " not found.");
+      } else {
+        hge->System_Log("Script '%s' not found.", sname);
+      }
 
-            for(;;) {
-                np->get_token();
-                if(np->tokentype == TTEND) {
-                    break;
-                }
-
-                else if(np->tokentype == TTRES_INCLUDE) {
-                    np->get_token();
-                    RScript::Parse(rm, np, np->tkn_string(), NULL);
-                }
-
-                else if(np->tokentype > TTRES__FIRST && np->tokentype < TTRES__LAST) {
-                    restype=np->tokentype-TTRES__FIRST-1;
-                    lname[0]=basename[0]=0;
-
-                    np->get_token();
-                    if(FindRes(rm, restype, np->tkn_string())) {
-                        np->ScriptPostError("Resource "," of the same type already has been defined.");
-                        while((np->tokentype <= TTRES__FIRST || np->tokentype >= TTRES__LAST) && np->tokentype != TTEND) {
-                            np->get_token();
-                        }
-                        np->put_back();
-                        continue;
-                    }
-                    strcpy(lname, np->tkn_string());
-
-                    np->get_token();
-
-                    if(np->tokentype == TTBASED) {
-                        np->get_token();
-                        if(!FindRes(rm, restype, np->tkn_string())) {
-                            np->ScriptPostError("Base resource "," is not defined.");
-                        } else {
-                            strcpy(basename, np->tkn_string());
-                        }
-                        np->get_token();
-                    }
-
-                    if(np->tokentype == TTOPENBLOCK) {
-                        switch(restype) {
-                        case RES_RESOURCE:
-                            RResource::Parse(rm, np, lname, basename);
-                            break;
-                        case RES_TEXTURE:
-                            RTexture::Parse(rm, np, lname, basename);
-                            break;
-                        case RES_EFFECT:
-                            REffect::Parse(rm, np, lname, basename);
-                            break;
-                        case RES_MUSIC:
-                            RMusic::Parse(rm, np, lname, basename);
-                            break;
-                        case RES_STREAM:
-                            RStream::Parse(rm, np, lname, basename);
-                            break;
-                        case RES_TARGET:
-                            RTarget::Parse(rm, np, lname, basename);
-                            break;
-                        case RES_SPRITE:
-                            RSprite::Parse(rm, np, lname, basename);
-                            break;
-                        case RES_ANIMATION:
-                            RAnimation::Parse(rm, np, lname, basename);
-                            break;
-                        case RES_FONT:
-                            RFont::Parse(rm, np, lname, basename);
-                            break;
-                        case RES_PARTICLE:
-                            RParticle::Parse(rm, np, lname, basename);
-                            break;
-                        case RES_DISTORT:
-                            RDistort::Parse(rm, np, lname, basename);
-                            break;
-                        case RES_STRTABLE:
-                            RStringTable::Parse(rm, np, lname, basename);
-                            break;
-                        }
-                    } else {
-                        np->ScriptPostError("Illegal resource syntax, "," found; '{' expected.");
-                        while((np->tokentype <= TTRES__FIRST || np->tokentype >= TTRES__LAST) && np->tokentype != TTEND) {
-                            np->get_token();
-                        }
-                        np->put_back();
-                    }
-                }
-
-                else {
-                    np->ScriptPostError("Unrecognized resource specificator ",".");
-                    while((np->tokentype <= TTRES__FIRST || np->tokentype >= TTRES__LAST) && np->tokentype != TTEND) {
-                        np->get_token();
-                    }
-                    np->put_back();
-                }
-            }
-
-            delete np;
-            delete[] script;
-        }
+      delete res_script;
+      return;
     } else {
-        sp->ScriptPostError("Script "," already has been parsed.");
+      script = new char[size + 1];
+      memcpy(script, data, size);
+      script[size] = 0;
+      hge->Resource_Free(data);
+
+      strcpy(res_script->name, sname);
+      AddRes(rm, RES_SCRIPT, res_script);
+      np = new RScriptParser(res_script->name, script);
+
+      for (;;) {
+        np->get_token();
+
+        if (np->tokentype == TTEND) {
+          break;
+        }
+
+        else if (np->tokentype == TTRES_INCLUDE) {
+          np->get_token();
+          RScript::Parse(rm, np, np->tkn_string(), NULL);
+        }
+
+        else if (np->tokentype > TTRES__FIRST && np->tokentype < TTRES__LAST) {
+          restype = np->tokentype - TTRES__FIRST - 1;
+          lname[0] = basename[0] = 0;
+
+          np->get_token();
+
+          if (FindRes(rm, restype, np->tkn_string())) {
+            np->ScriptPostError("Resource ", " of the same type already has been defined.");
+
+            while ((np->tokentype <= TTRES__FIRST || np->tokentype >= TTRES__LAST) && np->tokentype != TTEND) {
+              np->get_token();
+            }
+
+            np->put_back();
+            continue;
+          }
+
+          strcpy(lname, np->tkn_string());
+
+          np->get_token();
+
+          if (np->tokentype == TTBASED) {
+            np->get_token();
+
+            if (!FindRes(rm, restype, np->tkn_string())) {
+              np->ScriptPostError("Base resource ", " is not defined.");
+            } else {
+              strcpy(basename, np->tkn_string());
+            }
+
+            np->get_token();
+          }
+
+          if (np->tokentype == TTOPENBLOCK) {
+            switch (restype) {
+            case RES_RESOURCE:
+              RResource::Parse(rm, np, lname, basename);
+              break;
+
+            case RES_TEXTURE:
+              RTexture::Parse(rm, np, lname, basename);
+              break;
+
+            case RES_EFFECT:
+              REffect::Parse(rm, np, lname, basename);
+              break;
+
+            case RES_MUSIC:
+              RMusic::Parse(rm, np, lname, basename);
+              break;
+
+            case RES_STREAM:
+              RStream::Parse(rm, np, lname, basename);
+              break;
+
+            case RES_TARGET:
+              RTarget::Parse(rm, np, lname, basename);
+              break;
+
+            case RES_SPRITE:
+              RSprite::Parse(rm, np, lname, basename);
+              break;
+
+            case RES_ANIMATION:
+              RAnimation::Parse(rm, np, lname, basename);
+              break;
+
+            case RES_FONT:
+              RFont::Parse(rm, np, lname, basename);
+              break;
+
+            case RES_PARTICLE:
+              RParticle::Parse(rm, np, lname, basename);
+              break;
+
+            case RES_DISTORT:
+              RDistort::Parse(rm, np, lname, basename);
+              break;
+
+            case RES_STRTABLE:
+              RStringTable::Parse(rm, np, lname, basename);
+              break;
+            }
+          } else {
+            np->ScriptPostError("Illegal resource syntax, ", " found; '{' expected.");
+
+            while ((np->tokentype <= TTRES__FIRST || np->tokentype >= TTRES__LAST) && np->tokentype != TTEND) {
+              np->get_token();
+            }
+
+            np->put_back();
+          }
+        }
+
+        else {
+          np->ScriptPostError("Unrecognized resource specificator ", ".");
+
+          while ((np->tokentype <= TTRES__FIRST || np->tokentype >= TTRES__LAST) && np->tokentype != TTEND) {
+            np->get_token();
+          }
+
+          np->put_back();
+        }
+      }
+
+      delete np;
+      delete[] script;
     }
+  } else {
+    sp->ScriptPostError("Script ", " already has been parsed.");
+  }
 }
 
 /////////////// RResource //
@@ -433,23 +474,25 @@ void RScript::Parse(hgeResourceManager *rm, RScriptParser *sp, const char *sname
 void RResource::Parse(hgeResourceManager *rm, RScriptParser *sp, const char *name,
                       const char *basename)
 {
-    ScriptParseFileResource(rm, sp, name, basename, new RResource(), RES_RESOURCE);
+  ScriptParseFileResource(rm, sp, name, basename, new RResource(), RES_RESOURCE);
 }
 
 void *RResource::Get(hgeResourceManager *rm)
 {
-    if(!handle) {
-        handle=hge->Resource_Load(filename);
-    }
-    return handle;
+  if (!handle) {
+    handle = hge->Resource_Load(filename);
+  }
+
+  return handle;
 }
 
 void RResource::Free()
 {
-    if(handle) {
-        hge->Resource_Free((void *)handle);
-    }
-    handle=0;
+  if (handle) {
+    hge->Resource_Free((void *)handle);
+  }
+
+  handle = 0;
 }
 
 /////////////// RTexture //
@@ -457,62 +500,66 @@ void RResource::Free()
 void RTexture::Parse(hgeResourceManager *rm, RScriptParser *sp, const char *name,
                      const char *basename)
 {
-    RTexture *rc, *base;
+  RTexture *rc, *base;
 
-    rc=new RTexture();
-    base = (RTexture *)FindRes(rm, RES_TEXTURE, basename);
-    if(base) {
-        *rc=*base;
-    } else {
-        rc->resgroup=0;
-        rc->mipmap=false;
+  rc = new RTexture();
+  base = (RTexture *)FindRes(rm, RES_TEXTURE, basename);
+
+  if (base) {
+    *rc = *base;
+  } else {
+    rc->resgroup = 0;
+    rc->mipmap = false;
+  }
+
+  rc->handle = 0;
+  strcpy(rc->name, name);
+
+  while (ScriptSkipToNextParameter(sp, false)) {
+    switch (sp->tokentype) {
+    case TTPAR_FILENAME:
+      sp->get_token();
+      sp->get_token();
+      strcpy(rc->filename, sp->tkn_string());
+      break;
+
+    case TTPAR_RESGROUP:
+      sp->get_token();
+      sp->get_token();
+      rc->resgroup = sp->tkn_int();
+      break;
+
+    case TTPAR_MIPMAP:
+      sp->get_token();
+      sp->get_token();
+      rc->mipmap = sp->tkn_bool();
+      break;
+
+    default:
+      ScriptSkipToNextParameter(sp, true);
+      break;
     }
-    rc->handle=0;
-    strcpy(rc->name, name);
+  }
 
-    while(ScriptSkipToNextParameter(sp,false)) {
-        switch(sp->tokentype) {
-        case TTPAR_FILENAME:
-            sp->get_token();
-            sp->get_token();
-            strcpy(rc->filename, sp->tkn_string());
-            break;
-
-        case TTPAR_RESGROUP:
-            sp->get_token();
-            sp->get_token();
-            rc->resgroup=sp->tkn_int();
-            break;
-
-        case TTPAR_MIPMAP:
-            sp->get_token();
-            sp->get_token();
-            rc->mipmap=sp->tkn_bool();
-            break;
-
-        default:
-            ScriptSkipToNextParameter(sp,true);
-            break;
-        }
-    }
-
-    AddRes(rm, RES_TEXTURE, rc);
+  AddRes(rm, RES_TEXTURE, rc);
 }
 
 uint32_t RTexture::Get(hgeResourceManager *rm)
 {
-    if(!handle) {
-        handle=(uint32_t)hge->Texture_Load(filename, 0, mipmap);
-    }
-    return handle;
+  if (!handle) {
+    handle = (uint32_t)hge->Texture_Load(filename, 0, mipmap);
+  }
+
+  return handle;
 }
 
 void RTexture::Free()
 {
-    if(handle) {
-        hge->Texture_Free((HTEXTURE)handle);
-    }
-    handle=0;
+  if (handle) {
+    hge->Texture_Free((HTEXTURE)handle);
+  }
+
+  handle = 0;
 }
 
 /////////////// REffect //
@@ -520,23 +567,25 @@ void RTexture::Free()
 void REffect::Parse(hgeResourceManager *rm, RScriptParser *sp, const char *name,
                     const char *basename)
 {
-    ScriptParseFileResource(rm, sp, name, basename, new REffect(), RES_EFFECT);
+  ScriptParseFileResource(rm, sp, name, basename, new REffect(), RES_EFFECT);
 }
 
 uint32_t REffect::Get(hgeResourceManager *rm)
 {
-    if(!handle) {
-        handle=(uint32_t)hge->Effect_Load(filename);
-    }
-    return handle;
+  if (!handle) {
+    handle = (uint32_t)hge->Effect_Load(filename);
+  }
+
+  return handle;
 }
 
 void REffect::Free()
 {
-    if(handle) {
-        hge->Effect_Free((HEFFECT)handle);
-    }
-    handle=0;
+  if (handle) {
+    hge->Effect_Free((HEFFECT)handle);
+  }
+
+  handle = 0;
 }
 
 /////////////// RMusic //
@@ -544,69 +593,70 @@ void REffect::Free()
 void RMusic::Parse(hgeResourceManager *rm, RScriptParser *sp, const char *name,
                    const char *basename)
 {
-//	ScriptParseFileResource(rm, sp, name, basename, new RMusic(), RES_MUSIC);
+//  ScriptParseFileResource(rm, sp, name, basename, new RMusic(), RES_MUSIC);
 
 
-    RMusic *rc, *base;
+  RMusic *rc, *base;
 
-    rc=new RMusic();
-    base = (RMusic *)FindRes(rm, RES_MUSIC, basename);
+  rc = new RMusic();
+  base = (RMusic *)FindRes(rm, RES_MUSIC, basename);
 
-    if(base) {
-        *rc=*base;
-    } else {
-        rc->resgroup=0;
-        rc->amplify=50;
+  if (base) {
+    *rc = *base;
+  } else {
+    rc->resgroup = 0;
+    rc->amplify = 50;
+  }
+
+  rc->handle = 0;
+  strcpy(rc->name, name);
+
+  while (ScriptSkipToNextParameter(sp, false)) {
+    switch (sp->tokentype) {
+    case TTPAR_FILENAME:
+      sp->get_token();
+      sp->get_token();
+      strcpy(rc->filename, sp->tkn_string());
+      break;
+
+    case TTPAR_RESGROUP:
+      sp->get_token();
+      sp->get_token();
+      rc->resgroup = sp->tkn_int();
+      break;
+
+    case TTPAR_AMPLIFY:
+      sp->get_token();
+      sp->get_token();
+      rc->amplify = sp->tkn_int();
+      break;
+
+    default:
+      ScriptSkipToNextParameter(sp, true);
+      break;
     }
+  }
 
-    rc->handle=0;
-    strcpy(rc->name, name);
-
-    while(ScriptSkipToNextParameter(sp,false)) {
-        switch(sp->tokentype) {
-        case TTPAR_FILENAME:
-            sp->get_token();
-            sp->get_token();
-            strcpy(rc->filename, sp->tkn_string());
-            break;
-
-        case TTPAR_RESGROUP:
-            sp->get_token();
-            sp->get_token();
-            rc->resgroup=sp->tkn_int();
-            break;
-
-        case TTPAR_AMPLIFY:
-            sp->get_token();
-            sp->get_token();
-            rc->amplify=sp->tkn_int();
-            break;
-
-        default:
-            ScriptSkipToNextParameter(sp,true);
-            break;
-        }
-    }
-
-    AddRes(rm, RES_MUSIC, rc);
+  AddRes(rm, RES_MUSIC, rc);
 }
 
 uint32_t RMusic::Get(hgeResourceManager *rm)
 {
-    if(!handle) {
-        handle=(uint32_t)hge->Music_Load(filename);
-        hge->Music_SetAmplification(handle, amplify);
-    }
+  if (!handle) {
+    handle = (uint32_t)hge->Music_Load(filename);
+    hge->Music_SetAmplification(handle, amplify);
+  }
 
-    return handle;
+  return handle;
 }
 
 void RMusic::Free()
 {
-    if(handle) {
-        hge->Music_Free((HMUSIC)handle);
-    }
-    handle=0;
+  if (handle) {
+    hge->Music_Free((HMUSIC)handle);
+  }
+
+  handle = 0;
 }
 
 /////////////// RStream //
@@ -614,23 +664,25 @@ void RMusic::Free()
 void RStream::Parse(hgeResourceManager *rm, RScriptParser *sp, const char *name,
                     const char *basename)
 {
-    ScriptParseFileResource(rm, sp, name, basename, new RStream(), RES_STREAM);
+  ScriptParseFileResource(rm, sp, name, basename, new RStream(), RES_STREAM);
 }
 
 uint32_t RStream::Get(hgeResourceManager *rm)
 {
-    if(!handle) {
-        handle=(uint32_t)hge->Stream_Load(filename);
-    }
-    return handle;
+  if (!handle) {
+    handle = (uint32_t)hge->Stream_Load(filename);
+  }
+
+  return handle;
 }
 
 void RStream::Free()
 {
-    if(handle) {
-        hge->Stream_Free((HSTREAM)handle);
-    }
-    handle=0;
+  if (handle) {
+    hge->Stream_Free((HSTREAM)handle);
+  }
+
+  handle = 0;
 }
 
 /////////////// RTarget //
@@ -638,67 +690,71 @@ void RStream::Free()
 void RTarget::Parse(hgeResourceManager *rm, RScriptParser *sp, const char *name,
                     const char *basename)
 {
-    RTarget *rc, *base;
+  RTarget *rc, *base;
 
-    rc = new RTarget();
-    base = (RTarget *)FindRes(rm, RES_TARGET, basename);
-    if(base) {
-        *rc=*base;
-    } else {
-        rc->resgroup=0;
-        rc->width=256;
-        rc->height=256;
-        rc->zbuffer=false;
+  rc = new RTarget();
+  base = (RTarget *)FindRes(rm, RES_TARGET, basename);
+
+  if (base) {
+    *rc = *base;
+  } else {
+    rc->resgroup = 0;
+    rc->width = 256;
+    rc->height = 256;
+    rc->zbuffer = false;
+  }
+
+  rc->handle = 0;
+  strcpy(rc->name, name);
+
+  while (ScriptSkipToNextParameter(sp, false)) {
+    switch (sp->tokentype) {
+    case TTPAR_SIZE:
+      sp->get_token();
+      sp->get_token();
+      rc->width = sp->tkn_int();
+      sp->get_token();
+      sp->get_token();
+      rc->height = sp->tkn_int();
+      break;
+
+    case TTPAR_ZBUFFER:
+      sp->get_token();
+      sp->get_token();
+      rc->zbuffer = sp->tkn_bool();
+      break;
+
+    case TTPAR_RESGROUP:
+      sp->get_token();
+      sp->get_token();
+      rc->resgroup = sp->tkn_int();
+      break;
+
+    default:
+      ScriptSkipToNextParameter(sp, true);
+      break;
     }
-    rc->handle=0;
-    strcpy(rc->name, name);
+  }
 
-    while(ScriptSkipToNextParameter(sp, false)) {
-        switch(sp->tokentype) {
-        case TTPAR_SIZE:
-            sp->get_token();
-            sp->get_token();
-            rc->width=sp->tkn_int();
-            sp->get_token();
-            sp->get_token();
-            rc->height=sp->tkn_int();
-            break;
-
-        case TTPAR_ZBUFFER:
-            sp->get_token();
-            sp->get_token();
-            rc->zbuffer=sp->tkn_bool();
-            break;
-
-        case TTPAR_RESGROUP:
-            sp->get_token();
-            sp->get_token();
-            rc->resgroup=sp->tkn_int();
-            break;
-
-        default:
-            ScriptSkipToNextParameter(sp, true);
-            break;
-        }
-    }
-
-    AddRes(rm, RES_TARGET, rc);
+  AddRes(rm, RES_TARGET, rc);
 }
 
 uint32_t RTarget::Get(hgeResourceManager *rm)
 {
-    if(!handle) {
-        handle=(uint32_t)hge->Target_Create(width, height, zbuffer);
-    }
-    return handle;
+  if (!handle) {
+    handle = (uint32_t)hge->Target_Create(width, height, zbuffer);
+  }
+
+  return handle;
 }
 
 void RTarget::Free()
 {
-    if(handle) {
-        hge->Target_Free((HTARGET)handle);
-    }
-    handle=0;
+  if (handle) {
+    hge->Target_Free((HTARGET)handle);
+  }
+
+  handle = 0;
 }
 
 /////////////// RSprite //
@@ -706,62 +762,66 @@ void RTarget::Free()
 void RSprite::Parse(hgeResourceManager *rm, RScriptParser *sp, const char *name,
                     const char *basename)
 {
-    RSprite *rc, *base;
+  RSprite *rc, *base;
 
-    rc = new RSprite();
-    base = (RSprite *)FindRes(rm, RES_SPRITE, basename);
-    if(base) {
-        *rc=*base;
-    } else {
-        rc->resgroup=0;
-        rc->texname[0]=0;
-        rc->tx=rc->ty=0;
-        rc->w=rc->h=0;
-        rc->hotx=rc->hoty=0;
-        rc->blend=BLEND_COLORMUL | BLEND_ALPHABLEND | BLEND_NOZWRITE;
-        rc->color=0xFFFFFFFF;
-        rc->z=0.5f;
-        rc->bXFlip=false;
-        rc->bYFlip=false;
-//		rc->x=rc->y=0;
-//		rc->scale=1.0f;
-//		rc->rotation=0.0f;
-//		rc->collision=HGECOL_RECT;
-    }
+  rc = new RSprite();
+  base = (RSprite *)FindRes(rm, RES_SPRITE, basename);
 
-    rc->handle=0;
-    strcpy(rc->name, name);
+  if (base) {
+    *rc = *base;
+  } else {
+    rc->resgroup = 0;
+    rc->texname[0] = 0;
+    rc->tx = rc->ty = 0;
+    rc->w = rc->h = 0;
+    rc->hotx = rc->hoty = 0;
+    rc->blend = BLEND_COLORMUL | BLEND_ALPHABLEND | BLEND_NOZWRITE;
+    rc->color = 0xFFFFFFFF;
+    rc->z = 0.5f;
+    rc->bXFlip = false;
+    rc->bYFlip = false;
+//    rc->x=rc->y=0;
+//    rc->scale=1.0f;
+//    rc->rotation=0.0f;
+//    rc->collision=HGECOL_RECT;
+  }
 
-    ScriptParseSpriteAnim(sp, rc, false);
-    AddRes(rm, RES_SPRITE, rc);
+  rc->handle = 0;
+  strcpy(rc->name, name);
+
+  ScriptParseSpriteAnim(sp, rc, false);
+  AddRes(rm, RES_SPRITE, rc);
 }
 
 uint32_t RSprite::Get(hgeResourceManager *rm)
 {
-    hgeSprite *spr;
-    if(!handle) {
-        spr = new hgeSprite(rm->GetTexture(texname, resgroup), tx, ty, w, h);
-        spr->SetColor(color);
-        spr->SetZ(z);
-        spr->SetBlendMode(blend);
-        spr->SetHotSpot(hotx,hoty);
-        spr->SetFlip(bXFlip, bYFlip);
-//		spr->MoveTo(x,y);
-//		spr->SetScale(scale);
-//		spr->SetRotation(rotation);
-//		spr->SetCollisionType(collision);
+  hgeSprite *spr;
 
-        handle=(uint32_t)spr;
-    }
-    return handle;
+  if (!handle) {
+    spr = new hgeSprite(rm->GetTexture(texname, resgroup), tx, ty, w, h);
+    spr->SetColor(color);
+    spr->SetZ(z);
+    spr->SetBlendMode(blend);
+    spr->SetHotSpot(hotx, hoty);
+    spr->SetFlip(bXFlip, bYFlip);
+//    spr->MoveTo(x,y);
+//    spr->SetScale(scale);
+//    spr->SetRotation(rotation);
+//    spr->SetCollisionType(collision);
+
+    handle = (uint32_t)spr;
+  }
+
+  return handle;
 }
 
 void RSprite::Free()
 {
-    if(handle) {
-        delete (hgeSprite *)handle;
-    }
-    handle=0;
+  if (handle) {
+    delete(hgeSprite *)handle;
+  }
+
+  handle = 0;
 }
 
 /////////////// RAnimation //
@@ -769,194 +829,203 @@ void RSprite::Free()
 void RAnimation::Parse(hgeResourceManager *rm, RScriptParser *sp, const char *name,
                        const char *basename)
 {
-    RAnimation *rc, *base;
+  RAnimation *rc, *base;
 
-    rc = new RAnimation();
-    base = (RAnimation *)FindRes(rm, RES_ANIMATION, basename);
-    if(base) {
-        *rc=*base;
-    } else {
-        rc->resgroup=0;
-        rc->texname[0]=0;
-        rc->tx=rc->ty=0;
-        rc->w=rc->h=0;
-        rc->hotx=rc->hoty=0;
-        rc->blend=BLEND_COLORMUL | BLEND_ALPHABLEND | BLEND_NOZWRITE;
-        rc->color=0xFFFFFFFF;
-        rc->z=0.5f;
-        rc->bXFlip=false;
-        rc->bYFlip=false;
-//		rc->x=rc->y=0;
-//		rc->scale=1.0f;
-//		rc->rotation=0.0f;
-//		rc->collision=HGECOL_RECT;
-        rc->frames=1;
-        rc->fps=12.0f;
-        rc->mode=HGEANIM_FWD | HGEANIM_LOOP;
-    }
+  rc = new RAnimation();
+  base = (RAnimation *)FindRes(rm, RES_ANIMATION, basename);
 
-    rc->handle=0;
-    strcpy(rc->name, name);
+  if (base) {
+    *rc = *base;
+  } else {
+    rc->resgroup = 0;
+    rc->texname[0] = 0;
+    rc->tx = rc->ty = 0;
+    rc->w = rc->h = 0;
+    rc->hotx = rc->hoty = 0;
+    rc->blend = BLEND_COLORMUL | BLEND_ALPHABLEND | BLEND_NOZWRITE;
+    rc->color = 0xFFFFFFFF;
+    rc->z = 0.5f;
+    rc->bXFlip = false;
+    rc->bYFlip = false;
+//    rc->x=rc->y=0;
+//    rc->scale=1.0f;
+//    rc->rotation=0.0f;
+//    rc->collision=HGECOL_RECT;
+    rc->frames = 1;
+    rc->fps = 12.0f;
+    rc->mode = HGEANIM_FWD | HGEANIM_LOOP;
+  }
 
-    ScriptParseSpriteAnim(sp, rc, true);
-    AddRes(rm, RES_ANIMATION, rc);
+  rc->handle = 0;
+  strcpy(rc->name, name);
+
+  ScriptParseSpriteAnim(sp, rc, true);
+  AddRes(rm, RES_ANIMATION, rc);
 }
 
 uint32_t RAnimation::Get(hgeResourceManager *rm)
 {
-    hgeAnimation *spr;
-    if(!handle) {
-        spr = new hgeAnimation(rm->GetTexture(texname, resgroup), frames, fps, tx, ty, w, h);
-        spr->SetColor(color);
-        spr->SetZ(z);
-        spr->SetBlendMode(blend);
-        spr->SetHotSpot(hotx,hoty);
-        spr->SetFlip(bXFlip, bYFlip);
-//		spr->MoveTo(x,y);
-//		spr->SetScale(scale);
-//		spr->SetRotation(rotation);
-//		spr->SetCollisionType(collision);
-        spr->SetMode(mode);
+  hgeAnimation *spr;
 
-        handle=(uint32_t)spr;
-    }
-    return handle;
+  if (!handle) {
+    spr = new hgeAnimation(rm->GetTexture(texname, resgroup), frames, fps, tx, ty, w, h);
+    spr->SetColor(color);
+    spr->SetZ(z);
+    spr->SetBlendMode(blend);
+    spr->SetHotSpot(hotx, hoty);
+    spr->SetFlip(bXFlip, bYFlip);
+//    spr->MoveTo(x,y);
+//    spr->SetScale(scale);
+//    spr->SetRotation(rotation);
+//    spr->SetCollisionType(collision);
+    spr->SetMode(mode);
+
+    handle = (uint32_t)spr;
+  }
+
+  return handle;
 }
 
 void RAnimation::Free()
 {
-    if(handle) {
-        delete (hgeAnimation *)handle;
-    }
-    handle=0;
+  if (handle) {
+    delete(hgeAnimation *)handle;
+  }
+
+  handle = 0;
 }
 
 /////////////// RFont //
 
 void RFont::Parse(hgeResourceManager *rm, RScriptParser *sp, const char *name, const char *basename)
 {
-    RFont *rc, *base;
+  RFont *rc, *base;
 
-    rc = new RFont();
-    base = (RFont *)FindRes(rm, RES_FONT, basename);
-    if(base) {
-        *rc=*base;
-    } else {
-        rc->resgroup=0;
-        rc->mipmap=false;
-        rc->filename[0]=0;
-        rc->blend=BLEND_COLORMUL | BLEND_ALPHABLEND | BLEND_NOZWRITE;
-        rc->color=0xFFFFFFFF;
-        rc->z=0.5f;
-        rc->scale=1.0f;
-        rc->proportion=1.0f;
-        rc->tracking=0.0f;
-        rc->spacing=1.0f;
-        rc->rotation=0.0f;
+  rc = new RFont();
+  base = (RFont *)FindRes(rm, RES_FONT, basename);
+
+  if (base) {
+    *rc = *base;
+  } else {
+    rc->resgroup = 0;
+    rc->mipmap = false;
+    rc->filename[0] = 0;
+    rc->blend = BLEND_COLORMUL | BLEND_ALPHABLEND | BLEND_NOZWRITE;
+    rc->color = 0xFFFFFFFF;
+    rc->z = 0.5f;
+    rc->scale = 1.0f;
+    rc->proportion = 1.0f;
+    rc->tracking = 0.0f;
+    rc->spacing = 1.0f;
+    rc->rotation = 0.0f;
+  }
+
+  rc->handle = 0;
+  strcpy(rc->name, name);
+
+  while (ScriptSkipToNextParameter(sp, false)) {
+    switch (sp->tokentype) {
+    case TTPAR_FILENAME:
+      sp->get_token();
+      sp->get_token();
+      strcpy(rc->filename, sp->tkn_string());
+      break;
+
+    case TTPAR_BLENDMODE:
+      ScriptParseBlendMode(sp, &rc->blend);
+      break;
+
+    case TTPAR_COLOR:
+      sp->get_token();
+      sp->get_token();
+      rc->color = sp->tkn_hex();
+      break;
+
+    case TTPAR_ZORDER:
+      sp->get_token();
+      sp->get_token();
+      rc->z = sp->tkn_float();
+      break;
+
+    case TTPAR_SCALE:
+      sp->get_token();
+      sp->get_token();
+      rc->scale = sp->tkn_float();
+      break;
+
+    case TTPAR_PROPORTION:
+      sp->get_token();
+      sp->get_token();
+      rc->proportion = sp->tkn_float();
+      break;
+
+    case TTPAR_ROTATION:
+      sp->get_token();
+      sp->get_token();
+      rc->rotation = sp->tkn_float();
+      break;
+
+    case TTPAR_TRACKING:
+      sp->get_token();
+      sp->get_token();
+      rc->tracking = sp->tkn_float();
+      break;
+
+    case TTPAR_SPACING:
+      sp->get_token();
+      sp->get_token();
+      rc->spacing = sp->tkn_float();
+      break;
+
+    case TTPAR_RESGROUP:
+      sp->get_token();
+      sp->get_token();
+      rc->resgroup = sp->tkn_int();
+      break;
+
+    case TTPAR_MIPMAP:
+      sp->get_token();
+      sp->get_token();
+      rc->mipmap = sp->tkn_bool();
+      break;
+
+    default:
+      ScriptSkipToNextParameter(sp, true);
+      break;
     }
-    rc->handle=0;
-    strcpy(rc->name, name);
+  }
 
-    while(ScriptSkipToNextParameter(sp,false)) {
-        switch(sp->tokentype) {
-        case TTPAR_FILENAME:
-            sp->get_token();
-            sp->get_token();
-            strcpy(rc->filename, sp->tkn_string());
-            break;
-
-        case TTPAR_BLENDMODE:
-            ScriptParseBlendMode(sp, &rc->blend);
-            break;
-
-        case TTPAR_COLOR:
-            sp->get_token();
-            sp->get_token();
-            rc->color=sp->tkn_hex();
-            break;
-
-        case TTPAR_ZORDER:
-            sp->get_token();
-            sp->get_token();
-            rc->z=sp->tkn_float();
-            break;
-
-        case TTPAR_SCALE:
-            sp->get_token();
-            sp->get_token();
-            rc->scale=sp->tkn_float();
-            break;
-
-        case TTPAR_PROPORTION:
-            sp->get_token();
-            sp->get_token();
-            rc->proportion=sp->tkn_float();
-            break;
-
-        case TTPAR_ROTATION:
-            sp->get_token();
-            sp->get_token();
-            rc->rotation=sp->tkn_float();
-            break;
-
-        case TTPAR_TRACKING:
-            sp->get_token();
-            sp->get_token();
-            rc->tracking=sp->tkn_float();
-            break;
-
-        case TTPAR_SPACING:
-            sp->get_token();
-            sp->get_token();
-            rc->spacing=sp->tkn_float();
-            break;
-
-        case TTPAR_RESGROUP:
-            sp->get_token();
-            sp->get_token();
-            rc->resgroup=sp->tkn_int();
-            break;
-
-        case TTPAR_MIPMAP:
-            sp->get_token();
-            sp->get_token();
-            rc->mipmap=sp->tkn_bool();
-            break;
-
-        default:
-            ScriptSkipToNextParameter(sp, true);
-            break;
-        }
-    }
-
-    AddRes(rm, RES_FONT, rc);
+  AddRes(rm, RES_FONT, rc);
 }
 
 uint32_t RFont::Get(hgeResourceManager *rm)
 {
-    hgeFont *fnt;
-    if(!handle) {
-        fnt = new hgeFont(filename, mipmap);
-        fnt->SetColor(color);
-        fnt->SetZ(z);
-        fnt->SetBlendMode(blend);
-        fnt->SetScale(scale);
-        fnt->SetProportion(proportion);
-        fnt->SetTracking(tracking);
-        fnt->SetSpacing(spacing);
-        fnt->SetRotation(rotation);
+  hgeFont *fnt;
 
-        handle=(uint32_t)fnt;
-    }
-    return handle;
+  if (!handle) {
+    fnt = new hgeFont(filename, mipmap);
+    fnt->SetColor(color);
+    fnt->SetZ(z);
+    fnt->SetBlendMode(blend);
+    fnt->SetScale(scale);
+    fnt->SetProportion(proportion);
+    fnt->SetTracking(tracking);
+    fnt->SetSpacing(spacing);
+    fnt->SetRotation(rotation);
+
+    handle = (uint32_t)fnt;
+  }
+
+  return handle;
 }
 
 void RFont::Free()
 {
-    if(handle) {
-        delete (hgeFont *)handle;
-    }
-    handle=0;
+  if (handle) {
+    delete(hgeFont *)handle;
+  }
+
+  handle = 0;
 }
 
 /////////////// RParticle //
@@ -964,66 +1033,71 @@ void RFont::Free()
 void RParticle::Parse(hgeResourceManager *rm, RScriptParser *sp, const char *name,
                       const char *basename)
 {
-    RParticle *rc, *base;
+  RParticle *rc, *base;
 
-    rc = new RParticle();
-    base = (RParticle *)FindRes(rm, RES_PARTICLE, basename);
-    if(base) {
-        *rc=*base;
-    } else {
-        rc->resgroup=0;
-        rc->filename[0]=0;
-        rc->spritename[0]=0;
+  rc = new RParticle();
+  base = (RParticle *)FindRes(rm, RES_PARTICLE, basename);
+
+  if (base) {
+    *rc = *base;
+  } else {
+    rc->resgroup = 0;
+    rc->filename[0] = 0;
+    rc->spritename[0] = 0;
+  }
+
+  rc->handle = 0;
+  strcpy(rc->name, name);
+
+  while (ScriptSkipToNextParameter(sp, false)) {
+    switch (sp->tokentype) {
+    case TTPAR_FILENAME:
+      sp->get_token();
+      sp->get_token();
+      strcpy(rc->filename, sp->tkn_string());
+      break;
+
+    case TTPAR_SPRITE:
+      sp->get_token();
+      sp->get_token();
+      strcpy(rc->spritename, sp->tkn_string());
+      break;
+
+    case TTPAR_RESGROUP:
+      sp->get_token();
+      sp->get_token();
+      rc->resgroup = sp->tkn_int();
+      break;
+
+    default:
+      ScriptSkipToNextParameter(sp, true);
+      break;
     }
-    rc->handle=0;
-    strcpy(rc->name, name);
+  }
 
-    while(ScriptSkipToNextParameter(sp, false)) {
-        switch(sp->tokentype) {
-        case TTPAR_FILENAME:
-            sp->get_token();
-            sp->get_token();
-            strcpy(rc->filename, sp->tkn_string());
-            break;
-
-        case TTPAR_SPRITE:
-            sp->get_token();
-            sp->get_token();
-            strcpy(rc->spritename, sp->tkn_string());
-            break;
-
-        case TTPAR_RESGROUP:
-            sp->get_token();
-            sp->get_token();
-            rc->resgroup=sp->tkn_int();
-            break;
-
-        default:
-            ScriptSkipToNextParameter(sp, true);
-            break;
-        }
-    }
-
-    AddRes(rm, RES_PARTICLE, rc);
+  AddRes(rm, RES_PARTICLE, rc);
 }
 
 uint32_t RParticle::Get(hgeResourceManager *rm)
 {
-    hgeParticleSystem *par;
-    if(!handle) {
-        par = new hgeParticleSystem(filename, rm->GetSprite(spritename));
+  hgeParticleSystem *par;
 
-        handle=(uint32_t)par;
-    }
-    return handle;
+  if (!handle) {
+    par = new hgeParticleSystem(filename, rm->GetSprite(spritename));
+
+    handle = (uint32_t)par;
+  }
+
+  return handle;
 }
 
 void RParticle::Free()
 {
-    if(handle) {
-        delete (hgeParticleSystem *)handle;
-    }
-    handle=0;
+  if (handle) {
+    delete(hgeParticleSystem *)handle;
+  }
+
+  handle = 0;
 }
 
 /////////////// RDistort //
@@ -1031,109 +1105,114 @@ void RParticle::Free()
 void RDistort::Parse(hgeResourceManager *rm, RScriptParser *sp, const char *name,
                      const char *basename)
 {
-    RDistort *rc, *base;
+  RDistort *rc, *base;
 
-    rc = new RDistort();
-    base = (RDistort *)FindRes(rm, RES_DISTORT, basename);
-    if(base) {
-        *rc=*base;
-    } else {
-        rc->resgroup=0;
-        rc->texname[0]=0;
-        rc->tx=rc->ty=0;
-        rc->w=rc->h=0;
-        rc->cols=rc->rows=2;
-        rc->blend=BLEND_COLORMUL | BLEND_ALPHABLEND | BLEND_NOZWRITE;
-        rc->color=0xFFFFFFFF;
-        rc->z=0.5f;
+  rc = new RDistort();
+  base = (RDistort *)FindRes(rm, RES_DISTORT, basename);
+
+  if (base) {
+    *rc = *base;
+  } else {
+    rc->resgroup = 0;
+    rc->texname[0] = 0;
+    rc->tx = rc->ty = 0;
+    rc->w = rc->h = 0;
+    rc->cols = rc->rows = 2;
+    rc->blend = BLEND_COLORMUL | BLEND_ALPHABLEND | BLEND_NOZWRITE;
+    rc->color = 0xFFFFFFFF;
+    rc->z = 0.5f;
+  }
+
+  rc->handle = 0;
+  strcpy(rc->name, name);
+
+  while (ScriptSkipToNextParameter(sp, false)) {
+    switch (sp->tokentype) {
+    case TTPAR_TEXTURE:
+      sp->get_token();
+      sp->get_token();
+      strcpy(rc->texname, sp->tkn_string());
+      break;
+
+    case TTPAR_RECT:
+      sp->get_token();
+      sp->get_token();
+      rc->tx = sp->tkn_float();
+      sp->get_token();
+      sp->get_token();
+      rc->ty = sp->tkn_float();
+      sp->get_token();
+      sp->get_token();
+      rc->w = sp->tkn_float();
+      sp->get_token();
+      sp->get_token();
+      rc->h = sp->tkn_float();
+      break;
+
+    case TTPAR_MESH:
+      sp->get_token();
+      sp->get_token();
+      rc->cols = sp->tkn_int();
+      sp->get_token();
+      sp->get_token();
+      rc->rows = sp->tkn_int();
+      break;
+
+    case TTPAR_BLENDMODE:
+      ScriptParseBlendMode(sp, &rc->blend);
+      break;
+
+    case TTPAR_COLOR:
+      sp->get_token();
+      sp->get_token();
+      rc->color = sp->tkn_hex();
+      break;
+
+    case TTPAR_ZORDER:
+      sp->get_token();
+      sp->get_token();
+      rc->z = sp->tkn_float();
+      break;
+
+    case TTPAR_RESGROUP:
+      sp->get_token();
+      sp->get_token();
+      rc->resgroup = sp->tkn_int();
+      break;
+
+    default:
+      ScriptSkipToNextParameter(sp, true);
+      break;
     }
-    rc->handle=0;
-    strcpy(rc->name, name);
+  }
 
-    while(ScriptSkipToNextParameter(sp, false)) {
-        switch(sp->tokentype) {
-        case TTPAR_TEXTURE:
-            sp->get_token();
-            sp->get_token();
-            strcpy(rc->texname, sp->tkn_string());
-            break;
-
-        case TTPAR_RECT:
-            sp->get_token();
-            sp->get_token();
-            rc->tx=sp->tkn_float();
-            sp->get_token();
-            sp->get_token();
-            rc->ty=sp->tkn_float();
-            sp->get_token();
-            sp->get_token();
-            rc->w=sp->tkn_float();
-            sp->get_token();
-            sp->get_token();
-            rc->h=sp->tkn_float();
-            break;
-
-        case TTPAR_MESH:
-            sp->get_token();
-            sp->get_token();
-            rc->cols=sp->tkn_int();
-            sp->get_token();
-            sp->get_token();
-            rc->rows=sp->tkn_int();
-            break;
-
-        case TTPAR_BLENDMODE:
-            ScriptParseBlendMode(sp, &rc->blend);
-            break;
-
-        case TTPAR_COLOR:
-            sp->get_token();
-            sp->get_token();
-            rc->color=sp->tkn_hex();
-            break;
-
-        case TTPAR_ZORDER:
-            sp->get_token();
-            sp->get_token();
-            rc->z=sp->tkn_float();
-            break;
-
-        case TTPAR_RESGROUP:
-            sp->get_token();
-            sp->get_token();
-            rc->resgroup=sp->tkn_int();
-            break;
-
-        default:
-            ScriptSkipToNextParameter(sp, true);
-            break;
-        }
-    }
-
-    AddRes(rm, RES_DISTORT, rc);
+  AddRes(rm, RES_DISTORT, rc);
 }
 
 uint32_t RDistort::Get(hgeResourceManager *rm)
 {
-    hgeDistortionMesh *dis;
-    if(!handle) {
-        dis = new hgeDistortionMesh(cols, rows);
-        dis->SetTexture(rm->GetTexture(texname, resgroup));
-        dis->SetTextureRect(tx,ty,w,h);
-        dis->SetBlendMode(blend);
-        dis->Clear(color,z);
+  hgeDistortionMesh *dis;
 
-        handle=(uint32_t)dis;
-    }
-    return handle;
+  if (!handle) {
+    dis = new hgeDistortionMesh(cols, rows);
+    dis->SetTexture(rm->GetTexture(texname, resgroup));
+    dis->SetTextureRect(tx, ty, w, h);
+    dis->SetBlendMode(blend);
+    dis->Clear(color, z);
+
+    handle = (uint32_t)dis;
+  }
+
+  return handle;
 }
 
 void RDistort::Free()
 {
-    if(handle) {
-        delete (hgeDistortionMesh *)handle;
-    }
-    handle=0;
+  if (handle) {
+    delete(hgeDistortionMesh *)handle;
+  }
+
+  handle = 0;
 }
 
 /////////////// RStringTable //
@@ -1141,21 +1220,23 @@ void RDistort::Free()
 void RStringTable::Parse(hgeResourceManager *rm, RScriptParser *sp, const char *name,
                          const char *basename)
 {
-    ScriptParseFileResource(rm, sp, name, basename, new RStringTable(), RES_STRTABLE);
+  ScriptParseFileResource(rm, sp, name, basename, new RStringTable(), RES_STRTABLE);
 }
 
 uint32_t RStringTable::Get(hgeResourceManager *rm)
 {
-    if(!handle)	{
-        handle = (uint32_t)new hgeStringTable(filename);
-    }
-    return handle;
+  if (!handle) {
+    handle = (uint32_t)new hgeStringTable(filename);
+  }
+
+  return handle;
 }
 
 void RStringTable::Free()
 {
-    if(handle) {
-        delete (hgeStringTable *)handle;
-    }
-    handle=0;
+  if (handle) {
+    delete(hgeStringTable *)handle;
+  }
+
+  handle = 0;
 }
