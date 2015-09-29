@@ -38,6 +38,13 @@ SET( CMAKE_INCLUDE_CURRENT_DIR ON )
 add_subdirectory( src/zlib-1.2.5 )
 add_subdirectory( src/libPNG )
 
+set(SDL2_LIBRARY SDL2)
+set(SDL2MAIN_LIBRARY SDL2main)
+set(SDL2_INCLUDE_DIR ${HGE_SOURCE_DIR}/src/SDL2/include)
+link_directories( ${HGE_SOURCE_DIR}/src/SDL2/lib/x86 )
+
+add_subdirectory( src/SDL_gpu )
+
 #--- HGE core library and helpers ---
 add_subdirectory( src/helpers )
 add_subdirectory( src/core )
