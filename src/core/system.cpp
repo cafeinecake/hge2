@@ -909,7 +909,6 @@ HGE_Impl::HGE_Impl()
 
   queue = 0;
   Char = VKey = Zpos = 0;
-  Xpos = Ypos = 0.0f;
   bMouseOver = false;
   bCaptured = false;
 

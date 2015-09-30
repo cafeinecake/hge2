@@ -112,7 +112,7 @@ namespace hge {
 		int       nEnterLeave;
 		hgeSprite   *sprCursor;
 
-		float     mx, my;
+		Pointf      m_mousepos;
 		int       nWheel;
 		bool      bLPressed, bLReleased;
 		bool      bRPressed, bRReleased;

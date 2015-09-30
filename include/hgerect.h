@@ -6,10 +6,9 @@
 ** hgeRect helper class
 */
 
+#pragma once
 
-#ifndef HGERECT_H
-#define HGERECT_H
-
+namespace hge {
 
 class hgeRect {
 public:
@@ -30,5 +29,4 @@ private:
   bool  bClean;
 };
 
-
-#endif
+} // ns hge

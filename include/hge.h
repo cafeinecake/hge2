@@ -10,7 +10,7 @@
 
 #include <windows.h>
 
-#define HGE_VERSION 0x181
+#define HGE_VERSION 0x200
 
 // CMake adds PROJECTNAME_EXPORTS when compiles DLL
 #ifdef hge_EXPORTS
@@ -43,6 +43,9 @@
 #define M_2_PI  0.636619772367581343076f
 #endif
 
+
+namespace hge {
+
 //
 // HGE Handle types
 //
@@ -69,29 +72,33 @@ using HTARGET = HGEHANDLE<1>;
 using HSHADER = HGEHANDLE<2>;
 #endif
 
-namespace hge {
-
 template <typename T>
 class Point {
-public:
-T x, y;
+    public:
+    T x, y;
+    Point() : x(T()), y(T()) {}
+    Point(T _x, T _y) : x(_x), y(_y) {}
+    void set(T _x, T _y) {
+        x = _x;
+        y = _y;
+    }
 };
 using Pointi32 = Point<int32_t>;
 using Pointf = Point<float>;
 
 template <typename T>
 class Size {
-public:
-T w, h;
+    public:
+    T width, height;
 };
 using Sizei32 = Size<int32_t>;
 using Sizef = Size<float>;
 
 template <typename T>
 class Rect {
-public:
-Point<T> tl;
-Size<T>  size;
+    public:
+    Point<T> tl;
+    Size<T>  size;
 };
 using Recti32 = Rect<int32_t>;
 using Rectf = Rect<float>;
@@ -145,18 +152,18 @@ struct InputEvent {
 /*
 ** HGE Blending constants
 */
-#define BLEND_COLORADD      1
-#define BLEND_COLORMUL      0
-#define BLEND_ALPHABLEND    2
-#define BLEND_ALPHAADD      0
-#define BLEND_ZWRITE        4
-#define BLEND_NOZWRITE      0
+const uint32_t BLEND_COLORADD   = 1;
+const uint32_t BLEND_COLORMUL   = 0;
+const uint32_t BLEND_ALPHABLEND = 2;
+const uint32_t BLEND_ALPHAADD   = 0;
+const uint32_t BLEND_ZWRITE     = 4;
+const uint32_t BLEND_NOZWRITE   = 0;
 
 // Darken does real color multiplication, white source pixels don't change destination, while
 // black source pixels make destination completely black
 // Use example: http://relishgames.com/forum/index.php?p=/discussion/5799/darken-screen-plus-uneffected-hole/p1
-#define BLEND_DARKEN    8
-#define BLEND_BLACKEN   8 /* synonym for darken */
+const uint32_t BLEND_DARKEN = 8;
+const uint32_t BLEND_BLACKEN = BLEND_DARKEN;
 
 #define BLEND_DEFAULT       (BLEND_COLORMUL | BLEND_ALPHABLEND | BLEND_NOZWRITE)
 #define BLEND_DEFAULT_Z     (BLEND_COLORMUL | BLEND_ALPHABLEND | BLEND_ZWRITE)
@@ -382,8 +389,8 @@ public:
   //virtual void        HGE_CALL    Channel_SlideTo(HCHANNEL channel, float time, int volume, int pan = -101, float pitch = -1) = 0;
   //virtual bool        HGE_CALL    Channel_IsSliding(HCHANNEL channel) = 0;
 
-  virtual void        HGE_CALL    Input_GetMousePos(float *x, float *y) = 0;
-  virtual void        HGE_CALL    Input_SetMousePos(float x, float y) = 0;
+  virtual Pointf    HGE_CALL    Input_GetMousePos() = 0;
+  virtual void      HGE_CALL    Input_SetMousePos(const Pointf &pos) = 0;
   virtual int         HGE_CALL    Input_GetMouseWheel() = 0;
   virtual bool        HGE_CALL    Input_IsMouseOver() = 0;
   virtual bool        HGE_CALL    Input_KeyDown(int key) = 0;

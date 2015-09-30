@@ -63,18 +63,17 @@ bool HGE_CALL HGE_Impl::Input_GetEvent(InputEvent *event)
   return false;
 }
 
-void HGE_CALL HGE_Impl::Input_GetMousePos(float *x, float *y)
+Pointf HGE_CALL HGE_Impl::Input_GetMousePos()
 {
-  *x = Xpos;
-  *y = Ypos;
+  return m_mousepos;
 }
 
 
-void HGE_CALL HGE_Impl::Input_SetMousePos(float x, float y)
+void HGE_CALL HGE_Impl::Input_SetMousePos(const Pointf &pos)
 {
   POINT pt;
-  pt.x = (long)x;
-  pt.y = (long)y;
+  pt.x = (long)pos.x;
+  pt.y = (long)pos.y;
   ClientToScreen(hwnd, &pt);
   SetCursorPos(pt.x, pt.y);
 }
@@ -125,18 +124,21 @@ int HGE_CALL HGE_Impl::Input_GetChar()
 
 void HGE_Impl::_InputInit()
 {
-  POINT pt;
+  /*POINT pt;
   GetCursorPos(&pt);
   ScreenToClient(hwnd, &pt);
-  Xpos = (float)pt.x;
-  Ypos = (float)pt.y;
+  m_mousepos.set((float)pt.x, (float)pt.y);
+  */
+  int x, y;
+  SDL_GetMouseState(&x, &y);
+  m_mousepos.set(x, y);
 
   memset(&keyz, 0, sizeof(keyz));
 }
 
 void HGE_Impl::_UpdateMouse()
 {
-  POINT pt;
+  /*POINT pt;
   RECT  rc;
 
   GetCursorPos(&pt);
@@ -148,6 +150,11 @@ void HGE_Impl::_UpdateMouse()
   } else {
     bMouseOver = false;
   }
+  */
+  int x, y;
+  SDL_GetMouseState(&x, &y);
+  m_mousepos.set(x, y);
+  // TODO: bMouseOver if in window
 }
 
 void HGE_Impl::_BuildEvent(int type, int key, int scan, int flags, int x, int y)
@@ -194,9 +201,9 @@ void HGE_Impl::_BuildEvent(int type, int key, int scan, int flags, int x, int y)
   if (type == INPUT_MBUTTONUP) {
     keyz[key] |= 2;
     ReleaseCapture();
-    Input_SetMousePos(Xpos, Ypos);
-    pt.x = (int)Xpos;
-    pt.y = (int)Ypos;
+    Input_SetMousePos(m_mousepos);
+    pt.x = (int)m_mousepos.x;
+    pt.y = (int)m_mousepos.y;
     bCaptured = false;
   }
 
@@ -227,8 +234,8 @@ void HGE_Impl::_BuildEvent(int type, int key, int scan, int flags, int x, int y)
   eptr->event.flags = flags;
 
   if (pt.x == -1) {
-    eptr->event.x = Xpos;
-    eptr->event.y = Ypos;
+    eptr->event.x = m_mousepos.x;
+    eptr->event.y = m_mousepos.y;
   } else {
     if (pt.x < 0) {
       pt.x = 0;
@@ -268,8 +275,7 @@ void HGE_Impl::_BuildEvent(int type, int key, int scan, int flags, int x, int y)
     VKey = eptr->event.key;
     Char = eptr->event.chr;
   } else if (eptr->event.type == INPUT_MOUSEMOVE) {
-    Xpos = eptr->event.x;
-    Ypos = eptr->event.y;
+    m_mousepos.set(eptr->event.x, eptr->event.y);
   } else if (eptr->event.type == INPUT_MOUSEWHEEL) {
     Zpos += eptr->event.wheel;
   }

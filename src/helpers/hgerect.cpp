@@ -10,6 +10,7 @@
 #include "..\..\include\hgerect.h"
 #include <math.h>
 
+namespace hge {
 
 void hgeRect::Encapsulate(float x, float y)
 {
@@ -54,3 +55,5 @@ bool hgeRect::Intersect(const hgeRect *rect) const
 
   return false;
 }
+
+} // ns hge

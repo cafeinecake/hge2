@@ -28,7 +28,6 @@ hgeGUI::hgeGUI()
   bLPressed = bLReleased = false;
   bRPressed = bRReleased = false;
   nWheel = 0;
-  mx = my = 0.0f;
   nEnterLeave = 0;
   sprCursor = 0;
 }
@@ -253,7 +252,7 @@ void hgeGUI::Render()
   }
 
   if (hge->Input_IsMouseOver() && sprCursor) {
-    sprCursor->Render(mx, my);
+    sprCursor->Render(m_mousepos.x, m_mousepos.y);
   }
 }
 
@@ -265,7 +264,7 @@ int hgeGUI::Update(float dt)
 
 // Update the mouse variables
 
-  hge->Input_GetMousePos(&mx, &my);
+  m_mousepos = hge->Input_GetMousePos();
   bLPressed  = hge->Input_KeyDown(HGEK_LBUTTON);
   bLReleased = hge->Input_KeyUp(HGEK_LBUTTON);
   bRPressed  = hge->Input_KeyDown(HGEK_RBUTTON);
@@ -421,7 +420,7 @@ int hgeGUI::Update(float dt)
       }
 
     while (ctrl) {
-      if (ctrl->rect.TestPoint(mx, my) && ctrl->bEnabled) {
+      if (ctrl->rect.TestPoint(m_mousepos.x, m_mousepos.y) && ctrl->bEnabled) {
         if (ctrlOver != ctrl) {
           if (ctrlOver) {
             ctrlOver->MouseOver(false);
@@ -479,7 +478,7 @@ bool hgeGUI::ProcessCtrl(hgeGUIObject *ctrl)
     bResult = bResult || ctrl->MouseWheel(nWheel);
   }
 
-  bResult = bResult || ctrl->MouseMove(mx - ctrl->rect.x1, my - ctrl->rect.y1);
+  bResult = bResult || ctrl->MouseMove(m_mousepos.x - ctrl->rect.x1, m_mousepos.y - ctrl->rect.y1);
 
   return bResult;
 }

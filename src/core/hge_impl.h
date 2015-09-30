@@ -156,8 +156,8 @@ public:
   //    int pan = -101, float pitch = -1);
   //virtual bool        HGE_CALL    Channel_IsSliding(HCHANNEL channel);
 
-  virtual void        HGE_CALL    Input_GetMousePos(float *x, float *y);
-  virtual void        HGE_CALL    Input_SetMousePos(float x, float y);
+  virtual Pointf HGE_CALL Input_GetMousePos();
+  virtual void        HGE_CALL    Input_SetMousePos(const Pointf &pos);
   virtual int         HGE_CALL    Input_GetMouseWheel();
   virtual bool        HGE_CALL    Input_IsMouseOver();
   virtual bool        HGE_CALL    Input_KeyDown(int key);
@@ -327,8 +327,7 @@ public:
   int                 VKey;
   int                 Char;
   int                 Zpos;
-  float               Xpos;
-  float               Ypos;
+  Pointf        m_mousepos;
   bool                bMouseOver;
   bool                bCaptured;
   char                keyz[256];
