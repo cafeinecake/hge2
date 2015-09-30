@@ -11,6 +11,7 @@
 #include "parser.h"
 #include "resources.h"
 
+namespace hge {
 
 HGE *hgeResourceManager::hge = 0;
 
@@ -329,3 +330,5 @@ hgeStringTable *hgeResourceManager::GetStringTable(const char *name, int resgrou
 
   return 0;
 }
+
+} // ns hge

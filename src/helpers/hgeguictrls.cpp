@@ -12,6 +12,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+namespace hge {
 
 /*
 ** hgeGUIText
@@ -462,3 +463,5 @@ bool hgeGUIListbox::KeyClick(int key, int chr)
 
   return false;
 }
+
+} // ns hge

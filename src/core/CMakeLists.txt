@@ -38,6 +38,8 @@ include_directories( ${HGE_SOURCE_DIR}/src/zlib-1.2.5/contrib/minizip )
 ## include_directories( ${HGE_SOURCE_DIR}/src )
 
 include_directories( ${DIRECTX_SDK_DIR}/include )
+include_directories(${SDL2_INCLUDE_DIR})
+include_directories("../SDL_gpu/include")
 
 #------ link directories listed ------
 link_directories( ${HGE_SOURCE_DIR}/linklib )
@@ -50,7 +52,7 @@ if( ${HGE_DIRECTX_VER} MATCHES "9" )
     link_libraries( d3d9 d3dx9 )
 endif()
 link_libraries( winmm )
-link_libraries( zlib hgehelpers SDL2 )
+link_libraries( zlib hgehelpers SDL2 SDL_gpu ${SDL_gpu_GL_LIBRARIES} )
 
 #------ precompiled headers support (not done for now) ------
 ## if (MSVC)

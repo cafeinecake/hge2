@@ -9,6 +9,7 @@
 
 #include "hge_impl.h"
 
+namespace hge {
 
 float HGE_CALL HGE_Impl::Timer_GetTime()
 {
@@ -26,3 +27,4 @@ int HGE_CALL HGE_Impl::Timer_GetFPS()
   return nFPS;
 }
 
+} // ns hge

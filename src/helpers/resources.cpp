@@ -11,6 +11,7 @@
 #include "parser.h"
 #include "resources.h"
 
+namespace hge {
 
 HGE *ResDesc::hge = 0;
 
@@ -1240,3 +1241,5 @@ void RStringTable::Free()
 
   handle = 0;
 }
+
+} // ns hge

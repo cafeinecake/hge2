@@ -6,13 +6,12 @@
 ** hgeResourceManager resources header
 */
 
-#ifndef HGERESOURCES_H
-#define HGERESOURCES_H
-
+#pragma once
 
 #include "..\..\include\hgeresource.h"
 #include "parser.h"
 
+namespace hge {
 
 #define RES_SCRIPT    0
 
@@ -184,4 +183,4 @@ struct RStringTable : public ResDesc {
   virtual void  Free();
 };
 
-#endif
+} // ns hge

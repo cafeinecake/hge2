@@ -9,6 +9,7 @@
 
 #include "hge_impl.h"
 
+namespace hge {
 
 void HGE_Impl::_InitPowerStatus()
 {
@@ -47,3 +48,5 @@ void HGE_Impl::_DonePowerStatus()
     FreeLibrary(hKrnl32);
   }
 }
+
+} // ns hge

@@ -9,6 +9,7 @@
 
 #include "..\..\include\hgeparticle.h"
 
+namespace hge {
 
 HGE *hgeParticleSystem::hge = 0;
 
@@ -289,3 +290,5 @@ hgeRect *hgeParticleSystem::GetBoundingBox(hgeRect *rect) const
 
   return rect;
 }
+
+} // ns hge

@@ -9,6 +9,7 @@
 
 #include "hge_impl.h"
 
+namespace hge {
 
 unsigned int g_seed = 0;
 
@@ -33,3 +34,5 @@ float HGE_CALL HGE_Impl::Random_Float(float min, float max)
   //return min+g_seed*(1.0f/4294967295.0f)*(max-min);
   return min + (g_seed >> 16) * (1.0f / 65535.0f) * (max - min);
 }
+
+} // ns hge

@@ -6,9 +6,9 @@
 ** hgeAnimation helper class implementation
 */
 
-
 #include "..\..\include\hgeanim.h"
 
+namespace hge {
 
 hgeAnimation::hgeAnimation(HTEXTURE tex, int nframes, float FPS, float x, float y, float w, float h)
   : hgeSprite(tex, x, y, w, h)
@@ -150,14 +150,14 @@ void hgeAnimation::SetFrame(int n)
   tx2 /= tex_width;
   ty2 /= tex_height;
 
-  quad.v[0].tx = tx1;
-  quad.v[0].ty = ty1;
-  quad.v[1].tx = tx2;
-  quad.v[1].ty = ty1;
-  quad.v[2].tx = tx2;
-  quad.v[2].ty = ty2;
-  quad.v[3].tx = tx1;
-  quad.v[3].ty = ty2;
+  quad.v[0].tex.x = tx1;
+  quad.v[0].tex.y = ty1;
+  quad.v[1].tex.x = tx2;
+  quad.v[1].tex.y = ty1;
+  quad.v[2].tex.x = tx2;
+  quad.v[2].tex.y = ty2;
+  quad.v[3].tex.x = tx1;
+  quad.v[3].tex.y = ty2;
 
   bX = bXFlip;
   bY = bYFlip;
@@ -167,3 +167,4 @@ void hgeAnimation::SetFrame(int n)
   SetFlip(bX, bY, bHS);
 }
 
+} // ns hge

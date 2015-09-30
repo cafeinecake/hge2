@@ -11,7 +11,9 @@
 
 #ifdef HGE_SPLASH_ENABLE
 
-hgeQuad dquad;
+namespace hge {
+
+Quad dquad;
 float dtime;
 
 unsigned short hgelogo[] = {
@@ -172,23 +174,23 @@ void DInit()
     dquad.v[i].col = 0xFFFFFFFF;
   }
 
-  dquad.v[0].tx = 0.0f;
-  dquad.v[0].ty = 0.0f;
-  dquad.v[1].tx = 1.0f;
-  dquad.v[1].ty = 0.0f;
-  dquad.v[2].tx = 1.0f;
-  dquad.v[2].ty = 1.0f;
-  dquad.v[3].tx = 0.0f;
-  dquad.v[3].ty = 1.0f;
+  dquad.v[0].tex.x = 0.0f;
+  dquad.v[0].tex.y = 0.0f;
+  dquad.v[1].tex.x = 1.0f;
+  dquad.v[1].tex.y = 0.0f;
+  dquad.v[2].tex.x = 1.0f;
+  dquad.v[2].tex.y = 1.0f;
+  dquad.v[3].tex.x = 0.0f;
+  dquad.v[3].tex.y = 1.0f;
 
-  dquad.v[0].x = x - 64.0f;
-  dquad.v[0].y = y - 64.0f;
-  dquad.v[1].x = x + 64.0f;
-  dquad.v[1].y = y - 64.0f;
-  dquad.v[2].x = x + 64.0f;
-  dquad.v[2].y = y + 64.0f;
-  dquad.v[3].x = x - 64.0f;
-  dquad.v[3].y = y + 64.0f;
+  dquad.v[0].pos.x = x - 64.0f;
+  dquad.v[0].pos.y = y - 64.0f;
+  dquad.v[1].pos.x = x + 64.0f;
+  dquad.v[1].pos.y = y - 64.0f;
+  dquad.v[2].pos.x = x + 64.0f;
+  dquad.v[2].pos.y = y + 64.0f;
+  dquad.v[3].pos.x = x - 64.0f;
+  dquad.v[3].pos.y = y + 64.0f;
 
   dtime = 0.0f;
 }
@@ -228,5 +230,7 @@ bool DFrame()
 
   return false;
 }
+
+} // ns hge
 
 #endif

@@ -13,6 +13,7 @@
 //#define NOUNCRYPT
 #include <unzip.h>
 
+namespace hge {
 
 bool HGE_CALL HGE_Impl::Resource_AttachPack(const char *filename, const char *password)
 {
@@ -330,3 +331,5 @@ char *HGE_CALL HGE_Impl::Resource_EnumFolders(const char *wildcard)
     }
   }
 }
+
+} // ns hge

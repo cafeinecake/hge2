@@ -12,6 +12,10 @@
 #include <stdio.h>
 #include <hge_gapi.h>
 
+#include <SDL.h>
+#include <SDL_gpu.h>
+
+namespace hge {
 
 #define HGE_SPLASH_ENABLE
 
@@ -50,7 +54,7 @@ struct CResourceList {
 };*/
 
 struct CInputEventList {
-  hgeInputEvent       event;
+  InputEvent         event;
   CInputEventList    *next;
 };
 
@@ -162,7 +166,7 @@ public:
   virtual char       *HGE_CALL    Input_GetKeyName(int key);
   virtual int         HGE_CALL    Input_GetKey();
   virtual int         HGE_CALL    Input_GetChar();
-  virtual bool        HGE_CALL    Input_GetEvent(hgeInputEvent *event);
+  virtual bool        HGE_CALL    Input_GetEvent(InputEvent *event);
 
   virtual bool        HGE_CALL    Gfx_BeginScene(HTARGET target = 0);
   virtual void        HGE_CALL    Gfx_EndScene();
@@ -170,8 +174,8 @@ public:
   virtual void        HGE_CALL    Gfx_RenderLine(float x1, float y1, float x2, float y2,
       uint32_t color = 0xFFFFFFFF, float z = 0.5f);
   virtual void        HGE_CALL    Gfx_RenderTriple(const hgeTriple *triple);
-  virtual void        HGE_CALL    Gfx_RenderQuad(const hgeQuad *quad);
-  virtual hgeVertex  *HGE_CALL    Gfx_StartBatch(int prim_type, HTEXTURE tex, int blend,
+  virtual void        HGE_CALL    Gfx_RenderQuad(const Quad *quad);
+  virtual Vertex  *HGE_CALL    Gfx_StartBatch(int prim_type, HTEXTURE tex, int blend,
       int *max_prim);
   virtual void        HGE_CALL    Gfx_FinishBatch(int nprim);
   virtual void        HGE_CALL    Gfx_SetClipping(int x = 0, int y = 0, int w = 0, int h = 0);
@@ -258,6 +262,8 @@ public:
 
 
   // Graphics
+  GPU_Target*			m_screen;
+
   D3DPRESENT_PARAMETERS  *d3dpp;
 
   D3DPRESENT_PARAMETERS   d3dppW;
@@ -282,7 +288,7 @@ public:
   D3DXMATRIX          matProj;
 
   CTextureList       *textures;
-  hgeVertex          *VertArray;
+  Vertex             *VertArray;
 
   int                 nPrim;
   int                 CurPrimType;
@@ -354,3 +360,5 @@ private:
 };
 
 extern HGE_Impl        *pHGE;
+
+} // ns hge

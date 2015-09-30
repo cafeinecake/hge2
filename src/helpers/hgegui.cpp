@@ -10,6 +10,8 @@
 #include "..\..\include\hgegui.h"
 
 
+namespace hge {
+
 HGE *hgeGUI::hge = 0;
 HGE *hgeGUIObject::hge = 0;
 
@@ -482,5 +484,4 @@ bool hgeGUI::ProcessCtrl(hgeGUIObject *ctrl)
   return bResult;
 }
 
-
-
+} // ns hge

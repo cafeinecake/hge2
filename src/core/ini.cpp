@@ -9,6 +9,7 @@
 
 #include "hge_impl.h"
 
+namespace hge {
 
 void HGE_CALL HGE_Impl::Ini_SetInt(const char *section, const char *name, int value)
 {
@@ -83,3 +84,4 @@ char *HGE_CALL HGE_Impl::Ini_GetString(const char *section, const char *name, co
   return szIniString;
 }
 
+} // ns hge

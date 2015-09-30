@@ -6,10 +6,11 @@
 ** hgeFont helper class implementation
 */
 
-
 #include "..\..\include\hgefont.h"
 #include <stdlib.h>
 #include <stdio.h>
+
+namespace hge {
 
 const char FNTHEADERTAG[] = "[HGEFONT]";
 const char FNTBITMAPTAG[] = "Bitmap";
@@ -411,3 +412,5 @@ char *hgeFont::_get_line(char *file, char *line)
 
   return file + i;
 }
+
+} // ns hge

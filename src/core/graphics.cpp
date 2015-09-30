@@ -12,6 +12,7 @@
 // GAPI dependent includes and defines (DX8/DX9 switch) by kvakvs@yandex.ru
 #include "hge_gapi.h"
 
+namespace hge {
 
 void HGE_CALL HGE_Impl::Gfx_Clear(uint32_t color)
 {
@@ -242,14 +243,14 @@ void HGE_CALL HGE_Impl::Gfx_RenderLine(float x1, float y1, float x2, float y2, u
     }
 
     int i = nPrim * HGEPRIM_LINES;
-    VertArray[i].x = x1;
-    VertArray[i + 1].x = x2;
-    VertArray[i].y = y1;
-    VertArray[i + 1].y = y2;
+    VertArray[i].pos.x = x1;
+    VertArray[i + 1].pos.x = x2;
+    VertArray[i].pos.y = y1;
+    VertArray[i + 1].pos.y = y2;
     VertArray[i].z     = VertArray[i + 1].z = z;
     VertArray[i].col   = VertArray[i + 1].col = color;
-    VertArray[i].tx    = VertArray[i + 1].tx =
-                           VertArray[i].ty    = VertArray[i + 1].ty = 0.0f;
+    VertArray[i].tex.x    = VertArray[i + 1].tex.x =
+                VertArray[i].tex.y    = VertArray[i + 1].tex.y = 0.0f;
 
     nPrim++;
   }
@@ -274,12 +275,12 @@ void HGE_CALL HGE_Impl::Gfx_RenderTriple(const hgeTriple *triple)
       }
     }
 
-    memcpy(&VertArray[nPrim * HGEPRIM_TRIPLES], triple->v, sizeof(hgeVertex)*HGEPRIM_TRIPLES);
+    memcpy(&VertArray[nPrim * HGEPRIM_TRIPLES], triple->v, sizeof(Vertex)*HGEPRIM_TRIPLES);
     nPrim++;
   }
 }
 
-void HGE_CALL HGE_Impl::Gfx_RenderQuad(const hgeQuad *quad)
+void HGE_CALL HGE_Impl::Gfx_RenderQuad(const Quad *quad)
 {
   if (VertArray) {
     if (CurPrimType != HGEPRIM_QUADS || nPrim >= VERTEX_BUFFER_SIZE / HGEPRIM_QUADS
@@ -299,12 +300,12 @@ void HGE_CALL HGE_Impl::Gfx_RenderQuad(const hgeQuad *quad)
       }
     }
 
-    memcpy(&VertArray[nPrim * HGEPRIM_QUADS], quad->v, sizeof(hgeVertex)*HGEPRIM_QUADS);
+    memcpy(&VertArray[nPrim * HGEPRIM_QUADS], quad->v, sizeof(Vertex)*HGEPRIM_QUADS);
     nPrim++;
   }
 }
 
-hgeVertex *HGE_CALL HGE_Impl::Gfx_StartBatch(int prim_type, HTEXTURE tex, int blend, int *max_prim)
+Vertex *HGE_CALL HGE_Impl::Gfx_StartBatch(int prim_type, HTEXTURE tex, int blend, int *max_prim)
 {
   if (VertArray) {
     _render_batch();
@@ -1110,10 +1111,10 @@ void HGE_Impl::_GfxDone()
     }
 
 #if HGE_DIRECTX_VER == 8
-    pD3DDevice->SetStreamSource(0, NULL, sizeof(hgeVertex));
+    pD3DDevice->SetStreamSource(0, NULL, sizeof(Vertex));
 #endif
 #if HGE_DIRECTX_VER == 9
-    pD3DDevice->SetStreamSource(0, NULL, 0, sizeof(hgeVertex));
+    pD3DDevice->SetStreamSource(0, NULL, 0, sizeof(Vertex));
 #endif
     pVB->Release();
     pVB = 0;
@@ -1170,10 +1171,10 @@ bool HGE_Impl::_GfxRestore()
 
   if (pVB) {
 #if HGE_DIRECTX_VER == 8
-    pD3DDevice->SetStreamSource(0, NULL, sizeof(hgeVertex));
+    pD3DDevice->SetStreamSource(0, NULL, sizeof(Vertex));
 #endif
 #if HGE_DIRECTX_VER == 9
-    pD3DDevice->SetStreamSource(0, NULL, 0, sizeof(hgeVertex));
+    pD3DDevice->SetStreamSource(0, NULL, 0, sizeof(Vertex));
 #endif
     pVB->Release();
   }
@@ -1230,13 +1231,13 @@ bool HGE_Impl::_init_lost()
 // Create Vertex buffer
 #if HGE_DIRECTX_VER == 8
 
-  if (FAILED(pD3DDevice->CreateVertexBuffer(VERTEX_BUFFER_SIZE * sizeof(hgeVertex),
+  if (FAILED(pD3DDevice->CreateVertexBuffer(VERTEX_BUFFER_SIZE * sizeof(Vertex),
              D3DUSAGE_DYNAMIC | D3DUSAGE_WRITEONLY,
              D3DFVF_HGEVERTEX,
              D3DPOOL_DEFAULT, &pVB)))
 #endif
 #if HGE_DIRECTX_VER == 9
-    if (FAILED(pD3DDevice->CreateVertexBuffer(VERTEX_BUFFER_SIZE * sizeof(hgeVertex),
+    if (FAILED(pD3DDevice->CreateVertexBuffer(VERTEX_BUFFER_SIZE * sizeof(Vertex),
                D3DUSAGE_DYNAMIC | D3DUSAGE_WRITEONLY,
                D3DFVF_HGEVERTEX,
                D3DPOOL_DEFAULT,
@@ -1250,12 +1251,12 @@ bool HGE_Impl::_init_lost()
 
 #if HGE_DIRECTX_VER == 8
   pD3DDevice->SetVertexShader(D3DFVF_HGEVERTEX);
-  pD3DDevice->SetStreamSource(0, pVB, sizeof(hgeVertex));
+  pD3DDevice->SetStreamSource(0, pVB, sizeof(Vertex));
 #endif
 #if HGE_DIRECTX_VER == 9
   pD3DDevice->SetVertexShader(NULL);
   pD3DDevice->SetFVF(D3DFVF_HGEVERTEX);
-  pD3DDevice->SetStreamSource(0, pVB, 0, sizeof(hgeVertex));
+  pD3DDevice->SetStreamSource(0, pVB, 0, sizeof(Vertex));
 #endif
 
 // Create and setup Index buffer
@@ -1421,3 +1422,5 @@ void HGE_CALL HGE_Impl::Shader_Free(HSHADER shader)
   shader.as<LPDIRECT3DPIXELSHADER9>()->Release();
 }
 #endif
+
+} // ns hge

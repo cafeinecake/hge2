@@ -9,6 +9,7 @@
 
 #include "..\..\include\hgeparticle.h"
 
+namespace hge {
 
 hgeParticleManager::hgeParticleManager()
 {
@@ -110,3 +111,5 @@ void hgeParticleManager::KillAll()
 
   nPS = 0;
 }
+
+} // ns hge

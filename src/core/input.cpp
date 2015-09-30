@@ -9,6 +9,7 @@
 
 #include "hge_impl.h"
 
+namespace hge {
 
 char *KeyNames[] = {
   "?",
@@ -47,13 +48,13 @@ char *KeyNames[] = {
 };
 
 
-bool HGE_CALL HGE_Impl::Input_GetEvent(hgeInputEvent *event)
+bool HGE_CALL HGE_Impl::Input_GetEvent(InputEvent *event)
 {
   CInputEventList *eptr;
 
   if (queue) {
     eptr = queue;
-    memcpy(event, &eptr->event, sizeof(hgeInputEvent));
+    memcpy(event, &eptr->event, sizeof(InputEvent));
     queue = eptr->next;
     delete eptr;
     return true;
@@ -291,3 +292,6 @@ void HGE_Impl::_ClearQueue()
   Char = 0;
   Zpos = 0;
 }
+
+
+} // ns hge

@@ -69,6 +69,64 @@ using HTARGET = HGEHANDLE<1>;
 using HSHADER = HGEHANDLE<2>;
 #endif
 
+namespace hge {
+
+template <typename T>
+class Point {
+public:
+T x, y;
+};
+using Pointi32 = Point<int32_t>;
+using Pointf = Point<float>;
+
+template <typename T>
+class Size {
+public:
+T w, h;
+};
+using Sizei32 = Size<int32_t>;
+using Sizef = Size<float>;
+
+template <typename T>
+class Rect {
+public:
+Point<T> tl;
+Size<T>  size;
+};
+using Recti32 = Rect<int32_t>;
+using Rectf = Rect<float>;
+
+struct Vertex {
+    Pointf      pos; // screen position
+    float       z;   // Z-buffer depth 0..1
+    uint32_t    col; // color
+    Pointf      tex; // texture coordinates
+};
+
+struct hgeTriple {
+    Vertex      v[3];
+    HTEXTURE    tex;
+    int	        blend;
+};
+
+
+struct Quad {
+    Vertex      v[4];
+    HTEXTURE    tex;
+    int	        blend;
+    Quad() {}
+};
+
+struct InputEvent {
+    int     type;           // event type
+    int     key;            // key code
+    int     flags;          // event flags
+    int     chr;            // character code
+    int     wheel;          // wheel shift
+    float   x;              // mouse cursor x-coordinate
+    float   y;              // mouse cursor y-coordinate
+};
+
 
 /*
 ** Hardware color macros
@@ -193,52 +251,6 @@ typedef bool (*hgeCallback)();
 #define HGEPRIM_LINES       2
 #define HGEPRIM_TRIPLES     3
 #define HGEPRIM_QUADS       4
-
-
-/*
-** HGE Vertex structure
-*/
-struct hgeVertex {
-  float     x, y;       // screen position
-  float     z;          // Z-buffer depth 0..1
-  uint32_t      col;        // color
-  float     tx, ty;     // texture coordinates
-};
-
-
-/*
-** HGE Triple structure
-*/
-struct hgeTriple {
-  hgeVertex   v[3];
-  HTEXTURE    tex;
-  int       blend;
-};
-
-
-/*
-** HGE Quad structure
-*/
-struct hgeQuad {
-  hgeVertex   v[4];
-  HTEXTURE    tex;
-  int       blend;
-  hgeQuad() {}
-};
-
-
-/*
-** HGE Input Event structure
-*/
-struct hgeInputEvent {
-  int     type;           // event type
-  int     key;            // key code
-  int     flags;          // event flags
-  int     chr;            // character code
-  int     wheel;          // wheel shift
-  float   x;              // mouse cursor x-coordinate
-  float   y;              // mouse cursor y-coordinate
-};
 
 
 /*
@@ -380,7 +392,7 @@ public:
   virtual char       *HGE_CALL    Input_GetKeyName(int key) = 0;
   virtual int         HGE_CALL    Input_GetKey() = 0;
   virtual int         HGE_CALL    Input_GetChar() = 0;
-  virtual bool        HGE_CALL    Input_GetEvent(hgeInputEvent *event) = 0;
+  virtual bool        HGE_CALL    Input_GetEvent(InputEvent *event) = 0;
 
   virtual bool        HGE_CALL    Gfx_BeginScene(HTARGET target = 0) = 0;
   virtual void        HGE_CALL    Gfx_EndScene() = 0;
@@ -388,9 +400,8 @@ public:
   virtual void        HGE_CALL    Gfx_RenderLine(float x1, float y1, float x2, float y2,
       uint32_t color = 0xFFFFFFFF, float z = 0.5f) = 0;
   virtual void        HGE_CALL    Gfx_RenderTriple(const hgeTriple *triple) = 0;
-  virtual void        HGE_CALL    Gfx_RenderQuad(const hgeQuad *quad) = 0;
-  virtual hgeVertex  *HGE_CALL    Gfx_StartBatch(int prim_type, HTEXTURE tex, int blend,
-      int *max_prim) = 0;
+  virtual void        HGE_CALL    Gfx_RenderQuad(const Quad *quad) = 0;
+  virtual Vertex  *HGE_CALL    Gfx_StartBatch(int prim_type, HTEXTURE tex, int blend, int *max_prim) = 0;
   virtual void        HGE_CALL    Gfx_FinishBatch(int nprim) = 0;
   virtual void        HGE_CALL    Gfx_SetClipping(int x = 0, int y = 0, int w = 0, int h = 0) = 0;
   virtual void        HGE_CALL    Gfx_SetTransform(float x = 0, float y = 0, float dx = 0,
@@ -416,9 +427,6 @@ public:
       int top = 0, int width = 0, int height = 0) = 0;
   virtual void    HGE_CALL    Texture_Unlock(HTEXTURE tex) = 0;
 };
-
-extern "C" { HGE_EXPORT HGE *HGE_CALL hgeCreate(int ver); }
-
 
 /*
 ** HGE Virtual-key codes
@@ -458,5 +466,12 @@ typedef enum {              HGEK_NO_KEY     = 0x00,
                             HGEK_F4        = 0x73,  HGEK_F5        = 0x74,  HGEK_F6        = 0x75,
                             HGEK_F7        = 0x76,  HGEK_F8        = 0x77,  HGEK_F9        = 0x78,
                             HGEK_F10       = 0x79,  HGEK_F11       = 0x7A,  HGEK_F12       = 0x7B
-             } hgeKeyCode_t;
+             } KeyCode;
+
+} // ns hge
+
+using HGE = hge::HGE;
+extern "C" { HGE_EXPORT HGE *HGE_CALL hgeCreate(int ver); }
+
+
 

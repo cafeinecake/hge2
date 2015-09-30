@@ -9,6 +9,7 @@
 
 #include "hge_impl.h"
 
+namespace hge {
 
 #define LOWORDINT(n) ((int)((signed short)(LOWORD(n))))
 #define HIWORDINT(n) ((int)((signed short)(HIWORD(n))))
@@ -96,7 +97,7 @@ bool HGE_CALL HGE_Impl::System_Initiate()
 
 
   // Register window class
-
+  /*
   winclass.style = CS_DBLCLKS | CS_OWNDC | CS_HREDRAW | CS_VREDRAW;
   winclass.lpfnWndProc    = WindowProc;
   winclass.cbClsExtra     = 0;
@@ -156,13 +157,18 @@ bool HGE_CALL HGE_Impl::System_Initiate()
     hwnd = CreateWindowEx(WS_EX_TOPMOST, WINDOW_CLASS_NAME, szWinTitle, styleFS,
                           0, 0, 0, 0,
                           NULL, NULL, hInstance, NULL);
-
   if (!hwnd) {
     _PostError("Can't create window");
     return false;
   }
 
   ShowWindow(hwnd, SW_SHOW);
+  */
+  m_screen = GPU_Init(nScreenWidth, nScreenHeight, GPU_DEFAULT_INIT_FLAGS);
+  if (!m_screen) {
+	  _PostError("Can't start graphics");
+	  return false;
+  }
 
   // Init subsystems
 
@@ -1128,3 +1134,4 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
   return DefWindowProc(hwnd, msg, wparam, lparam);
 }
 
+} // ns hge
