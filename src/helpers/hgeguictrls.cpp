@@ -431,10 +431,10 @@ bool hgeGUIListbox::MouseWheel(int nNotches)
   return true;
 }
 
-bool hgeGUIListbox::KeyClick(int key, int chr)
+bool hgeGUIListbox::KeyClick(Key key, int chr)
 {
   switch (key) {
-  case HGEK_DOWN:
+  case Key::DOWN:
     if (nSelectedItem < nItems - 1) {
       nSelectedItem++;
 
@@ -447,7 +447,7 @@ bool hgeGUIListbox::KeyClick(int key, int chr)
 
     break;
 
-  case HGEK_UP:
+  case Key::UP:
     if (nSelectedItem > 0) {
       nSelectedItem--;
 

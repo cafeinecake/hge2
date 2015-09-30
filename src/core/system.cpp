@@ -908,7 +908,8 @@ HGE_Impl::HGE_Impl()
   res = 0;
 
   queue = 0;
-  Char = VKey = Zpos = 0;
+  Char = Zpos = 0;
+  VKey = Key::NO_KEY;
   bMouseOver = false;
   bCaptured = false;
 
@@ -1040,72 +1041,72 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
       pHGE->System_SetState(HGE_WINDOWED, !pHGE->System_GetState(HGE_WINDOWED));
       return FALSE;
     } else {
-      pHGE->_BuildEvent(INPUT_KEYDOWN, wparam, HIWORD(lparam) & 0xFF,
+      pHGE->_BuildEvent(INPUT_KEYDOWN, (Key)wparam, HIWORD(lparam) & 0xFF,
                         (lparam & 0x40000000) ? HGEINP_REPEAT : 0, -1, -1);
       return FALSE;
     }
 
   case WM_KEYDOWN:
-    pHGE->_BuildEvent(INPUT_KEYDOWN, wparam, HIWORD(lparam) & 0xFF,
+    pHGE->_BuildEvent(INPUT_KEYDOWN, (Key)wparam, HIWORD(lparam) & 0xFF,
                       (lparam & 0x40000000) ? HGEINP_REPEAT : 0, -1, -1);
     return FALSE;
 
   case WM_SYSKEYUP:
-    pHGE->_BuildEvent(INPUT_KEYUP, wparam, HIWORD(lparam) & 0xFF, 0, -1, -1);
+    pHGE->_BuildEvent(INPUT_KEYUP, (Key)wparam, HIWORD(lparam) & 0xFF, 0, -1, -1);
     return FALSE;
 
   case WM_KEYUP:
-    pHGE->_BuildEvent(INPUT_KEYUP, wparam, HIWORD(lparam) & 0xFF, 0, -1, -1);
+    pHGE->_BuildEvent(INPUT_KEYUP, (Key)wparam, HIWORD(lparam) & 0xFF, 0, -1, -1);
     return FALSE;
 
   case WM_LBUTTONDOWN:
     SetFocus(hwnd);
-    pHGE->_BuildEvent(INPUT_MBUTTONDOWN, HGEK_LBUTTON, 0, 0, LOWORDINT(lparam), HIWORDINT(lparam));
+    pHGE->_BuildEvent(INPUT_MBUTTONDOWN, Key::LBUTTON, 0, 0, LOWORDINT(lparam), HIWORDINT(lparam));
     return FALSE;
 
   case WM_MBUTTONDOWN:
     SetFocus(hwnd);
-    pHGE->_BuildEvent(INPUT_MBUTTONDOWN, HGEK_MBUTTON, 0, 0, LOWORDINT(lparam), HIWORDINT(lparam));
+    pHGE->_BuildEvent(INPUT_MBUTTONDOWN, Key::MBUTTON, 0, 0, LOWORDINT(lparam), HIWORDINT(lparam));
     return FALSE;
 
   case WM_RBUTTONDOWN:
     SetFocus(hwnd);
-    pHGE->_BuildEvent(INPUT_MBUTTONDOWN, HGEK_RBUTTON, 0, 0, LOWORDINT(lparam), HIWORDINT(lparam));
+    pHGE->_BuildEvent(INPUT_MBUTTONDOWN, Key::RBUTTON, 0, 0, LOWORDINT(lparam), HIWORDINT(lparam));
     return FALSE;
 
   case WM_LBUTTONDBLCLK:
-    pHGE->_BuildEvent(INPUT_MBUTTONDOWN, HGEK_LBUTTON, 0, HGEINP_REPEAT, LOWORDINT(lparam),
+    pHGE->_BuildEvent(INPUT_MBUTTONDOWN, Key::LBUTTON, 0, HGEINP_REPEAT, LOWORDINT(lparam),
                       HIWORDINT(lparam));
     return FALSE;
 
   case WM_MBUTTONDBLCLK:
-    pHGE->_BuildEvent(INPUT_MBUTTONDOWN, HGEK_MBUTTON, 0, HGEINP_REPEAT, LOWORDINT(lparam),
+    pHGE->_BuildEvent(INPUT_MBUTTONDOWN, Key::MBUTTON, 0, HGEINP_REPEAT, LOWORDINT(lparam),
                       HIWORDINT(lparam));
     return FALSE;
 
   case WM_RBUTTONDBLCLK:
-    pHGE->_BuildEvent(INPUT_MBUTTONDOWN, HGEK_RBUTTON, 0, HGEINP_REPEAT, LOWORDINT(lparam),
+    pHGE->_BuildEvent(INPUT_MBUTTONDOWN, Key::RBUTTON, 0, HGEINP_REPEAT, LOWORDINT(lparam),
                       HIWORDINT(lparam));
     return FALSE;
 
   case WM_LBUTTONUP:
-    pHGE->_BuildEvent(INPUT_MBUTTONUP, HGEK_LBUTTON, 0, 0, LOWORDINT(lparam), HIWORDINT(lparam));
+    pHGE->_BuildEvent(INPUT_MBUTTONUP, Key::LBUTTON, 0, 0, LOWORDINT(lparam), HIWORDINT(lparam));
     return FALSE;
 
   case WM_MBUTTONUP:
-    pHGE->_BuildEvent(INPUT_MBUTTONUP, HGEK_MBUTTON, 0, 0, LOWORDINT(lparam), HIWORDINT(lparam));
+    pHGE->_BuildEvent(INPUT_MBUTTONUP, Key::MBUTTON, 0, 0, LOWORDINT(lparam), HIWORDINT(lparam));
     return FALSE;
 
   case WM_RBUTTONUP:
-    pHGE->_BuildEvent(INPUT_MBUTTONUP, HGEK_RBUTTON, 0, 0, LOWORDINT(lparam), HIWORDINT(lparam));
+    pHGE->_BuildEvent(INPUT_MBUTTONUP, Key::RBUTTON, 0, 0, LOWORDINT(lparam), HIWORDINT(lparam));
     return FALSE;
 
   case WM_MOUSEMOVE:
-    pHGE->_BuildEvent(INPUT_MOUSEMOVE, 0, 0, 0, LOWORDINT(lparam), HIWORDINT(lparam));
+    pHGE->_BuildEvent(INPUT_MOUSEMOVE, Key::NO_KEY, 0, 0, LOWORDINT(lparam), HIWORDINT(lparam));
     return FALSE;
 
   case 0x020A: // WM_MOUSEWHEEL, GET_WHEEL_DELTA_WPARAM(wparam);
-    pHGE->_BuildEvent(INPUT_MOUSEWHEEL, short(HIWORD(wparam)) / 120, 0, 0, LOWORDINT(lparam),
+    pHGE->_BuildEvent(INPUT_MOUSEWHEEL, (Key)((HIWORD(wparam)) / 120), 0, 0, LOWORDINT(lparam),
                       HIWORDINT(lparam));
     return FALSE;
 

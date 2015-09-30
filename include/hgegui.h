@@ -43,7 +43,7 @@ namespace hge {
 		virtual bool  MouseLButton(bool bDown) { return false; }
 		virtual bool  MouseRButton(bool bDown) { return false; }
 		virtual bool  MouseWheel(int nNotches) { return false; }
-		virtual bool  KeyClick(int key, int chr) { return false; }
+		virtual bool  KeyClick(Key key, int chr) { return false; }
 
 		virtual void  SetColor(uint32_t _color) { color = _color; }
 
@@ -112,7 +112,7 @@ namespace hge {
 		int       nEnterLeave;
 		hgeSprite   *sprCursor;
 
-		Pointf      m_mousepos;
+                Pointi32  m_mousepos;
 		int       nWheel;
 		bool      bLPressed, bLReleased;
 		bool      bRPressed, bRReleased;

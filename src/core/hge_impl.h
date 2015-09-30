@@ -156,15 +156,15 @@ public:
   //    int pan = -101, float pitch = -1);
   //virtual bool        HGE_CALL    Channel_IsSliding(HCHANNEL channel);
 
-  virtual Pointf HGE_CALL Input_GetMousePos();
-  virtual void        HGE_CALL    Input_SetMousePos(const Pointf &pos);
+  virtual Pointi32    HGE_CALL Input_GetMousePos();
+  virtual void        HGE_CALL    Input_SetMousePos(const Pointi32 &pos);
   virtual int         HGE_CALL    Input_GetMouseWheel();
   virtual bool        HGE_CALL    Input_IsMouseOver();
-  virtual bool        HGE_CALL    Input_KeyDown(int key);
-  virtual bool        HGE_CALL    Input_KeyUp(int key);
-  virtual bool        HGE_CALL    Input_GetKeyState(int key);
-  virtual char       *HGE_CALL    Input_GetKeyName(int key);
-  virtual int         HGE_CALL    Input_GetKey();
+  virtual bool        HGE_CALL    Input_KeyDown(Key key);
+  virtual bool        HGE_CALL    Input_KeyUp(Key key);
+  virtual bool        HGE_CALL    Input_GetKeyState(Key key);
+  virtual char       *HGE_CALL    Input_GetKeyName(Key key);
+  virtual Key         HGE_CALL    Input_GetKey();
   virtual int         HGE_CALL    Input_GetChar();
   virtual bool        HGE_CALL    Input_GetEvent(InputEvent *event);
 
@@ -324,10 +324,10 @@ public:
 
 
   // Input
-  int                 VKey;
+  Key                 VKey;
   int                 Char;
   int                 Zpos;
-  Pointf        m_mousepos;
+  Pointi32        m_mousepos;
   bool                bMouseOver;
   bool                bCaptured;
   char                keyz[256];
@@ -335,7 +335,7 @@ public:
   void                _UpdateMouse();
   void                _InputInit();
   void                _ClearQueue();
-  void                _BuildEvent(int type, int key, int scan, int flags, int x, int y);
+  void                _BuildEvent(int type, Key key, int scan, int flags, int x, int y);
 
 
   // Resources

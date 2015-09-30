@@ -224,7 +224,7 @@ float hgeDistortionMesh::GetZ(int col, int row) const
   }
 }
 
-uint32_t hgeDistortionMesh::GetColor(int col, int row) const
+Color hgeDistortionMesh::GetColor(int col, int row) const
 {
   if (row < nRows && col < nCols) {
     return disp_array[row * nCols + col].col;

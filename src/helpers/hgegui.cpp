@@ -259,16 +259,15 @@ void hgeGUI::Render()
 int hgeGUI::Update(float dt)
 {
   bool bDone;
-  int key;
   hgeGUIObject *ctrl;
 
 // Update the mouse variables
 
   m_mousepos = hge->Input_GetMousePos();
-  bLPressed  = hge->Input_KeyDown(HGEK_LBUTTON);
-  bLReleased = hge->Input_KeyUp(HGEK_LBUTTON);
-  bRPressed  = hge->Input_KeyDown(HGEK_RBUTTON);
-  bRReleased = hge->Input_KeyUp(HGEK_RBUTTON);
+  bLPressed  = hge->Input_KeyDown(Key::LBUTTON);
+  bLReleased = hge->Input_KeyUp(Key::LBUTTON);
+  bRPressed  = hge->Input_KeyDown(Key::RBUTTON);
+  bRReleased = hge->Input_KeyUp(Key::RBUTTON);
   nWheel = hge->Input_GetMouseWheel();
 
 // Update all controls
@@ -308,10 +307,10 @@ int hgeGUI::Update(float dt)
 
 // Handle keys
 
-  key = hge->Input_GetKey();
+  auto key = hge->Input_GetKey();
 
-  if (((navmode & HGEGUI_LEFTRIGHT) && key == HGEK_LEFT) ||
-      ((navmode & HGEGUI_UPDOWN) && key == HGEK_UP)) {
+  if (((navmode & HGEGUI_LEFTRIGHT) && key == Key::LEFT) ||
+      ((navmode & HGEGUI_UPDOWN) && key == Key::UP)) {
     ctrl = ctrlFocus;
 
     if (!ctrl) {
@@ -349,8 +348,8 @@ int hgeGUI::Update(float dt)
 
       ctrlFocus = ctrl;
     }
-  } else if (((navmode & HGEGUI_LEFTRIGHT) && key == HGEK_RIGHT) ||
-             ((navmode & HGEGUI_UPDOWN) && key == HGEK_DOWN)) {
+  } else if (((navmode & HGEGUI_LEFTRIGHT) && key == Key::RIGHT) ||
+             ((navmode & HGEGUI_UPDOWN) && key == Key::DOWN)) {
     ctrl = ctrlFocus;
 
     if (!ctrl) {
@@ -388,7 +387,7 @@ int hgeGUI::Update(float dt)
 
       ctrlFocus = ctrl;
     }
-  } else if (ctrlFocus && key && key != HGEK_LBUTTON && key != HGEK_RBUTTON) {
+  } else if (ctrlFocus && key != Key::NO_KEY && key != Key::LBUTTON && key != Key::RBUTTON) {
     if (ctrlFocus->KeyClick(key, hge->Input_GetChar())) {
       return ctrlFocus->id;
     }
@@ -396,8 +395,8 @@ int hgeGUI::Update(float dt)
 
 // Handle mouse
 
-  bool bLDown = hge->Input_GetKeyState(HGEK_LBUTTON);
-  bool bRDown = hge->Input_GetKeyState(HGEK_RBUTTON);
+  bool bLDown = hge->Input_GetKeyState(Key::LBUTTON);
+  bool bRDown = hge->Input_GetKeyState(Key::RBUTTON);
 
   if (ctrlLock) {
     ctrl = ctrlLock;

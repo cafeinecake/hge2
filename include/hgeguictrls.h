@@ -129,7 +129,7 @@ namespace hge {
 		virtual bool  MouseMove(float x, float y) { mx = x; my = y; return false; }
 		virtual bool  MouseLButton(bool bDown);
 		virtual bool  MouseWheel(int nNotches);
-		virtual bool  KeyClick(int key, int chr);
+		virtual bool  KeyClick(Key key, int chr);
 
 	private:
 		hgeSprite   *sprHighlight;
