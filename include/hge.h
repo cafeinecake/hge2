@@ -122,12 +122,10 @@ public:
   hgeRect(float _x1, float _y1, float _x2, float _y2)
     : tl(_x1, _y1), br(_x2, _y2) {}
 
-  void  Clear()
-  {
+  void Clear() { 
     m_clean = true;
   }
-  bool  IsClean() const
-  {
+  bool IsClean() const {
     return m_clean;
   }
 
@@ -188,6 +186,28 @@ public:
     }
 
     return false;
+  }
+  
+  float width() const {
+    return br.x - tl.x;
+  }
+  float height() const {
+    return br.y - tl.y;
+  }
+
+  // Move preserving size
+  void move_to(float x, float y) {
+    float w = width();
+    float h = height();
+    tl.set(x, y);
+    br.set(x + w, y + h);
+  }
+
+  void move_by(float dx, float dy) {
+    tl.x += dx;
+    br.x += dx;
+    tl.y += dy;
+    br.y += dy;
   }
 
 private:

@@ -108,10 +108,11 @@ hgeGUIObject *hgeGUI::GetCtrl(int id) const
 void hgeGUI::MoveCtrl(int id, float x, float y)
 {
   hgeGUIObject *ctrl = GetCtrl(id);
-  ctrl->rect.x2 = x + (ctrl->rect.x2 - ctrl->rect.x1);
-  ctrl->rect.y2 = y + (ctrl->rect.y2 - ctrl->rect.y1);
-  ctrl->rect.x1 = x;
-  ctrl->rect.y1 = y;
+  ctrl->rect.move_to(x, y);
+  //ctrl->rect.x2 = x + (ctrl->rect.x2 - ctrl->rect.x1);
+  //ctrl->rect.y2 = y + (ctrl->rect.y2 - ctrl->rect.y1);
+  //ctrl->rect.x1 = x;
+  //ctrl->rect.y1 = y;
 }
 
 void hgeGUI::ShowCtrl(int id, bool bVisible)
@@ -166,10 +167,11 @@ void hgeGUI::Move(float dx, float dy)
   hgeGUIObject *ctrl = ctrls;
 
   while (ctrl) {
-    ctrl->rect.x1 += dx;
+    /*ctrl->rect.x1 += dx;
     ctrl->rect.y1 += dy;
     ctrl->rect.x2 += dx;
-    ctrl->rect.y2 += dy;
+    ctrl->rect.y2 += dy;*/
+    ctrl->rect.move_by(dx, dy);
 
     ctrl = ctrl->next;
   }
@@ -477,7 +479,8 @@ bool hgeGUI::ProcessCtrl(hgeGUIObject *ctrl)
     bResult = bResult || ctrl->MouseWheel(nWheel);
   }
 
-  bResult = bResult || ctrl->MouseMove(m_mousepos.x - ctrl->rect.x1, m_mousepos.y - ctrl->rect.y1);
+  bResult = bResult || ctrl->MouseMove(m_mousepos.x - ctrl->rect.tl.x, 
+                                       m_mousepos.y - ctrl->rect.tl.y);
 
   return bResult;
 }

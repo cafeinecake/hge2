@@ -27,6 +27,9 @@ public:
   }
 
 
+  void    Render(const Pointf &p) { 
+    Render(p.x, p.y); 
+  }
   void    Render(float x, float y);
   void    RenderEx(float x, float y, float rot, float hscale = 1.0f, float vscale = 0.0f);
   void    RenderStretch(float x1, float y1, float x2, float y2);

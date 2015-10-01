@@ -283,10 +283,10 @@ hgeRect *hgeParticleSystem::GetBoundingBox(hgeRect *rect) const
 {
   *rect = rectBoundingBox;
 
-  rect->x1 *= fScale;
-  rect->y1 *= fScale;
-  rect->x2 *= fScale;
-  rect->y2 *= fScale;
+  rect->tl.x *= fScale;
+  rect->tl.y *= fScale;
+  rect->br.x *= fScale;
+  rect->br.y *= fScale;
 
   return rect;
 }

@@ -160,7 +160,7 @@ public:
   }
   int       GetNumRows()
   {
-    return int((rect.y2 - rect.y1) / font->GetHeight());
+    return int((rect.br.y - rect.tl.y) / font->GetHeight());
   }
   void      Clear();
 

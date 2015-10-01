@@ -38,11 +38,11 @@ void hgeGUIText::SetMode(int _align)
   align = _align;
 
   if (align == HGETEXT_RIGHT) {
-    tx = rect.x2;
+    tx = rect.br.x;
   } else if (align == HGETEXT_CENTER) {
-    tx = (rect.x1 + rect.x2) / 2.0f;
+    tx = (rect.tl.x + rect.tl.x) / 2.0f;
   } else {
-    tx = rect.x1;
+    tx = rect.tl.x;
   }
 }
 
@@ -96,9 +96,9 @@ hgeGUIButton::~hgeGUIButton()
 void hgeGUIButton::Render()
 {
   if (bPressed) {
-    sprDown->Render(rect.x1, rect.y1);
+    sprDown->Render(rect.tl);
   } else {
-    sprUp->Render(rect.x1, rect.y1);
+    sprUp->Render(rect.tl);
   }
 }
 
@@ -167,53 +167,53 @@ void hgeGUISlider::Render()
   float xx, yy;
   float x1, y1, x2, y2;
 
-  xx = rect.x1 + (rect.x2 - rect.x1) * (fVal - fMin) / (fMax - fMin);
-  yy = rect.y1 + (rect.y2 - rect.y1) * (fVal - fMin) / (fMax - fMin);
+  xx = rect.tl.x + rect.width() * (fVal - fMin) / (fMax - fMin);
+  yy = rect.tl.y + rect.height() * (fVal - fMin) / (fMax - fMin);
 
   if (bVertical)
     switch (mode) {
     case HGESLIDER_BAR:
-      x1 = rect.x1;
-      y1 = rect.y1;
-      x2 = rect.x2;
+      x1 = rect.tl.x;
+      y1 = rect.tl.y;
+      x2 = rect.br.x;
       y2 = yy;
       break;
 
     case HGESLIDER_BARRELATIVE:
-      x1 = rect.x1;
-      y1 = (rect.y1 + rect.y2) / 2;
-      x2 = rect.x2;
+      x1 = rect.tl.x;
+      y1 = (rect.tl.y + rect.br.y) / 2;
+      x2 = rect.br.x;
       y2 = yy;
       break;
 
     case HGESLIDER_SLIDER:
-      x1 = (rect.x1 + rect.x2 - sl_w) / 2;
+      x1 = (rect.tl.x + rect.br.x - sl_w) / 2;
       y1 = yy - sl_h / 2;
-      x2 = (rect.x1 + rect.x2 + sl_w) / 2;
+      x2 = (rect.tl.x + rect.br.x + sl_w) / 2;
       y2 = yy + sl_h / 2;
       break;
     }
   else
     switch (mode) {
     case HGESLIDER_BAR:
-      x1 = rect.x1;
-      y1 = rect.y1;
+      x1 = rect.tl.x;
+      y1 = rect.tl.y;
       x2 = xx;
-      y2 = rect.y2;
+      y2 = rect.br.y;
       break;
 
     case HGESLIDER_BARRELATIVE:
-      x1 = (rect.x1 + rect.x2) / 2;
-      y1 = rect.y1;
+      x1 = (rect.tl.x + rect.br.x) / 2;
+      y1 = rect.tl.y;
       x2 = xx;
-      y2 = rect.y2;
+      y2 = rect.br.y;
       break;
 
     case HGESLIDER_SLIDER:
       x1 = xx - sl_w / 2;
-      y1 = (rect.y1 + rect.y2 - sl_h) / 2;
+      y1 = (rect.tl.y + rect.br.y - sl_h) / 2;
       x2 = xx + sl_w / 2;
-      y2 = (rect.y1 + rect.y2 + sl_h) / 2;
+      y2 = (rect.tl.y + rect.br.y + sl_h) / 2;
       break;
     }
 
@@ -230,25 +230,25 @@ bool hgeGUISlider::MouseMove(float x, float y)
 {
   if (bPressed) {
     if (bVertical) {
-      if (y > rect.y2 - rect.y1) {
-        y = rect.y2 - rect.y1;
+      if (y > rect.height()) {
+        y = rect.height();
       }
 
       if (y < 0) {
         y = 0;
       }
 
-      fVal = fMin + (fMax - fMin) * y / (rect.y2 - rect.y1);
+      fVal = fMin + (fMax - fMin) * y / rect.height();
     } else {
-      if (x > rect.x2 - rect.x1) {
-        x = rect.x2 - rect.x1;
+      if (x > rect.width()) {
+        x = rect.width();
       }
 
       if (x < 0) {
         x = 0;
       }
 
-      fVal = fMin + (fMax - fMin) * x / (rect.x2 - rect.x1);
+      fVal = fMin + (fMax - fMin) * x / rect.width();
     }
 
     return true;
@@ -388,13 +388,13 @@ void hgeGUIListbox::Render()
     }
 
     if (nTopItem + i == nSelectedItem) {
-      sprHighlight->Render(rect.x1, rect.y1 + i * font->GetHeight());
+      sprHighlight->Render(rect.tl.x, rect.tl.y + i * font->GetHeight());
       font->SetColor(texthilColor);
     } else {
       font->SetColor(textColor);
     }
 
-    font->Render(rect.x1 + 3, rect.y1 + i * font->GetHeight(), HGETEXT_LEFT, pItem->text);
+    font->Render(rect.tl.x + 3, rect.tl.y + i * font->GetHeight(), HGETEXT_LEFT, pItem->text);
     pItem = pItem->next;
   }
 }
