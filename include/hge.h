@@ -9,6 +9,7 @@
 #pragma once
 
 #include <windows.h>
+#include <cmath>
 
 #define HGE_VERSION 0x200
 
@@ -77,7 +78,7 @@ class Point {
     public:
     T x, y;
     Point() : x(T()), y(T()) {}
-    //Point(T _x, T _y) : x(_x), y(_y) {}
+    Point(T _x, T _y) : x(_x), y(_y) {}
     void set(T _x, T _y) {
         x = _x;
         y = _y;
@@ -102,6 +103,75 @@ class Rect {
 };
 using Recti32 = Rect<int32_t>;
 using Rectf = Rect<float>;
+
+class hgeRect {
+public:
+  Pointf tl, br;
+
+  hgeRect() = default;
+  hgeRect(float _x1, float _y1, float _x2, float _y2) 
+    : tl(_x1, _y1), br(_x2, _y2) {}
+
+  void  Clear() { m_clean = true; }
+  bool  IsClean() const { return m_clean; }
+
+  void  Set(float _x1, float _y1, float _x2, float _y2) { 
+    tl.set(_x1, _y1); 
+    br.set(_x2, _y2);
+    m_clean = false;
+  }
+
+  void  SetRadius(float x, float y, float r) { 
+    tl.set(x - r, y - r);
+    br.set(x + r, y + r);
+    m_clean = false; 
+  }
+
+  void Encapsulate(float x, float y)
+  {
+    if (m_clean) {
+      tl.set(x, y);
+      br.set(x, y);
+      m_clean = false;
+    }
+    else {
+      if (x < tl.x) {
+        tl.x = x;
+      }
+      if (x > br.x) {
+        br.x = x;
+      }
+      if (y < tl.y) {
+        tl.y = y;
+      }
+      if (y > br.y) {
+        br.y = y;
+      }
+    }
+  }
+
+  bool TestPoint(float x, float y) const
+  {
+    if (x >= tl.x && x < br.x && y >= tl.y && y < br.y) {
+      return true;
+    }
+    return false;
+  }
+
+  bool Intersect(const hgeRect &rect) const
+  {
+    if (std::abs(tl.x + br.x - rect.tl.x - rect.br.x) < (br.x - tl.x + rect.br.x - rect.tl.x)) {
+      if (std::abs(tl.y + br.y - rect.tl.y - rect.br.y) < (br.y - tl.y + rect.br.y - rect.tl.y)) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+private:
+  bool m_clean = false;
+};
 
 /*
 ** Hardware color macros
