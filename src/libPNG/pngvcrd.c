@@ -171,13 +171,15 @@ png_combine_row(png_structp png_ptr, png_bytep row, int mask)
         shift = s_start;
         sp++;
         dp++;
-      } else
-      { shift += s_inc; }
+      } else {
+        shift += s_inc;
+      }
 
-      if (m == 1)
-      { m = 0x80; }
-      else
-      { m >>= 1; }
+      if (m == 1) {
+        m = 0x80;
+      } else {
+        m >>= 1;
+      }
     }
 
     break;
@@ -222,13 +224,15 @@ png_combine_row(png_structp png_ptr, png_bytep row, int mask)
         shift = s_start;
         sp++;
         dp++;
-      } else
-      { shift += s_inc; }
+      } else {
+        shift += s_inc;
+      }
 
-      if (m == 1)
-      { m = 0x80; }
-      else
-      { m >>= 1; }
+      if (m == 1) {
+        m = 0x80;
+      } else {
+        m >>= 1;
+      }
     }
 
     break;
@@ -273,13 +277,15 @@ png_combine_row(png_structp png_ptr, png_bytep row, int mask)
         shift = s_start;
         sp++;
         dp++;
-      } else
-      { shift += s_inc; }
+      } else {
+        shift += s_inc;
+      }
 
-      if (m == 1)
-      { m = 0x80; }
-      else
-      { m >>= 1; }
+      if (m == 1) {
+        m = 0x80;
+      } else {
+        m >>= 1;
+      }
     }
 
     break;
@@ -1031,15 +1037,17 @@ png_do_read_interlace(png_structp png_ptr)
         if (dshift == s_end) {
           dshift = s_start;
           dp--;
-        } else
-        { dshift += s_inc; }
+        } else {
+          dshift += s_inc;
+        }
       }
 
       if (sshift == s_end) {
         sshift = s_start;
         sp--;
-      } else
-      { sshift += s_inc; }
+      } else {
+        sshift += s_inc;
+      }
     }
 
     break;
@@ -1084,15 +1092,17 @@ png_do_read_interlace(png_structp png_ptr)
         if (dshift == s_end) {
           dshift = s_start;
           dp--;
-        } else
-        { dshift += s_inc; }
+        } else {
+          dshift += s_inc;
+        }
       }
 
       if (sshift == s_end) {
         sshift = s_start;
         sp--;
-      } else
-      { sshift += s_inc; }
+      } else {
+        sshift += s_inc;
+      }
     }
 
     break;
@@ -1137,15 +1147,17 @@ png_do_read_interlace(png_structp png_ptr)
         if (dshift == s_end) {
           dshift = s_start;
           dp--;
-        } else
-        { dshift += s_inc; }
+        } else {
+          dshift += s_inc;
+        }
       }
 
       if (sshift == s_end) {
         sshift = s_start;
         sp--;
-      } else
-      { sshift += s_inc; }
+      } else {
+        sshift += s_inc;
+      }
     }
 
     break;
@@ -1265,8 +1277,9 @@ png_do_read_interlace(png_structp png_ptr)
           } else if (width) { /* && ((pass == 4) || (pass == 5)) */
             int width_mmx = ((width >> 1) << 1) - 8;
 
-            if (width_mmx < 0)
-            { width_mmx = 0; }
+            if (width_mmx < 0) {
+              width_mmx = 0;
+            }
 
             width -= width_mmx;        // 8 or 9 pix, 24 or 27 bytes
 
@@ -1410,8 +1423,9 @@ png_do_read_interlace(png_structp png_ptr)
                * Replacement code is in the next three lines:
                */
 
-              for (j = 0; j < png_pass_inc[pass]; j++)
-              { *dp-- = *sptr; }
+              for (j = 0; j < png_pass_inc[pass]; j++) {
+                *dp-- = *sptr;
+              }
 
               sptr--;
             }
@@ -1825,14 +1839,15 @@ png_do_read_interlace(png_structp png_ptr)
       } /* end of mmx_supported */
 
       else /* MMX not supported:  use modified C code - takes advantage
-                * of inlining of memcpy for a constant */
+              * of inlining of memcpy for a constant */
       {
         if (pixel_bytes == 1) {
           for (i = width; i; i--) {
             int j;
 
-            for (j = 0; j < png_pass_inc[pass]; j++)
-            { *dp-- = *sptr; }
+            for (j = 0; j < png_pass_inc[pass]; j++) {
+              *dp-- = *sptr;
+            }
 
             sptr--;
           }

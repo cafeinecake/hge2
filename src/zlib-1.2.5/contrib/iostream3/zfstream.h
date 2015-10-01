@@ -53,7 +53,10 @@ public:
    *  @return  True if file is open.
   */
   bool
-  is_open() const { return (file != NULL); }
+  is_open() const
+  {
+    return (file != NULL);
+  }
 
   /**
    *  @brief  Open gzipped file.
@@ -258,14 +261,19 @@ public:
   */
   gzfilebuf *
   rdbuf() const
-  { return const_cast<gzfilebuf *>(&sb); }
+  {
+    return const_cast<gzfilebuf *>(&sb);
+  }
 
   /**
    *  @brief  Check if file is open.
    *  @return  True if file is open.
   */
   bool
-  is_open() { return sb.is_open(); }
+  is_open()
+  {
+    return sb.is_open();
+  }
 
   /**
    *  @brief  Open gzipped file.
@@ -346,14 +354,19 @@ public:
   */
   gzfilebuf *
   rdbuf() const
-  { return const_cast<gzfilebuf *>(&sb); }
+  {
+    return const_cast<gzfilebuf *>(&sb);
+  }
 
   /**
    *  @brief  Check if file is open.
    *  @return  True if file is open.
   */
   bool
-  is_open() { return sb.is_open(); }
+  is_open()
+  {
+    return sb.is_open();
+  }
 
   /**
    *  @brief  Open gzipped file.
@@ -452,11 +465,15 @@ gzomanip2<T1, T2>::gzomanip2(gzofstream & (*f)(gzofstream &, T1, T2),
 template<typename T1, typename T2>
 inline gzofstream &
 operator<<(gzofstream &s, const gzomanip2<T1, T2> &m)
-{ return (*m.func)(s, m.val1, m.val2); }
+{
+  return (*m.func)(s, m.val1, m.val2);
+}
 
 // Insert this onto stream to simplify setting of compression level
 inline gzomanip2<int, int>
 setcompression(int l, int s = Z_DEFAULT_STRATEGY)
-{ return gzomanip2<int, int>(&setcompression, l, s); }
+{
+  return gzomanip2<int, int>(&setcompression, l, s);
+}
 
 #endif // ZFSTREAM_H

@@ -28,10 +28,11 @@
 void /* PRIVATE */
 png_write_data(png_structp png_ptr, png_bytep data, png_size_t length)
 {
-  if (png_ptr->write_data_fn != NULL)
-  { (*(png_ptr->write_data_fn))(png_ptr, data, length); }
-  else
-  { png_error(png_ptr, "Call to NULL write function"); }
+  if (png_ptr->write_data_fn != NULL) {
+    (*(png_ptr->write_data_fn))(png_ptr, data, length);
+  } else {
+    png_error(png_ptr, "Call to NULL write function");
+  }
 }
 
 #if !defined(PNG_NO_STDIO)
@@ -47,15 +48,17 @@ png_default_write_data(png_structp png_ptr, png_bytep data, png_size_t length)
 
 #if defined(_WIN32_WCE)
 
-  if (!WriteFile((HANDLE)(png_ptr->io_ptr), data, length, &check, NULL))
-  { check = 0; }
+  if (!WriteFile((HANDLE)(png_ptr->io_ptr), data, length, &check, NULL)) {
+    check = 0;
+  }
 
 #else
   check = fwrite(data, 1, length, (png_FILE_p)(png_ptr->io_ptr));
 #endif
 
-  if (check != length)
-  { png_error(png_ptr, "Write Error"); }
+  if (check != length) {
+    png_error(png_ptr, "Write Error");
+  }
 }
 #else
 /* this is the model-independent version. Since the standard I/O library
@@ -80,8 +83,9 @@ png_default_write_data(png_structp png_ptr, png_bytep data, png_size_t length)
   if ((png_bytep)near_data == data) {
 #if defined(_WIN32_WCE)
 
-    if (!WriteFile(io_ptr, near_data, length, &check, NULL))
-    { check = 0; }
+    if (!WriteFile(io_ptr, near_data, length, &check, NULL)) {
+      check = 0;
+    }
 
 #else
     check = fwrite(near_data, 1, length, io_ptr);
@@ -97,25 +101,28 @@ png_default_write_data(png_structp png_ptr, png_bytep data, png_size_t length)
       png_memcpy(buf, data, written); /* copy far buffer to near buffer */
 #if defined(_WIN32_WCE)
 
-      if (!WriteFile(io_ptr, buf, written, &err, NULL))
-      { err = 0; }
+      if (!WriteFile(io_ptr, buf, written, &err, NULL)) {
+        err = 0;
+      }
 
 #else
       err = fwrite(buf, 1, written, io_ptr);
 #endif
 
-      if (err != written)
-      { break; }
-      else
-      { check += err; }
+      if (err != written) {
+        break;
+      } else {
+        check += err;
+      }
 
       data += written;
       remaining -= written;
     } while (remaining != 0);
   }
 
-  if (check != length)
-  { png_error(png_ptr, "Write Error"); }
+  if (check != length) {
+    png_error(png_ptr, "Write Error");
+  }
 }
 
 #endif
@@ -128,8 +135,9 @@ png_default_write_data(png_structp png_ptr, png_bytep data, png_size_t length)
 void /* PRIVATE */
 png_flush(png_structp png_ptr)
 {
-  if (png_ptr->output_flush_fn != NULL)
-  { (*(png_ptr->output_flush_fn))(png_ptr); }
+  if (png_ptr->output_flush_fn != NULL) {
+    (*(png_ptr->output_flush_fn))(png_ptr);
+  }
 }
 
 #if !defined(PNG_NO_STDIO)
@@ -140,8 +148,9 @@ png_default_flush(png_structp png_ptr)
   png_FILE_p io_ptr;
   io_ptr = (png_FILE_p)CVT_PTR((png_ptr->io_ptr));
 
-  if (io_ptr != NULL)
-  { fflush(io_ptr); }
+  if (io_ptr != NULL) {
+    fflush(io_ptr);
+  }
 
 #endif
 }
@@ -178,10 +187,11 @@ png_set_write_fn(png_structp png_ptr, png_voidp io_ptr,
 
 #if !defined(PNG_NO_STDIO)
 
-  if (write_data_fn != NULL)
-  { png_ptr->write_data_fn = write_data_fn; }
-  else
-  { png_ptr->write_data_fn = png_default_write_data; }
+  if (write_data_fn != NULL) {
+    png_ptr->write_data_fn = write_data_fn;
+  } else {
+    png_ptr->write_data_fn = png_default_write_data;
+  }
 
 #else
   png_ptr->write_data_fn = write_data_fn;
@@ -190,10 +200,11 @@ png_set_write_fn(png_structp png_ptr, png_voidp io_ptr,
 #if defined(PNG_WRITE_FLUSH_SUPPORTED)
 #if !defined(PNG_NO_STDIO)
 
-  if (output_flush_fn != NULL)
-  { png_ptr->output_flush_fn = output_flush_fn; }
-  else
-  { png_ptr->output_flush_fn = png_default_flush; }
+  if (output_flush_fn != NULL) {
+    png_ptr->output_flush_fn = output_flush_fn;
+  } else {
+    png_ptr->output_flush_fn = png_default_flush;
+  }
 
 #else
   png_ptr->output_flush_fn = output_flush_fn;
@@ -220,8 +231,9 @@ void *png_far_to_near(png_structp png_ptr, png_voidp ptr, int check)
   far_ptr = (void FAR *)near_ptr;
 
   if (check != 0)
-    if (FP_SEG(ptr) != FP_SEG(far_ptr))
-    { png_error(png_ptr, "segment lost in conversion"); }
+    if (FP_SEG(ptr) != FP_SEG(far_ptr)) {
+      png_error(png_ptr, "segment lost in conversion");
+    }
 
   return (near_ptr);
 }
@@ -234,8 +246,9 @@ void *png_far_to_near(png_structp png_ptr, png_voidp ptr, int check)
   far_ptr = (void FAR *)near_ptr;
 
   if (check != 0)
-    if (far_ptr != ptr)
-    { png_error(png_ptr, "segment lost in conversion"); }
+    if (far_ptr != ptr) {
+      png_error(png_ptr, "segment lost in conversion");
+    }
 
   return (near_ptr);
 }

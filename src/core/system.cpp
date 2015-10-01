@@ -165,9 +165,10 @@ bool HGE_CALL HGE_Impl::System_Initiate()
   ShowWindow(hwnd, SW_SHOW);
   */
   m_screen = GPU_Init(nScreenWidth, nScreenHeight, GPU_DEFAULT_INIT_FLAGS);
+
   if (!m_screen) {
-	  _PostError("Can't start graphics");
-	  return false;
+    _PostError("Can't start graphics");
+    return false;
   }
 
   // Init subsystems
@@ -563,7 +564,7 @@ void HGE_CALL HGE_Impl::System_SetStateInt(hgeIntState state, int value)
 
     break;
 
-	/*
+  /*
   case HGE_SAMPLERATE:
     if (!hBass) {
       nSampleRate = value;
@@ -585,7 +586,7 @@ void HGE_CALL HGE_Impl::System_SetStateInt(hgeIntState state, int value)
     nStreamVolume = value;
     _SetStreamVolume(nStreamVolume);
     break;
-	*/
+  */
 
   case HGE_FPS:
     if (VertArray) {

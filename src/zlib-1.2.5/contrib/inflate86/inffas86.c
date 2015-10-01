@@ -1123,12 +1123,13 @@ unsigned start;         /* inflate()'s starting value for strm->avail_out */
 #endif
 
   if (ar.status > 1) {
-    if (ar.status == 2)
-    { strm->msg = "invalid literal/length code"; }
-    else if (ar.status == 3)
-    { strm->msg = "invalid distance code"; }
-    else
-    { strm->msg = "invalid distance too far back"; }
+    if (ar.status == 2) {
+      strm->msg = "invalid literal/length code";
+    } else if (ar.status == 3) {
+      strm->msg = "invalid distance code";
+    } else {
+      strm->msg = "invalid distance too far back";
+    }
 
     state->mode = BAD;
   } else if (ar.status == 1) {

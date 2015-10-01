@@ -28,8 +28,9 @@ png_set_swap(png_structp png_ptr)
 {
   png_debug(1, "in png_set_swap\n");
 
-  if (png_ptr->bit_depth == 16)
-  { png_ptr->transformations |= PNG_SWAP_BYTES; }
+  if (png_ptr->bit_depth == 16) {
+    png_ptr->transformations |= PNG_SWAP_BYTES;
+  }
 }
 #endif
 
@@ -54,8 +55,9 @@ png_set_packswap(png_structp png_ptr)
 {
   png_debug(1, "in png_set_packswap\n");
 
-  if (png_ptr->bit_depth < 8)
-  { png_ptr->transformations |= PNG_PACKSWAP; }
+  if (png_ptr->bit_depth < 8) {
+    png_ptr->transformations |= PNG_PACKSWAP;
+  }
 }
 #endif
 
@@ -98,10 +100,11 @@ png_set_filler(png_structp png_ptr, png_uint_32 filler, int filler_loc)
   png_ptr->transformations |= PNG_FILLER;
   png_ptr->filler = (png_byte)filler;
 
-  if (filler_loc == PNG_FILLER_AFTER)
-  { png_ptr->flags |= PNG_FLAG_FILLER_AFTER; }
-  else
-  { png_ptr->flags &= ~PNG_FLAG_FILLER_AFTER; }
+  if (filler_loc == PNG_FILLER_AFTER) {
+    png_ptr->flags |= PNG_FLAG_FILLER_AFTER;
+  } else {
+    png_ptr->flags &= ~PNG_FLAG_FILLER_AFTER;
+  }
 
   /* This should probably go in the "do_read_filler" routine.
    * I attempted to do that in libpng-1.0.1a but that caused problems
@@ -171,8 +174,9 @@ png_do_invert(png_row_infop row_info, png_bytep row)
    */
 #if defined(PNG_USELESS_TESTS_SUPPORTED)
 
-  if (row == NULL || row_info == NULL)
-  { return; }
+  if (row == NULL || row_info == NULL) {
+    return;
+  }
 
 #endif
 
@@ -356,17 +360,19 @@ png_do_packswap(png_row_infop row_info, png_bytep row)
 
     end = row + row_info->rowbytes;
 
-    if (row_info->bit_depth == 1)
-    { table = onebppswaptable; }
-    else if (row_info->bit_depth == 2)
-    { table = twobppswaptable; }
-    else if (row_info->bit_depth == 4)
-    { table = fourbppswaptable; }
-    else
-    { return; }
+    if (row_info->bit_depth == 1) {
+      table = onebppswaptable;
+    } else if (row_info->bit_depth == 2) {
+      table = twobppswaptable;
+    } else if (row_info->bit_depth == 4) {
+      table = fourbppswaptable;
+    } else {
+      return;
+    }
 
-    for (rp = row; rp < end; rp++)
-    { *rp = table[*rp]; }
+    for (rp = row; rp < end; rp++) {
+      *rp = table[*rp];
+    }
   }
 }
 #endif /* PNG_READ_PACKSWAP_SUPPORTED or PNG_WRITE_PACKSWAP_SUPPORTED */
@@ -511,8 +517,9 @@ png_do_strip_filler(png_row_infop row_info, png_bytep row, png_uint_32 flags)
       row_info->channels = 1;
     }
 
-    if (flags & PNG_FLAG_STRIP_ALPHA)
-    { row_info->color_type &= ~PNG_COLOR_MASK_ALPHA; }
+    if (flags & PNG_FLAG_STRIP_ALPHA) {
+      row_info->color_type &= ~PNG_COLOR_MASK_ALPHA;
+    }
   }
 }
 #endif
@@ -616,8 +623,9 @@ png_get_user_transform_ptr(png_structp png_ptr)
   return ((png_voidp)png_ptr->user_transform_ptr);
 #else
 
-  if (png_ptr)
-  { return (NULL); }
+  if (png_ptr) {
+    return (NULL);
+  }
 
   return (NULL);
 #endif

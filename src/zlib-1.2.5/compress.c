@@ -34,13 +34,17 @@ int level;
 #ifdef MAXSEG_64K
 
   /* Check for source > 64K on 16-bit machine: */
-  if ((uLong)stream.avail_in != sourceLen) { return Z_BUF_ERROR; }
+  if ((uLong)stream.avail_in != sourceLen) {
+    return Z_BUF_ERROR;
+  }
 
 #endif
   stream.next_out = dest;
   stream.avail_out = (uInt) * destLen;
 
-  if ((uLong)stream.avail_out != *destLen) { return Z_BUF_ERROR; }
+  if ((uLong)stream.avail_out != *destLen) {
+    return Z_BUF_ERROR;
+  }
 
   stream.zalloc = (alloc_func)0;
   stream.zfree = (free_func)0;
@@ -48,7 +52,9 @@ int level;
 
   err = deflateInit(&stream, level);
 
-  if (err != Z_OK) { return err; }
+  if (err != Z_OK) {
+    return err;
+  }
 
   err = deflate(&stream, Z_FINISH);
 

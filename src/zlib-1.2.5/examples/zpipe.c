@@ -47,8 +47,9 @@ int def(FILE *source, FILE *dest, int level)
   strm.opaque = Z_NULL;
   ret = deflateInit(&strm, level);
 
-  if (ret != Z_OK)
-  { return ret; }
+  if (ret != Z_OK) {
+    return ret;
+  }
 
   /* compress until end of file */
   do {
@@ -111,8 +112,9 @@ int inf(FILE *source, FILE *dest)
   strm.next_in = Z_NULL;
   ret = inflateInit(&strm);
 
-  if (ret != Z_OK)
-  { return ret; }
+  if (ret != Z_OK) {
+    return ret;
+  }
 
   /* decompress until deflate stream ends or end of file */
   do {
@@ -123,8 +125,9 @@ int inf(FILE *source, FILE *dest)
       return Z_ERRNO;
     }
 
-    if (strm.avail_in == 0)
-    { break; }
+    if (strm.avail_in == 0) {
+      break;
+    }
 
     strm.next_in = in;
 
@@ -168,11 +171,13 @@ void zerr(int ret)
 
   switch (ret) {
   case Z_ERRNO:
-    if (ferror(stdin))
-    { fputs("error reading stdin\n", stderr); }
+    if (ferror(stdin)) {
+      fputs("error reading stdin\n", stderr);
+    }
 
-    if (ferror(stdout))
-    { fputs("error writing stdout\n", stderr); }
+    if (ferror(stdout)) {
+      fputs("error writing stdout\n", stderr);
+    }
 
     break;
 
@@ -206,8 +211,9 @@ int main(int argc, char **argv)
   if (argc == 1) {
     ret = def(stdin, stdout, Z_DEFAULT_COMPRESSION);
 
-    if (ret != Z_OK)
-    { zerr(ret); }
+    if (ret != Z_OK) {
+      zerr(ret);
+    }
 
     return ret;
   }
@@ -216,8 +222,9 @@ int main(int argc, char **argv)
   else if (argc == 2 && strcmp(argv[1], "-d") == 0) {
     ret = inf(stdin, stdout);
 
-    if (ret != Z_OK)
-    { zerr(ret); }
+    if (ret != Z_OK) {
+      zerr(ret);
+    }
 
     return ret;
   }

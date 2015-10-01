@@ -8,7 +8,9 @@
 #include "zutil.h"
 
 #ifndef NO_DUMMY_DECL
-struct internal_state      {int dummy;}; /* for buggy compilers */
+struct internal_state      {
+  int dummy;
+}; /* for buggy compilers */
 #endif
 
 const char *const z_errmsg[10] = {
@@ -193,7 +195,9 @@ Bytef *dest;
 const Bytef *source;
 uInt  len;
 {
-  if (len == 0) { return; }
+  if (len == 0) {
+    return;
+  }
 
   do {
     *dest++ = *source++; /* ??? to be unrolled */
@@ -208,7 +212,9 @@ uInt  len;
   uInt j;
 
   for (j = 0; j < len; j++) {
-    if (s1[j] != s2[j]) { return 2 * (s1[j] > s2[j]) - 1; }
+    if (s1[j] != s2[j]) {
+      return 2 * (s1[j] > s2[j]) - 1;
+    }
   }
 
   return 0;
@@ -218,7 +224,9 @@ void ZLIB_INTERNAL zmemzero(dest, len)
 Bytef *dest;
 uInt  len;
 {
-  if (len == 0) { return; }
+  if (len == 0) {
+    return;
+  }
 
   do {
     *dest++ = 0;  /* ??? to be unrolled */
@@ -269,12 +277,16 @@ voidpf ZLIB_INTERNAL zcalloc(voidpf opaque, unsigned items, unsigned size)
   if (bsize < 65520L) {
     buf = farmalloc(bsize);
 
-    if (*(ush *)&buf != 0) { return buf; }
+    if (*(ush *)&buf != 0) {
+      return buf;
+    }
   } else {
     buf = farmalloc(bsize + 16L);
   }
 
-  if (buf == NULL || next_ptr >= MAX_PTR) { return NULL; }
+  if (buf == NULL || next_ptr >= MAX_PTR) {
+    return NULL;
+  }
 
   table[next_ptr].org_ptr = buf;
 
@@ -296,7 +308,9 @@ void ZLIB_INTERNAL zcfree(voidpf opaque, voidpf ptr)
 
   /* Find the original pointer */
   for (n = 0; n < next_ptr; n++) {
-    if (ptr != table[n].new_ptr) { continue; }
+    if (ptr != table[n].new_ptr) {
+      continue;
+    }
 
     farfree(table[n].org_ptr);
 
@@ -327,14 +341,18 @@ void ZLIB_INTERNAL zcfree(voidpf opaque, voidpf ptr)
 
 voidpf ZLIB_INTERNAL zcalloc(voidpf opaque, uInt items, uInt size)
 {
-  if (opaque) { opaque = 0; } /* to make compiler happy */
+  if (opaque) {
+    opaque = 0;  /* to make compiler happy */
+  }
 
   return _halloc((long)items, size);
 }
 
 void ZLIB_INTERNAL zcfree(voidpf opaque, voidpf ptr)
 {
-  if (opaque) { opaque = 0; } /* to make compiler happy */
+  if (opaque) {
+    opaque = 0;  /* to make compiler happy */
+  }
 
   _hfree(ptr);
 }
@@ -357,7 +375,9 @@ voidpf opaque;
 unsigned items;
 unsigned size;
 {
-  if (opaque) { items += size - size; } /* make compiler happy */
+  if (opaque) {
+    items += size - size;  /* make compiler happy */
+  }
 
   return sizeof(uInt) > 2 ? (voidpf)malloc(items * size) :
          (voidpf)calloc(items, size);
@@ -369,7 +389,9 @@ voidpf ptr;
 {
   free(ptr);
 
-  if (opaque) { return; } /* make compiler happy */
+  if (opaque) {
+    return;  /* make compiler happy */
+  }
 }
 
 #endif /* MY_ZCALLOC */

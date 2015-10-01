@@ -56,9 +56,18 @@ public:
   void *_handle;
   HGEHANDLE(void *h) : _handle(h) {}
   HGEHANDLE() : _handle(nullptr) {}
-  operator void *() const { return _handle;  }
-  template <typename T> const T as() const { return (const T)_handle; }
-  template <typename T> T as() { return (T)_handle; }
+  operator void *() const
+  {
+    return _handle;
+  }
+  template <typename T> const T as() const
+  {
+    return (const T)_handle;
+  }
+  template <typename T> T as()
+  {
+    return (T)_handle;
+  }
 };
 
 // FIXME: Won't compile in 64-bit mode due to handles (4 bytes) holding a pointer (8 bytes)
@@ -75,31 +84,32 @@ using HSHADER = HGEHANDLE<2>;
 
 template <typename T>
 class Point {
-    public:
-    T x, y;
-    Point() : x(T()), y(T()) {}
-    Point(T _x, T _y) : x(_x), y(_y) {}
-    void set(T _x, T _y) {
-        x = _x;
-        y = _y;
-    }
+public:
+  T x, y;
+  Point() : x(T()), y(T()) {}
+  Point(T _x, T _y) : x(_x), y(_y) {}
+  void set(T _x, T _y)
+  {
+    x = _x;
+    y = _y;
+  }
 };
 using Pointi32 = Point<int32_t>;
 using Pointf = Point<float>;
 
 template <typename T>
 class Size {
-    public:
-    T width, height;
+public:
+  T width, height;
 };
 using Sizei32 = Size<int32_t>;
 using Sizef = Size<float>;
 
 template <typename T>
 class Rect {
-    public:
-    Point<T> tl;
-    Size<T>  size;
+public:
+  Point<T> tl;
+  Size<T>  size;
 };
 using Recti32 = Rect<int32_t>;
 using Rectf = Rect<float>;
@@ -109,22 +119,30 @@ public:
   Pointf tl, br;
 
   hgeRect() = default;
-  hgeRect(float _x1, float _y1, float _x2, float _y2) 
+  hgeRect(float _x1, float _y1, float _x2, float _y2)
     : tl(_x1, _y1), br(_x2, _y2) {}
 
-  void  Clear() { m_clean = true; }
-  bool  IsClean() const { return m_clean; }
+  void  Clear()
+  {
+    m_clean = true;
+  }
+  bool  IsClean() const
+  {
+    return m_clean;
+  }
 
-  void  Set(float _x1, float _y1, float _x2, float _y2) { 
-    tl.set(_x1, _y1); 
+  void  Set(float _x1, float _y1, float _x2, float _y2)
+  {
+    tl.set(_x1, _y1);
     br.set(_x2, _y2);
     m_clean = false;
   }
 
-  void  SetRadius(float x, float y, float r) { 
+  void  SetRadius(float x, float y, float r)
+  {
     tl.set(x - r, y - r);
     br.set(x + r, y + r);
-    m_clean = false; 
+    m_clean = false;
   }
 
   void Encapsulate(float x, float y)
@@ -133,17 +151,19 @@ public:
       tl.set(x, y);
       br.set(x, y);
       m_clean = false;
-    }
-    else {
+    } else {
       if (x < tl.x) {
         tl.x = x;
       }
+
       if (x > br.x) {
         br.x = x;
       }
+
       if (y < tl.y) {
         tl.y = y;
       }
+
       if (y > br.y) {
         br.y = y;
       }
@@ -155,6 +175,7 @@ public:
     if (x >= tl.x && x < br.x && y >= tl.y && y < br.y) {
       return true;
     }
+
     return false;
   }
 
@@ -179,15 +200,18 @@ private:
 class Color {
 public:
   union {
-    struct { 
-      uint8_t a, r, g, b; 
+    struct {
+      uint8_t a, r, g, b;
     };
     uint32_t argb;
   };
   Color() : argb(0) {}
   Color(uint32_t _argb) : argb(_argb) {}
   Color(uint8_t _a, uint8_t _r, uint8_t _g, uint8_t _b) : a(_a), r(_r), g(_g), b(_b) {}
-  Color set_a(uint8_t newa) const { return Color(newa, r, g, b); }
+  Color set_a(uint8_t newa) const
+  {
+    return Color(newa, r, g, b);
+  }
 };
 /*
 #define ARGB(a,r,g,b)   ((uint32_t(a)<<24) + (uint32_t(r)<<16) + (uint32_t(g)<<8) + uint32_t(b))
@@ -202,24 +226,24 @@ public:
 */
 
 struct Vertex {
-    Pointf      pos; // screen position
-    float       z;   // Z-buffer depth 0..1
-    Color       col; // color
-    Pointf      tex; // texture coordinates
+  Pointf      pos; // screen position
+  float       z;   // Z-buffer depth 0..1
+  Color       col; // color
+  Pointf      tex; // texture coordinates
 };
 
 struct hgeTriple {
-    Vertex      v[3];
-    HTEXTURE    tex;
-    int	        blend;
+  Vertex      v[3];
+  HTEXTURE    tex;
+  int         blend;
 };
 
 
 struct Quad {
-    Vertex      v[4];
-    HTEXTURE    tex;
-    int	        blend;
-    Quad() {}
+  Vertex      v[4];
+  HTEXTURE    tex;
+  int         blend;
+  Quad() {}
 };
 
 
@@ -361,7 +385,7 @@ typedef bool (*hgeCallback)();
 ** HGE Virtual-key codes
 */
 #undef DELETE
-enum class Key: uint32_t {
+enum class Key : uint32_t {
   NO_KEY     = 0x00,
   LBUTTON   = 0x01,  RBUTTON   = 0x02,  MBUTTON   = 0x04,
   ESCAPE    = 0x1B,  BACKSPACE = 0x08,  TAB       = 0x09,
@@ -438,16 +462,46 @@ private:
   virtual const char *HGE_CALL    System_GetStateString(hgeStringState state) = 0;
 
 public:
-  inline void                 System_SetState(hgeBoolState   state, bool        value) { System_SetStateBool(state, value); }
-  inline void                 System_SetState(hgeFuncState   state, hgeCallback value) { System_SetStateFunc(state, value); }
-  inline void                 System_SetState(hgeHwndState   state, HWND        value) { System_SetStateHwnd(state, value); }
-  inline void                 System_SetState(hgeIntState    state, int         value) { System_SetStateInt(state, value); }
-  inline void                 System_SetState(hgeStringState state, const char *value) { System_SetStateString(state, value); }
-  inline bool                 System_GetState(hgeBoolState   state) { return System_GetStateBool(state); }
-  inline hgeCallback          System_GetState(hgeFuncState   state) { return System_GetStateFunc(state); }
-  inline HWND                 System_GetState(hgeHwndState   state) { return System_GetStateHwnd(state); }
-  inline int                  System_GetState(hgeIntState    state) { return System_GetStateInt(state); }
-  inline const char          *System_GetState(hgeStringState state) { return System_GetStateString(state); }
+  inline void                 System_SetState(hgeBoolState   state, bool        value)
+  {
+    System_SetStateBool(state, value);
+  }
+  inline void                 System_SetState(hgeFuncState   state, hgeCallback value)
+  {
+    System_SetStateFunc(state, value);
+  }
+  inline void                 System_SetState(hgeHwndState   state, HWND        value)
+  {
+    System_SetStateHwnd(state, value);
+  }
+  inline void                 System_SetState(hgeIntState    state, int         value)
+  {
+    System_SetStateInt(state, value);
+  }
+  inline void                 System_SetState(hgeStringState state, const char *value)
+  {
+    System_SetStateString(state, value);
+  }
+  inline bool                 System_GetState(hgeBoolState   state)
+  {
+    return System_GetStateBool(state);
+  }
+  inline hgeCallback          System_GetState(hgeFuncState   state)
+  {
+    return System_GetStateFunc(state);
+  }
+  inline HWND                 System_GetState(hgeHwndState   state)
+  {
+    return System_GetStateHwnd(state);
+  }
+  inline int                  System_GetState(hgeIntState    state)
+  {
+    return System_GetStateInt(state);
+  }
+  inline const char          *System_GetState(hgeStringState state)
+  {
+    return System_GetStateString(state);
+  }
 
   virtual void       *HGE_CALL    Resource_Load(const char *filename, uint32_t *size = 0) = 0;
   virtual void        HGE_CALL    Resource_Free(void *res) = 0;
@@ -535,7 +589,8 @@ public:
       uint32_t color = 0xFFFFFFFF, float z = 0.5f) = 0;
   virtual void        HGE_CALL    Gfx_RenderTriple(const hgeTriple *triple) = 0;
   virtual void        HGE_CALL    Gfx_RenderQuad(const Quad *quad) = 0;
-  virtual Vertex  *HGE_CALL    Gfx_StartBatch(int prim_type, HTEXTURE tex, int blend, int *max_prim) = 0;
+  virtual Vertex  *HGE_CALL    Gfx_StartBatch(int prim_type, HTEXTURE tex, int blend,
+      int *max_prim) = 0;
   virtual void        HGE_CALL    Gfx_FinishBatch(int nprim) = 0;
   virtual void        HGE_CALL    Gfx_SetClipping(int x = 0, int y = 0, int w = 0, int h = 0) = 0;
   virtual void        HGE_CALL    Gfx_SetTransform(float x = 0, float y = 0, float dx = 0,
@@ -565,7 +620,9 @@ public:
 } // ns hge
 
 using HGE = hge::HGE;
-extern "C" { HGE_EXPORT HGE *HGE_CALL hgeCreate(int ver); }
+extern "C" {
+  HGE_EXPORT HGE *HGE_CALL hgeCreate(int ver);
+}
 
 
 

@@ -93,10 +93,11 @@ tm_unz tmu_date;
   newdate.tm_mday = tmu_date.tm_mday;
   newdate.tm_mon = tmu_date.tm_mon;
 
-  if (tmu_date.tm_year > 1900)
-  { newdate.tm_year = tmu_date.tm_year - 1900; }
-  else
-  { newdate.tm_year = tmu_date.tm_year ; }
+  if (tmu_date.tm_year > 1900) {
+    newdate.tm_year = tmu_date.tm_year - 1900;
+  } else {
+    newdate.tm_year = tmu_date.tm_year ;
+  }
 
   newdate.tm_isdst = -1;
 
@@ -131,8 +132,9 @@ char *newdir;
   char *p;
   int  len = (int)strlen(newdir);
 
-  if (len <= 0)
-  { return 0; }
+  if (len <= 0) {
+    return 0;
+  }
 
   buffer = (char *)malloc(len + 1);
 
@@ -157,8 +159,9 @@ char *newdir;
   while (1) {
     char hold;
 
-    while (*p && *p != '\\' && *p != '/')
-    { p++; }
+    while (*p && *p != '\\' && *p != '/') {
+      p++;
+    }
 
     hold = *p;
     *p = 0;
@@ -169,8 +172,9 @@ char *newdir;
       return 0;
     }
 
-    if (hold == 0)
-    { break; }
+    if (hold == 0) {
+      break;
+    }
 
     *p++ = hold;
   }
@@ -209,13 +213,15 @@ void Display64BitsSize(ZPOS64_T n, int size_char)
   for (;;) {
     number[offset] = (char)((n % 10) + '0');
 
-    if (number[offset] != '0')
-    { pos_string = offset; }
+    if (number[offset] != '0') {
+      pos_string = offset;
+    }
 
     n /= 10;
 
-    if (offset == 0)
-    { break; }
+    if (offset == 0) {
+      break;
+    }
 
     offset--;
   }
@@ -241,8 +247,9 @@ unzFile uf;
 
   err = unzGetGlobalInfo64(uf, &gi);
 
-  if (err != UNZ_OK)
-  { printf("error %d with zipfile in unzGetGlobalInfo \n", err); }
+  if (err != UNZ_OK) {
+    printf("error %d with zipfile in unzGetGlobalInfo \n", err);
+  }
 
   printf("  Length  Method     Size Ratio   Date    Time   CRC-32     Name\n");
   printf("  ------  ------     ---- -----   ----    ----   ------     ----\n");
@@ -261,28 +268,32 @@ unzFile uf;
       break;
     }
 
-    if (file_info.uncompressed_size > 0)
-    { ratio = (uLong)((file_info.compressed_size * 100) / file_info.uncompressed_size); }
+    if (file_info.uncompressed_size > 0) {
+      ratio = (uLong)((file_info.compressed_size * 100) / file_info.uncompressed_size);
+    }
 
     /* display a '*' if the file is crypted */
-    if ((file_info.flag & 1) != 0)
-    { charCrypt = '*'; }
+    if ((file_info.flag & 1) != 0) {
+      charCrypt = '*';
+    }
 
-    if (file_info.compression_method == 0)
-    { string_method = "Stored"; }
-    else if (file_info.compression_method == Z_DEFLATED) {
+    if (file_info.compression_method == 0) {
+      string_method = "Stored";
+    } else if (file_info.compression_method == Z_DEFLATED) {
       uInt iLevel = (uInt)((file_info.flag & 0x6) / 2);
 
-      if (iLevel == 0)
-      { string_method = "Defl:N"; }
-      else if (iLevel == 1)
-      { string_method = "Defl:X"; }
-      else if ((iLevel == 2) || (iLevel == 3))
-      { string_method = "Defl:F"; } /* 2:fast , 3 : extra fast*/
+      if (iLevel == 0) {
+        string_method = "Defl:N";
+      } else if (iLevel == 1) {
+        string_method = "Defl:X";
+      } else if ((iLevel == 2) || (iLevel == 3)) {
+        string_method = "Defl:F";  /* 2:fast , 3 : extra fast*/
+      }
     } else if (file_info.compression_method == Z_BZIP2ED) {
       string_method = "BZip2 ";
-    } else
-    { string_method = "Unkn. "; }
+    } else {
+      string_method = "Unkn. ";
+    }
 
     Display64BitsSize(file_info.uncompressed_size, 7);
     printf("  %6s%c", string_method, charCrypt);
@@ -344,8 +355,9 @@ const char *password;
   p = filename_withoutpath = filename_inzip;
 
   while ((*p) != '\0') {
-    if (((*p) == '/') || ((*p) == '\\'))
-    { filename_withoutpath = p + 1; }
+    if (((*p) == '/') || ((*p) == '\\')) {
+      filename_withoutpath = p + 1;
+    }
 
     p++;
   }
@@ -359,10 +371,11 @@ const char *password;
     const char *write_filename;
     int skip = 0;
 
-    if ((*popt_extract_without_path) == 0)
-    { write_filename = filename_inzip; }
-    else
-    { write_filename = filename_withoutpath; }
+    if ((*popt_extract_without_path) == 0) {
+      write_filename = filename_inzip;
+    } else {
+      write_filename = filename_withoutpath;
+    }
 
     err = unzOpenCurrentFilePassword(uf, password);
 
@@ -391,16 +404,19 @@ const char *password;
 
           rep = answer[0] ;
 
-          if ((rep >= 'a') && (rep <= 'z'))
-          { rep -= 0x20; }
+          if ((rep >= 'a') && (rep <= 'z')) {
+            rep -= 0x20;
+          }
         } while ((rep != 'Y') && (rep != 'N') && (rep != 'A'));
       }
 
-      if (rep == 'N')
-      { skip = 1; }
+      if (rep == 'N') {
+        skip = 1;
+      }
 
-      if (rep == 'A')
-      { *popt_overwrite = 1; }
+      if (rep == 'A') {
+        *popt_overwrite = 1;
+      }
     }
 
     if ((skip == 0) && (err == UNZ_OK)) {
@@ -440,8 +456,9 @@ const char *password;
           }
       } while (err > 0);
 
-      if (fout)
-      { fclose(fout); }
+      if (fout) {
+        fclose(fout);
+      }
 
       if (err == 0)
         change_file_date(write_filename, file_info.dosDate,
@@ -454,8 +471,9 @@ const char *password;
       if (err != UNZ_OK) {
         printf("error %d with zipfile in unzCloseCurrentFile\n", err);
       }
-    } else
-    { unzCloseCurrentFile(uf); } /* don't lose the error */
+    } else {
+      unzCloseCurrentFile(uf);  /* don't lose the error */
+    }
   }
 
   free(buf);
@@ -476,14 +494,16 @@ const char *password;
 
   err = unzGetGlobalInfo64(uf, &gi);
 
-  if (err != UNZ_OK)
-  { printf("error %d with zipfile in unzGetGlobalInfo \n", err); }
+  if (err != UNZ_OK) {
+    printf("error %d with zipfile in unzGetGlobalInfo \n", err);
+  }
 
   for (i = 0; i < gi.number_entry; i++) {
     if (do_extract_currentfile(uf, &opt_extract_without_path,
                                &opt_overwrite,
-                               password) != UNZ_OK)
-    { break; }
+                               password) != UNZ_OK) {
+      break;
+    }
 
     if ((i + 1) < gi.number_entry) {
       err = unzGoToNextFile(uf);
@@ -514,10 +534,11 @@ const char *password;
 
   if (do_extract_currentfile(uf, &opt_extract_without_path,
                              &opt_overwrite,
-                             password) == UNZ_OK)
-  { return 0; }
-  else
-  { return 1; }
+                             password) == UNZ_OK) {
+    return 0;
+  } else {
+    return 1;
+  }
 }
 
 
@@ -552,20 +573,25 @@ char *argv[];
         while ((*p) != '\0') {
           char c = *(p++);;
 
-          if ((c == 'l') || (c == 'L'))
-          { opt_do_list = 1; }
+          if ((c == 'l') || (c == 'L')) {
+            opt_do_list = 1;
+          }
 
-          if ((c == 'v') || (c == 'V'))
-          { opt_do_list = 1; }
+          if ((c == 'v') || (c == 'V')) {
+            opt_do_list = 1;
+          }
 
-          if ((c == 'x') || (c == 'X'))
-          { opt_do_extract = 1; }
+          if ((c == 'x') || (c == 'X')) {
+            opt_do_extract = 1;
+          }
 
-          if ((c == 'e') || (c == 'E'))
-          { opt_do_extract = opt_do_extract_withoutpath = 1; }
+          if ((c == 'e') || (c == 'E')) {
+            opt_do_extract = opt_do_extract_withoutpath = 1;
+          }
 
-          if ((c == 'o') || (c == 'O'))
-          { opt_overwrite = 1; }
+          if ((c == 'o') || (c == 'O')) {
+            opt_overwrite = 1;
+          }
 
           if ((c == 'd') || (c == 'D')) {
             opt_extractdir = 1;
@@ -578,10 +604,11 @@ char *argv[];
           }
         }
       } else {
-        if (zipfilename == NULL)
-        { zipfilename = argv[i]; }
-        else if ((filename_to_extract == NULL) && (!opt_extractdir))
-        { filename_to_extract = argv[i] ; }
+        if (zipfilename == NULL) {
+          zipfilename = argv[i];
+        } else if ((filename_to_extract == NULL) && (!opt_extractdir)) {
+          filename_to_extract = argv[i] ;
+        }
       }
     }
   }
@@ -620,9 +647,9 @@ char *argv[];
 
   printf("%s opened\n", filename_try);
 
-  if (opt_do_list == 1)
-  { ret_value = do_list(uf); }
-  else if (opt_do_extract == 1) {
+  if (opt_do_list == 1) {
+    ret_value = do_list(uf);
+  } else if (opt_do_extract == 1) {
 #ifdef _WIN32
 
     if (opt_extractdir && _chdir(dirname))
@@ -634,10 +661,12 @@ char *argv[];
       exit(-1);
     }
 
-    if (filename_to_extract == NULL)
-    { ret_value = do_extract(uf, opt_do_extract_withoutpath, opt_overwrite, password); }
-    else
-    { ret_value = do_extract_onefile(uf, filename_to_extract, opt_do_extract_withoutpath, opt_overwrite, password); }
+    if (filename_to_extract == NULL) {
+      ret_value = do_extract(uf, opt_do_extract_withoutpath, opt_overwrite, password);
+    } else {
+      ret_value = do_extract_onefile(uf, filename_to_extract, opt_do_extract_withoutpath, opt_overwrite,
+                                     password);
+    }
   }
 
   unzClose(uf);

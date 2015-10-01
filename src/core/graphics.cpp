@@ -250,7 +250,7 @@ void HGE_CALL HGE_Impl::Gfx_RenderLine(float x1, float y1, float x2, float y2, u
     VertArray[i].z     = VertArray[i + 1].z = z;
     VertArray[i].col   = VertArray[i + 1].col = color;
     VertArray[i].tex.x    = VertArray[i + 1].tex.x =
-                VertArray[i].tex.y    = VertArray[i + 1].tex.y = 0.0f;
+                              VertArray[i].tex.y    = VertArray[i + 1].tex.y = 0.0f;
 
     nPrim++;
   }

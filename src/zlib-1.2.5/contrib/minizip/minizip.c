@@ -96,15 +96,17 @@ uLong *dt;             /* dostime */
     char name[MAXFILENAME + 1];
     int len = strlen(f);
 
-    if (len > MAXFILENAME)
-    { len = MAXFILENAME; }
+    if (len > MAXFILENAME) {
+      len = MAXFILENAME;
+    }
 
     strncpy(name, f, MAXFILENAME - 1);
     /* strncpy doesnt append the trailing NULL, of the string is too long. */
     name[ MAXFILENAME ] = '\0';
 
-    if (name[len - 1] == '/')
-    { name[len - 1] = '\0'; }
+    if (name[len - 1] == '/') {
+      name[len - 1] = '\0';
+    }
 
     /* not all systems allow stat'ing a file with / appended */
     if (stat(name, &s) == 0) {
@@ -145,10 +147,11 @@ const char *filename;
   int ret = 1;
   ftestexist = fopen64(filename, "rb");
 
-  if (ftestexist == NULL)
-  { ret = 0; }
-  else
-  { fclose(ftestexist); }
+  if (ftestexist == NULL) {
+    ret = 0;
+  } else {
+    fclose(ftestexist);
+  }
 
   return ret;
 }
@@ -196,15 +199,17 @@ int getFileCrc(const char *filenameinzip, void *buf, unsigned long size_buf,
           err = ZIP_ERRNO;
         }
 
-      if (size_read > 0)
-      { calculate_crc = crc32(calculate_crc, buf, size_read); }
+      if (size_read > 0) {
+        calculate_crc = crc32(calculate_crc, buf, size_read);
+      }
 
       total_read += size_read;
 
     } while ((err == ZIP_OK) && (size_read > 0));
 
-  if (fin)
-  { fclose(fin); }
+  if (fin) {
+    fclose(fin);
+  }
 
   *result_crc = calculate_crc;
   printf("file %s crc %lx\n", filenameinzip, calculate_crc);
@@ -224,8 +229,9 @@ int isLargeFile(const char *filename)
 
     printf("File : %s is %lld bytes\n", filename, pos);
 
-    if (pos >= 0xffffffff)
-    { largeFile = 1; }
+    if (pos >= 0xffffffff) {
+      largeFile = 1;
+    }
 
     fclose(pFile);
   }
@@ -263,17 +269,21 @@ char *argv[];
         while ((*p) != '\0') {
           char c = *(p++);;
 
-          if ((c == 'o') || (c == 'O'))
-          { opt_overwrite = 1; }
+          if ((c == 'o') || (c == 'O')) {
+            opt_overwrite = 1;
+          }
 
-          if ((c == 'a') || (c == 'A'))
-          { opt_overwrite = 2; }
+          if ((c == 'a') || (c == 'A')) {
+            opt_overwrite = 2;
+          }
 
-          if ((c >= '0') && (c <= '9'))
-          { opt_compress_level = c - '0'; }
+          if ((c >= '0') && (c <= '9')) {
+            opt_compress_level = c - '0';
+          }
 
-          if ((c == 'j') || (c == 'J'))
-          { opt_exclude_path = 1; }
+          if ((c == 'j') || (c == 'J')) {
+            opt_exclude_path = 1;
+          }
 
           if (((c == 'p') || (c == 'P')) && (i + 1 < argc)) {
             password = argv[i + 1];
@@ -310,16 +320,19 @@ char *argv[];
     len = (int)strlen(filename_try);
 
     for (i = 0; i < len; i++)
-      if (filename_try[i] == '.')
-      { dot_found = 1; }
+      if (filename_try[i] == '.') {
+        dot_found = 1;
+      }
 
-    if (dot_found == 0)
-    { strcat(filename_try, ".zip"); }
+    if (dot_found == 0) {
+      strcat(filename_try, ".zip");
+    }
 
     if (opt_overwrite == 2) {
       /* if the file don't exist, we not append file */
-      if (check_exist_file(filename_try) == 0)
-      { opt_overwrite = 1; }
+      if (check_exist_file(filename_try) == 0) {
+        opt_overwrite = 1;
+      }
     } else if (opt_overwrite == 0)
       if (check_exist_file(filename_try) != 0) {
         char rep = 0;
@@ -336,15 +349,18 @@ char *argv[];
 
           rep = answer[0] ;
 
-          if ((rep >= 'a') && (rep <= 'z'))
-          { rep -= 0x20; }
+          if ((rep >= 'a') && (rep <= 'z')) {
+            rep -= 0x20;
+          }
         } while ((rep != 'Y') && (rep != 'N') && (rep != 'A'));
 
-        if (rep == 'N')
-        { zipok = 0; }
+        if (rep == 'N') {
+          zipok = 0;
+        }
 
-        if (rep == 'A')
-        { opt_overwrite = 2; }
+        if (rep == 'A') {
+          opt_overwrite = 2;
+        }
       }
   }
 
@@ -362,8 +378,9 @@ char *argv[];
     if (zf == NULL) {
       printf("error opening %s\n", filename_try);
       err = ZIP_ERRNO;
-    } else
-    { printf("creating %s\n", filename_try); }
+    } else {
+      printf("creating %s\n", filename_try);
+    }
 
     for (i = zipfilenamearg + 1; (i < argc) && (err == ZIP_OK); i++) {
       if (!((((*(argv[i])) == '-') || ((*(argv[i])) == '/')) &&
@@ -393,8 +410,9 @@ char *argv[];
                                          (opt_compress_level != 0) ? Z_DEFLATED : 0,
                                          opt_compress_level);
         */
-        if ((password != NULL) && (err == ZIP_OK))
-        { err = getFileCrc(filenameinzip, buf, size_buf, &crcFile); }
+        if ((password != NULL) && (err == ZIP_OK)) {
+          err = getFileCrc(filenameinzip, buf, size_buf, &crcFile);
+        }
 
         zip64 = isLargeFile(filenameinzip);
 
@@ -431,9 +449,9 @@ char *argv[];
                                       -MAX_WBITS, DEF_MEM_LEVEL, Z_DEFAULT_STRATEGY,
                                       password, crcFile, zip64);
 
-        if (err != ZIP_OK)
-        { printf("error in opening %s in zipfile\n", filenameinzip); }
-        else {
+        if (err != ZIP_OK) {
+          printf("error in opening %s in zipfile\n", filenameinzip);
+        } else {
           fin = fopen64(filenameinzip, "rb");
 
           if (fin == NULL) {
@@ -464,12 +482,13 @@ char *argv[];
             }
           } while ((err == ZIP_OK) && (size_read > 0));
 
-        if (fin)
-        { fclose(fin); }
+        if (fin) {
+          fclose(fin);
+        }
 
-        if (err < 0)
-        { err = ZIP_ERRNO; }
-        else {
+        if (err < 0) {
+          err = ZIP_ERRNO;
+        } else {
           err = zipCloseFileInZip(zf);
 
           if (err != ZIP_OK)
@@ -481,8 +500,9 @@ char *argv[];
 
     errclose = zipClose(zf, NULL);
 
-    if (errclose != ZIP_OK)
-    { printf("error in closing %s\n", filename_try); }
+    if (errclose != ZIP_OK) {
+      printf("error in closing %s\n", filename_try);
+    }
   } else {
     do_help();
   }

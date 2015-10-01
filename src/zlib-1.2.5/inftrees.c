@@ -108,19 +108,25 @@ unsigned short FAR *work;
    */
 
   /* accumulate lengths for codes (assumes lens[] all in 0..MAXBITS) */
-  for (len = 0; len <= MAXBITS; len++)
-  { count[len] = 0; }
+  for (len = 0; len <= MAXBITS; len++) {
+    count[len] = 0;
+  }
 
-  for (sym = 0; sym < codes; sym++)
-  { count[lens[sym]]++; }
+  for (sym = 0; sym < codes; sym++) {
+    count[lens[sym]]++;
+  }
 
   /* bound code lengths, force root to be within code lengths */
   root = *bits;
 
   for (max = MAXBITS; max >= 1; max--)
-    if (count[max] != 0) { break; }
+    if (count[max] != 0) {
+      break;
+    }
 
-  if (root > max) { root = max; }
+  if (root > max) {
+    root = max;
+  }
 
   if (max == 0) {                     /* no symbols to code at all */
     here.op = (unsigned char)64;    /* invalid code marker */
@@ -133,9 +139,13 @@ unsigned short FAR *work;
   }
 
   for (min = 1; min < max; min++)
-    if (count[min] != 0) { break; }
+    if (count[min] != 0) {
+      break;
+    }
 
-  if (root < min) { root = min; }
+  if (root < min) {
+    root = min;
+  }
 
   /* check for an over-subscribed or incomplete set of lengths */
   left = 1;
@@ -144,21 +154,27 @@ unsigned short FAR *work;
     left <<= 1;
     left -= count[len];
 
-    if (left < 0) { return -1; }        /* over-subscribed */
+    if (left < 0) {
+      return -1;  /* over-subscribed */
+    }
   }
 
-  if (left > 0 && (type == CODES || max != 1))
-  { return -1; }                      /* incomplete set */
+  if (left > 0 && (type == CODES || max != 1)) {
+    return -1;  /* incomplete set */
+  }
 
   /* generate offsets into symbol table for each length for sorting */
   offs[1] = 0;
 
-  for (len = 1; len < MAXBITS; len++)
-  { offs[len + 1] = offs[len] + count[len]; }
+  for (len = 1; len < MAXBITS; len++) {
+    offs[len + 1] = offs[len] + count[len];
+  }
 
   /* sort symbols by length, by symbol order within each length */
   for (sym = 0; sym < codes; sym++)
-    if (lens[sym] != 0) { work[offs[lens[sym]]++] = (unsigned short)sym; }
+    if (lens[sym] != 0) {
+      work[offs[lens[sym]]++] = (unsigned short)sym;
+    }
 
   /*
      Create and fill in decoding tables.  In this loop, the table being
@@ -225,8 +241,9 @@ unsigned short FAR *work;
 
   /* check available table space */
   if ((type == LENS && used >= ENOUGH_LENS) ||
-      (type == DISTS && used >= ENOUGH_DISTS))
-  { return 1; }
+      (type == DISTS && used >= ENOUGH_DISTS)) {
+    return 1;
+  }
 
   /* process all codes and make table entries */
   for (;;) {
@@ -257,20 +274,24 @@ unsigned short FAR *work;
     /* backwards increment the len-bit code huff */
     incr = 1U << (len - 1);
 
-    while (huff & incr)
-    { incr >>= 1; }
+    while (huff & incr) {
+      incr >>= 1;
+    }
 
     if (incr != 0) {
       huff &= incr - 1;
       huff += incr;
-    } else
-    { huff = 0; }
+    } else {
+      huff = 0;
+    }
 
     /* go to next symbol, update count, len */
     sym++;
 
     if (--(count[len]) == 0) {
-      if (len == max) { break; }
+      if (len == max) {
+        break;
+      }
 
       len = lens[work[sym]];
     }
@@ -278,8 +299,9 @@ unsigned short FAR *work;
     /* create new sub-table if needed */
     if (len > root && (huff & mask) != low) {
       /* if first time, transition to sub-tables */
-      if (drop == 0)
-      { drop = root; }
+      if (drop == 0) {
+        drop = root;
+      }
 
       /* increment past last table */
       next += min;            /* here min is 1 << curr */
@@ -291,7 +313,9 @@ unsigned short FAR *work;
       while (curr + drop < max) {
         left -= count[curr + drop];
 
-        if (left <= 0) { break; }
+        if (left <= 0) {
+          break;
+        }
 
         curr++;
         left <<= 1;
@@ -301,8 +325,9 @@ unsigned short FAR *work;
       used += 1U << curr;
 
       if ((type == LENS && used >= ENOUGH_LENS) ||
-          (type == DISTS && used >= ENOUGH_DISTS))
-      { return 1; }
+          (type == DISTS && used >= ENOUGH_DISTS)) {
+        return 1;
+      }
 
       /* point entry in root table to sub-table */
       low = huff & mask;
@@ -338,14 +363,16 @@ unsigned short FAR *work;
     /* backwards increment the len-bit code huff */
     incr = 1U << (len - 1);
 
-    while (huff & incr)
-    { incr >>= 1; }
+    while (huff & incr) {
+      incr >>= 1;
+    }
 
     if (incr != 0) {
       huff &= incr - 1;
       huff += incr;
-    } else
-    { huff = 0; }
+    } else {
+      huff = 0;
+    }
   }
 
   /* set return parameters */

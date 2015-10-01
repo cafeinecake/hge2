@@ -472,13 +472,15 @@ png_combine_row(png_structp png_ptr, png_bytep row, int mask)
           shift = s_start;
           sp++;
           dp++;
-        } else
-        { shift += s_inc; }
+        } else {
+          shift += s_inc;
+        }
 
-        if (m == 1)
-        { m = 0x80; }
-        else
-        { m >>= 1; }
+        if (m == 1) {
+          m = 0x80;
+        } else {
+          m >>= 1;
+        }
       }
 
       break;
@@ -523,13 +525,15 @@ png_combine_row(png_structp png_ptr, png_bytep row, int mask)
           shift = s_start;
           sp++;
           dp++;
-        } else
-        { shift += s_inc; }
+        } else {
+          shift += s_inc;
+        }
 
-        if (m == 1)
-        { m = 0x80; }
-        else
-        { m >>= 1; }
+        if (m == 1) {
+          m = 0x80;
+        } else {
+          m >>= 1;
+        }
       }
 
       break;
@@ -574,13 +578,15 @@ png_combine_row(png_structp png_ptr, png_bytep row, int mask)
           shift = s_start;
           sp++;
           dp++;
-        } else
-        { shift += s_inc; }
+        } else {
+          shift += s_inc;
+        }
 
-        if (m == 1)
-        { m = 0x80; }
-        else
-        { m >>= 1; }
+        if (m == 1) {
+          m = 0x80;
+        } else {
+          m >>= 1;
+        }
       }
 
       break;
@@ -709,8 +715,9 @@ png_combine_row(png_structp png_ptr, png_bytep row, int mask)
           final_val += diff /* *BPP1 */ ;
 
           for (; i < final_val; i += stride) {
-            if (rep_bytes > (int)(final_val - i))
-            { rep_bytes = (int)(final_val - i); }
+            if (rep_bytes > (int)(final_val - i)) {
+              rep_bytes = (int)(final_val - i);
+            }
 
             png_memcpy(dstptr, srcptr, rep_bytes);
             srcptr += stride;
@@ -862,8 +869,9 @@ png_combine_row(png_structp png_ptr, png_bytep row, int mask)
           final_val += diff * BPP2;
 
           for (; i < final_val; i += stride) {
-            if (rep_bytes > (int)(final_val - i))
-            { rep_bytes = (int)(final_val - i); }
+            if (rep_bytes > (int)(final_val - i)) {
+              rep_bytes = (int)(final_val - i);
+            }
 
             png_memcpy(dstptr, srcptr, rep_bytes);
             srcptr += stride;
@@ -1029,8 +1037,9 @@ png_combine_row(png_structp png_ptr, png_bytep row, int mask)
           final_val += diff * BPP3;
 
           for (; i < final_val; i += stride) {
-            if (rep_bytes > (int)(final_val - i))
-            { rep_bytes = (int)(final_val - i); }
+            if (rep_bytes > (int)(final_val - i)) {
+              rep_bytes = (int)(final_val - i);
+            }
 
             png_memcpy(dstptr, srcptr, rep_bytes);
             srcptr += stride;
@@ -1203,8 +1212,9 @@ png_combine_row(png_structp png_ptr, png_bytep row, int mask)
           final_val += diff * BPP4;
 
           for (; i < final_val; i += stride) {
-            if (rep_bytes > (int)(final_val - i))
-            { rep_bytes = (int)(final_val - i); }
+            if (rep_bytes > (int)(final_val - i)) {
+              rep_bytes = (int)(final_val - i);
+            }
 
             png_memcpy(dstptr, srcptr, rep_bytes);
             srcptr += stride;
@@ -1394,8 +1404,9 @@ png_combine_row(png_structp png_ptr, png_bytep row, int mask)
           final_val += diff * BPP6;
 
           for (; i < final_val; i += stride) {
-            if (rep_bytes > (int)(final_val - i))
-            { rep_bytes = (int)(final_val - i); }
+            if (rep_bytes > (int)(final_val - i)) {
+              rep_bytes = (int)(final_val - i);
+            }
 
             png_memcpy(dstptr, srcptr, rep_bytes);
             srcptr += stride;
@@ -1434,8 +1445,9 @@ png_combine_row(png_structp png_ptr, png_bytep row, int mask)
         final_val += diff * BPP8;
 
         for (; i < final_val; i += stride) {
-          if (rep_bytes > (int)(final_val - i))
-          { rep_bytes = (int)(final_val - i); }
+          if (rep_bytes > (int)(final_val - i)) {
+            rep_bytes = (int)(final_val - i);
+          }
 
           png_memcpy(dstptr, srcptr, rep_bytes);
           srcptr += stride;
@@ -1543,15 +1555,17 @@ png_do_read_interlace(png_structp png_ptr)
           if (dshift == s_end) {
             dshift = s_start;
             dp--;
-          } else
-          { dshift += s_inc; }
+          } else {
+            dshift += s_inc;
+          }
         }
 
         if (sshift == s_end) {
           sshift = s_start;
           sp--;
-        } else
-        { sshift += s_inc; }
+        } else {
+          sshift += s_inc;
+        }
       }
 
       break;
@@ -1596,15 +1610,17 @@ png_do_read_interlace(png_structp png_ptr)
           if (dshift == s_end) {
             dshift = s_start;
             dp--;
-          } else
-          { dshift += s_inc; }
+          } else {
+            dshift += s_inc;
+          }
         }
 
         if (sshift == s_end) {
           sshift = s_start;
           sp--;
-        } else
-        { sshift += s_inc; }
+        } else {
+          sshift += s_inc;
+        }
       }
 
       break;
@@ -1649,15 +1665,17 @@ png_do_read_interlace(png_structp png_ptr)
           if (dshift == s_end) {
             dshift = s_start;
             dp--;
-          } else
-          { dshift += s_inc; }
+          } else {
+            dshift += s_inc;
+          }
         }
 
         if (sshift == s_end) {
           sshift = s_start;
           sp--;
-        } else
-        { sshift += s_inc; }
+        } else {
+          sshift += s_inc;
+        }
       }
 
       break;
@@ -1790,8 +1808,9 @@ png_do_read_interlace(png_structp png_ptr)
           } else if (width) { /* && ((pass == 4) || (pass == 5)) */
             int width_mmx = ((width >> 1) << 1) - 8;   // GRR:  huh?
 
-            if (width_mmx < 0)
-            { width_mmx = 0; }
+            if (width_mmx < 0) {
+              width_mmx = 0;
+            }
 
             width -= width_mmx;        // 8 or 9 pix, 24 or 27 bytes
 
@@ -2551,7 +2570,7 @@ png_do_read_interlace(png_structp png_ptr)
       } // end of _mmx_supported ========================================
 
       else /* MMX not supported:  use modified C code - takes advantage
-                *   of inlining of png_memcpy for a constant */
+              *   of inlining of png_memcpy for a constant */
         /* GRR 19991007:  does it?  or should pixel_bytes in each
          *   block be replaced with immediate value (e.g., 1)? */
         /* GRR 19991017:  replaced with constants in each case */

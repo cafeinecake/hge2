@@ -39,19 +39,22 @@ png_error(png_structp png_ptr, png_const_charp error_message)
       int offset;
 
       for (offset = 1; offset < 15; offset++)
-        if (*(error_message + offset) == ' ')
-        { break; }
+        if (*(error_message + offset) == ' ') {
+          break;
+        }
 
       if (png_ptr->flags & PNG_FLAG_STRIP_ERROR_TEXT) {
         int i;
 
-        for (i = 0; i < offset - 1; i++)
-        { msg[i] = error_message[i + 1]; }
+        for (i = 0; i < offset - 1; i++) {
+          msg[i] = error_message[i + 1];
+        }
 
         msg[i] = '\0';
         error_message = msg;
-      } else
-      { error_message += offset; }
+      } else {
+        error_message += offset;
+      }
     } else {
       if (png_ptr->flags & PNG_FLAG_STRIP_ERROR_TEXT) {
         msg[0] = '0';
@@ -63,8 +66,9 @@ png_error(png_structp png_ptr, png_const_charp error_message)
 
 #endif
 
-  if (png_ptr != NULL && png_ptr->error_fn != NULL)
-  { (*(png_ptr->error_fn))(png_ptr, error_message); }
+  if (png_ptr != NULL && png_ptr->error_fn != NULL) {
+    (*(png_ptr->error_fn))(png_ptr, error_message);
+  }
 
   /* If the custom handler doesn't exist, or if it returns,
      use the default handler, which will not return. */
@@ -87,15 +91,17 @@ png_warning(png_structp png_ptr, png_const_charp warning_message)
   {
     if (*warning_message == '#') {
       for (offset = 1; offset < 15; offset++)
-        if (*(warning_message + offset) == ' ')
-        { break; }
+        if (*(warning_message + offset) == ' ') {
+          break;
+        }
     }
   }
 
-  if (png_ptr != NULL && png_ptr->warning_fn != NULL)
-  { (*(png_ptr->warning_fn))(png_ptr, warning_message + offset); }
-  else
-  { png_default_warning(png_ptr, warning_message + offset); }
+  if (png_ptr != NULL && png_ptr->warning_fn != NULL) {
+    (*(png_ptr->warning_fn))(png_ptr, warning_message + offset);
+  } else {
+    png_default_warning(png_ptr, warning_message + offset);
+  }
 }
 
 /* These utilities are used internally to build an error message that relates
@@ -129,9 +135,9 @@ png_format_buffer(png_structp png_ptr, png_charp buffer, png_const_charp
     }
   }
 
-  if (error_message == NULL)
-  { buffer[iout] = 0; }
-  else {
+  if (error_message == NULL) {
+    buffer[iout] = 0;
+  } else {
     buffer[iout++] = ':';
     buffer[iout++] = ' ';
     png_strncpy(buffer + iout, error_message, 63);
@@ -173,16 +179,18 @@ png_default_error(png_structp png_ptr, png_const_charp error_message)
     for (offset = 0; offset < 15; offset++) {
       error_number[offset] = *(error_message + offset + 1);
 
-      if (*(error_message + offset) == ' ')
-      { break; }
+      if (*(error_message + offset) == ' ') {
+        break;
+      }
     }
 
     if ((offset > 1) && (offset < 15)) {
       error_number[offset - 1] = '\0';
       fprintf(stderr, "libpng error no. %s: %s\n", error_number,
               error_message + offset);
-    } else
-    { fprintf(stderr, "libpng error: %s, offset=%d\n", error_message, offset); }
+    } else {
+      fprintf(stderr, "libpng error: %s, offset=%d\n", error_message, offset);
+    }
   } else
 #endif
     fprintf(stderr, "libpng error: %s\n", error_message);
@@ -202,15 +210,17 @@ png_default_error(png_structp png_ptr, png_const_charp error_message)
 #else
   /* make compiler happy */ ;
 
-  if (png_ptr)
-  { PNG_ABORT(); }
+  if (png_ptr) {
+    PNG_ABORT();
+  }
 
 #endif
 #ifdef PNG_NO_CONSOLE_IO
   /* make compiler happy */ ;
 
-  if (&error_message != NULL)
-  { return; }
+  if (&error_message != NULL) {
+    return;
+  }
 
 #endif
 }
@@ -233,16 +243,18 @@ png_default_warning(png_structp png_ptr, png_const_charp warning_message)
     for (offset = 0; offset < 15; offset++) {
       warning_number[offset] = *(warning_message + offset + 1);
 
-      if (*(warning_message + offset) == ' ')
-      { break; }
+      if (*(warning_message + offset) == ' ') {
+        break;
+      }
     }
 
     if ((offset > 1) && (offset < 15)) {
       warning_number[offset - 1] = '\0';
       fprintf(stderr, "libpng warning no. %s: %s\n", warning_number,
               warning_message + offset);
-    } else
-    { fprintf(stderr, "libpng warning: %s\n", warning_message); }
+    } else {
+      fprintf(stderr, "libpng warning: %s\n", warning_message);
+    }
   } else
 #  endif
     fprintf(stderr, "libpng warning: %s\n", warning_message);
@@ -250,14 +262,16 @@ png_default_warning(png_structp png_ptr, png_const_charp warning_message)
 #else
   /* make compiler happy */ ;
 
-  if (warning_message)
-  { return; }
+  if (warning_message) {
+    return;
+  }
 
 #endif
   /* make compiler happy */ ;
 
-  if (png_ptr)
-  { return; }
+  if (png_ptr) {
+    return;
+  }
 }
 
 /* This function is called when the application wants to use another method

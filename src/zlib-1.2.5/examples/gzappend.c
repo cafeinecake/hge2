@@ -105,15 +105,17 @@ local unsigned gcd(unsigned a, unsigned b)
     if (a > b) {
       c = b;
 
-      while (a - c >= c)
-      { c <<= 1; }
+      while (a - c >= c) {
+        c <<= 1;
+      }
 
       a -= c;
     } else {
       c = a;
 
-      while (b - c >= c)
-      { c <<= 1; }
+      while (b - c >= c) {
+        c <<= 1;
+      }
 
       b -= c;
     }
@@ -129,11 +131,17 @@ local void rotate(unsigned char *list, unsigned len, unsigned rot)
   unsigned char *start, *last, *to, *from;
 
   /* normalize rot and handle degenerate cases */
-  if (len < 2) { return; }
+  if (len < 2) {
+    return;
+  }
 
-  if (rot >= len) { rot %= len; }
+  if (rot >= len) {
+    rot %= len;
+  }
 
-  if (rot == 0) { return; }
+  if (rot == 0) {
+    return;
+  }
 
   /* pointer to last entry in list */
   last = list + (len - 1);
@@ -165,9 +173,13 @@ local void rotate(unsigned char *list, unsigned len, unsigned rot)
       to = from;                  /* next step in cycle */
       from += rot;                /* go right rot positions */
 
-      if (from > last) { from -= len; }   /* (pointer better not wrap) */
+      if (from > last) {
+        from -= len;  /* (pointer better not wrap) */
+      }
 
-      if (from == start) { break; }   /* all but one shifted */
+      if (from == start) {
+        break;  /* all but one shifted */
+      }
 
       *to = *from;                /* shift left */
     }
@@ -193,7 +205,9 @@ local int readin(file *in)
 
   len = read(in->fd, in->buf, 1 << in->size);
 
-  if (len == -1) { bye("error reading ", in->name); }
+  if (len == -1) {
+    bye("error reading ", in->name);
+  }
 
   in->left = (unsigned)len;
   in->next = in->buf;
@@ -203,7 +217,9 @@ local int readin(file *in)
 /* read from file in, exit if end-of-file */
 local int readmore(file *in)
 {
-  if (readin(in) == 0) { bye("unexpected end of ", in->name); }
+  if (readin(in) == 0) {
+    bye("unexpected end of ", in->name);
+  }
 
   return 0;
 }
@@ -221,16 +237,18 @@ local void skip(file *in, unsigned n)
     bypass = n & ~((1U << in->size) - 1);
 
     if (bypass) {
-      if (lseek(in->fd, (off_t)bypass, SEEK_CUR) == -1)
-      { bye("seeking ", in->name); }
+      if (lseek(in->fd, (off_t)bypass, SEEK_CUR) == -1) {
+        bye("seeking ", in->name);
+      }
 
       n -= bypass;
     }
 
     readmore(in);
 
-    if (n > in->left)
-    { bye("unexpected end of ", in->name); }
+    if (n > in->left) {
+      bye("unexpected end of ", in->name);
+    }
   }
 
   in->left -= n;
@@ -255,13 +273,19 @@ local void gzheader(file *in)
   int flags;
   unsigned n;
 
-  if (read1(in) != 31 || read1(in) != 139) { bye(in->name, " not a gzip file"); }
+  if (read1(in) != 31 || read1(in) != 139) {
+    bye(in->name, " not a gzip file");
+  }
 
-  if (read1(in) != 8) { bye("unknown compression method in", in->name); }
+  if (read1(in) != 8) {
+    bye("unknown compression method in", in->name);
+  }
 
   flags = read1(in);
 
-  if (flags & 0xe0) { bye("unknown header flags set in", in->name); }
+  if (flags & 0xe0) {
+    bye("unknown header flags set in", in->name);
+  }
 
   skip(in, 6);
 
@@ -275,7 +299,9 @@ local void gzheader(file *in)
 
   if (flags & 16) while (read1(in) != 0) ;
 
-  if (flags & 2) { skip(in, 2); }
+  if (flags & 2) {
+    skip(in, 2);
+  }
 }
 
 /* decompress gzip file "name", return strm with a deflate stream ready to
@@ -295,11 +321,15 @@ local int gzscan(char *name, z_stream *strm, int level)
   gz.name = name;
   gz.fd = open(name, O_RDWR, 0);
 
-  if (gz.fd == -1) { bye("cannot open ", name); }
+  if (gz.fd == -1) {
+    bye("cannot open ", name);
+  }
 
   gz.buf = malloc(CHUNK);
 
-  if (gz.buf == NULL) { bye("out of memory", ""); }
+  if (gz.buf == NULL) {
+    bye("out of memory", "");
+  }
 
   gz.size = LGCHUNK;
   gz.left = 0;
@@ -310,14 +340,18 @@ local int gzscan(char *name, z_stream *strm, int level)
   /* prepare to decompress */
   window = malloc(DSIZE);
 
-  if (window == NULL) { bye("out of memory", ""); }
+  if (window == NULL) {
+    bye("out of memory", "");
+  }
 
   strm->zalloc = Z_NULL;
   strm->zfree = Z_NULL;
   strm->opaque = Z_NULL;
   ret = inflateInit2(strm, -15);
 
-  if (ret != Z_OK) { bye("out of memory", " or library mismatch"); }
+  if (ret != Z_OK) {
+    bye("out of memory", " or library mismatch");
+  }
 
   /* decompress the deflate stream, saving append information */
   lastbit = 0;
@@ -343,28 +377,33 @@ local int gzscan(char *name, z_stream *strm, int level)
     /* inflate and check for errors */
     ret = inflate(strm, Z_BLOCK);
 
-    if (ret == Z_STREAM_ERROR) { bye("internal stream error!", ""); }
+    if (ret == Z_STREAM_ERROR) {
+      bye("internal stream error!", "");
+    }
 
-    if (ret == Z_MEM_ERROR) { bye("out of memory", ""); }
+    if (ret == Z_MEM_ERROR) {
+      bye("out of memory", "");
+    }
 
-    if (ret == Z_DATA_ERROR)
-    { bye("invalid compressed data--format violated in", name); }
+    if (ret == Z_DATA_ERROR) {
+      bye("invalid compressed data--format violated in", name);
+    }
 
     /* update crc and sliding window pointer */
     crc = crc32(crc, window + have, DSIZE - have - strm->avail_out);
 
-    if (strm->avail_out)
-    { have = DSIZE - strm->avail_out; }
-    else {
+    if (strm->avail_out) {
+      have = DSIZE - strm->avail_out;
+    } else {
       have = 0;
       full = 1;
     }
 
     /* process end of block */
     if (strm->data_type & 128) {
-      if (strm->data_type & 64)
-      { left = strm->data_type & 0x1f; }
-      else {
+      if (strm->data_type & 64) {
+        left = strm->data_type & 0x1f;
+      } else {
         lastbit = strm->data_type & 0x1f;
         lastoff = lseek(gz.fd, 0L, SEEK_CUR) - strm->avail_in;
       }
@@ -379,13 +418,15 @@ local int gzscan(char *name, z_stream *strm, int level)
   end = lseek(gz.fd, 0L, SEEK_CUR) - gz.left;
 
   /* check gzip trailer and save total for deflate */
-  if (crc != read4(&gz))
-  { bye("invalid compressed data--crc mismatch in ", name); }
+  if (crc != read4(&gz)) {
+    bye("invalid compressed data--crc mismatch in ", name);
+  }
 
   tot = strm->total_out;
 
-  if ((tot & 0xffffffffUL) != read4(&gz))
-  { bye("invalid compressed data--length mismatch in", name); }
+  if ((tot & 0xffffffffUL) != read4(&gz)) {
+    bye("invalid compressed data--length mismatch in", name);
+  }
 
   /* if not at end of file, warn */
   if (gz.left || readin(&gz))
@@ -395,12 +436,16 @@ local int gzscan(char *name, z_stream *strm, int level)
   /* clear last block bit */
   lseek(gz.fd, lastoff - (lastbit != 0), SEEK_SET);
 
-  if (read(gz.fd, gz.buf, 1) != 1) { bye("reading after seek on ", name); }
+  if (read(gz.fd, gz.buf, 1) != 1) {
+    bye("reading after seek on ", name);
+  }
 
   *gz.buf = (unsigned char)(*gz.buf ^ (1 << ((8 - lastbit) & 7)));
   lseek(gz.fd, -1L, SEEK_CUR);
 
-  if (write(gz.fd, gz.buf, 1) != 1) { bye("writing after seek to ", name); }
+  if (write(gz.fd, gz.buf, 1) != 1) {
+    bye("writing after seek to ", name);
+  }
 
   /* if window wrapped, build dictionary from window by rotating */
   if (full) {
@@ -411,7 +456,9 @@ local int gzscan(char *name, z_stream *strm, int level)
   /* set up deflate stream with window, crc, total_in, and leftover bits */
   ret = deflateInit2(strm, level, Z_DEFLATED, -15, 8, Z_DEFAULT_STRATEGY);
 
-  if (ret != Z_OK) { bye("out of memory", ""); }
+  if (ret != Z_OK) {
+    bye("out of memory", "");
+  }
 
   deflateSetDictionary(strm, window, have);
   strm->adler = crc;
@@ -420,7 +467,9 @@ local int gzscan(char *name, z_stream *strm, int level)
   if (left) {
     lseek(gz.fd, --end, SEEK_SET);
 
-    if (read(gz.fd, gz.buf, 1) != 1) { bye("reading after seek on ", name); }
+    if (read(gz.fd, gz.buf, 1) != 1) {
+      bye("reading after seek on ", name);
+    }
 
     deflatePrime(strm, 8 - left, *gz.buf);
   }
@@ -456,7 +505,9 @@ local void gztack(char *name, int gd, z_stream *strm, int last)
   in = fd == -1 ? NULL : malloc(CHUNK);
   out = malloc(CHUNK);
 
-  if (out == NULL) { bye("out of memory", ""); }
+  if (out == NULL) {
+    bye("out of memory", "");
+  }
 
   /* compress input file and append to gzip file */
   do {
@@ -473,7 +524,9 @@ local void gztack(char *name, int gd, z_stream *strm, int last)
     strm->avail_in = (unsigned)len;
     strm->next_in = in;
 
-    if (len) { strm->adler = crc32(strm->adler, in, (unsigned)len); }
+    if (len) {
+      strm->adler = crc32(strm->adler, in, (unsigned)len);
+    }
 
     /* compress and write all available output */
     do {
@@ -485,7 +538,9 @@ local void gztack(char *name, int gd, z_stream *strm, int last)
       while (left) {
         len = write(gd, out + CHUNK - strm->avail_out - left, left);
 
-        if (len == -1) { bye("writing gzip file", ""); }
+        if (len == -1) {
+          bye("writing gzip file", "");
+        }
 
         left -= (unsigned)len;
       }
@@ -508,7 +563,9 @@ local void gztack(char *name, int gd, z_stream *strm, int last)
     do {
       ret = write(gd, out + 8 - len, len);
 
-      if (ret == -1) { bye("writing gzip file", ""); }
+      if (ret == -1) {
+        bye("writing gzip file", "");
+      }
 
       len -= ret;
     } while (len);
@@ -519,9 +576,13 @@ local void gztack(char *name, int gd, z_stream *strm, int last)
   /* clean up and return */
   free(out);
 
-  if (in != NULL) { free(in); }
+  if (in != NULL) {
+    free(in);
+  }
 
-  if (fd > 0) { close(fd); }
+  if (fd > 0) {
+    close(fd);
+  }
 }
 
 /* process the compression level option if present, scan the gzip file, and
@@ -548,21 +609,24 @@ int main(int argc, char **argv)
   level = Z_DEFAULT_COMPRESSION;
 
   if (argv[0][0] == '-') {
-    if (argv[0][1] < '0' || argv[0][1] > '9' || argv[0][2] != 0)
-    { bye("invalid compression level", ""); }
+    if (argv[0][1] < '0' || argv[0][1] > '9' || argv[0][2] != 0) {
+      bye("invalid compression level", "");
+    }
 
     level = argv[0][1] - '0';
 
-    if (*++argv == NULL) { bye("no gzip file name after options", ""); }
+    if (*++argv == NULL) {
+      bye("no gzip file name after options", "");
+    }
   }
 
   /* prepare to append to gzip file */
   gd = gzscan(*argv++, &strm, level);
 
   /* append files on command line, or from stdin if none */
-  if (*argv == NULL)
-  { gztack(NULL, gd, &strm, 1); }
-  else
+  if (*argv == NULL) {
+    gztack(NULL, gd, &strm, 1);
+  } else
     do {
       gztack(*argv, gd, &strm, argv[1] == NULL);
     } while (*++argv != NULL);

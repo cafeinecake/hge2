@@ -115,10 +115,11 @@ DWORD error;
 static void pwinerror(s)
 const char *s;
 {
-  if (s && *s)
-  { fprintf(stderr, "%s: %s\n", s, strwinerror(GetLastError())); }
-  else
-  { fprintf(stderr, "%s\n", strwinerror(GetLastError())); }
+  if (s && *s) {
+    fprintf(stderr, "%s: %s\n", s, strwinerror(GetLastError()));
+  } else {
+    fprintf(stderr, "%s\n", strwinerror(GetLastError()));
+  }
 }
 
 #endif /* UNDER_CE */
@@ -177,7 +178,9 @@ gzFile out;
   /* Try first compressing with mmap. If mmap fails (minigzip used in a
    * pipe), use the normal fread loop.
    */
-  if (gz_compress_mmap(in, out) == Z_OK) { return; }
+  if (gz_compress_mmap(in, out) == Z_OK) {
+    return;
+  }
 
 #endif
 
@@ -189,14 +192,20 @@ gzFile out;
       exit(1);
     }
 
-    if (len == 0) { break; }
+    if (len == 0) {
+      break;
+    }
 
-    if (gzwrite(out, buf, (unsigned)len) != len) { error(gzerror(out, &err)); }
+    if (gzwrite(out, buf, (unsigned)len) != len) {
+      error(gzerror(out, &err));
+    }
   }
 
   fclose(in);
 
-  if (gzclose(out) != Z_OK) { error("failed gzclose"); }
+  if (gzclose(out) != Z_OK) {
+    error("failed gzclose");
+  }
 }
 
 #ifdef USE_MMAP /* MMAP version, Miguel Albrecht <malbrech@eso.org> */
@@ -216,26 +225,36 @@ gzFile out;
   struct stat sb;
 
   /* Determine the size of the file, needed for mmap: */
-  if (fstat(ifd, &sb) < 0) { return Z_ERRNO; }
+  if (fstat(ifd, &sb) < 0) {
+    return Z_ERRNO;
+  }
 
   buf_len = sb.st_size;
 
-  if (buf_len <= 0) { return Z_ERRNO; }
+  if (buf_len <= 0) {
+    return Z_ERRNO;
+  }
 
   /* Now do the actual mmap: */
   buf = mmap((caddr_t) 0, buf_len, PROT_READ, MAP_SHARED, ifd, (off_t)0);
 
-  if (buf == (caddr_t)(-1)) { return Z_ERRNO; }
+  if (buf == (caddr_t)(-1)) {
+    return Z_ERRNO;
+  }
 
   /* Compress the whole file at once: */
   len = gzwrite(out, (char *)buf, (unsigned)buf_len);
 
-  if (len != (int)buf_len) { error(gzerror(out, &err)); }
+  if (len != (int)buf_len) {
+    error(gzerror(out, &err));
+  }
 
   munmap(buf, buf_len);
   fclose(in);
 
-  if (gzclose(out) != Z_OK) { error("failed gzclose"); }
+  if (gzclose(out) != Z_OK) {
+    error("failed gzclose");
+  }
 
   return Z_OK;
 }
@@ -255,18 +274,26 @@ FILE   *out;
   for (;;) {
     len = gzread(in, buf, sizeof(buf));
 
-    if (len < 0) { error(gzerror(in, &err)); }
+    if (len < 0) {
+      error(gzerror(in, &err));
+    }
 
-    if (len == 0) { break; }
+    if (len == 0) {
+      break;
+    }
 
     if ((int)fwrite(buf, 1, (unsigned)len, out) != len) {
       error("failed fwrite");
     }
   }
 
-  if (fclose(out)) { error("failed fclose"); }
+  if (fclose(out)) {
+    error("failed fclose");
+  }
 
-  if (gzclose(in) != Z_OK) { error("failed gzclose"); }
+  if (gzclose(in) != Z_OK) {
+    error("failed gzclose");
+  }
 }
 
 
@@ -383,40 +410,44 @@ char *argv[];
   prog = argv[0];
   bname = strrchr(argv[0], '/');
 
-  if (bname)
-  { bname++; }
-  else
-  { bname = argv[0]; }
+  if (bname) {
+    bname++;
+  } else {
+    bname = argv[0];
+  }
 
   argc--, argv++;
 
-  if (!strcmp(bname, "gunzip"))
-  { uncompr = 1; }
-  else if (!strcmp(bname, "zcat"))
-  { copyout = uncompr = 1; }
+  if (!strcmp(bname, "gunzip")) {
+    uncompr = 1;
+  } else if (!strcmp(bname, "zcat")) {
+    copyout = uncompr = 1;
+  }
 
   while (argc > 0) {
-    if (strcmp(*argv, "-c") == 0)
-    { copyout = 1; }
-    else if (strcmp(*argv, "-d") == 0)
-    { uncompr = 1; }
-    else if (strcmp(*argv, "-f") == 0)
-    { outmode[3] = 'f'; }
-    else if (strcmp(*argv, "-h") == 0)
-    { outmode[3] = 'h'; }
-    else if (strcmp(*argv, "-r") == 0)
-    { outmode[3] = 'R'; }
-    else if ((*argv)[0] == '-' && (*argv)[1] >= '1' && (*argv)[1] <= '9' &&
-             (*argv)[2] == 0)
-    { outmode[2] = (*argv)[1]; }
-    else
-    { break; }
+    if (strcmp(*argv, "-c") == 0) {
+      copyout = 1;
+    } else if (strcmp(*argv, "-d") == 0) {
+      uncompr = 1;
+    } else if (strcmp(*argv, "-f") == 0) {
+      outmode[3] = 'f';
+    } else if (strcmp(*argv, "-h") == 0) {
+      outmode[3] = 'h';
+    } else if (strcmp(*argv, "-r") == 0) {
+      outmode[3] = 'R';
+    } else if ((*argv)[0] == '-' && (*argv)[1] >= '1' && (*argv)[1] <= '9' &&
+               (*argv)[2] == 0) {
+      outmode[2] = (*argv)[1];
+    } else {
+      break;
+    }
 
     argc--, argv++;
   }
 
-  if (outmode[3] == ' ')
-  { outmode[3] = 0; }
+  if (outmode[3] == ' ') {
+    outmode[3] = 0;
+  }
 
   if (argc == 0) {
     SET_BINARY_MODE(stdin);
@@ -425,13 +456,17 @@ char *argv[];
     if (uncompr) {
       file = gzdopen(fileno(stdin), "rb");
 
-      if (file == NULL) { error("can't gzdopen stdin"); }
+      if (file == NULL) {
+        error("can't gzdopen stdin");
+      }
 
       gz_uncompress(file, stdout);
     } else {
       file = gzdopen(fileno(stdout), outmode);
 
-      if (file == NULL) { error("can't gzdopen stdout"); }
+      if (file == NULL) {
+        error("can't gzdopen stdout");
+      }
 
       gz_compress(stdin, file);
     }
@@ -445,10 +480,11 @@ char *argv[];
         if (copyout) {
           file = gzopen(*argv, "rb");
 
-          if (file == NULL)
-          { fprintf(stderr, "%s: can't gzopen %s\n", prog, *argv); }
-          else
-          { gz_uncompress(file, stdout); }
+          if (file == NULL) {
+            fprintf(stderr, "%s: can't gzopen %s\n", prog, *argv);
+          } else {
+            gz_uncompress(file, stdout);
+          }
         } else {
           file_uncompress(*argv);
         }
@@ -461,7 +497,9 @@ char *argv[];
           } else {
             file = gzdopen(fileno(stdout), outmode);
 
-            if (file == NULL) { error("can't gzdopen stdout"); }
+            if (file == NULL) {
+              error("can't gzdopen stdout");
+            }
 
             gz_compress(in, file);
           }

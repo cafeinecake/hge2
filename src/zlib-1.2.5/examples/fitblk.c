@@ -80,13 +80,15 @@ local int partcompress(FILE *in, z_streamp def)
   do {
     def->avail_in = fread(raw, 1, RAWLEN, in);
 
-    if (ferror(in))
-    { return Z_ERRNO; }
+    if (ferror(in)) {
+      return Z_ERRNO;
+    }
 
     def->next_in = raw;
 
-    if (feof(in))
-    { flush = Z_FINISH; }
+    if (feof(in)) {
+      flush = Z_FINISH;
+    }
 
     ret = deflate(def, flush);
     assert(ret != Z_STREAM_ERROR);
@@ -114,15 +116,17 @@ local int recompress(z_streamp inf, z_streamp def)
     assert(ret != Z_STREAM_ERROR && ret != Z_DATA_ERROR &&
            ret != Z_NEED_DICT);
 
-    if (ret == Z_MEM_ERROR)
-    { return ret; }
+    if (ret == Z_MEM_ERROR) {
+      return ret;
+    }
 
     /* compress what was decompresed until done or no room */
     def->avail_in = RAWLEN - inf->avail_out;
     def->next_in = raw;
 
-    if (inf->avail_out != 0)
-    { flush = Z_FINISH; }
+    if (inf->avail_out != 0) {
+      flush = Z_FINISH;
+    }
 
     ret = deflate(def, flush);
     assert(ret != Z_STREAM_ERROR);
@@ -145,16 +149,19 @@ int main(int argc, char **argv)
   z_stream def, inf;      /* zlib deflate and inflate states */
 
   /* get requested output size */
-  if (argc != 2)
-  { quit("need one argument: size of output block"); }
+  if (argc != 2) {
+    quit("need one argument: size of output block");
+  }
 
   ret = strtol(argv[1], argv + 1, 10);
 
-  if (argv[1][0] != 0)
-  { quit("argument must be a number"); }
+  if (argv[1][0] != 0) {
+    quit("argument must be a number");
+  }
 
-  if (ret < 8)            /* 8 is minimum zlib stream size */
-  { quit("need positive size of 8 or greater"); }
+  if (ret < 8) {          /* 8 is minimum zlib stream size */
+    quit("need positive size of 8 or greater");
+  }
 
   size = (unsigned)ret;
 
@@ -165,24 +172,27 @@ int main(int argc, char **argv)
   def.opaque = Z_NULL;
   ret = deflateInit(&def, Z_DEFAULT_COMPRESSION);
 
-  if (ret != Z_OK || blk == NULL)
-  { quit("out of memory"); }
+  if (ret != Z_OK || blk == NULL) {
+    quit("out of memory");
+  }
 
   /* compress from stdin until output full, or no more input */
   def.avail_out = size + EXCESS;
   def.next_out = blk;
   ret = partcompress(stdin, &def);
 
-  if (ret == Z_ERRNO)
-  { quit("error reading input"); }
+  if (ret == Z_ERRNO) {
+    quit("error reading input");
+  }
 
   /* if it all fit, then size was undersubscribed -- done! */
   if (ret == Z_STREAM_END && def.avail_out >= EXCESS) {
     /* write block to stdout */
     have = size + EXCESS - def.avail_out;
 
-    if (fwrite(blk, 1, have, stdout) != have || ferror(stdout))
-    { quit("error writing output"); }
+    if (fwrite(blk, 1, have, stdout) != have || ferror(stdout)) {
+      quit("error writing output");
+    }
 
     /* clean up and print results to stderr */
     ret = deflateEnd(&def);
@@ -203,8 +213,9 @@ int main(int argc, char **argv)
   ret = inflateInit(&inf);
   tmp = malloc(size + EXCESS);
 
-  if (ret != Z_OK || tmp == NULL)
-  { quit("out of memory"); }
+  if (ret != Z_OK || tmp == NULL) {
+    quit("out of memory");
+  }
 
   ret = deflateReset(&def);
   assert(ret != Z_STREAM_ERROR);
@@ -216,8 +227,9 @@ int main(int argc, char **argv)
   def.next_out = tmp;
   ret = recompress(&inf, &def);
 
-  if (ret == Z_MEM_ERROR)
-  { quit("out of memory"); }
+  if (ret == Z_MEM_ERROR) {
+    quit("out of memory");
+  }
 
   /* set up for next reocmpression */
   ret = inflateReset(&inf);
@@ -232,16 +244,18 @@ int main(int argc, char **argv)
   def.next_out = blk;
   ret = recompress(&inf, &def);
 
-  if (ret == Z_MEM_ERROR)
-  { quit("out of memory"); }
+  if (ret == Z_MEM_ERROR) {
+    quit("out of memory");
+  }
 
   assert(ret == Z_STREAM_END);    /* otherwise MARGIN too small */
 
   /* done -- write block to stdout */
   have = size - def.avail_out;
 
-  if (fwrite(blk, 1, have, stdout) != have || ferror(stdout))
-  { quit("error writing output"); }
+  if (fwrite(blk, 1, have, stdout) != have || ferror(stdout)) {
+    quit("error writing output");
+  }
 
   /* clean up and print results to stderr */
   free(tmp);

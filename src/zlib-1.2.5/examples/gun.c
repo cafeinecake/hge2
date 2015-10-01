@@ -99,8 +99,9 @@ local unsigned in(void *in_desc, unsigned char **buf)
   do {
     ret = PIECE;
 
-    if ((unsigned)ret > SIZE - len)
-    { ret = (int)(SIZE - len); }
+    if ((unsigned)ret > SIZE - len) {
+      ret = (int)(SIZE - len);
+    }
 
     ret = (int)read(me->infile, next, ret);
 
@@ -147,13 +148,15 @@ local int out(void *out_desc, unsigned char *buf, unsigned len)
     do {
       ret = PIECE;
 
-      if ((unsigned)ret > len)
-      { ret = (int)len; }
+      if ((unsigned)ret > len) {
+        ret = (int)len;
+      }
 
       ret = (int)write(me->outfile, buf, ret);
 
-      if (ret == -1)
-      { return 1; }
+      if (ret == -1) {
+        return 1;
+      }
 
       buf += ret;
       len -= ret;
@@ -236,8 +239,9 @@ local int lunpipe(unsigned have, unsigned char *next, struct ind *indp,
   /* process remainder of compress header -- a flags byte */
   flags = NEXT();
 
-  if (last == -1)
-  { return Z_BUF_ERROR; }
+  if (last == -1) {
+    return Z_BUF_ERROR;
+  }
 
   if (flags & 0x60) {
     strm->msg = (char *)"unknown lzw flags set";
@@ -251,8 +255,9 @@ local int lunpipe(unsigned have, unsigned char *next, struct ind *indp,
     return Z_DATA_ERROR;
   }
 
-  if (max == 9)                           /* 9 doesn't really mean 9 */
-  { max = 10; }
+  if (max == 9) {                         /* 9 doesn't really mean 9 */
+    max = 10;
+  }
 
   flags &= 0x80;                          /* true if block compress */
 
@@ -263,13 +268,15 @@ local int lunpipe(unsigned have, unsigned char *next, struct ind *indp,
 
   /* set up: get first 9-bit code, which is the first decompressed byte, but
      don't create a table entry until the next code */
-  if (NEXT() == -1)                       /* no compressed data is ok */
-  { return Z_OK; }
+  if (NEXT() == -1) {                     /* no compressed data is ok */
+    return Z_OK;
+  }
 
   final = prev = (unsigned)last;          /* low 8 bits of code */
 
-  if (NEXT() == -1)                       /* missing a bit */
-  { return Z_BUF_ERROR; }
+  if (NEXT() == -1) {                     /* missing a bit */
+    return Z_BUF_ERROR;
+  }
 
   if (last & 1) {                         /* code must be < 256 */
     strm->msg = (char *)"invalid lzw code";
@@ -295,8 +302,9 @@ local int lunpipe(unsigned have, unsigned char *next, struct ind *indp,
     }
 
     /* get a code of length bits */
-    if (chunk == 0)                     /* decrement chunk modulo bits */
-    { chunk = bits; }
+    if (chunk == 0) {                   /* decrement chunk modulo bits */
+      chunk = bits;
+    }
 
     code = rem;                         /* low bits of code */
 
@@ -315,8 +323,9 @@ local int lunpipe(unsigned have, unsigned char *next, struct ind *indp,
     chunk--;
 
     if (bits > left) {                  /* need more bits */
-      if (NEXT() == -1)               /* can't end in middle of code */
-      { return Z_BUF_ERROR; }
+      if (NEXT() == -1) {             /* can't end in middle of code */
+        return Z_BUF_ERROR;
+      }
 
       code += (unsigned)last << left; /* high bits of code */
       left += 8;
@@ -381,8 +390,9 @@ local int lunpipe(unsigned have, unsigned char *next, struct ind *indp,
 
     /* write output in forward order */
     while (stack > SIZE - outcnt) {
-      while (outcnt < SIZE)
-      { outbuf[outcnt++] = match[--stack]; }
+      while (outcnt < SIZE) {
+        outbuf[outcnt++] = match[--stack];
+      }
 
       if (out(&outd, outbuf, outcnt)) {
         strm->next_in = outbuf; /* signal write error */
@@ -461,7 +471,9 @@ local int gunpipe(z_stream *strm, int infile, int outfile)
     ret = Z_BUF_ERROR;
 
     if (NEXT() != 8) {                  /* only deflate method allowed */
-      if (last == -1) { break; }
+      if (last == -1) {
+        break;
+      }
 
       strm->msg = (char *)"unknown compression method";
       ret = Z_DATA_ERROR;
@@ -476,7 +488,9 @@ local int gunpipe(z_stream *strm, int infile, int outfile)
     NEXT();
     NEXT();
 
-    if (last == -1) { break; }
+    if (last == -1) {
+      break;
+    }
 
     if (flags & 0xe0) {
       strm->msg = (char *)"unknown header flags set";
@@ -488,18 +502,24 @@ local int gunpipe(z_stream *strm, int infile, int outfile)
       len = NEXT();
       len += (unsigned)(NEXT()) << 8;
 
-      if (last == -1) { break; }
+      if (last == -1) {
+        break;
+      }
 
       while (len > have) {
         len -= have;
         have = 0;
 
-        if (NEXT() == -1) { break; }
+        if (NEXT() == -1) {
+          break;
+        }
 
         len--;
       }
 
-      if (last == -1) { break; }
+      if (last == -1) {
+        break;
+      }
 
       have -= len;
       next += len;
@@ -518,7 +538,9 @@ local int gunpipe(z_stream *strm, int infile, int outfile)
       NEXT();
     }
 
-    if (last == -1) { break; }
+    if (last == -1) {
+      break;
+    }
 
     /* set up output */
     outd.outfile = outfile;
@@ -531,7 +553,9 @@ local int gunpipe(z_stream *strm, int infile, int outfile)
     strm->avail_in = have;
     ret = inflateBack(strm, in, indp, out, &outd);
 
-    if (ret != Z_STREAM_END) { break; }
+    if (ret != Z_STREAM_END) {
+      break;
+    }
 
     next = strm->next_in;
     have = strm->avail_in;
@@ -583,8 +607,9 @@ local void copymeta(char *from, char *to)
   struct utimbuf when;
 
   /* get all of from's Unix meta data, return if not a regular file */
-  if (stat(from, &was) != 0 || (was.st_mode & S_IFMT) != S_IFREG)
-  { return; }
+  if (stat(from, &was) != 0 || (was.st_mode & S_IFMT) != S_IFREG) {
+    return;
+  }
 
   /* set to's mode bits, ignore errors */
   (void)chmod(to, was.st_mode & 07777);
@@ -626,9 +651,9 @@ local int gunzip(z_stream *strm, char *inname, char *outname, int test)
     }
   }
 
-  if (test)
-  { outfile = -1; }
-  else if (outname == NULL || *outname == 0) {
+  if (test) {
+    outfile = -1;
+  } else if (outname == NULL || *outname == 0) {
     outname = "-";
     outfile = 1;    /* stdout */
   } else {
@@ -646,9 +671,13 @@ local int gunzip(z_stream *strm, char *inname, char *outname, int test)
   /* decompress */
   ret = gunpipe(strm, infile, outfile);
 
-  if (outfile > 2) { close(outfile); }
+  if (outfile > 2) {
+    close(outfile);
+  }
 
-  if (infile > 2) { close(infile); }
+  if (infile > 2) {
+    close(infile);
+  }
 
   /* interpret result */
   switch (ret) {
@@ -666,19 +695,25 @@ local int gunzip(z_stream *strm, char *inname, char *outname, int test)
     break;
 
   case Z_DATA_ERROR:
-    if (outfile > 2) { unlink(outname); }
+    if (outfile > 2) {
+      unlink(outname);
+    }
 
     fprintf(stderr, "gun data error on %s: %s\n", inname, strm->msg);
     break;
 
   case Z_MEM_ERROR:
-    if (outfile > 2) { unlink(outname); }
+    if (outfile > 2) {
+      unlink(outname);
+    }
 
     fprintf(stderr, "gun out of memory error--aborting\n");
     return 1;
 
   case Z_BUF_ERROR:
-    if (outfile > 2) { unlink(outname); }
+    if (outfile > 2) {
+      unlink(outname);
+    }
 
     if (strm->next_in != Z_NULL) {
       fprintf(stderr, "gun write error on %s: %s\n",
@@ -694,7 +729,9 @@ local int gunzip(z_stream *strm, char *inname, char *outname, int test)
     break;
 
   default:
-    if (outfile > 2) { unlink(outname); }
+    if (outfile > 2) {
+      unlink(outname);
+    }
 
     fprintf(stderr, "gun internal error--aborting\n");
     return 1;
@@ -744,20 +781,20 @@ int main(int argc, char **argv)
 
   if (argc)
     do {
-      if (test)
-      { outname = NULL; }
-      else {
+      if (test) {
+        outname = NULL;
+      } else {
         len = (int)strlen(*argv);
 
         if (strcmp(*argv + len - 3, ".gz") == 0 ||
-            strcmp(*argv + len - 3, "-gz") == 0)
-        { len -= 3; }
-        else if (strcmp(*argv + len - 2, ".z") == 0 ||
-                 strcmp(*argv + len - 2, "-z") == 0 ||
-                 strcmp(*argv + len - 2, "_z") == 0 ||
-                 strcmp(*argv + len - 2, ".Z") == 0)
-        { len -= 2; }
-        else {
+            strcmp(*argv + len - 3, "-gz") == 0) {
+          len -= 3;
+        } else if (strcmp(*argv + len - 2, ".z") == 0 ||
+                   strcmp(*argv + len - 2, "-z") == 0 ||
+                   strcmp(*argv + len - 2, "_z") == 0 ||
+                   strcmp(*argv + len - 2, ".Z") == 0) {
+          len -= 2;
+        } else {
           fprintf(stderr, "gun error: no gz type on %s--skipping\n",
                   *argv);
           continue;
@@ -777,12 +814,17 @@ int main(int argc, char **argv)
 
       ret = gunzip(&strm, *argv, outname, test);
 
-      if (outname != NULL) { free(outname); }
+      if (outname != NULL) {
+        free(outname);
+      }
 
-      if (ret) { break; }
+      if (ret) {
+        break;
+      }
     } while (argv++, --argc);
-  else
-  { ret = gunzip(&strm, NULL, NULL, test); }
+  else {
+    ret = gunzip(&strm, NULL, NULL, test);
+  }
 
   /* clean up */
   inflateBackEnd(&strm);

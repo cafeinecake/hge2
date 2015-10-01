@@ -280,8 +280,9 @@ SDL_FORCE_INLINE void SDL_memset4(void *dst, Uint32 val, size_t dwords)
   Uint32 *_p = SDL_static_cast(Uint32 *, dst);
   Uint32 _val = (val);
 
-  if (dwords == 0)
-  { return; }
+  if (dwords == 0) {
+    return;
+  }
 
   switch (dwords % 4) {
   case 0:

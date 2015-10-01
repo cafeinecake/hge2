@@ -353,8 +353,9 @@ local int log_lock(struct log *log)
   strcpy(log->end, ".lock");
 
   while ((fd = open(log->path, O_CREAT | O_EXCL, 0644)) < 0) {
-    if (errno != EEXIST)
-    { return -1; }
+    if (errno != EEXIST) {
+      return -1;
+    }
 
     if (stat(log->path, &st) == 0 && time(NULL) - st.st_mtime > PATIENCE) {
       unlink(log->path);
@@ -366,8 +367,9 @@ local int log_lock(struct log *log)
 
   close(fd);
 
-  if (stat(log->path, &st) == 0)
-  { log->lock = st.st_mtime; }
+  if (stat(log->path, &st) == 0) {
+    log->lock = st.st_mtime;
+  }
 
   return 0;
 }
@@ -382,8 +384,9 @@ local void log_touch(struct log *log)
   strcpy(log->end, ".lock");
   utimes(log->path, NULL);
 
-  if (stat(log->path, &st) == 0)
-  { log->lock = st.st_mtime; }
+  if (stat(log->path, &st) == 0) {
+    log->lock = st.st_mtime;
+  }
 }
 
 /* Check the log file modify time against what is expected.  Return true if
@@ -394,8 +397,9 @@ local int log_check(struct log *log)
 
   strcpy(log->end, ".lock");
 
-  if (stat(log->path, &st) || st.st_mtime != log->lock)
-  { return 1; }
+  if (stat(log->path, &st) || st.st_mtime != log->lock) {
+    return 1;
+  }
 
   log_touch(log);
   return 0;
@@ -404,8 +408,9 @@ local int log_check(struct log *log)
 /* Unlock a previously acquired lock, but only if it's ours. */
 local void log_unlock(struct log *log)
 {
-  if (log_check(log))
-  { return; }
+  if (log_check(log)) {
+    return;
+  }
 
   strcpy(log->end, ".lock");
   unlink(log->path);
@@ -486,8 +491,9 @@ local int log_last(struct log *log, int last)
   buf[0] = 0;
 
   if (back != 8 && (lseek(log->fd, log->last - len, SEEK_SET) < 0 ||
-                    read(log->fd, buf, 1) != 1))
-  { return -1; }
+                    read(log->fd, buf, 1) != 1)) {
+    return -1;
+  }
 
   /* change the last-bit of the last stored block as requested -- note
      that all bits above the last-bit are set to zero, per the type bits
@@ -519,8 +525,9 @@ local int log_append(struct log *log, unsigned char *data, size_t len)
   /* set the last block last-bit and length, in case recovering an
      interrupted append, then position the file pointer to append to the
      block */
-  if (log_last(log, 1))
-  { return -1; }
+  if (log_last(log, 1)) {
+    return -1;
+  }
 
   /* append, adding stored blocks and updating the offset of the last stored
      block as needed, and update the total crc and length */
@@ -528,12 +535,14 @@ local int log_append(struct log *log, unsigned char *data, size_t len)
     /* append as much as we can to the last block */
     put = (MAX_STORE << 10) - log->stored;
 
-    if (put > len)
-    { put = (uint)len; }
+    if (put > len) {
+      put = (uint)len;
+    }
 
     if (put) {
-      if (write(log->fd, data, put) != put)
-      { return -1; }
+      if (write(log->fd, data, put) != put) {
+        return -1;
+      }
 
       BAIL(1);
       log->tcrc = crc32(log->tcrc, data, put);
@@ -546,8 +555,9 @@ local int log_append(struct log *log, unsigned char *data, size_t len)
     /* if we need to, add a new empty stored block */
     if (len) {
       /* mark current block as not last */
-      if (log_last(log, 0))
-      { return -1; }
+      if (log_last(log, 0)) {
+        return -1;
+      }
 
       /* point to new, empty stored block */
       log->last += 4 + log->stored + 1;
@@ -555,8 +565,9 @@ local int log_append(struct log *log, unsigned char *data, size_t len)
     }
 
     /* mark last block as last, update its length */
-    if (log_last(log, 1))
-    { return -1; }
+    if (log_last(log, 1)) {
+      return -1;
+    }
 
     BAIL(2);
   }
@@ -567,12 +578,14 @@ local int log_append(struct log *log, unsigned char *data, size_t len)
   PUT4(buf + 4, log->tlen);
 
   if (write(log->fd, buf, 8) != 8 ||
-      (end = lseek(log->fd, 0, SEEK_CUR)) < 0 || ftruncate(log->fd, end))
-  { return -1; }
+      (end = lseek(log->fd, 0, SEEK_CUR)) < 0 || ftruncate(log->fd, end)) {
+    return -1;
+  }
 
   /* write the extra field, marking the log file as done, delete .add file */
-  if (log_mark(log, NO_OP))
-  { return -1; }
+  if (log_mark(log, NO_OP)) {
+    return -1;
+  }
 
   strcpy(log->end, ".add");
   unlink(log->path);          /* ignore error, since may not exist */
@@ -600,16 +613,18 @@ local int log_replace(struct log *log)
   strcpy(log->end, ".dict");
   dest = malloc(strlen(log->path) + 1);
 
-  if (dest == NULL)
-  { return -2; }
+  if (dest == NULL) {
+    return -2;
+  }
 
   strcpy(dest, log->path);
   strcpy(log->end, ".temp");
   ret = rename(log->path, dest);
   free(dest);
 
-  if (ret && errno != ENOENT)
-  { return -1; }
+  if (ret && errno != ENOENT) {
+    return -1;
+  }
 
   BAIL(4);
 
@@ -644,8 +659,9 @@ local int log_compress(struct log *log, unsigned char *data, size_t len)
     strm.opaque = Z_NULL;
 
     if (deflateInit2(&strm, Z_DEFAULT_COMPRESSION, Z_DEFLATED, -15, 8,
-                     Z_DEFAULT_STRATEGY) != Z_OK)
-    { return -2; }
+                     Z_DEFAULT_STRATEGY) != Z_OK) {
+      return -2;
+    }
 
     /* read in dictionary (last 32K of data that was compressed) */
     strcpy(log->end, ".dict");
@@ -660,8 +676,9 @@ local int log_compress(struct log *log, unsigned char *data, size_t len)
         return -1;
       }
 
-      if (dict)
-      { deflateSetDictionary(&strm, buf, (uint)dict); }
+      if (dict) {
+        deflateSetDictionary(&strm, buf, (uint)dict);
+      }
     }
 
     log_touch(log);
@@ -708,8 +725,9 @@ local int log_compress(struct log *log, unsigned char *data, size_t len)
        we know the byte before that has a one in the top bit, since an
        empty static block is ten bits long */
     if ((log->first = lseek(log->fd, -1, SEEK_CUR)) < 0 ||
-        read(log->fd, buf, 1) != 1)
-    { return -1; }
+        read(log->fd, buf, 1) != 1) {
+      return -1;
+    }
 
     log->first++;
 
@@ -718,8 +736,9 @@ local int log_compress(struct log *log, unsigned char *data, size_t len)
 
       while ((*buf & ((uint)1 << (8 - log->back++))) == 0)
         ;       /* guaranteed to terminate, since *buf != 0 */
-    } else
-    { log->back = 10; }
+    } else {
+      log->back = 10;
+    }
 
     /* update compressed crc and length */
     log->ccrc = log->tcrc;
@@ -737,14 +756,16 @@ local int log_compress(struct log *log, unsigned char *data, size_t len)
   PUT4(buf + 4, log->tlen);
 
   if (log_last(log, 1) || write(log->fd, buf, 8) != 8 ||
-      (end = lseek(log->fd, 0, SEEK_CUR)) < 0 || ftruncate(log->fd, end))
-  { return -1; }
+      (end = lseek(log->fd, 0, SEEK_CUR)) < 0 || ftruncate(log->fd, end)) {
+    return -1;
+  }
 
   BAIL(6);
 
   /* mark as being in the replace operation */
-  if (log_mark(log, REPLACE_OP))
-  { return -1; }
+  if (log_mark(log, REPLACE_OP)) {
+    return -1;
+  }
 
   /* execute the replace operation and mark the file as done */
   return log_replace(log);
@@ -760,8 +781,9 @@ local void log_log(struct log *log, int op, char *record)
   strcpy(log->end, ".repairs");
   rec = fopen(log->path, "a");
 
-  if (rec == NULL)
-  { return; }
+  if (rec == NULL) {
+    return;
+  }
 
   fprintf(rec, "%.24s %s recovery: %s\n", ctime(&now), op == APPEND_OP ?
           "append" : (op == COMPRESS_OP ? "compress" : "replace"), record);
@@ -809,8 +831,9 @@ local int log_recover(struct log *log, int op)
       }
 
       log_log(log, op, "loaded .add file");
-    } else
-    { log_log(log, op, "missing .add file!"); }
+    } else {
+      log_log(log, op, "missing .add file!");
+    }
   }
 
   /* recover the interrupted operation */
@@ -831,8 +854,9 @@ local int log_recover(struct log *log, int op)
   log_log(log, op, ret ? "failure" : "complete");
 
   /* clean up */
-  if (data != NULL)
-  { free(data); }
+  if (data != NULL) {
+    free(data);
+  }
 
   return ret;
 }
@@ -840,8 +864,9 @@ local int log_recover(struct log *log, int op)
 /* Close the foo.gz file (if open) and release the lock. */
 local void log_close(struct log *log)
 {
-  if (log->fd >= 0)
-  { close(log->fd); }
+  if (log->fd >= 0) {
+    close(log->fd);
+  }
 
   log->fd = -1;
   log_unlock(log);
@@ -862,14 +887,16 @@ local int log_open(struct log *log)
 
   /* release open file resource if left over -- can occur if lock lost
      between gzlog_open() and gzlog_write() */
-  if (log->fd >= 0)
-  { close(log->fd); }
+  if (log->fd >= 0) {
+    close(log->fd);
+  }
 
   log->fd = -1;
 
   /* negotiate exclusive access */
-  if (log_lock(log) < 0)
-  { return -1; }
+  if (log_lock(log) < 0) {
+    return -1;
+  }
 
   /* open the log file, foo.gz */
   strcpy(log->end, ".gz");
@@ -917,14 +944,16 @@ gzlog *gzlog_open(char *path)
   struct log *log;
 
   /* check arguments */
-  if (path == NULL || *path == 0)
-  { return NULL; }
+  if (path == NULL || *path == 0) {
+    return NULL;
+  }
 
   /* allocate and initialize log structure */
   log = malloc(sizeof(struct log));
 
-  if (log == NULL)
-  { return NULL; }
+  if (log == NULL) {
+    return NULL;
+  }
 
   strcpy(log->id, LOGID);
   log->fd = -1;
@@ -967,45 +996,52 @@ int gzlog_compress(gzlog *logd)
   struct log *log = logd;
 
   /* check arguments */
-  if (log == NULL || strcmp(log->id, LOGID) || len < 0)
-  { return -3; }
+  if (log == NULL || strcmp(log->id, LOGID) || len < 0) {
+    return -3;
+  }
 
   /* see if we lost the lock -- if so get it again and reload the extra
      field information (it probably changed), recover last operation if
      necessary */
-  if (log_check(log) && log_open(log))
-  { return -1; }
+  if (log_check(log) && log_open(log)) {
+    return -1;
+  }
 
   /* create space for uncompressed data */
   len = ((size_t)(log->last - log->first) & ~(((size_t)1 << 10) - 1)) +
         log->stored;
 
-  if ((data = malloc(len)) == NULL)
-  { return -2; }
+  if ((data = malloc(len)) == NULL) {
+    return -2;
+  }
 
   /* do statement here is just a cheap trick for error handling */
   do {
     /* read in the uncompressed data */
-    if (lseek(log->fd, log->first - 1, SEEK_SET) < 0)
-    { break; }
+    if (lseek(log->fd, log->first - 1, SEEK_SET) < 0) {
+      break;
+    }
 
     next = 0;
 
     while (next < len) {
-      if (read(log->fd, buf, 5) != 5)
-      { break; }
+      if (read(log->fd, buf, 5) != 5) {
+        break;
+      }
 
       block = PULL2(buf + 1);
 
       if (next + block > len ||
-          read(log->fd, (char *)data + next, block) != block)
-      { break; }
+          read(log->fd, (char *)data + next, block) != block) {
+        break;
+      }
 
       next += block;
     }
 
-    if (lseek(log->fd, 0, SEEK_CUR) != log->last + 4 + log->stored)
-    { break; }
+    if (lseek(log->fd, 0, SEEK_CUR) != log->last + 4 + log->stored) {
+      break;
+    }
 
     log_touch(log);
 
@@ -1013,13 +1049,15 @@ int gzlog_compress(gzlog *logd)
     strcpy(log->end, ".add");
     fd = open(log->path, O_WRONLY | O_CREAT | O_TRUNC, 0644);
 
-    if (fd < 0)
-    { break; }
+    if (fd < 0) {
+      break;
+    }
 
     ret = write(fd, data, len) != len;
 
-    if (ret | close(fd))
-    { break; }
+    if (ret | close(fd)) {
+      break;
+    }
 
     log_touch(log);
 
@@ -1027,14 +1065,16 @@ int gzlog_compress(gzlog *logd)
     strcpy(log->end, ".temp");
     fd = open(log->path, O_WRONLY | O_CREAT | O_TRUNC, 0644);
 
-    if (fd < 0)
-    { break; }
+    if (fd < 0) {
+      break;
+    }
 
     next = DICT > len ? len : DICT;
     ret = write(fd, (char *)data + len - next, next) != next;
 
-    if (ret | close(fd))
-    { break; }
+    if (ret | close(fd)) {
+      break;
+    }
 
     log_touch(log);
 
@@ -1042,8 +1082,9 @@ int gzlog_compress(gzlog *logd)
     log->last = log->first;
     log->stored = 0;
 
-    if (log_mark(log, COMPRESS_OP))
-    { break; }
+    if (log_mark(log, COMPRESS_OP)) {
+      break;
+    }
 
     BAIL(7);
 
@@ -1069,45 +1110,53 @@ int gzlog_write(gzlog *logd, void *data, size_t len)
   struct log *log = logd;
 
   /* check arguments */
-  if (log == NULL || strcmp(log->id, LOGID) || len < 0)
-  { return -3; }
+  if (log == NULL || strcmp(log->id, LOGID) || len < 0) {
+    return -3;
+  }
 
-  if (data == NULL || len == 0)
-  { return 0; }
+  if (data == NULL || len == 0) {
+    return 0;
+  }
 
   /* see if we lost the lock -- if so get it again and reload the extra
      field information (it probably changed), recover last operation if
      necessary */
-  if (log_check(log) && log_open(log))
-  { return -1; }
+  if (log_check(log) && log_open(log)) {
+    return -1;
+  }
 
   /* create and write .add file */
   strcpy(log->end, ".add");
   fd = open(log->path, O_WRONLY | O_CREAT | O_TRUNC, 0644);
 
-  if (fd < 0)
-  { return -1; }
+  if (fd < 0) {
+    return -1;
+  }
 
   ret = write(fd, data, len) != len;
 
-  if (ret | close(fd))
-  { return -1; }
+  if (ret | close(fd)) {
+    return -1;
+  }
 
   log_touch(log);
 
   /* mark log file with append in progress */
-  if (log_mark(log, APPEND_OP))
-  { return -1; }
+  if (log_mark(log, APPEND_OP)) {
+    return -1;
+  }
 
   BAIL(8);
 
   /* append data (clears mark) */
-  if (log_append(log, data, len))
-  { return -1; }
+  if (log_append(log, data, len)) {
+    return -1;
+  }
 
   /* check to see if it's time to compress -- if not, then done */
-  if (((log->last - log->first) >> 10) + (log->stored >> 10) < TRIGGER)
-  { return 0; }
+  if (((log->last - log->first) >> 10) + (log->stored >> 10) < TRIGGER) {
+    return 0;
+  }
 
   /* time to compress */
   return gzlog_compress(log);
@@ -1121,15 +1170,17 @@ int gzlog_close(gzlog *logd)
   struct log *log = logd;
 
   /* check arguments */
-  if (log == NULL || strcmp(log->id, LOGID))
-  { return -3; }
+  if (log == NULL || strcmp(log->id, LOGID)) {
+    return -3;
+  }
 
   /* close the log file and release the lock */
   log_close(log);
 
   /* free structure and return */
-  if (log->path != NULL)
-  { free(log->path); }
+  if (log->path != NULL) {
+    free(log->path);
+  }
 
   strcpy(log->id, "bad");
   free(log);

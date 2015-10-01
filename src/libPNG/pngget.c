@@ -14,29 +14,32 @@
 png_uint_32 PNGAPI
 png_get_valid(png_structp png_ptr, png_infop info_ptr, png_uint_32 flag)
 {
-  if (png_ptr != NULL && info_ptr != NULL)
-  { return (info_ptr->valid & flag); }
-  else
-  { return (0); }
+  if (png_ptr != NULL && info_ptr != NULL) {
+    return (info_ptr->valid & flag);
+  } else {
+    return (0);
+  }
 }
 
 png_uint_32 PNGAPI
 png_get_rowbytes(png_structp png_ptr, png_infop info_ptr)
 {
-  if (png_ptr != NULL && info_ptr != NULL)
-  { return (info_ptr->rowbytes); }
-  else
-  { return (0); }
+  if (png_ptr != NULL && info_ptr != NULL) {
+    return (info_ptr->rowbytes);
+  } else {
+    return (0);
+  }
 }
 
 #if defined(PNG_INFO_IMAGE_SUPPORTED)
 png_bytepp PNGAPI
 png_get_rows(png_structp png_ptr, png_infop info_ptr)
 {
-  if (png_ptr != NULL && info_ptr != NULL)
-  { return (info_ptr->row_pointers); }
-  else
-  { return (0); }
+  if (png_ptr != NULL && info_ptr != NULL) {
+    return (info_ptr->row_pointers);
+  } else {
+    return (0);
+  }
 }
 #endif
 
@@ -120,9 +123,11 @@ png_get_x_pixels_per_meter(png_structp png_ptr, png_infop info_ptr)
     if (info_ptr->valid & PNG_INFO_pHYs) {
       png_debug1(1, "in %s retrieval function\n", "png_get_x_pixels_per_meter");
 
-      if (info_ptr->phys_unit_type != PNG_RESOLUTION_METER)
-      { return (0); }
-      else { return (info_ptr->x_pixels_per_unit); }
+      if (info_ptr->phys_unit_type != PNG_RESOLUTION_METER) {
+        return (0);
+      } else {
+        return (info_ptr->x_pixels_per_unit);
+      }
     }
 
 #else
@@ -139,9 +144,11 @@ png_get_y_pixels_per_meter(png_structp png_ptr, png_infop info_ptr)
     if (info_ptr->valid & PNG_INFO_pHYs) {
       png_debug1(1, "in %s retrieval function\n", "png_get_y_pixels_per_meter");
 
-      if (info_ptr->phys_unit_type != PNG_RESOLUTION_METER)
-      { return (0); }
-      else { return (info_ptr->y_pixels_per_unit); }
+      if (info_ptr->phys_unit_type != PNG_RESOLUTION_METER) {
+        return (0);
+      } else {
+        return (info_ptr->y_pixels_per_unit);
+      }
     }
 
 #else
@@ -159,9 +166,11 @@ png_get_pixels_per_meter(png_structp png_ptr, png_infop info_ptr)
       png_debug1(1, "in %s retrieval function\n", "png_get_pixels_per_meter");
 
       if (info_ptr->phys_unit_type != PNG_RESOLUTION_METER ||
-          info_ptr->x_pixels_per_unit != info_ptr->y_pixels_per_unit)
-      { return (0); }
-      else { return (info_ptr->x_pixels_per_unit); }
+          info_ptr->x_pixels_per_unit != info_ptr->y_pixels_per_unit) {
+        return (0);
+      } else {
+        return (info_ptr->x_pixels_per_unit);
+      }
     }
 
 #else
@@ -179,9 +188,9 @@ png_get_pixel_aspect_ratio(png_structp png_ptr, png_infop info_ptr)
     if (info_ptr->valid & PNG_INFO_pHYs) {
       png_debug1(1, "in %s retrieval function\n", "png_get_aspect_ratio");
 
-      if (info_ptr->x_pixels_per_unit == 0)
-      { return ((float)0.0); }
-      else
+      if (info_ptr->x_pixels_per_unit == 0) {
+        return ((float)0.0);
+      } else
         return ((float)((float)info_ptr->y_pixels_per_unit
                         / (float)info_ptr->x_pixels_per_unit));
     }
@@ -201,9 +210,11 @@ png_get_x_offset_microns(png_structp png_ptr, png_infop info_ptr)
     if (info_ptr->valid & PNG_INFO_oFFs) {
       png_debug1(1, "in %s retrieval function\n", "png_get_x_offset_microns");
 
-      if (info_ptr->offset_unit_type != PNG_OFFSET_MICROMETER)
-      { return (0); }
-      else { return (info_ptr->x_offset); }
+      if (info_ptr->offset_unit_type != PNG_OFFSET_MICROMETER) {
+        return (0);
+      } else {
+        return (info_ptr->x_offset);
+      }
     }
 
 #else
@@ -220,9 +231,11 @@ png_get_y_offset_microns(png_structp png_ptr, png_infop info_ptr)
     if (info_ptr->valid & PNG_INFO_oFFs) {
       png_debug1(1, "in %s retrieval function\n", "png_get_y_offset_microns");
 
-      if (info_ptr->offset_unit_type != PNG_OFFSET_MICROMETER)
-      { return (0); }
-      else { return (info_ptr->y_offset); }
+      if (info_ptr->offset_unit_type != PNG_OFFSET_MICROMETER) {
+        return (0);
+      } else {
+        return (info_ptr->y_offset);
+      }
     }
 
 #else
@@ -239,9 +252,11 @@ png_get_x_offset_pixels(png_structp png_ptr, png_infop info_ptr)
     if (info_ptr->valid & PNG_INFO_oFFs) {
       png_debug1(1, "in %s retrieval function\n", "png_get_x_offset_microns");
 
-      if (info_ptr->offset_unit_type != PNG_OFFSET_PIXEL)
-      { return (0); }
-      else { return (info_ptr->x_offset); }
+      if (info_ptr->offset_unit_type != PNG_OFFSET_PIXEL) {
+        return (0);
+      } else {
+        return (info_ptr->x_offset);
+      }
     }
 
 #else
@@ -258,9 +273,11 @@ png_get_y_offset_pixels(png_structp png_ptr, png_infop info_ptr)
     if (info_ptr->valid & PNG_INFO_oFFs) {
       png_debug1(1, "in %s retrieval function\n", "png_get_y_offset_microns");
 
-      if (info_ptr->offset_unit_type != PNG_OFFSET_PIXEL)
-      { return (0); }
-      else { return (info_ptr->y_offset); }
+      if (info_ptr->offset_unit_type != PNG_OFFSET_PIXEL) {
+        return (0);
+      } else {
+        return (info_ptr->y_offset);
+      }
     }
 
 #else
@@ -330,9 +347,13 @@ png_get_pHYs_dpi(png_structp png_ptr, png_infop info_ptr,
       retval |= PNG_INFO_pHYs;
 
       if (*unit_type == 1) {
-        if (res_x != NULL) { *res_x = (png_uint_32)(*res_x * .0254 + .50); }
+        if (res_x != NULL) {
+          *res_x = (png_uint_32)(*res_x * .0254 + .50);
+        }
 
-        if (res_y != NULL) { *res_y = (png_uint_32)(*res_y * .0254 + .50); }
+        if (res_y != NULL) {
+          *res_y = (png_uint_32)(*res_y * .0254 + .50);
+        }
       }
     }
   }
@@ -349,19 +370,21 @@ png_get_pHYs_dpi(png_structp png_ptr, png_infop info_ptr,
 png_byte PNGAPI
 png_get_channels(png_structp png_ptr, png_infop info_ptr)
 {
-  if (png_ptr != NULL && info_ptr != NULL)
-  { return (info_ptr->channels); }
-  else
-  { return (0); }
+  if (png_ptr != NULL && info_ptr != NULL) {
+    return (info_ptr->channels);
+  } else {
+    return (0);
+  }
 }
 
 png_bytep PNGAPI
 png_get_signature(png_structp png_ptr, png_infop info_ptr)
 {
-  if (png_ptr != NULL && info_ptr != NULL)
-  { return (info_ptr->signature); }
-  else
-  { return (NULL); }
+  if (png_ptr != NULL && info_ptr != NULL) {
+    return (info_ptr->signature);
+  } else {
+    return (NULL);
+  }
 }
 
 #if defined(PNG_bKGD_SUPPORTED)
@@ -390,29 +413,37 @@ png_get_cHRM(png_structp png_ptr, png_infop info_ptr,
   if (png_ptr != NULL && info_ptr != NULL && (info_ptr->valid & PNG_INFO_cHRM)) {
     png_debug1(1, "in %s retrieval function\n", "cHRM");
 
-    if (white_x != NULL)
-    { *white_x = (double)info_ptr->x_white; }
+    if (white_x != NULL) {
+      *white_x = (double)info_ptr->x_white;
+    }
 
-    if (white_y != NULL)
-    { *white_y = (double)info_ptr->y_white; }
+    if (white_y != NULL) {
+      *white_y = (double)info_ptr->y_white;
+    }
 
-    if (red_x != NULL)
-    { *red_x = (double)info_ptr->x_red; }
+    if (red_x != NULL) {
+      *red_x = (double)info_ptr->x_red;
+    }
 
-    if (red_y != NULL)
-    { *red_y = (double)info_ptr->y_red; }
+    if (red_y != NULL) {
+      *red_y = (double)info_ptr->y_red;
+    }
 
-    if (green_x != NULL)
-    { *green_x = (double)info_ptr->x_green; }
+    if (green_x != NULL) {
+      *green_x = (double)info_ptr->x_green;
+    }
 
-    if (green_y != NULL)
-    { *green_y = (double)info_ptr->y_green; }
+    if (green_y != NULL) {
+      *green_y = (double)info_ptr->y_green;
+    }
 
-    if (blue_x != NULL)
-    { *blue_x = (double)info_ptr->x_blue; }
+    if (blue_x != NULL) {
+      *blue_x = (double)info_ptr->x_blue;
+    }
 
-    if (blue_y != NULL)
-    { *blue_y = (double)info_ptr->y_blue; }
+    if (blue_y != NULL) {
+      *blue_y = (double)info_ptr->y_blue;
+    }
 
     return (PNG_INFO_cHRM);
   }
@@ -430,29 +461,37 @@ png_get_cHRM_fixed(png_structp png_ptr, png_infop info_ptr,
   if (png_ptr != NULL && info_ptr != NULL && (info_ptr->valid & PNG_INFO_cHRM)) {
     png_debug1(1, "in %s retrieval function\n", "cHRM");
 
-    if (white_x != NULL)
-    { *white_x = info_ptr->int_x_white; }
+    if (white_x != NULL) {
+      *white_x = info_ptr->int_x_white;
+    }
 
-    if (white_y != NULL)
-    { *white_y = info_ptr->int_y_white; }
+    if (white_y != NULL) {
+      *white_y = info_ptr->int_y_white;
+    }
 
-    if (red_x != NULL)
-    { *red_x = info_ptr->int_x_red; }
+    if (red_x != NULL) {
+      *red_x = info_ptr->int_x_red;
+    }
 
-    if (red_y != NULL)
-    { *red_y = info_ptr->int_y_red; }
+    if (red_y != NULL) {
+      *red_y = info_ptr->int_y_red;
+    }
 
-    if (green_x != NULL)
-    { *green_x = info_ptr->int_x_green; }
+    if (green_x != NULL) {
+      *green_x = info_ptr->int_x_green;
+    }
 
-    if (green_y != NULL)
-    { *green_y = info_ptr->int_y_green; }
+    if (green_y != NULL) {
+      *green_y = info_ptr->int_y_green;
+    }
 
-    if (blue_x != NULL)
-    { *blue_x = info_ptr->int_x_blue; }
+    if (blue_x != NULL) {
+      *blue_x = info_ptr->int_x_blue;
+    }
 
-    if (blue_y != NULL)
-    { *blue_y = info_ptr->int_y_blue; }
+    if (blue_y != NULL) {
+      *blue_y = info_ptr->int_y_blue;
+    }
 
     return (PNG_INFO_cHRM);
   }
@@ -536,8 +575,9 @@ png_uint_32 PNGAPI
 png_get_sPLT(png_structp png_ptr, png_infop info_ptr,
              png_sPLT_tpp spalettes)
 {
-  if (png_ptr != NULL && info_ptr != NULL && spalettes != NULL)
-  { *spalettes = info_ptr->splt_palettes; }
+  if (png_ptr != NULL && info_ptr != NULL && spalettes != NULL) {
+    *spalettes = info_ptr->splt_palettes;
+  }
 
   return ((png_uint_32)info_ptr->splt_palettes_num);
 }
@@ -572,29 +612,36 @@ png_get_IHDR(png_structp png_ptr, png_infop info_ptr,
     *height = info_ptr->height;
     *bit_depth = info_ptr->bit_depth;
 
-    if (info_ptr->bit_depth < 1 || info_ptr->bit_depth > 16)
-    { png_error(png_ptr, "Invalid bit depth"); }
+    if (info_ptr->bit_depth < 1 || info_ptr->bit_depth > 16) {
+      png_error(png_ptr, "Invalid bit depth");
+    }
 
     *color_type = info_ptr->color_type;
 
-    if (info_ptr->color_type > 6)
-    { png_error(png_ptr, "Invalid color type"); }
+    if (info_ptr->color_type > 6) {
+      png_error(png_ptr, "Invalid color type");
+    }
 
-    if (compression_type != NULL)
-    { *compression_type = info_ptr->compression_type; }
+    if (compression_type != NULL) {
+      *compression_type = info_ptr->compression_type;
+    }
 
-    if (filter_type != NULL)
-    { *filter_type = info_ptr->filter_type; }
+    if (filter_type != NULL) {
+      *filter_type = info_ptr->filter_type;
+    }
 
-    if (interlace_type != NULL)
-    { *interlace_type = info_ptr->interlace_type; }
+    if (interlace_type != NULL) {
+      *interlace_type = info_ptr->interlace_type;
+    }
 
     /* check for potential overflow of rowbytes */
-    if (*width == 0 || *width > PNG_UINT_31_MAX)
-    { png_error(png_ptr, "Invalid image width"); }
+    if (*width == 0 || *width > PNG_UINT_31_MAX) {
+      png_error(png_ptr, "Invalid image width");
+    }
 
-    if (*height == 0 || *height > PNG_UINT_31_MAX)
-    { png_error(png_ptr, "Invalid image height"); }
+    if (*height == 0 || *height > PNG_UINT_31_MAX) {
+      png_error(png_ptr, "Invalid image height");
+    }
 
     if (info_ptr->width > (PNG_UINT_32_MAX
                            >> 3)      /* 8-byte RGBA pixels */
@@ -762,17 +809,20 @@ png_get_text(png_structp png_ptr, png_infop info_ptr, png_textp *text_ptr,
                (png_ptr->chunk_name[0] == '\0' ? "text"
                 : (png_const_charp)png_ptr->chunk_name));
 
-    if (text_ptr != NULL)
-    { *text_ptr = info_ptr->text; }
+    if (text_ptr != NULL) {
+      *text_ptr = info_ptr->text;
+    }
 
-    if (num_text != NULL)
-    { *num_text = info_ptr->num_text; }
+    if (num_text != NULL) {
+      *num_text = info_ptr->num_text;
+    }
 
     return ((png_uint_32)info_ptr->num_text);
   }
 
-  if (num_text != NULL)
-  { *num_text = 0; }
+  if (num_text != NULL) {
+    *num_text = 0;
+  }
 
   return (0);
 }
@@ -809,16 +859,18 @@ png_get_tRNS(png_structp png_ptr, png_infop info_ptr,
         retval |= PNG_INFO_tRNS;
       }
 
-      if (trans_values != NULL)
-      { *trans_values = &(info_ptr->trans_values); }
+      if (trans_values != NULL) {
+        *trans_values = &(info_ptr->trans_values);
+      }
     } else { /* if (info_ptr->color_type != PNG_COLOR_TYPE_PALETTE) */
       if (trans_values != NULL) {
         *trans_values = &(info_ptr->trans_values);
         retval |= PNG_INFO_tRNS;
       }
 
-      if (trans != NULL)
-      { *trans = NULL; }
+      if (trans != NULL) {
+        *trans = NULL;
+      }
     }
 
     if (num_trans != NULL) {
@@ -836,8 +888,9 @@ png_uint_32 PNGAPI
 png_get_unknown_chunks(png_structp png_ptr, png_infop info_ptr,
                        png_unknown_chunkpp unknowns)
 {
-  if (png_ptr != NULL && info_ptr != NULL && unknowns != NULL)
-  { *unknowns = info_ptr->unknown_chunks; }
+  if (png_ptr != NULL && info_ptr != NULL && unknowns != NULL) {
+    *unknowns = info_ptr->unknown_chunks;
+  }
 
   return ((png_uint_32)info_ptr->unknown_chunks_num);
 }

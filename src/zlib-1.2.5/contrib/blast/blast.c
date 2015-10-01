@@ -74,7 +74,9 @@ local int bits(struct state *s, int need)
     if (s->left == 0) {
       s->left = s->infun(s->inhow, &(s->in));
 
-      if (s->left == 0) { longjmp(s->env, 1); }       /* out of input */
+      if (s->left == 0) {
+        longjmp(s->env, 1);  /* out of input */
+      }
     }
 
     val |= (int)(*(s->in)++) << s->bitcnt;          /* load eight bits */
@@ -161,18 +163,24 @@ local int decode(struct state *s, struct huffman *h)
 
     left = (MAXBITS + 1) - len;
 
-    if (left == 0) { break; }
+    if (left == 0) {
+      break;
+    }
 
     if (s->left == 0) {
       s->left = s->infun(s->inhow, &(s->in));
 
-      if (s->left == 0) { longjmp(s->env, 1); }       /* out of input */
+      if (s->left == 0) {
+        longjmp(s->env, 1);  /* out of input */
+      }
     }
 
     bitbuf = *(s->in)++;
     s->left--;
 
-    if (left > 8) { left = 8; }
+    if (left > 8) {
+      left = 8;
+    }
   }
 
   return -9;                          /* ran out of codes */
@@ -219,14 +227,17 @@ local int construct(struct huffman *h, const unsigned char *rep, int n)
   n = symbol;
 
   /* count number of codes of each length */
-  for (len = 0; len <= MAXBITS; len++)
-  { h->count[len] = 0; }
+  for (len = 0; len <= MAXBITS; len++) {
+    h->count[len] = 0;
+  }
 
-  for (symbol = 0; symbol < n; symbol++)
-  { (h->count[length[symbol]])++; }   /* assumes lengths are within bounds */
+  for (symbol = 0; symbol < n; symbol++) {
+    (h->count[length[symbol]])++;  /* assumes lengths are within bounds */
+  }
 
-  if (h->count[0] == n)               /* no codes! */
-  { return 0; }                       /* complete, but decode() will fail */
+  if (h->count[0] == n) {             /* no codes! */
+    return 0;  /* complete, but decode() will fail */
+  }
 
   /* check for an over-subscribed or incomplete set of lengths */
   left = 1;                           /* one possible code of zero length */
@@ -235,22 +246,26 @@ local int construct(struct huffman *h, const unsigned char *rep, int n)
     left <<= 1;                     /* one more bit, double codes left */
     left -= h->count[len];          /* deduct count from possible codes */
 
-    if (left < 0) { return left; }      /* over-subscribed--return negative */
+    if (left < 0) {
+      return left;  /* over-subscribed--return negative */
+    }
   }                                   /* left > 0 means incomplete */
 
   /* generate offsets into symbol table for each length for sorting */
   offs[1] = 0;
 
-  for (len = 1; len < MAXBITS; len++)
-  { offs[len + 1] = offs[len] + h->count[len]; }
+  for (len = 1; len < MAXBITS; len++) {
+    offs[len + 1] = offs[len] + h->count[len];
+  }
 
   /*
    * put symbols in table sorted by length, by symbol order within each
    * length
    */
   for (symbol = 0; symbol < n; symbol++)
-    if (length[symbol] != 0)
-    { h->symbol[offs[length[symbol]]++] = symbol; }
+    if (length[symbol] != 0) {
+      h->symbol[offs[length[symbol]]++] = symbol;
+    }
 
   /* return zero for complete set, positive for incomplete set */
   return left;
@@ -341,11 +356,15 @@ local int decomp(struct state *s)
   /* read header */
   lit = bits(s, 8);
 
-  if (lit > 1) { return -1; }
+  if (lit > 1) {
+    return -1;
+  }
 
   dict = bits(s, 8);
 
-  if (dict < 4 || dict > 6) { return -2; }
+  if (dict < 4 || dict > 6) {
+    return -2;
+  }
 
   /* decode literals and length/distance pairs */
   do {
@@ -354,7 +373,9 @@ local int decomp(struct state *s)
       symbol = decode(s, &lencode);
       len = base[symbol] + bits(s, extra[symbol]);
 
-      if (len == 519) { break; }              /* end code */
+      if (len == 519) {
+        break;  /* end code */
+      }
 
       /* get distance */
       symbol = len == 2 ? 2 : dict;
@@ -362,8 +383,9 @@ local int decomp(struct state *s)
       dist += bits(s, symbol);
       dist++;
 
-      if (s->first && dist > s->next)
-      { return -3; }              /* distance too far back */
+      if (s->first && dist > s->next) {
+        return -3;  /* distance too far back */
+      }
 
       /* copy length bytes from distance bytes back */
       do {
@@ -378,7 +400,9 @@ local int decomp(struct state *s)
 
         copy -= s->next;
 
-        if (copy > len) { copy = len; }
+        if (copy > len) {
+          copy = len;
+        }
 
         len -= copy;
         s->next += copy;
@@ -388,7 +412,9 @@ local int decomp(struct state *s)
         } while (--copy);
 
         if (s->next == MAXWIN) {
-          if (s->outfun(s->outhow, s->out, s->next)) { return 1; }
+          if (s->outfun(s->outhow, s->out, s->next)) {
+            return 1;
+          }
 
           s->next = 0;
           s->first = 0;
@@ -400,7 +426,9 @@ local int decomp(struct state *s)
       s->out[s->next++] = symbol;
 
       if (s->next == MAXWIN) {
-        if (s->outfun(s->outhow, s->out, s->next)) { return 1; }
+        if (s->outfun(s->outhow, s->out, s->next)) {
+          return 1;
+        }
 
         s->next = 0;
         s->first = 0;
@@ -431,14 +459,16 @@ int blast(blast_in infun, void *inhow, blast_out outfun, void *outhow)
   s.first = 1;
 
   /* return if bits() or decode() tries to read past available input */
-  if (setjmp(s.env) != 0)             /* if came back here via longjmp(), */
-  { err = 2; }                        /*  then skip decomp(), return error */
-  else
-  { err = decomp(&s); }               /* decompress */
+  if (setjmp(s.env) != 0) {           /* if came back here via longjmp(), */
+    err = 2;  /*  then skip decomp(), return error */
+  } else {
+    err = decomp(&s);  /* decompress */
+  }
 
   /* write any leftover output and update the error code if needed */
-  if (err != 1 && s.next && s.outfun(s.outhow, s.out, s.next) && err == 0)
-  { err = 1; }
+  if (err != 1 && s.next && s.outfun(s.outhow, s.out, s.next) && err == 0) {
+    err = 1;
+  }
 
   return err;
 }
@@ -471,14 +501,20 @@ int main(void)
   /* decompress to stdout */
   ret = blast(inf, stdin, outf, stdout);
 
-  if (ret != 0) { fprintf(stderr, "blast error: %d\n", ret); }
+  if (ret != 0) {
+    fprintf(stderr, "blast error: %d\n", ret);
+  }
 
   /* see if there are any leftover bytes */
   n = 0;
 
-  while (getchar() != EOF) { n++; }
+  while (getchar() != EOF) {
+    n++;
+  }
 
-  if (n) { fprintf(stderr, "blast warning: %d unused bytes of input\n", n); }
+  if (n) {
+    fprintf(stderr, "blast warning: %d unused bytes of input\n", n);
+  }
 
   /* return blast() error code */
   return ret;

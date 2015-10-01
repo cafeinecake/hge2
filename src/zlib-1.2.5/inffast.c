@@ -299,8 +299,9 @@ dodist:
           if (len) {
             PUP(out) = PUP(from);
 
-            if (len > 1)
-            { PUP(out) = PUP(from); }
+            if (len > 1) {
+              PUP(out) = PUP(from);
+            }
           }
         } else {
           from = out - dist;          /* copy direct from output */
@@ -315,8 +316,9 @@ dodist:
           if (len) {
             PUP(out) = PUP(from);
 
-            if (len > 1)
-            { PUP(out) = PUP(from); }
+            if (len > 1) {
+              PUP(out) = PUP(from);
+            }
           }
         }
       } else if ((op & 64) == 0) {        /* 2nd level distance code */

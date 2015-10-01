@@ -101,8 +101,9 @@ static int crypthead(const char *passwd,      /* password string */
   unsigned char header[RAND_HEAD_LEN - 2]; /* random header */
   static unsigned calls = 0;   /* ensure different random header each time */
 
-  if (bufSize < RAND_HEAD_LEN)
-  { return 0; }
+  if (bufSize < RAND_HEAD_LEN) {
+    return 0;
+  }
 
   /* First generate RAND_HEAD_LEN-2 random bytes. We encrypt the
    * output of rand() to get less predictability, since rand() is

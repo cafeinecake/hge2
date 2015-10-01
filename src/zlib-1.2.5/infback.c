@@ -35,12 +35,14 @@ int stream_size;
   struct inflate_state FAR *state;
 
   if (version == Z_NULL || version[0] != ZLIB_VERSION[0] ||
-      stream_size != (int)(sizeof(z_stream)))
-  { return Z_VERSION_ERROR; }
+      stream_size != (int)(sizeof(z_stream))) {
+    return Z_VERSION_ERROR;
+  }
 
   if (strm == Z_NULL || window == Z_NULL ||
-      windowBits < 8 || windowBits > 15)
-  { return Z_STREAM_ERROR; }
+      windowBits < 8 || windowBits > 15) {
+    return Z_STREAM_ERROR;
+  }
 
   strm->msg = Z_NULL;                 /* in case we return an error */
 
@@ -49,12 +51,16 @@ int stream_size;
     strm->opaque = (voidpf)0;
   }
 
-  if (strm->zfree == (free_func)0) { strm->zfree = zcfree; }
+  if (strm->zfree == (free_func)0) {
+    strm->zfree = zcfree;
+  }
 
   state = (struct inflate_state FAR *)ZALLOC(strm, 1,
           sizeof(struct inflate_state));
 
-  if (state == Z_NULL) { return Z_MEM_ERROR; }
+  if (state == Z_NULL) {
+    return Z_MEM_ERROR;
+  }
 
   Tracev((stderr, "inflate: allocated\n"));
   strm->state = (struct internal_state FAR *)state;
@@ -93,13 +99,21 @@ struct inflate_state FAR *state;
     /* literal/length table */
     sym = 0;
 
-    while (sym < 144) { state->lens[sym++] = 8; }
+    while (sym < 144) {
+      state->lens[sym++] = 8;
+    }
 
-    while (sym < 256) { state->lens[sym++] = 9; }
+    while (sym < 256) {
+      state->lens[sym++] = 9;
+    }
 
-    while (sym < 280) { state->lens[sym++] = 7; }
+    while (sym < 280) {
+      state->lens[sym++] = 7;
+    }
 
-    while (sym < 288) { state->lens[sym++] = 8; }
+    while (sym < 288) {
+      state->lens[sym++] = 8;
+    }
 
     next = fixed;
     lenfix = next;
@@ -109,7 +123,9 @@ struct inflate_state FAR *state;
     /* distance table */
     sym = 0;
 
-    while (sym < 32) { state->lens[sym++] = 5; }
+    while (sym < 32) {
+      state->lens[sym++] = 5;
+    }
 
     distfix = next;
     bits = 5;
@@ -276,8 +292,9 @@ void FAR *out_desc;
   {16, 17, 18, 0, 8, 7, 9, 6, 10, 5, 11, 4, 12, 3, 13, 2, 14, 1, 15};
 
   /* Check that the strm exists and that the state was initialized */
-  if (strm == Z_NULL || strm->state == Z_NULL)
-  { return Z_STREAM_ERROR; }
+  if (strm == Z_NULL || strm->state == Z_NULL) {
+    return Z_STREAM_ERROR;
+  }
 
   state = (struct inflate_state FAR *)strm->state;
 
@@ -359,9 +376,13 @@ void FAR *out_desc;
         PULL();
         ROOM();
 
-        if (copy > have) { copy = have; }
+        if (copy > have) {
+          copy = have;
+        }
 
-        if (copy > left) { copy = left; }
+        if (copy > left) {
+          copy = left;
+        }
 
         zmemcpy(put, next, copy);
         have -= copy;
@@ -404,8 +425,9 @@ void FAR *out_desc;
         DROPBITS(3);
       }
 
-      while (state->have < 19)
-      { state->lens[order[state->have++]] = 0; }
+      while (state->have < 19) {
+        state->lens[order[state->have++]] = 0;
+      }
 
       state->next = state->codes;
       state->lencode = (code const FAR *)(state->next);
@@ -428,7 +450,9 @@ void FAR *out_desc;
         for (;;) {
           here = state->lencode[BITS(state->lenbits)];
 
-          if ((unsigned)(here.bits) <= bits) { break; }
+          if ((unsigned)(here.bits) <= bits) {
+            break;
+          }
 
           PULLBYTE();
         }
@@ -471,13 +495,16 @@ void FAR *out_desc;
             break;
           }
 
-          while (copy--)
-          { state->lens[state->have++] = (unsigned short)len; }
+          while (copy--) {
+            state->lens[state->have++] = (unsigned short)len;
+          }
         }
       }
 
       /* handle error breaks in while */
-      if (state->mode == BAD) { break; }
+      if (state->mode == BAD) {
+        break;
+      }
 
       /* check for end-of-block code (better have one) */
       if (state->lens[256] == 0) {
@@ -521,8 +548,9 @@ void FAR *out_desc;
       if (have >= 6 && left >= 258) {
         RESTORE();
 
-        if (state->whave < state->wsize)
-        { state->whave = state->wsize - left; }
+        if (state->whave < state->wsize) {
+          state->whave = state->wsize - left;
+        }
 
         inflate_fast(strm, state->wsize);
         LOAD();
@@ -533,7 +561,9 @@ void FAR *out_desc;
       for (;;) {
         here = state->lencode[BITS(state->lenbits)];
 
-        if ((unsigned)(here.bits) <= bits) { break; }
+        if ((unsigned)(here.bits) <= bits) {
+          break;
+        }
 
         PULLBYTE();
       }
@@ -545,7 +575,9 @@ void FAR *out_desc;
           here = state->lencode[last.val +
                                 (BITS(last.bits + last.op) >> last.bits)];
 
-          if ((unsigned)(last.bits + here.bits) <= bits) { break; }
+          if ((unsigned)(last.bits + here.bits) <= bits) {
+            break;
+          }
 
           PULLBYTE();
         }
@@ -597,7 +629,9 @@ void FAR *out_desc;
       for (;;) {
         here = state->distcode[BITS(state->distbits)];
 
-        if ((unsigned)(here.bits) <= bits) { break; }
+        if ((unsigned)(here.bits) <= bits) {
+          break;
+        }
 
         PULLBYTE();
       }
@@ -609,7 +643,9 @@ void FAR *out_desc;
           here = state->distcode[last.val +
                                  (BITS(last.bits + last.op) >> last.bits)];
 
-          if ((unsigned)(last.bits + here.bits) <= bits) { break; }
+          if ((unsigned)(last.bits + here.bits) <= bits) {
+            break;
+          }
 
           PULLBYTE();
         }
@@ -658,7 +694,9 @@ void FAR *out_desc;
           copy = left;
         }
 
-        if (copy > state->length) { copy = state->length; }
+        if (copy > state->length) {
+          copy = state->length;
+        }
 
         state->length -= copy;
         left -= copy;
@@ -675,8 +713,9 @@ void FAR *out_desc;
       ret = Z_STREAM_END;
 
       if (left < state->wsize) {
-        if (out(out_desc, state->window, state->wsize - left))
-        { ret = Z_BUF_ERROR; }
+        if (out(out_desc, state->window, state->wsize - left)) {
+          ret = Z_BUF_ERROR;
+        }
       }
 
       goto inf_leave;
@@ -700,8 +739,9 @@ inf_leave:
 int ZEXPORT inflateBackEnd(strm)
 z_streamp strm;
 {
-  if (strm == Z_NULL || strm->state == Z_NULL || strm->zfree == (free_func)0)
-  { return Z_STREAM_ERROR; }
+  if (strm == Z_NULL || strm->state == Z_NULL || strm->zfree == (free_func)0) {
+    return Z_STREAM_ERROR;
+  }
 
   ZFREE(strm, strm->state);
   strm->state = Z_NULL;

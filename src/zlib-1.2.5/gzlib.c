@@ -95,8 +95,9 @@ const char *mode;
   /* allocate gzFile structure to return */
   state = malloc(sizeof(gz_state));
 
-  if (state == NULL)
-  { return NULL; }
+  if (state == NULL) {
+    return NULL;
+  }
 
   state->size = 0;            /* no buffers allocated yet */
   state->want = GZBUFSIZE;    /* requested buffer size */
@@ -108,9 +109,9 @@ const char *mode;
   state->strategy = Z_DEFAULT_STRATEGY;
 
   while (*mode) {
-    if (*mode >= '0' && *mode <= '9')
-    { state->level = *mode - '0'; }
-    else
+    if (*mode >= '0' && *mode <= '9') {
+      state->level = *mode - '0';
+    } else
       switch (*mode) {
       case 'r':
         state->mode = GZ_READ;
@@ -194,14 +195,17 @@ const char *mode;
     return NULL;
   }
 
-  if (state->mode == GZ_APPEND)
-  { state->mode = GZ_WRITE; }         /* simplify later checks */
+  if (state->mode == GZ_APPEND) {
+    state->mode = GZ_WRITE;  /* simplify later checks */
+  }
 
   /* save the current position for rewinding (only if reading) */
   if (state->mode == GZ_READ) {
     state->start = LSEEK(state->fd, 0, SEEK_CUR);
 
-    if (state->start == -1) { state->start = 0; }
+    if (state->start == -1) {
+      state->start = 0;
+    }
   }
 
   /* initialize stream */
@@ -235,8 +239,9 @@ const char *mode;
   char *path;         /* identifier for error messages */
   gzFile gz;
 
-  if (fd == -1 || (path = malloc(7 + 3 * sizeof(int))) == NULL)
-  { return NULL; }
+  if (fd == -1 || (path = malloc(7 + 3 * sizeof(int))) == NULL) {
+    return NULL;
+  }
 
   sprintf(path, "<fd:%d>", fd);   /* for debugging */
   gz = gz_open(path, fd, mode);
@@ -252,21 +257,25 @@ unsigned size;
   gz_statep state;
 
   /* get internal structure and check integrity */
-  if (file == NULL)
-  { return -1; }
+  if (file == NULL) {
+    return -1;
+  }
 
   state = (gz_statep)file;
 
-  if (state->mode != GZ_READ && state->mode != GZ_WRITE)
-  { return -1; }
+  if (state->mode != GZ_READ && state->mode != GZ_WRITE) {
+    return -1;
+  }
 
   /* make sure we haven't already allocated memory */
-  if (state->size != 0)
-  { return -1; }
+  if (state->size != 0) {
+    return -1;
+  }
 
   /* check and set requested size */
-  if (size == 0)
-  { return -1; }
+  if (size == 0) {
+    return -1;
+  }
 
   state->want = size;
   return 0;
@@ -279,18 +288,21 @@ gzFile file;
   gz_statep state;
 
   /* get internal structure */
-  if (file == NULL)
-  { return -1; }
+  if (file == NULL) {
+    return -1;
+  }
 
   state = (gz_statep)file;
 
   /* check that we're reading and that there's no error */
-  if (state->mode != GZ_READ || state->err != Z_OK)
-  { return -1; }
+  if (state->mode != GZ_READ || state->err != Z_OK) {
+    return -1;
+  }
 
   /* back up and start over */
-  if (LSEEK(state->fd, state->start, SEEK_SET) == -1)
-  { return -1; }
+  if (LSEEK(state->fd, state->start, SEEK_SET) == -1) {
+    return -1;
+  }
 
   gz_reset(state);
   return 0;
@@ -307,27 +319,32 @@ int whence;
   gz_statep state;
 
   /* get internal structure and check integrity */
-  if (file == NULL)
-  { return -1; }
+  if (file == NULL) {
+    return -1;
+  }
 
   state = (gz_statep)file;
 
-  if (state->mode != GZ_READ && state->mode != GZ_WRITE)
-  { return -1; }
+  if (state->mode != GZ_READ && state->mode != GZ_WRITE) {
+    return -1;
+  }
 
   /* check that there's no error */
-  if (state->err != Z_OK)
-  { return -1; }
+  if (state->err != Z_OK) {
+    return -1;
+  }
 
   /* can only seek from start or relative to current position */
-  if (whence != SEEK_SET && whence != SEEK_CUR)
-  { return -1; }
+  if (whence != SEEK_SET && whence != SEEK_CUR) {
+    return -1;
+  }
 
   /* normalize offset to a SEEK_CUR specification */
-  if (whence == SEEK_SET)
-  { offset -= state->pos; }
-  else if (state->seek)
-  { offset += state->skip; }
+  if (whence == SEEK_SET) {
+    offset -= state->pos;
+  } else if (state->seek) {
+    offset += state->skip;
+  }
 
   state->seek = 0;
 
@@ -336,8 +353,9 @@ int whence;
       state->pos + offset >= state->raw) {
     ret = LSEEK(state->fd, offset - state->have, SEEK_CUR);
 
-    if (ret == -1)
-    { return -1; }
+    if (ret == -1) {
+      return -1;
+    }
 
     state->have = 0;
     state->eof = 0;
@@ -350,16 +368,19 @@ int whence;
 
   /* calculate skip amount, rewinding if needed for back seek when reading */
   if (offset < 0) {
-    if (state->mode != GZ_READ)         /* writing -- can't go backwards */
-    { return -1; }
+    if (state->mode != GZ_READ) {       /* writing -- can't go backwards */
+      return -1;
+    }
 
     offset += state->pos;
 
-    if (offset < 0)                     /* before start of file! */
-    { return -1; }
+    if (offset < 0) {                   /* before start of file! */
+      return -1;
+    }
 
-    if (gzrewind(file) == -1)           /* rewind, then skip to offset */
-    { return -1; }
+    if (gzrewind(file) == -1) {         /* rewind, then skip to offset */
+      return -1;
+    }
   }
 
   /* if reading, skip what's in output buffer (one less gzgetc() check) */
@@ -400,13 +421,15 @@ gzFile file;
   gz_statep state;
 
   /* get internal structure and check integrity */
-  if (file == NULL)
-  { return -1; }
+  if (file == NULL) {
+    return -1;
+  }
 
   state = (gz_statep)file;
 
-  if (state->mode != GZ_READ && state->mode != GZ_WRITE)
-  { return -1; }
+  if (state->mode != GZ_READ && state->mode != GZ_WRITE) {
+    return -1;
+  }
 
   /* return position */
   return state->pos + (state->seek ? state->skip : 0);
@@ -430,22 +453,26 @@ gzFile file;
   gz_statep state;
 
   /* get internal structure and check integrity */
-  if (file == NULL)
-  { return -1; }
+  if (file == NULL) {
+    return -1;
+  }
 
   state = (gz_statep)file;
 
-  if (state->mode != GZ_READ && state->mode != GZ_WRITE)
-  { return -1; }
+  if (state->mode != GZ_READ && state->mode != GZ_WRITE) {
+    return -1;
+  }
 
   /* compute and return effective offset in file */
   offset = LSEEK(state->fd, 0, SEEK_CUR);
 
-  if (offset == -1)
-  { return -1; }
+  if (offset == -1) {
+    return -1;
+  }
 
-  if (state->mode == GZ_READ)             /* reading */
-  { offset -= state->strm.avail_in; }     /* don't count buffered input */
+  if (state->mode == GZ_READ) {           /* reading */
+    offset -= state->strm.avail_in;  /* don't count buffered input */
+  }
 
   return offset;
 }
@@ -467,13 +494,15 @@ gzFile file;
   gz_statep state;
 
   /* get internal structure and check integrity */
-  if (file == NULL)
-  { return 0; }
+  if (file == NULL) {
+    return 0;
+  }
 
   state = (gz_statep)file;
 
-  if (state->mode != GZ_READ && state->mode != GZ_WRITE)
-  { return 0; }
+  if (state->mode != GZ_READ && state->mode != GZ_WRITE) {
+    return 0;
+  }
 
   /* return end-of-file state */
   return state->mode == GZ_READ ?
@@ -488,17 +517,20 @@ int *errnum;
   gz_statep state;
 
   /* get internal structure and check integrity */
-  if (file == NULL)
-  { return NULL; }
+  if (file == NULL) {
+    return NULL;
+  }
 
   state = (gz_statep)file;
 
-  if (state->mode != GZ_READ && state->mode != GZ_WRITE)
-  { return NULL; }
+  if (state->mode != GZ_READ && state->mode != GZ_WRITE) {
+    return NULL;
+  }
 
   /* return error information */
-  if (errnum != NULL)
-  { *errnum = state->err; }
+  if (errnum != NULL) {
+    *errnum = state->err;
+  }
 
   return state->msg == NULL ? "" : state->msg;
 }
@@ -510,17 +542,20 @@ gzFile file;
   gz_statep state;
 
   /* get internal structure and check integrity */
-  if (file == NULL)
-  { return; }
+  if (file == NULL) {
+    return;
+  }
 
   state = (gz_statep)file;
 
-  if (state->mode != GZ_READ && state->mode != GZ_WRITE)
-  { return; }
+  if (state->mode != GZ_READ && state->mode != GZ_WRITE) {
+    return;
+  }
 
   /* clear error and end-of-file */
-  if (state->mode == GZ_READ)
-  { state->eof = 0; }
+  if (state->mode == GZ_READ) {
+    state->eof = 0;
+  }
 
   gz_error(state, Z_OK, NULL);
 }
@@ -538,8 +573,9 @@ const char *msg;
 {
   /* free previously allocated message and clear */
   if (state->msg != NULL) {
-    if (state->err != Z_MEM_ERROR)
-    { free(state->msg); }
+    if (state->err != Z_MEM_ERROR) {
+      free(state->msg);
+    }
 
     state->msg = NULL;
   }
@@ -547,8 +583,9 @@ const char *msg;
   /* set error code, and if no message, then done */
   state->err = err;
 
-  if (msg == NULL)
-  { return; }
+  if (msg == NULL) {
+    return;
+  }
 
   /* for an out of memory error, save as static string */
   if (err == Z_MEM_ERROR) {

@@ -182,17 +182,20 @@ local void cleanup(void)
 
   if (done != NULL) {
     for (n = 0; n < size; n++)
-      if (done[n].len)
-      { free(done[n].vec); }
+      if (done[n].len) {
+        free(done[n].vec);
+      }
 
     free(done);
   }
 
-  if (num != NULL)
-  { free(num); }
+  if (num != NULL) {
+    free(num);
+  }
 
-  if (code != NULL)
-  { free(code); }
+  if (code != NULL) {
+    free(code);
+  }
 }
 
 /* Return the number of possible Huffman codes using bit patterns of lengths
@@ -210,8 +213,9 @@ local big_t count(int syms, int len, int left)
   size_t index;       /* index of this case in *num */
 
   /* see if only one possible code */
-  if (syms == left)
-  { return 1; }
+  if (syms == left) {
+    return 1;
+  }
 
   /* note and verify the expected state */
   assert(syms > left && left > 0 && len < max);
@@ -220,15 +224,17 @@ local big_t count(int syms, int len, int left)
   index = INDEX(syms, left, len);
   got = num[index];
 
-  if (got)
-  { return got; }         /* we have -- return the saved result */
+  if (got) {
+    return got;  /* we have -- return the saved result */
+  }
 
   /* we need to use at least this many bit patterns so that the code won't be
      incomplete at the next length (more bit patterns than symbols) */
   least = (left << 1) - syms;
 
-  if (least < 0)
-  { least = 0; }
+  if (least < 0) {
+    least = 0;
+  }
 
   /* we can use at most this many bit patterns, lest there not be enough
      available for the remaining symbols at the maximum length (if there were
@@ -243,8 +249,9 @@ local big_t count(int syms, int len, int left)
     got = count(syms - use, len + 1, (left - use) << 1);
     sum += got;
 
-    if (got == -1 || sum < got)         /* overflow */
-    { return -1; }
+    if (got == -1 || sum < got) {       /* overflow */
+      return -1;
+    }
   }
 
   /* verify that all recursive calls are productive */
@@ -277,8 +284,9 @@ local int beenhere(int syms, int len, int left, int mem, int rem)
   /* see if we've been here */
   length = done[index].len;
 
-  if (offset < length && (done[index].vec[offset] & bit) != 0)
-  { return 1; }       /* done this! */
+  if (offset < length && (done[index].vec[offset] & bit) != 0) {
+    return 1;  /* done this! */
+  }
 
   /* we haven't been here before -- set the bit to show we have now */
 
@@ -292,16 +300,18 @@ local int beenhere(int syms, int len, int left, int mem, int rem)
 
       vector = realloc(done[index].vec, length);
 
-      if (vector != NULL)
-      { memset(vector + done[index].len, 0, length - done[index].len); }
+      if (vector != NULL) {
+        memset(vector + done[index].len, 0, length - done[index].len);
+      }
     }
 
     /* otherwise we need to make a new vector and zero it out */
     else {
       length = 1 << (len - root);
 
-      while (length <= offset)
-      { length <<= 1; }
+      while (length <= offset) {
+        length <<= 1;
+      }
 
       vector = calloc(length, sizeof(char));
     }
@@ -354,8 +364,9 @@ local void examine(int syms, int len, int left, int mem, int rem)
       printf("max %d: ", mem);
 
       for (use = root + 1; use <= max; use++)
-        if (code[use])
-        { printf("%d[%d] ", code[use], use); }
+        if (code[use]) {
+          printf("%d[%d] ", code[use], use);
+        }
 
       putchar('\n');
       fflush(stdout);
@@ -367,15 +378,17 @@ local void examine(int syms, int len, int left, int mem, int rem)
   }
 
   /* prune the tree if we can */
-  if (beenhere(syms, len, left, mem, rem))
-  { return; }
+  if (beenhere(syms, len, left, mem, rem)) {
+    return;
+  }
 
   /* we need to use at least this many bit patterns so that the code won't be
      incomplete at the next length (more bit patterns than symbols) */
   least = (left << 1) - syms;
 
-  if (least < 0)
-  { least = 0; }
+  if (least < 0) {
+    least = 0;
+  }
 
   /* we can use at most this many bit patterns, lest there not be enough
      available for the remaining symbols at the maximum length (if there were
@@ -424,8 +437,9 @@ local void enough(int syms)
   size_t index;       /* index of this case in *num */
 
   /* clear code */
-  for (n = 0; n <= max; n++)
-  { code[n] = 0; }
+  for (n = 0; n <= max; n++) {
+    code[n] = 0;
+  }
 
   /* look at all (root + 1) bit and longer codes */
   large = 1 << root;              /* base table */
@@ -437,8 +451,9 @@ local void enough(int syms)
            resulting codes (complete at root + 2 or more) */
         index = INDEX(n, left, root + 1);
 
-        if (root + 1 < max && num[index])       /* reachable node */
-        { examine(n, root + 1, left, 1 << root, 0); }
+        if (root + 1 < max && num[index]) {     /* reachable node */
+          examine(n, root + 1, left, 1 << root, 0);
+        }
 
         /* also look at root bit codes with completions at root + 1
            bits (not saved in num, since complete), just in case */
@@ -496,8 +511,9 @@ int main(int argc, char **argv)
     if (argc > 2) {
       root = atoi(argv[2]);
 
-      if (argc > 3)
-      { max = atoi(argv[3]); }
+      if (argc > 3) {
+        max = atoi(argv[3]);
+      }
     }
   }
 
@@ -508,14 +524,16 @@ int main(int argc, char **argv)
   }
 
   /* if not restricting the code length, the longest is syms - 1 */
-  if (max > syms - 1)
-  { max = syms - 1; }
+  if (max > syms - 1) {
+    max = syms - 1;
+  }
 
   /* determine the number of bits in a code_t */
   n = 0;
 
-  while (((code_t)1 << n) != 0)
-  { n++; }
+  while (((code_t)1 << n) != 0) {
+    n++;
+  }
 
   /* make sure that the calculation of most will not overflow */
   if (max > n || syms - 2 >= (((code_t)0 - 1) >> (max - 1))) {
@@ -540,9 +558,9 @@ int main(int argc, char **argv)
 
   /* determine size of saved results array, checking for overflows,
      allocate and clear the array (set all to zero with calloc()) */
-  if (syms == 2)              /* iff max == 1 */
-  { num = NULL; }             /* won't be saving any results */
-  else {
+  if (syms == 2) {            /* iff max == 1 */
+    num = NULL;  /* won't be saving any results */
+  } else {
     size = syms >> 1;
 
     if (size > ((size_t)0 - 1) / (n = (syms - 1) >> 1) ||
@@ -573,29 +591,32 @@ int main(int argc, char **argv)
 
   printf("%llu total codes for 2 to %d symbols", sum, syms);
 
-  if (max < syms - 1)
-  { printf(" (%d-bit length limit)\n", max); }
-  else
-  { puts(" (no length limit)"); }
+  if (max < syms - 1) {
+    printf(" (%d-bit length limit)\n", max);
+  } else {
+    puts(" (no length limit)");
+  }
 
   /* allocate and clear done array for beenhere() */
-  if (syms == 2)
-  { done = NULL; }
-  else if (size > ((size_t)0 - 1) / sizeof(struct tab) ||
-           (done = calloc(size, sizeof(struct tab))) == NULL) {
+  if (syms == 2) {
+    done = NULL;
+  } else if (size > ((size_t)0 - 1) / sizeof(struct tab) ||
+             (done = calloc(size, sizeof(struct tab))) == NULL) {
     fputs("abort: unable to allocate enough memory\n", stderr);
     cleanup();
     return 1;
   }
 
   /* find and show maximum inflate table usage */
-  if (root > max)                 /* reduce root to max length */
-  { root = max; }
+  if (root > max) {               /* reduce root to max length */
+    root = max;
+  }
 
-  if (syms < ((code_t)1 << (root + 1)))
-  { enough(syms); }
-  else
-  { puts("cannot handle minimum code lengths > root"); }
+  if (syms < ((code_t)1 << (root + 1))) {
+    enough(syms);
+  } else {
+    puts("cannot handle minimum code lengths > root");
+  }
 
   /* done */
   cleanup();

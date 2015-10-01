@@ -37,15 +37,33 @@ public:
   void   SetColor(int col, int row, uint32_t color);
   void   SetDisplacement(int col, int row, float dx, float dy, int ref);
 
-  HTEXTURE GetTexture() const { return quad.tex; }
-  void   GetTextureRect(float *x, float *y, float *w, float *h) const { *x = tx; *y = ty; *w = width; *h = height; }
-  int    GetBlendMode() const { return quad.blend; }
+  HTEXTURE GetTexture() const
+  {
+    return quad.tex;
+  }
+  void   GetTextureRect(float *x, float *y, float *w, float *h) const
+  {
+    *x = tx;
+    *y = ty;
+    *w = width;
+    *h = height;
+  }
+  int    GetBlendMode() const
+  {
+    return quad.blend;
+  }
   float    GetZ(int col, int row) const;
   Color  GetColor(int col, int row) const;
   void   GetDisplacement(int col, int row, float *dx, float *dy, int ref) const;
 
-  int    GetRows() { return nRows; }
-  int    GetCols() { return nCols; }
+  int    GetRows()
+  {
+    return nRows;
+  }
+  int    GetCols()
+  {
+    return nCols;
+  }
 
 private:
   hgeDistortionMesh();

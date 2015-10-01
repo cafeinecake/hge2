@@ -93,7 +93,9 @@ local struct access *addpoint(struct access *index, int bits,
   if (index == NULL) {
     index = malloc(sizeof(struct access));
 
-    if (index == NULL) { return NULL; }
+    if (index == NULL) {
+      return NULL;
+    }
 
     index->list = malloc(sizeof(struct point) << 3);
 
@@ -125,11 +127,13 @@ local struct access *addpoint(struct access *index, int bits,
   next->in = in;
   next->out = out;
 
-  if (left)
-  { memcpy(next->window, window + WINSIZE - left, left); }
+  if (left) {
+    memcpy(next->window, window + WINSIZE - left, left);
+  }
 
-  if (left < WINSIZE)
-  { memcpy(next->window + left, window, WINSIZE - left); }
+  if (left < WINSIZE) {
+    memcpy(next->window + left, window, WINSIZE - left);
+  }
 
   index->have++;
 
@@ -163,8 +167,9 @@ local int build_index(FILE *in, off_t span, struct access **built)
   strm.next_in = Z_NULL;
   ret = inflateInit2(&strm, 47);      /* automatic zlib or gzip decoding */
 
-  if (ret != Z_OK)
-  { return ret; }
+  if (ret != Z_OK) {
+    return ret;
+  }
 
   /* inflate the input, maintain a sliding window, and build an index -- this
      also validates the integrity of the compressed data using the check
@@ -205,14 +210,17 @@ local int build_index(FILE *in, off_t span, struct access **built)
       totin -= strm.avail_in;
       totout -= strm.avail_out;
 
-      if (ret == Z_NEED_DICT)
-      { ret = Z_DATA_ERROR; }
+      if (ret == Z_NEED_DICT) {
+        ret = Z_DATA_ERROR;
+      }
 
-      if (ret == Z_MEM_ERROR || ret == Z_DATA_ERROR)
-      { goto build_index_error; }
+      if (ret == Z_MEM_ERROR || ret == Z_DATA_ERROR) {
+        goto build_index_error;
+      }
 
-      if (ret == Z_STREAM_END)
-      { break; }
+      if (ret == Z_STREAM_END) {
+        break;
+      }
 
       /* if at end of block, consider adding an index entry (note that if
          data_type indicates an end-of-block, then all of the
@@ -249,8 +257,9 @@ local int build_index(FILE *in, off_t span, struct access **built)
 build_index_error:
   (void)inflateEnd(&strm);
 
-  if (index != NULL)
-  { free_index(index); }
+  if (index != NULL) {
+    free_index(index);
+  }
 
   return ret;
 }
@@ -272,15 +281,17 @@ local int extract(FILE *in, struct access *index, off_t offset,
   unsigned char discard[WINSIZE];
 
   /* proceed only if something reasonable to do */
-  if (len < 0)
-  { return 0; }
+  if (len < 0) {
+    return 0;
+  }
 
   /* find where in stream to start */
   here = index->list;
   ret = index->have;
 
-  while (--ret && here[1].out <= offset)
-  { here++; }
+  while (--ret && here[1].out <= offset) {
+    here++;
+  }
 
   /* initialize file and inflate state to start there */
   strm.zalloc = Z_NULL;
@@ -290,13 +301,15 @@ local int extract(FILE *in, struct access *index, off_t offset,
   strm.next_in = Z_NULL;
   ret = inflateInit2(&strm, -15);         /* raw inflate */
 
-  if (ret != Z_OK)
-  { return ret; }
+  if (ret != Z_OK) {
+    return ret;
+  }
 
   ret = fseeko(in, here->in - (here->bits ? 1 : 0), SEEK_SET);
 
-  if (ret == -1)
-  { goto extract_ret; }
+  if (ret == -1) {
+    goto extract_ret;
+  }
 
   if (here->bits) {
     ret = getc(in);
@@ -354,19 +367,23 @@ local int extract(FILE *in, struct access *index, off_t offset,
 
       ret = inflate(&strm, Z_NO_FLUSH);       /* normal inflate */
 
-      if (ret == Z_NEED_DICT)
-      { ret = Z_DATA_ERROR; }
+      if (ret == Z_NEED_DICT) {
+        ret = Z_DATA_ERROR;
+      }
 
-      if (ret == Z_MEM_ERROR || ret == Z_DATA_ERROR)
-      { goto extract_ret; }
+      if (ret == Z_MEM_ERROR || ret == Z_DATA_ERROR) {
+        goto extract_ret;
+      }
 
-      if (ret == Z_STREAM_END)
-      { break; }
+      if (ret == Z_STREAM_END) {
+        break;
+      }
     } while (strm.avail_out != 0);
 
     /* if reach end of stream, then don't keep trying to get more */
-    if (ret == Z_STREAM_END)
-    { break; }
+    if (ret == Z_STREAM_END) {
+      break;
+    }
 
     /* do until offset reached and requested data read, or stream ends */
   } while (skip);

@@ -262,7 +262,7 @@ public:
 
 
   // Graphics
-  GPU_Target*			m_screen;
+  GPU_Target     *m_screen;
 
   D3DPRESENT_PARAMETERS  *d3dpp;
 

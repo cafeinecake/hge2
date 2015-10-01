@@ -105,7 +105,9 @@ z_streamp strm;
 {
   struct inflate_state FAR *state;
 
-  if (strm == Z_NULL || strm->state == Z_NULL) { return Z_STREAM_ERROR; }
+  if (strm == Z_NULL || strm->state == Z_NULL) {
+    return Z_STREAM_ERROR;
+  }
 
   state = (struct inflate_state FAR *)strm->state;
   strm->total_in = strm->total_out = state->total = 0;
@@ -136,7 +138,9 @@ int windowBits;
   struct inflate_state FAR *state;
 
   /* get the state */
-  if (strm == Z_NULL || strm->state == Z_NULL) { return Z_STREAM_ERROR; }
+  if (strm == Z_NULL || strm->state == Z_NULL) {
+    return Z_STREAM_ERROR;
+  }
 
   state = (struct inflate_state FAR *)strm->state;
 
@@ -148,15 +152,17 @@ int windowBits;
     wrap = (windowBits >> 4) + 1;
 #ifdef GUNZIP
 
-    if (windowBits < 48)
-    { windowBits &= 15; }
+    if (windowBits < 48) {
+      windowBits &= 15;
+    }
 
 #endif
   }
 
   /* set number of window bits, free window if different */
-  if (windowBits && (windowBits < 8 || windowBits > 15))
-  { return Z_STREAM_ERROR; }
+  if (windowBits && (windowBits < 8 || windowBits > 15)) {
+    return Z_STREAM_ERROR;
+  }
 
   if (state->window != Z_NULL && state->wbits != (unsigned)windowBits) {
     ZFREE(strm, state->window);
@@ -179,10 +185,13 @@ int stream_size;
   struct inflate_state FAR *state;
 
   if (version == Z_NULL || version[0] != ZLIB_VERSION[0] ||
-      stream_size != (int)(sizeof(z_stream)))
-  { return Z_VERSION_ERROR; }
+      stream_size != (int)(sizeof(z_stream))) {
+    return Z_VERSION_ERROR;
+  }
 
-  if (strm == Z_NULL) { return Z_STREAM_ERROR; }
+  if (strm == Z_NULL) {
+    return Z_STREAM_ERROR;
+  }
 
   strm->msg = Z_NULL;                 /* in case we return an error */
 
@@ -191,12 +200,16 @@ int stream_size;
     strm->opaque = (voidpf)0;
   }
 
-  if (strm->zfree == (free_func)0) { strm->zfree = zcfree; }
+  if (strm->zfree == (free_func)0) {
+    strm->zfree = zcfree;
+  }
 
   state = (struct inflate_state FAR *)
           ZALLOC(strm, 1, sizeof(struct inflate_state));
 
-  if (state == Z_NULL) { return Z_MEM_ERROR; }
+  if (state == Z_NULL) {
+    return Z_MEM_ERROR;
+  }
 
   Tracev((stderr, "inflate: allocated\n"));
   strm->state = (struct internal_state FAR *)state;
@@ -226,7 +239,9 @@ int value;
 {
   struct inflate_state FAR *state;
 
-  if (strm == Z_NULL || strm->state == Z_NULL) { return Z_STREAM_ERROR; }
+  if (strm == Z_NULL || strm->state == Z_NULL) {
+    return Z_STREAM_ERROR;
+  }
 
   state = (struct inflate_state FAR *)strm->state;
 
@@ -236,7 +251,9 @@ int value;
     return Z_OK;
   }
 
-  if (bits > 16 || state->bits + bits > 32) { return Z_STREAM_ERROR; }
+  if (bits > 16 || state->bits + bits > 32) {
+    return Z_STREAM_ERROR;
+  }
 
   value &= (1L << bits) - 1;
   state->hold += value << state->bits;
@@ -270,13 +287,21 @@ struct inflate_state FAR *state;
     /* literal/length table */
     sym = 0;
 
-    while (sym < 144) { state->lens[sym++] = 8; }
+    while (sym < 144) {
+      state->lens[sym++] = 8;
+    }
 
-    while (sym < 256) { state->lens[sym++] = 9; }
+    while (sym < 256) {
+      state->lens[sym++] = 9;
+    }
 
-    while (sym < 280) { state->lens[sym++] = 7; }
+    while (sym < 280) {
+      state->lens[sym++] = 7;
+    }
 
-    while (sym < 288) { state->lens[sym++] = 8; }
+    while (sym < 288) {
+      state->lens[sym++] = 8;
+    }
 
     next = fixed;
     lenfix = next;
@@ -286,7 +311,9 @@ struct inflate_state FAR *state;
     /* distance table */
     sym = 0;
 
-    while (sym < 32) { state->lens[sym++] = 5; }
+    while (sym < 32) {
+      state->lens[sym++] = 5;
+    }
 
     distfix = next;
     bits = 5;
@@ -346,12 +373,16 @@ void makefixed()
   low = 0;
 
   for (;;) {
-    if ((low % 7) == 0) { printf("\n        "); }
+    if ((low % 7) == 0) {
+      printf("\n        ");
+    }
 
     printf("{%u,%u,%d}", state.lencode[low].op, state.lencode[low].bits,
            state.lencode[low].val);
 
-    if (++low == size) { break; }
+    if (++low == size) {
+      break;
+    }
 
     putchar(',');
   }
@@ -362,12 +393,16 @@ void makefixed()
   low = 0;
 
   for (;;) {
-    if ((low % 6) == 0) { printf("\n        "); }
+    if ((low % 6) == 0) {
+      printf("\n        ");
+    }
 
     printf("{%u,%u,%d}", state.distcode[low].op, state.distcode[low].bits,
            state.distcode[low].val);
 
-    if (++low == size) { break; }
+    if (++low == size) {
+      break;
+    }
 
     putchar(',');
   }
@@ -405,7 +440,9 @@ unsigned out;
                     ZALLOC(strm, 1U << state->wbits,
                            sizeof(unsigned char));
 
-    if (state->window == Z_NULL) { return 1; }
+    if (state->window == Z_NULL) {
+      return 1;
+    }
   }
 
   /* if window not in use yet, initialize */
@@ -425,7 +462,9 @@ unsigned out;
   } else {
     dist = state->wsize - state->wnext;
 
-    if (dist > copy) { dist = copy; }
+    if (dist > copy) {
+      dist = copy;
+    }
 
     zmemcpy(state->window + state->wnext, strm->next_out - copy, dist);
     copy -= dist;
@@ -437,9 +476,13 @@ unsigned out;
     } else {
       state->wnext += dist;
 
-      if (state->wnext == state->wsize) { state->wnext = 0; }
+      if (state->wnext == state->wsize) {
+        state->wnext = 0;
+      }
 
-      if (state->whave < state->wsize) { state->whave += dist; }
+      if (state->whave < state->wsize) {
+        state->whave += dist;
+      }
     }
   }
 
@@ -651,12 +694,15 @@ int flush;
   {16, 17, 18, 0, 8, 7, 9, 6, 10, 5, 11, 4, 12, 3, 13, 2, 14, 1, 15};
 
   if (strm == Z_NULL || strm->state == Z_NULL || strm->next_out == Z_NULL ||
-      (strm->next_in == Z_NULL && strm->avail_in != 0))
-  { return Z_STREAM_ERROR; }
+      (strm->next_in == Z_NULL && strm->avail_in != 0)) {
+    return Z_STREAM_ERROR;
+  }
 
   state = (struct inflate_state FAR *)strm->state;
 
-  if (state->mode == TYPE) { state->mode = TYPEDO; }      /* skip check */
+  if (state->mode == TYPE) {
+    state->mode = TYPEDO;  /* skip check */
+  }
 
   LOAD();
   in = have;
@@ -684,8 +730,9 @@ int flush;
 
       state->flags = 0;           /* expect zlib header */
 
-      if (state->head != Z_NULL)
-      { state->head->done = -1; }
+      if (state->head != Z_NULL) {
+        state->head->done = -1;
+      }
 
       if (!(state->wrap & 1) ||   /* check if zlib header allowed */
 #else
@@ -758,10 +805,13 @@ int flush;
         NEEDBITS(16);
         state->length = (unsigned)(hold);
 
-        if (state->head != Z_NULL)
-        { state->head->extra_len = (unsigned)hold; }
+        if (state->head != Z_NULL) {
+          state->head->extra_len = (unsigned)hold;
+        }
 
-        if (state->flags & 0x0200) { CRC2(state->check, hold); }
+        if (state->flags & 0x0200) {
+          CRC2(state->check, hold);
+        }
 
         INITBITS();
       } else if (state->head != Z_NULL)
@@ -771,7 +821,9 @@ int flush;
       if (state->flags & 0x0400) {
         copy = state->length;
 
-        if (copy > have) { copy = have; }
+        if (copy > have) {
+          copy = have;
+        }
 
         if (copy) {
           if (state->head != Z_NULL &&
@@ -782,22 +834,27 @@ int flush;
                     state->head->extra_max - len : copy);
           }
 
-          if (state->flags & 0x0200)
-          { state->check = crc32(state->check, next, copy); }
+          if (state->flags & 0x0200) {
+            state->check = crc32(state->check, next, copy);
+          }
 
           have -= copy;
           next += copy;
           state->length -= copy;
         }
 
-        if (state->length) { goto inf_leave; }
+        if (state->length) {
+          goto inf_leave;
+        }
       }
       state->length = 0;
       state->mode = NAME;
 
     case NAME:
       if (state->flags & 0x0800) {
-        if (have == 0) { goto inf_leave; }
+        if (have == 0) {
+          goto inf_leave;
+        }
 
         copy = 0;
 
@@ -806,24 +863,30 @@ int flush;
 
           if (state->head != Z_NULL &&
               state->head->name != Z_NULL &&
-              state->length < state->head->name_max)
-          { state->head->name[state->length++] = len; }
+              state->length < state->head->name_max) {
+            state->head->name[state->length++] = len;
+          }
         } while (len && copy < have);
 
-        if (state->flags & 0x0200)
-        { state->check = crc32(state->check, next, copy); }
+        if (state->flags & 0x0200) {
+          state->check = crc32(state->check, next, copy);
+        }
 
         have -= copy;
         next += copy;
 
-        if (len) { goto inf_leave; }
+        if (len) {
+          goto inf_leave;
+        }
       } else if (state->head != Z_NULL)
         state->head->name = Z_NULL;
       state->length = 0;
       state->mode = COMMENT;
     case COMMENT:
       if (state->flags & 0x1000) {
-        if (have == 0) { goto inf_leave; }
+        if (have == 0) {
+          goto inf_leave;
+        }
 
         copy = 0;
 
@@ -832,17 +895,21 @@ int flush;
 
           if (state->head != Z_NULL &&
               state->head->comment != Z_NULL &&
-              state->length < state->head->comm_max)
-          { state->head->comment[state->length++] = len; }
+              state->length < state->head->comm_max) {
+            state->head->comment[state->length++] = len;
+          }
         } while (len && copy < have);
 
-        if (state->flags & 0x0200)
-        { state->check = crc32(state->check, next, copy); }
+        if (state->flags & 0x0200) {
+          state->check = crc32(state->check, next, copy);
+        }
 
         have -= copy;
         next += copy;
 
-        if (len) { goto inf_leave; }
+        if (len) {
+          goto inf_leave;
+        }
       } else if (state->head != Z_NULL)
         state->head->comment = Z_NULL;
       state->mode = HCRC;
@@ -945,11 +1012,17 @@ int flush;
     case COPY:
       copy = state->length;
       if (copy) {
-        if (copy > have) { copy = have; }
+        if (copy > have) {
+          copy = have;
+        }
 
-        if (copy > left) { copy = left; }
+        if (copy > left) {
+          copy = left;
+        }
 
-        if (copy == 0) { goto inf_leave; }
+        if (copy == 0) {
+          goto inf_leave;
+        }
 
         zmemcpy(put, next, copy);
         have -= copy;
@@ -1009,7 +1082,9 @@ int flush;
         for (;;) {
           here = state->lencode[BITS(state->lenbits)];
 
-          if ((unsigned)(here.bits) <= bits) { break; }
+          if ((unsigned)(here.bits) <= bits) {
+            break;
+          }
 
           PULLBYTE();
         }
@@ -1052,8 +1127,9 @@ int flush;
             break;
           }
 
-          while (copy--)
-          { state->lens[state->have++] = (unsigned short)len; }
+          while (copy--) {
+            state->lens[state->have++] = (unsigned short)len;
+          }
         }
       }
 
@@ -1103,8 +1179,9 @@ int flush;
         inflate_fast(strm, out);
         LOAD();
 
-        if (state->mode == TYPE)
-        { state->back = -1; }
+        if (state->mode == TYPE) {
+          state->back = -1;
+        }
 
         break;
       }
@@ -1113,7 +1190,9 @@ int flush;
       for (;;) {
         here = state->lencode[BITS(state->lenbits)];
 
-        if ((unsigned)(here.bits) <= bits) { break; }
+        if ((unsigned)(here.bits) <= bits) {
+          break;
+        }
 
         PULLBYTE();
       }
@@ -1124,7 +1203,9 @@ int flush;
           here = state->lencode[last.val +
                                 (BITS(last.bits + last.op) >> last.bits)];
 
-          if ((unsigned)(last.bits + here.bits) <= bits) { break; }
+          if ((unsigned)(last.bits + here.bits) <= bits) {
+            break;
+          }
 
           PULLBYTE();
         }
@@ -1172,7 +1253,9 @@ int flush;
       for (;;) {
         here = state->distcode[BITS(state->distbits)];
 
-        if ((unsigned)(here.bits) <= bits) { break; }
+        if ((unsigned)(here.bits) <= bits) {
+          break;
+        }
 
         PULLBYTE();
       }
@@ -1183,7 +1266,9 @@ int flush;
           here = state->distcode[last.val +
                                  (BITS(last.bits + last.op) >> last.bits)];
 
-          if ((unsigned)(last.bits + here.bits) <= bits) { break; }
+          if ((unsigned)(last.bits + here.bits) <= bits) {
+            break;
+          }
 
           PULLBYTE();
         }
@@ -1238,9 +1323,13 @@ int flush;
           Trace((stderr, "inflate.c too far\n"));
           copy -= state->whave;
 
-          if (copy > state->length) { copy = state->length; }
+          if (copy > state->length) {
+            copy = state->length;
+          }
 
-          if (copy > left) { copy = left; }
+          if (copy > left) {
+            copy = left;
+          }
 
           left -= copy;
           state->length -= copy;
@@ -1249,7 +1338,9 @@ int flush;
             *put++ = 0;
           } while (--copy);
 
-          if (state->length == 0) { state->mode = LEN; }
+          if (state->length == 0) {
+            state->mode = LEN;
+          }
 
           break;
 #endif
@@ -1258,10 +1349,13 @@ int flush;
         if (copy > state->wnext) {
           copy -= state->wnext;
           from = state->window + (state->wsize - copy);
-        } else
-        { from = state->window + (state->wnext - copy); }
+        } else {
+          from = state->window + (state->wnext - copy);
+        }
 
-        if (copy > state->length) { copy = state->length; }
+        if (copy > state->length) {
+          copy = state->length;
+        }
       } else {                            /* copy from output */
         from = put - state->offset;
         copy = state->length;
@@ -1367,8 +1461,9 @@ inf_leave:
                     (state->mode == TYPE ? 128 : 0) +
                     (state->mode == LEN_ || state->mode == COPY_ ? 256 : 0);
 
-  if (((in == 0 && out == 0) || flush == Z_FINISH) && ret == Z_OK)
-  { ret = Z_BUF_ERROR; }
+  if (((in == 0 && out == 0) || flush == Z_FINISH) && ret == Z_OK) {
+    ret = Z_BUF_ERROR;
+  }
 
   return ret;
 }
@@ -1378,12 +1473,15 @@ z_streamp strm;
 {
   struct inflate_state FAR *state;
 
-  if (strm == Z_NULL || strm->state == Z_NULL || strm->zfree == (free_func)0)
-  { return Z_STREAM_ERROR; }
+  if (strm == Z_NULL || strm->state == Z_NULL || strm->zfree == (free_func)0) {
+    return Z_STREAM_ERROR;
+  }
 
   state = (struct inflate_state FAR *)strm->state;
 
-  if (state->window != Z_NULL) { ZFREE(strm, state->window); }
+  if (state->window != Z_NULL) {
+    ZFREE(strm, state->window);
+  }
 
   ZFREE(strm, strm->state);
   strm->state = Z_NULL;
@@ -1400,20 +1498,24 @@ uInt dictLength;
   unsigned long id;
 
   /* check state */
-  if (strm == Z_NULL || strm->state == Z_NULL) { return Z_STREAM_ERROR; }
+  if (strm == Z_NULL || strm->state == Z_NULL) {
+    return Z_STREAM_ERROR;
+  }
 
   state = (struct inflate_state FAR *)strm->state;
 
-  if (state->wrap != 0 && state->mode != DICT)
-  { return Z_STREAM_ERROR; }
+  if (state->wrap != 0 && state->mode != DICT) {
+    return Z_STREAM_ERROR;
+  }
 
   /* check for correct dictionary id */
   if (state->mode == DICT) {
     id = adler32(0L, Z_NULL, 0);
     id = adler32(id, dictionary, dictLength);
 
-    if (id != state->check)
-    { return Z_DATA_ERROR; }
+    if (id != state->check) {
+      return Z_DATA_ERROR;
+    }
   }
 
   /* copy dictionary to window */
@@ -1444,11 +1546,15 @@ gz_headerp head;
   struct inflate_state FAR *state;
 
   /* check state */
-  if (strm == Z_NULL || strm->state == Z_NULL) { return Z_STREAM_ERROR; }
+  if (strm == Z_NULL || strm->state == Z_NULL) {
+    return Z_STREAM_ERROR;
+  }
 
   state = (struct inflate_state FAR *)strm->state;
 
-  if ((state->wrap & 2) == 0) { return Z_STREAM_ERROR; }
+  if ((state->wrap & 2) == 0) {
+    return Z_STREAM_ERROR;
+  }
 
   /* save header structure */
   state->head = head;
@@ -1479,12 +1585,13 @@ unsigned len;
   next = 0;
 
   while (next < len && got < 4) {
-    if ((int)(buf[next]) == (got < 2 ? 0 : 0xff))
-    { got++; }
-    else if (buf[next])
-    { got = 0; }
-    else
-    { got = 4 - got; }
+    if ((int)(buf[next]) == (got < 2 ? 0 : 0xff)) {
+      got++;
+    } else if (buf[next]) {
+      got = 0;
+    } else {
+      got = 4 - got;
+    }
 
     next++;
   }
@@ -1502,11 +1609,15 @@ z_streamp strm;
   struct inflate_state FAR *state;
 
   /* check parameters */
-  if (strm == Z_NULL || strm->state == Z_NULL) { return Z_STREAM_ERROR; }
+  if (strm == Z_NULL || strm->state == Z_NULL) {
+    return Z_STREAM_ERROR;
+  }
 
   state = (struct inflate_state FAR *)strm->state;
 
-  if (strm->avail_in == 0 && state->bits < 8) { return Z_BUF_ERROR; }
+  if (strm->avail_in == 0 && state->bits < 8) {
+    return Z_BUF_ERROR;
+  }
 
   /* if first time, start search in bit buffer */
   if (state->mode != SYNC) {
@@ -1532,7 +1643,9 @@ z_streamp strm;
   strm->total_in += len;
 
   /* return no joy or set up to restart inflate() on a new block */
-  if (state->have != 4) { return Z_DATA_ERROR; }
+  if (state->have != 4) {
+    return Z_DATA_ERROR;
+  }
 
   in = strm->total_in;
   out = strm->total_out;
@@ -1556,7 +1669,9 @@ z_streamp strm;
 {
   struct inflate_state FAR *state;
 
-  if (strm == Z_NULL || strm->state == Z_NULL) { return Z_STREAM_ERROR; }
+  if (strm == Z_NULL || strm->state == Z_NULL) {
+    return Z_STREAM_ERROR;
+  }
 
   state = (struct inflate_state FAR *)strm->state;
   return state->mode == STORED && state->bits == 0;
@@ -1573,8 +1688,9 @@ z_streamp source;
 
   /* check input */
   if (dest == Z_NULL || source == Z_NULL || source->state == Z_NULL ||
-      source->zalloc == (alloc_func)0 || source->zfree == (free_func)0)
-  { return Z_STREAM_ERROR; }
+      source->zalloc == (alloc_func)0 || source->zfree == (free_func)0) {
+    return Z_STREAM_ERROR;
+  }
 
   state = (struct inflate_state FAR *)source->state;
 
@@ -1582,7 +1698,9 @@ z_streamp source;
   copy = (struct inflate_state FAR *)
          ZALLOC(source, 1, sizeof(struct inflate_state));
 
-  if (copy == Z_NULL) { return Z_MEM_ERROR; }
+  if (copy == Z_NULL) {
+    return Z_MEM_ERROR;
+  }
 
   window = Z_NULL;
 
@@ -1624,7 +1742,9 @@ int subvert;
 {
   struct inflate_state FAR *state;
 
-  if (strm == Z_NULL || strm->state == Z_NULL) { return Z_STREAM_ERROR; }
+  if (strm == Z_NULL || strm->state == Z_NULL) {
+    return Z_STREAM_ERROR;
+  }
 
   state = (struct inflate_state FAR *)strm->state;
   state->sane = !subvert;
@@ -1641,7 +1761,9 @@ z_streamp strm;
 {
   struct inflate_state FAR *state;
 
-  if (strm == Z_NULL || strm->state == Z_NULL) { return -1L << 16; }
+  if (strm == Z_NULL || strm->state == Z_NULL) {
+    return -1L << 16;
+  }
 
   state = (struct inflate_state FAR *)strm->state;
   return ((long)(state->back) << 16) +

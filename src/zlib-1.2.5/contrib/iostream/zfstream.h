@@ -19,7 +19,10 @@ public:
   int setcompressionlevel(int comp_level);
   int setcompressionstrategy(int comp_strategy);
 
-  inline int is_open() const { return (file != NULL); }
+  inline int is_open() const
+  {
+    return (file != NULL);
+  }
 
   virtual streampos seekoff(streamoff, ios::seek_dir, int);
 

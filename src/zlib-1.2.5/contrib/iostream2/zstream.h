@@ -41,9 +41,15 @@ class zstringlen {
 public:
   zstringlen(class izstream &);
   zstringlen(class ozstream &, const char *);
-  size_t value() const { return val.word; }
+  size_t value() const
+  {
+    return val.word;
+  }
 private:
-  struct Val { unsigned char byte; size_t word; } val;
+  struct Val {
+    unsigned char byte;
+    size_t word;
+  } val;
 };
 
 //  ----------------------------- izstream -----------------------------
@@ -51,9 +57,18 @@ private:
 class izstream {
 public:
   izstream() : m_fp(0) {}
-  izstream(FILE *fp) : m_fp(0) { open(fp); }
-  izstream(const char *name) : m_fp(0) { open(name); }
-  ~izstream() { close(); }
+  izstream(FILE *fp) : m_fp(0)
+  {
+    open(fp);
+  }
+  izstream(const char *name) : m_fp(0)
+  {
+    open(name);
+  }
+  ~izstream()
+  {
+    close();
+  }
 
   /* Opens a gzip (.gz) file for reading.
    * open() can be used to read a file which is not in gzip format;
@@ -63,7 +78,9 @@ public:
    */
   void open(const char *name)
   {
-    if (m_fp) { close(); }
+    if (m_fp) {
+      close();
+    }
 
     m_fp = ::gzopen(name, "rb");
   }
@@ -72,7 +89,9 @@ public:
   {
     SET_BINARY_MODE(fp);
 
-    if (m_fp) { close(); }
+    if (m_fp) {
+      close();
+    }
 
     m_fp = ::gzdopen(fileno(fp), "rb");
   }
@@ -106,7 +125,10 @@ public:
     return ::gzerror(m_fp, errnum);
   }
 
-  gzFile fp() { return m_fp; }
+  gzFile fp()
+  {
+    return m_fp;
+  }
 
 private:
   gzFile m_fp;
@@ -140,8 +162,11 @@ inline zstringlen::zstringlen(izstream &zs)
 {
   zs > val.byte;
 
-  if (val.byte == 255) { zs > val.word; }
-  else { val.word = val.byte; }
+  if (val.byte == 255) {
+    zs > val.word;
+  } else {
+    val.word = val.byte;
+  }
 }
 
 /*
@@ -195,9 +220,13 @@ public:
   {
     char mode[4] = "wb\0";
 
-    if (level != Z_DEFAULT_COMPRESSION) { mode[2] = '0' + level; }
+    if (level != Z_DEFAULT_COMPRESSION) {
+      mode[2] = '0' + level;
+    }
 
-    if (m_fp) { close(); }
+    if (m_fp) {
+      close();
+    }
 
     m_fp = ::gzopen(name, mode);
   }
@@ -209,9 +238,13 @@ public:
     SET_BINARY_MODE(fp);
     char mode[4] = "wb\0";
 
-    if (level != Z_DEFAULT_COMPRESSION) { mode[2] = '0' + level; }
+    if (level != Z_DEFAULT_COMPRESSION) {
+      mode[2] = '0' + level;
+    }
 
-    if (m_fp) { close(); }
+    if (m_fp) {
+      close();
+    }
 
     m_fp = ::gzdopen(fileno(fp), mode);
   }
@@ -265,11 +298,16 @@ public:
     return ::gzerror(m_fp, errnum);
   }
 
-  gzFile fp() { return m_fp; }
+  gzFile fp()
+  {
+    return m_fp;
+  }
 
   ostream &os()
   {
-    if (m_os == 0) { m_os = new ostrstream; }
+    if (m_os == 0) {
+      m_os = new ostrstream;
+    }
 
     return *m_os;
   }
@@ -320,8 +358,11 @@ inline zstringlen::zstringlen(ozstream &zs, const char *x)
   val.byte = 255;
   val.word = ::strlen(x);
 
-  if (val.word < 255) { zs < (val.byte = val.word); }
-  else { zs < val; }
+  if (val.word < 255) {
+    zs < (val.byte = val.word);
+  } else {
+    zs < val;
+  }
 }
 
 /*

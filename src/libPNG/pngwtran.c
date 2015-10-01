@@ -20,8 +20,9 @@ png_do_write_transformations(png_structp png_ptr)
 {
   png_debug(1, "in png_do_write_transformations\n");
 
-  if (png_ptr == NULL)
-  { return; }
+  if (png_ptr == NULL) {
+    return;
+  }
 
 #if defined(PNG_WRITE_USER_TRANSFORM_SUPPORTED)
 
@@ -48,8 +49,9 @@ png_do_write_transformations(png_structp png_ptr)
 #endif
 #if defined(PNG_WRITE_PACKSWAP_SUPPORTED)
 
-  if (png_ptr->transformations & PNG_PACKSWAP)
-  { png_do_packswap(&(png_ptr->row_info), png_ptr->row_buf + 1); }
+  if (png_ptr->transformations & PNG_PACKSWAP) {
+    png_do_packswap(&(png_ptr->row_info), png_ptr->row_buf + 1);
+  }
 
 #endif
 #if defined(PNG_WRITE_PACK_SUPPORTED)
@@ -61,8 +63,9 @@ png_do_write_transformations(png_structp png_ptr)
 #endif
 #if defined(PNG_WRITE_SWAP_SUPPORTED)
 
-  if (png_ptr->transformations & PNG_SWAP_BYTES)
-  { png_do_swap(&(png_ptr->row_info), png_ptr->row_buf + 1); }
+  if (png_ptr->transformations & PNG_SWAP_BYTES) {
+    png_do_swap(&(png_ptr->row_info), png_ptr->row_buf + 1);
+  }
 
 #endif
 #if defined(PNG_WRITE_SHIFT_SUPPORTED)
@@ -74,26 +77,30 @@ png_do_write_transformations(png_structp png_ptr)
 #endif
 #if defined(PNG_WRITE_INVERT_ALPHA_SUPPORTED)
 
-  if (png_ptr->transformations & PNG_INVERT_ALPHA)
-  { png_do_write_invert_alpha(&(png_ptr->row_info), png_ptr->row_buf + 1); }
+  if (png_ptr->transformations & PNG_INVERT_ALPHA) {
+    png_do_write_invert_alpha(&(png_ptr->row_info), png_ptr->row_buf + 1);
+  }
 
 #endif
 #if defined(PNG_WRITE_SWAP_ALPHA_SUPPORTED)
 
-  if (png_ptr->transformations & PNG_SWAP_ALPHA)
-  { png_do_write_swap_alpha(&(png_ptr->row_info), png_ptr->row_buf + 1); }
+  if (png_ptr->transformations & PNG_SWAP_ALPHA) {
+    png_do_write_swap_alpha(&(png_ptr->row_info), png_ptr->row_buf + 1);
+  }
 
 #endif
 #if defined(PNG_WRITE_BGR_SUPPORTED)
 
-  if (png_ptr->transformations & PNG_BGR)
-  { png_do_bgr(&(png_ptr->row_info), png_ptr->row_buf + 1); }
+  if (png_ptr->transformations & PNG_BGR) {
+    png_do_bgr(&(png_ptr->row_info), png_ptr->row_buf + 1);
+  }
 
 #endif
 #if defined(PNG_WRITE_INVERT_SUPPORTED)
 
-  if (png_ptr->transformations & PNG_INVERT_MONO)
-  { png_do_invert(&(png_ptr->row_info), png_ptr->row_buf + 1); }
+  if (png_ptr->transformations & PNG_INVERT_MONO) {
+    png_do_invert(&(png_ptr->row_info), png_ptr->row_buf + 1);
+  }
 
 #endif
 }
@@ -126,14 +133,15 @@ png_do_pack(png_row_infop row_info, png_bytep row, png_uint_32 bit_depth)
       v = 0;
 
       for (i = 0; i < row_width; i++) {
-        if (*sp != 0)
-        { v |= mask; }
+        if (*sp != 0) {
+          v |= mask;
+        }
 
         sp++;
 
-        if (mask > 1)
-        { mask >>= 1; }
-        else {
+        if (mask > 1) {
+          mask >>= 1;
+        } else {
           mask = 0x80;
           *dp = (png_byte)v;
           dp++;
@@ -141,8 +149,9 @@ png_do_pack(png_row_infop row_info, png_bytep row, png_uint_32 bit_depth)
         }
       }
 
-      if (mask != 0x80)
-      { *dp = (png_byte)v; }
+      if (mask != 0x80) {
+        *dp = (png_byte)v;
+      }
 
       break;
     }
@@ -169,14 +178,16 @@ png_do_pack(png_row_infop row_info, png_bytep row, png_uint_32 bit_depth)
           *dp = (png_byte)v;
           dp++;
           v = 0;
-        } else
-        { shift -= 2; }
+        } else {
+          shift -= 2;
+        }
 
         sp++;
       }
 
-      if (shift != 6)
-      { *dp = (png_byte)v; }
+      if (shift != 6) {
+        *dp = (png_byte)v;
+      }
 
       break;
     }
@@ -203,14 +214,16 @@ png_do_pack(png_row_infop row_info, png_bytep row, png_uint_32 bit_depth)
           *dp = (png_byte)v;
           dp++;
           v = 0;
-        } else
-        { shift -= 4; }
+        } else {
+          shift -= 4;
+        }
 
         sp++;
       }
 
-      if (shift != 4)
-      { *dp = (png_byte)v; }
+      if (shift != 4) {
+        *dp = (png_byte)v;
+      }
 
       break;
     }
@@ -275,12 +288,13 @@ png_do_shift(png_row_infop row_info, png_bytep row, png_color_8p bit_depth)
       png_byte mask;
       png_uint_32 row_bytes = row_info->rowbytes;
 
-      if (bit_depth->gray == 1 && row_info->bit_depth == 2)
-      { mask = 0x55; }
-      else if (row_info->bit_depth == 4 && bit_depth->gray == 3)
-      { mask = 0x11; }
-      else
-      { mask = 0xff; }
+      if (bit_depth->gray == 1 && row_info->bit_depth == 2) {
+        mask = 0x55;
+      } else if (row_info->bit_depth == 4 && bit_depth->gray == 3) {
+        mask = 0x11;
+      } else {
+        mask = 0xff;
+      }
 
       for (i = 0; i < row_bytes; i++, bp++) {
         png_uint_16 v;
@@ -290,10 +304,11 @@ png_do_shift(png_row_infop row_info, png_bytep row, png_color_8p bit_depth)
         *bp = 0;
 
         for (j = shift_start[0]; j > -shift_dec[0]; j -= shift_dec[0]) {
-          if (j > 0)
-          { *bp |= (png_byte)((v << j) & 0xff); }
-          else
-          { *bp |= (png_byte)((v >> (-j)) & mask); }
+          if (j > 0) {
+            *bp |= (png_byte)((v << j) & 0xff);
+          } else {
+            *bp |= (png_byte)((v >> (-j)) & mask);
+          }
         }
       }
     } else if (row_info->bit_depth == 8) {
@@ -311,10 +326,11 @@ png_do_shift(png_row_infop row_info, png_bytep row, png_color_8p bit_depth)
         *bp = 0;
 
         for (j = shift_start[c]; j > -shift_dec[c]; j -= shift_dec[c]) {
-          if (j > 0)
-          { *bp |= (png_byte)((v << j) & 0xff); }
-          else
-          { *bp |= (png_byte)((v >> (-j)) & 0xff); }
+          if (j > 0) {
+            *bp |= (png_byte)((v << j) & 0xff);
+          } else {
+            *bp |= (png_byte)((v >> (-j)) & 0xff);
+          }
         }
       }
     } else {
@@ -331,10 +347,11 @@ png_do_shift(png_row_infop row_info, png_bytep row, png_color_8p bit_depth)
         value = 0;
 
         for (j = shift_start[c]; j > -shift_dec[c]; j -= shift_dec[c]) {
-          if (j > 0)
-          { value |= (png_uint_16)((v << j) & (png_uint_16)0xffff); }
-          else
-          { value |= (png_uint_16)((v >> (-j)) & (png_uint_16)0xffff); }
+          if (j > 0) {
+            value |= (png_uint_16)((v << j) & (png_uint_16)0xffff);
+          } else {
+            value |= (png_uint_16)((v >> (-j)) & (png_uint_16)0xffff);
+          }
         }
 
         *bp++ = (png_byte)(value >> 8);
@@ -514,12 +531,13 @@ png_do_write_intrapixel(png_row_infop row_info, png_bytep row)
       png_bytep rp;
       png_uint_32 i;
 
-      if (row_info->color_type == PNG_COLOR_TYPE_RGB)
-      { bytes_per_pixel = 3; }
-      else if (row_info->color_type == PNG_COLOR_TYPE_RGB_ALPHA)
-      { bytes_per_pixel = 4; }
-      else
-      { return; }
+      if (row_info->color_type == PNG_COLOR_TYPE_RGB) {
+        bytes_per_pixel = 3;
+      } else if (row_info->color_type == PNG_COLOR_TYPE_RGB_ALPHA) {
+        bytes_per_pixel = 4;
+      } else {
+        return;
+      }
 
       for (i = 0, rp = row; i < row_width; i++, rp += bytes_per_pixel) {
         *(rp)   = (png_byte)((*rp     - * (rp + 1)) & 0xff);
@@ -529,12 +547,13 @@ png_do_write_intrapixel(png_row_infop row_info, png_bytep row)
       png_bytep rp;
       png_uint_32 i;
 
-      if (row_info->color_type == PNG_COLOR_TYPE_RGB)
-      { bytes_per_pixel = 6; }
-      else if (row_info->color_type == PNG_COLOR_TYPE_RGB_ALPHA)
-      { bytes_per_pixel = 8; }
-      else
-      { return; }
+      if (row_info->color_type == PNG_COLOR_TYPE_RGB) {
+        bytes_per_pixel = 6;
+      } else if (row_info->color_type == PNG_COLOR_TYPE_RGB_ALPHA) {
+        bytes_per_pixel = 8;
+      } else {
+        return;
+      }
 
       for (i = 0, rp = row; i < row_width; i++, rp += bytes_per_pixel) {
         png_uint_32 s0   = (*(rp) << 8) | *(rp + 1);

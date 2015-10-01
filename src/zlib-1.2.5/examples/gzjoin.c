@@ -86,11 +86,13 @@ typedef struct {
 local void bclose(bin *in)
 {
   if (in != NULL) {
-    if (in->fd != -1)
-    { close(in->fd); }
+    if (in->fd != -1) {
+      close(in->fd);
+    }
 
-    if (in->buf != NULL)
-    { free(in->buf); }
+    if (in->buf != NULL) {
+      free(in->buf);
+    }
 
     free(in);
   }
@@ -104,8 +106,9 @@ local bin *bopen(char *name)
 
   in = malloc(sizeof(bin));
 
-  if (in == NULL)
-  { return NULL; }
+  if (in == NULL) {
+    return NULL;
+  }
 
   in->buf = malloc(CHUNK);
   in->fd = open(name, O_RDONLY, 0);
@@ -127,19 +130,22 @@ local int bload(bin *in)
 {
   long len;
 
-  if (in == NULL)
-  { return -1; }
+  if (in == NULL) {
+    return -1;
+  }
 
-  if (in->left != 0)
-  { return 0; }
+  if (in->left != 0) {
+    return 0;
+  }
 
   in->next = in->buf;
 
   do {
     len = (long)read(in->fd, in->buf + in->left, CHUNK - in->left);
 
-    if (len < 0)
-    { return -1; }
+    if (len < 0) {
+      return -1;
+    }
 
     in->left += (unsigned)len;
   } while (len != 0 && in->left < CHUNK);
@@ -168,8 +174,9 @@ local unsigned long bget4(bin *in)
 local void bskip(bin *in, unsigned skip)
 {
   /* check pointer */
-  if (in == NULL)
-  { return; }
+  if (in == NULL) {
+    return;
+  }
 
   /* easy case -- skip bytes in buffer */
   if (skip <= in->left) {
@@ -193,8 +200,9 @@ local void bskip(bin *in, unsigned skip)
          for end-of-file with a read */
       lseek(in->fd, skip - 1, SEEK_CUR);
 
-      if (read(in->fd, in->buf, 1) != 1)
-      { bail("unexpected end of file on ", in->name); }
+      if (read(in->fd, in->buf, 1) != 1) {
+        bail("unexpected end of file on ", in->name);
+      }
 
       return;
     }
@@ -207,8 +215,9 @@ local void bskip(bin *in, unsigned skip)
   /* read more input and skip remainder */
   bload(in);
 
-  if (skip > in->left)
-  { bail("unexpected end of file on ", in->name); }
+  if (skip > in->left) {
+    bail("unexpected end of file on ", in->name);
+  }
 
   in->left -= skip;
   in->next += skip;
@@ -222,14 +231,16 @@ local void gzhead(bin *in)
   int flags;
 
   /* verify gzip magic header and compression method */
-  if (bget(in) != 0x1f || bget(in) != 0x8b || bget(in) != 8)
-  { bail(in->name, " is not a valid gzip file"); }
+  if (bget(in) != 0x1f || bget(in) != 0x8b || bget(in) != 8) {
+    bail(in->name, " is not a valid gzip file");
+  }
 
   /* get and verify flags */
   flags = bget(in);
 
-  if ((flags & 0xe0) != 0)
-  { bail("unknown reserved bits set in ", in->name); }
+  if ((flags & 0xe0) != 0) {
+    bail("unknown reserved bits set in ", in->name);
+  }
 
   /* skip modification time, extra flags, and os */
   bskip(in, 6);
@@ -254,8 +265,9 @@ local void gzhead(bin *in)
       ;
 
   /* skip header crc if present */
-  if (flags & 2)
-  { bskip(in, 2); }
+  if (flags & 2) {
+    bskip(in, 2);
+  }
 }
 
 /* write a four-byte little-endian unsigned integer to out */
@@ -270,11 +282,13 @@ local void put4(unsigned long val, FILE *out)
 /* Load up zlib stream from buffered input, bail if end of file */
 local void zpull(z_streamp strm, bin *in)
 {
-  if (in->left == 0)
-  { bload(in); }
+  if (in->left == 0) {
+    bload(in);
+  }
 
-  if (in->left == 0)
-  { bail("unexpected end of file on ", in->name); }
+  if (in->left == 0) {
+    bail("unexpected end of file on ", in->name);
+  }
 
   strm->avail_in = in->left;
   strm->next_in = in->next;
@@ -310,8 +324,9 @@ local void gzcopy(char *name, int clr, unsigned long *crc, unsigned long *tot,
   /* open gzip file and skip header */
   in = bopen(name);
 
-  if (in == NULL)
-  { bail("could not open ", name); }
+  if (in == NULL) {
+    bail("could not open ", name);
+  }
 
   gzhead(in);
 
@@ -325,8 +340,9 @@ local void gzcopy(char *name, int clr, unsigned long *crc, unsigned long *tot,
   strm.next_in = Z_NULL;
   ret = inflateInit2(&strm, -15);
 
-  if (junk == NULL || ret != Z_OK)
-  { bail("out of memory", ""); }
+  if (junk == NULL || ret != Z_OK) {
+    bail("out of memory", "");
+  }
 
   /* inflate and copy compressed data, clear last-block bit if requested */
   len = 0;
@@ -334,8 +350,9 @@ local void gzcopy(char *name, int clr, unsigned long *crc, unsigned long *tot,
   start = strm.next_in;
   last = start[0] & 1;
 
-  if (last && clr)
-  { start[0] &= ~1; }
+  if (last && clr) {
+    start[0] &= ~1;
+  }
 
   strm.avail_out = 0;
 
@@ -367,8 +384,9 @@ local void gzcopy(char *name, int clr, unsigned long *crc, unsigned long *tot,
     /* check for block boundary (only get this when block copied out) */
     if (strm.data_type & 128) {
       /* if that was the last block, then done */
-      if (last)
-      { break; }
+      if (last) {
+        break;
+      }
 
       /* number of unused bits in last byte */
       pos = strm.data_type & 7;
@@ -379,8 +397,9 @@ local void gzcopy(char *name, int clr, unsigned long *crc, unsigned long *tot,
         pos = 0x100 >> pos;
         last = strm.next_in[-1] & pos;
 
-        if (last && clr)
-        { strm.next_in[-1] &= ~pos; }
+        if (last && clr) {
+          strm.next_in[-1] &= ~pos;
+        }
       } else {
         /* next last-block bit is in next unused byte */
         if (strm.avail_in == 0) {
@@ -393,8 +412,9 @@ local void gzcopy(char *name, int clr, unsigned long *crc, unsigned long *tot,
 
         last = strm.next_in[0] & 1;
 
-        if (last && clr)
-        { strm.next_in[0] &= ~1; }
+        if (last && clr) {
+          strm.next_in[0] &= ~1;
+        }
       }
     }
   }
@@ -410,8 +430,9 @@ local void gzcopy(char *name, int clr, unsigned long *crc, unsigned long *tot,
 
   if (pos == 0 || !clr)
     /* already at byte boundary, or last file: write last byte */
-  { putc(last, out); }
-  else {
+  {
+    putc(last, out);
+  } else {
     /* append empty blocks to last byte */
     last &= ((0x100 >> pos) - 1);       /* assure unused bits are zero */
 
@@ -419,8 +440,9 @@ local void gzcopy(char *name, int clr, unsigned long *crc, unsigned long *tot,
       /* odd -- append an empty stored block */
       putc(last, out);
 
-      if (pos == 1)
-      { putc(0, out); }               /* two more bits in block header */
+      if (pos == 1) {
+        putc(0, out);  /* two more bits in block header */
+      }
 
       fwrite("\0\0\xff\xff", 1, 4, out);
     } else {
@@ -476,8 +498,9 @@ int main(int argc, char **argv)
   /* join gzip files on command line and write to stdout */
   gzinit(&crc, &tot, stdout);
 
-  while (argc--)
-  { gzcopy(*argv++, argc, &crc, &tot, stdout); }
+  while (argc--) {
+    gzcopy(*argv++, argc, &crc, &tot, stdout);
+  }
 
   /* done */
   return 0;

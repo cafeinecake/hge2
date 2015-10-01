@@ -206,7 +206,9 @@ uLong comprLen;
     c_stream.avail_out = 1;
     err = deflate(&c_stream, Z_FINISH);
 
-    if (err == Z_STREAM_END) { break; }
+    if (err == Z_STREAM_END) {
+      break;
+    }
 
     CHECK_ERR(err, "deflate");
   }
@@ -242,7 +244,9 @@ uLong comprLen, uncomprLen;
     d_stream.avail_in = d_stream.avail_out = 1; /* force small buffers */
     err = inflate(&d_stream, Z_NO_FLUSH);
 
-    if (err == Z_STREAM_END) { break; }
+    if (err == Z_STREAM_END) {
+      break;
+    }
 
     CHECK_ERR(err, "inflate");
   }
@@ -343,7 +347,9 @@ uLong comprLen, uncomprLen;
     d_stream.avail_out = (uInt)uncomprLen;
     err = inflate(&d_stream, Z_NO_FLUSH);
 
-    if (err == Z_STREAM_END) { break; }
+    if (err == Z_STREAM_END) {
+      break;
+    }
 
     CHECK_ERR(err, "large inflate");
   }
@@ -512,7 +518,9 @@ uLong comprLen, uncomprLen;
   for (;;) {
     err = inflate(&d_stream, Z_NO_FLUSH);
 
-    if (err == Z_STREAM_END) { break; }
+    if (err == Z_STREAM_END) {
+      break;
+    }
 
     if (err == Z_NEED_DICT) {
       if (d_stream.adler != dictId) {

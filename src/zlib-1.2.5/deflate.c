@@ -154,7 +154,9 @@ local const config configuration_table[10] = {
 /* result of memcmp for equal strings */
 
 #ifndef NO_DUMMY_DECL
-struct static_tree_desc_s {int dummy;}; /* for buggy compilers */
+struct static_tree_desc_s {
+  int dummy;
+}; /* for buggy compilers */
 #endif
 
 /* ===========================================================================
@@ -234,7 +236,9 @@ int stream_size;
     return Z_VERSION_ERROR;
   }
 
-  if (strm == Z_NULL) { return Z_STREAM_ERROR; }
+  if (strm == Z_NULL) {
+    return Z_STREAM_ERROR;
+  }
 
   strm->msg = Z_NULL;
 
@@ -243,15 +247,21 @@ int stream_size;
     strm->opaque = (voidpf)0;
   }
 
-  if (strm->zfree == (free_func)0) { strm->zfree = zcfree; }
+  if (strm->zfree == (free_func)0) {
+    strm->zfree = zcfree;
+  }
 
 #ifdef FASTEST
 
-  if (level != 0) { level = 1; }
+  if (level != 0) {
+    level = 1;
+  }
 
 #else
 
-  if (level == Z_DEFAULT_COMPRESSION) { level = 6; }
+  if (level == Z_DEFAULT_COMPRESSION) {
+    level = 6;
+  }
 
 #endif
 
@@ -274,11 +284,15 @@ int stream_size;
     return Z_STREAM_ERROR;
   }
 
-  if (windowBits == 8) { windowBits = 9; }  /* until 256-byte window bug fixed */
+  if (windowBits == 8) {
+    windowBits = 9;  /* until 256-byte window bug fixed */
+  }
 
   s = (deflate_state *) ZALLOC(strm, 1, sizeof(deflate_state));
 
-  if (s == Z_NULL) { return Z_MEM_ERROR; }
+  if (s == Z_NULL) {
+    return Z_MEM_ERROR;
+  }
 
   strm->state = (struct internal_state FAR *)s;
   s->strm = strm;
@@ -337,15 +351,19 @@ uInt  dictLength;
 
   if (strm == Z_NULL || strm->state == Z_NULL || dictionary == Z_NULL ||
       strm->state->wrap == 2 ||
-      (strm->state->wrap == 1 && strm->state->status != INIT_STATE))
-  { return Z_STREAM_ERROR; }
+      (strm->state->wrap == 1 && strm->state->status != INIT_STATE)) {
+    return Z_STREAM_ERROR;
+  }
 
   s = strm->state;
 
-  if (s->wrap)
-  { strm->adler = adler32(strm->adler, dictionary, dictLength); }
+  if (s->wrap) {
+    strm->adler = adler32(strm->adler, dictionary, dictLength);
+  }
 
-  if (length < MIN_MATCH) { return Z_OK; }
+  if (length < MIN_MATCH) {
+    return Z_OK;
+  }
 
   if (length > s->w_size) {
     length = s->w_size;
@@ -367,7 +385,9 @@ uInt  dictLength;
     INSERT_STRING(s, n, hash_head);
   }
 
-  if (hash_head) { hash_head = 0; }  /* to make compiler happy */
+  if (hash_head) {
+    hash_head = 0;  /* to make compiler happy */
+  }
 
   return Z_OK;
 }
@@ -414,9 +434,13 @@ int ZEXPORT deflateSetHeader(strm, head)
 z_streamp strm;
 gz_headerp head;
 {
-  if (strm == Z_NULL || strm->state == Z_NULL) { return Z_STREAM_ERROR; }
+  if (strm == Z_NULL || strm->state == Z_NULL) {
+    return Z_STREAM_ERROR;
+  }
 
-  if (strm->state->wrap != 2) { return Z_STREAM_ERROR; }
+  if (strm->state->wrap != 2) {
+    return Z_STREAM_ERROR;
+  }
 
   strm->state->gzhead = head;
   return Z_OK;
@@ -428,7 +452,9 @@ z_streamp strm;
 int bits;
 int value;
 {
-  if (strm == Z_NULL || strm->state == Z_NULL) { return Z_STREAM_ERROR; }
+  if (strm == Z_NULL || strm->state == Z_NULL) {
+    return Z_STREAM_ERROR;
+  }
 
   strm->state->bi_valid = bits;
   strm->state->bi_buf = (ush)(value & ((1 << bits) - 1));
@@ -445,17 +471,23 @@ int strategy;
   compress_func func;
   int err = Z_OK;
 
-  if (strm == Z_NULL || strm->state == Z_NULL) { return Z_STREAM_ERROR; }
+  if (strm == Z_NULL || strm->state == Z_NULL) {
+    return Z_STREAM_ERROR;
+  }
 
   s = strm->state;
 
 #ifdef FASTEST
 
-  if (level != 0) { level = 1; }
+  if (level != 0) {
+    level = 1;
+  }
 
 #else
 
-  if (level == Z_DEFAULT_COMPRESSION) { level = 6; }
+  if (level == Z_DEFAULT_COMPRESSION) {
+    level = 6;
+  }
 
 #endif
 
@@ -493,7 +525,9 @@ int max_chain;
 {
   deflate_state *s;
 
-  if (strm == Z_NULL || strm->state == Z_NULL) { return Z_STREAM_ERROR; }
+  if (strm == Z_NULL || strm->state == Z_NULL) {
+    return Z_STREAM_ERROR;
+  }
 
   s = strm->state;
   s->good_match = good_length;
@@ -533,8 +567,9 @@ uLong sourceLen;
             ((sourceLen + 7) >> 3) + ((sourceLen + 63) >> 6) + 5;
 
   /* if can't get parameters, return conservative bound plus zlib wrapper */
-  if (strm == Z_NULL || strm->state == Z_NULL)
-  { return complen + 6; }
+  if (strm == Z_NULL || strm->state == Z_NULL) {
+    return complen + 6;
+  }
 
   /* compute wrapper length */
   s = strm->state;
@@ -552,8 +587,9 @@ uLong sourceLen;
     wraplen = 18;
 
     if (s->gzhead != Z_NULL) {          /* user-supplied gzip header */
-      if (s->gzhead->extra != Z_NULL)
-      { wraplen += 2 + s->gzhead->extra_len; }
+      if (s->gzhead->extra != Z_NULL) {
+        wraplen += 2 + s->gzhead->extra_len;
+      }
 
       str = s->gzhead->name;
 
@@ -569,8 +605,9 @@ uLong sourceLen;
           wraplen++;
         } while (*str++);
 
-      if (s->gzhead->hcrc)
-      { wraplen += 2; }
+      if (s->gzhead->hcrc) {
+        wraplen += 2;
+      }
     }
 
     break;
@@ -580,8 +617,9 @@ uLong sourceLen;
   }
 
   /* if not default parameters, return conservative bound */
-  if (s->w_bits != 15 || s->hash_bits != 8 + 7)
-  { return complen + wraplen; }
+  if (s->w_bits != 15 || s->hash_bits != 8 + 7) {
+    return complen + wraplen;
+  }
 
   /* default settings: return tight bound for that case */
   return sourceLen + (sourceLen >> 12) + (sourceLen >> 14) +
@@ -612,9 +650,13 @@ z_streamp strm;
 {
   unsigned len = strm->state->pending;
 
-  if (len > strm->avail_out) { len = strm->avail_out; }
+  if (len > strm->avail_out) {
+    len = strm->avail_out;
+  }
 
-  if (len == 0) { return; }
+  if (len == 0) {
+    return;
+  }
 
   zmemcpy(strm->next_out, strm->state->pending_out, len);
   strm->next_out  += len;
@@ -649,7 +691,9 @@ int flush;
     ERR_RETURN(strm, Z_STREAM_ERROR);
   }
 
-  if (strm->avail_out == 0) { ERR_RETURN(strm, Z_BUF_ERROR); }
+  if (strm->avail_out == 0) {
+    ERR_RETURN(strm, Z_BUF_ERROR);
+  }
 
   s->strm = strm; /* just in case */
   old_flush = s->last_flush;
@@ -710,18 +754,21 @@ int flush;
       uInt header = (Z_DEFLATED + ((s->w_bits - 8) << 4)) << 8;
       uInt level_flags;
 
-      if (s->strategy >= Z_HUFFMAN_ONLY || s->level < 2)
-      { level_flags = 0; }
-      else if (s->level < 6)
-      { level_flags = 1; }
-      else if (s->level == 6)
-      { level_flags = 2; }
-      else
-      { level_flags = 3; }
+      if (s->strategy >= Z_HUFFMAN_ONLY || s->level < 2) {
+        level_flags = 0;
+      } else if (s->level < 6) {
+        level_flags = 1;
+      } else if (s->level == 6) {
+        level_flags = 2;
+      } else {
+        level_flags = 3;
+      }
 
       header |= (level_flags << 6);
 
-      if (s->strstart != 0) { header |= PRESET_DICT; }
+      if (s->strstart != 0) {
+        header |= PRESET_DICT;
+      }
 
       header += 31 - (header % 31);
 
@@ -753,8 +800,9 @@ int flush;
           flush_pending(strm);
           beg = s->pending;
 
-          if (s->pending == s->pending_buf_size)
-          { break; }
+          if (s->pending == s->pending_buf_size) {
+            break;
+          }
         }
 
         put_byte(s, s->gzhead->extra[s->gzindex]);
@@ -769,8 +817,9 @@ int flush;
         s->gzindex = 0;
         s->status = NAME_STATE;
       }
-    } else
-    { s->status = NAME_STATE; }
+    } else {
+      s->status = NAME_STATE;
+    }
   }
 
   if (s->status == NAME_STATE) {
@@ -805,8 +854,9 @@ int flush;
         s->gzindex = 0;
         s->status = COMMENT_STATE;
       }
-    } else
-    { s->status = COMMENT_STATE; }
+    } else {
+      s->status = COMMENT_STATE;
+    }
   }
 
   if (s->status == COMMENT_STATE) {
@@ -837,16 +887,19 @@ int flush;
         strm->adler = crc32(strm->adler, s->pending_buf + beg,
                             s->pending - beg);
 
-      if (val == 0)
-      { s->status = HCRC_STATE; }
-    } else
-    { s->status = HCRC_STATE; }
+      if (val == 0) {
+        s->status = HCRC_STATE;
+      }
+    } else {
+      s->status = HCRC_STATE;
+    }
   }
 
   if (s->status == HCRC_STATE) {
     if (s->gzhead->hcrc) {
-      if (s->pending + 2 > s->pending_buf_size)
-      { flush_pending(strm); }
+      if (s->pending + 2 > s->pending_buf_size) {
+        flush_pending(strm);
+      }
 
       if (s->pending + 2 <= s->pending_buf_size) {
         put_byte(s, (Byte)(strm->adler & 0xff));
@@ -854,8 +907,9 @@ int flush;
         strm->adler = crc32(0L, Z_NULL, 0);
         s->status = BUSY_STATE;
       }
-    } else
-    { s->status = BUSY_STATE; }
+    } else {
+      s->status = BUSY_STATE;
+    }
   }
 
 #endif
@@ -948,9 +1002,13 @@ int flush;
 
   Assert(strm->avail_out > 0, "bug2");
 
-  if (flush != Z_FINISH) { return Z_OK; }
+  if (flush != Z_FINISH) {
+    return Z_OK;
+  }
 
-  if (s->wrap <= 0) { return Z_STREAM_END; }
+  if (s->wrap <= 0) {
+    return Z_STREAM_END;
+  }
 
   /* Write the trailer */
 #ifdef GZIP
@@ -976,7 +1034,9 @@ int flush;
   /* If avail_out is zero, the application will call deflate again
    * to flush the rest.
    */
-  if (s->wrap > 0) { s->wrap = -s->wrap; } /* write the trailer only once! */
+  if (s->wrap > 0) {
+    s->wrap = -s->wrap;  /* write the trailer only once! */
+  }
 
   return s->pending != 0 ? Z_OK : Z_STREAM_END;
 }
@@ -987,7 +1047,9 @@ z_streamp strm;
 {
   int status;
 
-  if (strm == Z_NULL || strm->state == Z_NULL) { return Z_STREAM_ERROR; }
+  if (strm == Z_NULL || strm->state == Z_NULL) {
+    return Z_STREAM_ERROR;
+  }
 
   status = strm->state->status;
 
@@ -1040,7 +1102,9 @@ z_streamp source;
 
   ds = (deflate_state *) ZALLOC(dest, 1, sizeof(deflate_state));
 
-  if (ds == Z_NULL) { return Z_MEM_ERROR; }
+  if (ds == Z_NULL) {
+    return Z_MEM_ERROR;
+  }
 
   dest->state = (struct internal_state FAR *) ds;
   zmemcpy(ds, ss, sizeof(deflate_state));
@@ -1090,9 +1154,13 @@ unsigned size;
 {
   unsigned len = strm->avail_in;
 
-  if (len > size) { len = size; }
+  if (len > size) {
+    len = size;
+  }
 
-  if (len == 0) { return 0; }
+  if (len == 0) {
+    return 0;
+  }
 
   strm->avail_in  -= len;
 
@@ -1201,7 +1269,9 @@ IPos cur_match;                             /* current match */
   /* Do not look for matches beyond the end of the input. This is necessary
    * to make deflate deterministic.
    */
-  if ((uInt)nice_match > s->lookahead) { nice_match = s->lookahead; }
+  if ((uInt)nice_match > s->lookahead) {
+    nice_match = s->lookahead;
+  }
 
   Assert((ulg)s->strstart <= s->window_size - MIN_LOOKAHEAD, "need lookahead");
 
@@ -1223,7 +1293,9 @@ IPos cur_match;                             /* current match */
      * UNALIGNED_OK if your compiler uses a different size.
      */
     if (*(ushf *)(match + best_len - 1) != scan_end ||
-        *(ushf *)match != scan_start) { continue; }
+        *(ushf *)match != scan_start) {
+      continue;
+    }
 
     /* It is not necessary to compare scan[2] and match[2] since they are
      * always equal when the other bytes match, given that the hash keys
@@ -1249,7 +1321,9 @@ IPos cur_match;                             /* current match */
     /* Here, scan <= window+strstart+257 */
     Assert(scan <= s->window + (unsigned)(s->window_size - 1), "wild scan");
 
-    if (*scan == *match) { scan++; }
+    if (*scan == *match) {
+      scan++;
+    }
 
     len = (MAX_MATCH - 1) - (int)(strend - scan);
     scan = strend - (MAX_MATCH - 1);
@@ -1259,7 +1333,9 @@ IPos cur_match;                             /* current match */
     if (match[best_len]   != scan_end  ||
         match[best_len - 1] != scan_end1 ||
         *match            != *scan     ||
-        *++match          != scan[1])      { continue; }
+        *++match          != scan[1])      {
+      continue;
+    }
 
     /* The check at best_len-1 can be removed because it will be made
      * again later. (This heuristic is not always a win.)
@@ -1291,7 +1367,9 @@ IPos cur_match;                             /* current match */
       s->match_start = cur_match;
       best_len = len;
 
-      if (len >= nice_match) { break; }
+      if (len >= nice_match) {
+        break;
+      }
 
 #ifdef UNALIGNED_OK
       scan_end = *(ushf *)(scan + best_len - 1);
@@ -1303,7 +1381,9 @@ IPos cur_match;                             /* current match */
   } while ((cur_match = prev[cur_match & wmask]) > limit
            && --chain_length != 0);
 
-  if ((uInt)best_len <= s->lookahead) { return (uInt)best_len; }
+  if ((uInt)best_len <= s->lookahead) {
+    return (uInt)best_len;
+  }
 
   return s->lookahead;
 }
@@ -1336,7 +1416,9 @@ IPos cur_match;                             /* current match */
 
   /* Return failure if the match length is less than 2:
    */
-  if (match[0] != scan[0] || match[1] != scan[1]) { return MIN_MATCH - 1; }
+  if (match[0] != scan[0] || match[1] != scan[1]) {
+    return MIN_MATCH - 1;
+  }
 
   /* The check at best_len-1 can be removed because it will be made
    * again later. (This heuristic is not always a win.)
@@ -1361,7 +1443,9 @@ IPos cur_match;                             /* current match */
 
   len = MAX_MATCH - (int)(strend - scan);
 
-  if (len < MIN_MATCH) { return MIN_MATCH - 1; }
+  if (len < MIN_MATCH) {
+    return MIN_MATCH - 1;
+  }
 
   s->match_start = cur_match;
   return (uInt)len <= s->lookahead ? (uInt)len : s->lookahead;
@@ -1394,8 +1478,9 @@ int length;
   if (z_verbose > 1) {
     fprintf(stderr, "\\[%d,%d]", start - match, length);
 
-    do { putc(s->window[start++], stderr); }
-    while (--length != 0);
+    do {
+      putc(s->window[start++], stderr);
+    } while (--length != 0);
   }
 }
 #else
@@ -1476,7 +1561,9 @@ deflate_state *s;
       more += wsize;
     }
 
-    if (s->strm->avail_in == 0) { return; }
+    if (s->strm->avail_in == 0) {
+      return;
+    }
 
     /* If there was no sliding:
      *    strstart <= WSIZE+MAX_DIST-1 && lookahead <= MIN_LOOKAHEAD - 1 &&
@@ -1526,8 +1613,9 @@ deflate_state *s;
        */
       init = s->window_size - curr;
 
-      if (init > WIN_INIT)
-      { init = WIN_INIT; }
+      if (init > WIN_INIT) {
+        init = WIN_INIT;
+      }
 
       zmemzero(s->window + curr, (unsigned)init);
       s->high_water = curr + init;
@@ -1538,8 +1626,9 @@ deflate_state *s;
        */
       init = (ulg)curr + WIN_INIT - s->high_water;
 
-      if (init > s->window_size - s->high_water)
-      { init = s->window_size - s->high_water; }
+      if (init > s->window_size - s->high_water) {
+        init = s->window_size - s->high_water;
+      }
 
       zmemzero(s->window + s->high_water, (unsigned)init);
       s->high_water += init;
@@ -1601,9 +1690,13 @@ int flush;
 
       fill_window(s);
 
-      if (s->lookahead == 0 && flush == Z_NO_FLUSH) { return need_more; }
+      if (s->lookahead == 0 && flush == Z_NO_FLUSH) {
+        return need_more;
+      }
 
-      if (s->lookahead == 0) { break; } /* flush the current block */
+      if (s->lookahead == 0) {
+        break;  /* flush the current block */
+      }
     }
 
     Assert(s->block_start >= 0L, "block gone");
@@ -1660,7 +1753,9 @@ int flush;
         return need_more;
       }
 
-      if (s->lookahead == 0) { break; } /* flush the current block */
+      if (s->lookahead == 0) {
+        break;  /* flush the current block */
+      }
     }
 
     /* Insert the string window[strstart .. strstart+2] in the
@@ -1732,7 +1827,9 @@ int flush;
       s->strstart++;
     }
 
-    if (bflush) { FLUSH_BLOCK(s, 0); }
+    if (bflush) {
+      FLUSH_BLOCK(s, 0);
+    }
   }
 
   FLUSH_BLOCK(s, flush == Z_FINISH);
@@ -1766,7 +1863,9 @@ int flush;
         return need_more;
       }
 
-      if (s->lookahead == 0) { break; } /* flush the current block */
+      if (s->lookahead == 0) {
+        break;  /* flush the current block */
+      }
     }
 
     /* Insert the string window[strstart .. strstart+2] in the
@@ -1836,7 +1935,9 @@ int flush;
       s->match_length = MIN_MATCH - 1;
       s->strstart++;
 
-      if (bflush) { FLUSH_BLOCK(s, 0); }
+      if (bflush) {
+        FLUSH_BLOCK(s, 0);
+      }
 
     } else if (s->match_available) {
       /* If there was no match at the previous position, output a
@@ -1853,7 +1954,9 @@ int flush;
       s->strstart++;
       s->lookahead--;
 
-      if (s->strm->avail_out == 0) { return need_more; }
+      if (s->strm->avail_out == 0) {
+        return need_more;
+      }
     } else {
       /* There is no previous match to compare with, wait for
        * the next step to decide.
@@ -1902,7 +2005,9 @@ int flush;
         return need_more;
       }
 
-      if (s->lookahead == 0) { break; } /* flush the current block */
+      if (s->lookahead == 0) {
+        break;  /* flush the current block */
+      }
     }
 
     /* See how many times the previous byte repeats */
@@ -1924,8 +2029,9 @@ int flush;
 
         s->match_length = MAX_MATCH - (int)(strend - scan);
 
-        if (s->match_length > s->lookahead)
-        { s->match_length = s->lookahead; }
+        if (s->match_length > s->lookahead) {
+          s->match_length = s->lookahead;
+        }
       }
     }
 
@@ -1946,7 +2052,9 @@ int flush;
       s->strstart++;
     }
 
-    if (bflush) { FLUSH_BLOCK(s, 0); }
+    if (bflush) {
+      FLUSH_BLOCK(s, 0);
+    }
   }
 
   FLUSH_BLOCK(s, flush == Z_FINISH);
@@ -1969,8 +2077,9 @@ int flush;
       fill_window(s);
 
       if (s->lookahead == 0) {
-        if (flush == Z_NO_FLUSH)
-        { return need_more; }
+        if (flush == Z_NO_FLUSH) {
+          return need_more;
+        }
 
         break;      /* flush the current block */
       }
@@ -1983,7 +2092,9 @@ int flush;
     s->lookahead--;
     s->strstart++;
 
-    if (bflush) { FLUSH_BLOCK(s, 0); }
+    if (bflush) {
+      FLUSH_BLOCK(s, 0);
+    }
   }
 
   FLUSH_BLOCK(s, flush == Z_FINISH);

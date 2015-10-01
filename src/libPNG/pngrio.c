@@ -28,10 +28,11 @@ png_read_data(png_structp png_ptr, png_bytep data, png_size_t length)
 {
   png_debug1(4, "reading %d bytes\n", (int)length);
 
-  if (png_ptr->read_data_fn != NULL)
-  { (*(png_ptr->read_data_fn))(png_ptr, data, length); }
-  else
-  { png_error(png_ptr, "Call to NULL read function"); }
+  if (png_ptr->read_data_fn != NULL) {
+    (*(png_ptr->read_data_fn))(png_ptr, data, length);
+  } else {
+    png_error(png_ptr, "Call to NULL read function");
+  }
 }
 
 #if !defined(PNG_NO_STDIO)
@@ -50,16 +51,18 @@ png_default_read_data(png_structp png_ptr, png_bytep data, png_size_t length)
    */
 #if defined(_WIN32_WCE)
 
-  if (!ReadFile((HANDLE)(png_ptr->io_ptr), data, length, &check, NULL))
-  { check = 0; }
+  if (!ReadFile((HANDLE)(png_ptr->io_ptr), data, length, &check, NULL)) {
+    check = 0;
+  }
 
 #else
   check = (png_size_t)fread(data, (png_size_t)1, length,
                             (png_FILE_p)png_ptr->io_ptr);
 #endif
 
-  if (check != length)
-  { png_error(png_ptr, "Read Error"); }
+  if (check != length) {
+    png_error(png_ptr, "Read Error");
+  }
 }
 #else
 /* this is the model-independent version. Since the standard I/O library
@@ -84,8 +87,9 @@ png_default_read_data(png_structp png_ptr, png_bytep data, png_size_t length)
   if ((png_bytep)n_data == data) {
 #if defined(_WIN32_WCE)
 
-    if (!ReadFile((HANDLE)(png_ptr->io_ptr), data, length, &check, NULL))
-    { check = 0; }
+    if (!ReadFile((HANDLE)(png_ptr->io_ptr), data, length, &check, NULL)) {
+      check = 0;
+    }
 
 #else
     check = fread(n_data, 1, length, io_ptr);
@@ -100,26 +104,29 @@ png_default_read_data(png_structp png_ptr, png_bytep data, png_size_t length)
       read = MIN(NEAR_BUF_SIZE, remaining);
 #if defined(_WIN32_WCE)
 
-      if (!ReadFile((HANDLE)(io_ptr), buf, read, &err, NULL))
-      { err = 0; }
+      if (!ReadFile((HANDLE)(io_ptr), buf, read, &err, NULL)) {
+        err = 0;
+      }
 
 #else
       err = fread(buf, (png_size_t)1, read, io_ptr);
 #endif
       png_memcpy(data, buf, read); /* copy far buffer to near buffer */
 
-      if (err != read)
-      { break; }
-      else
-      { check += err; }
+      if (err != read) {
+        break;
+      } else {
+        check += err;
+      }
 
       data += read;
       remaining -= read;
     } while (remaining != 0);
   }
 
-  if ((png_uint_32)check != (png_uint_32)length)
-  { png_error(png_ptr, "read Error"); }
+  if ((png_uint_32)check != (png_uint_32)length) {
+    png_error(png_ptr, "read Error");
+  }
 }
 #endif
 #endif
@@ -145,10 +152,11 @@ png_set_read_fn(png_structp png_ptr, png_voidp io_ptr,
 
 #if !defined(PNG_NO_STDIO)
 
-  if (read_data_fn != NULL)
-  { png_ptr->read_data_fn = read_data_fn; }
-  else
-  { png_ptr->read_data_fn = png_default_read_data; }
+  if (read_data_fn != NULL) {
+    png_ptr->read_data_fn = read_data_fn;
+  } else {
+    png_ptr->read_data_fn = png_default_read_data;
+  }
 
 #else
   png_ptr->read_data_fn = read_data_fn;

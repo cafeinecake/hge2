@@ -138,8 +138,9 @@ char *TGZfname(const char *arcname)
   for (i = 0; TGZsuffix[i]; i++) {
     strcpy(buffer + origlen, TGZsuffix[i]);
 
-    if (access(buffer, F_OK) == 0)
-    { return buffer; }
+    if (access(buffer, F_OK) == 0) {
+      return buffer;
+    }
   }
 
   return NULL;
@@ -174,14 +175,17 @@ int getoct(char *p, int width)
   while (width--) {
     c = *p++;
 
-    if (c == 0)
-    { break; }
+    if (c == 0) {
+      break;
+    }
 
-    if (c == ' ')
-    { continue; }
+    if (c == ' ') {
+      continue;
+    }
 
-    if (c < '0' || c > '7')
-    { return -1; }
+    if (c < '0' || c > '7') {
+      return -1;
+    }
 
     result = result * 8 + (c - '0');
   }
@@ -220,8 +224,9 @@ int setfiletime(char *fname, time_t ftime)
 
   loctm = localtime(&ftime);
 
-  if (loctm == NULL)
-  { return -1; }
+  if (loctm == NULL) {
+    return -1;
+  }
 
   st.wYear         = (WORD)loctm->tm_year + 1900;
   st.wMonth        = (WORD)loctm->tm_mon + 1;
@@ -233,18 +238,21 @@ int setfiletime(char *fname, time_t ftime)
   st.wMilliseconds = 0;
 
   if (!SystemTimeToFileTime(&st, &locft) ||
-      !LocalFileTimeToFileTime(&locft, &modft))
-  { return -1; }
+      !LocalFileTimeToFileTime(&locft, &modft)) {
+    return -1;
+  }
 
-  if (isWinNT < 0)
-  { isWinNT = (GetVersion() < 0x80000000) ? 1 : 0; }
+  if (isWinNT < 0) {
+    isWinNT = (GetVersion() < 0x80000000) ? 1 : 0;
+  }
 
   hFile = CreateFile(fname, GENERIC_WRITE, 0, NULL, OPEN_EXISTING,
                      (isWinNT ? FILE_FLAG_BACKUP_SEMANTICS : 0),
                      NULL);
 
-  if (hFile == INVALID_HANDLE_VALUE)
-  { return -1; }
+  if (hFile == INVALID_HANDLE_VALUE) {
+    return -1;
+  }
 
   result = SetFileTime(hFile, NULL, NULL, &modft) ? 0 : -1;
   CloseHandle(hFile);
@@ -266,8 +274,9 @@ void push_attr(struct attr_item **list, char *fname, int mode, time_t time)
 
   item = (struct attr_item *)malloc(sizeof(struct attr_item));
 
-  if (item == NULL)
-  { error("Out of memory"); }
+  if (item == NULL) {
+    error("Out of memory");
+  }
 
   item->fname = strdup(fname);
   item->mode  = mode;
@@ -304,25 +313,30 @@ int ExprMatch(char *string, char *expr)
   while (1) {
     if (ISSPECIAL(*expr)) {
       if (*expr == '/') {
-        if (*string != '\\' && *string != '/')
-        { return 0; }
+        if (*string != '\\' && *string != '/') {
+          return 0;
+        }
 
         string ++;
         expr++;
       } else if (*expr == '*') {
-        if (*expr ++ == 0)
-        { return 1; }
+        if (*expr ++ == 0) {
+          return 1;
+        }
 
         while (*++string != *expr)
-          if (*string == 0)
-          { return 0; }
+          if (*string == 0) {
+            return 0;
+          }
       }
     } else {
-      if (*string != *expr)
-      { return 0; }
+      if (*string != *expr) {
+        return 0;
+      }
 
-      if (*expr++ == 0)
-      { return 1; }
+      if (*expr++ == 0) {
+        return 1;
+      }
 
       string++;
     }
@@ -360,8 +374,9 @@ int makedir(char *newdir)
   while (1) {
     char hold;
 
-    while (*p && *p != '\\' && *p != '/')
-    { p++; }
+    while (*p && *p != '\\' && *p != '/') {
+      p++;
+    }
 
     hold = *p;
     *p = 0;
@@ -372,8 +387,9 @@ int makedir(char *newdir)
       return 0;
     }
 
-    if (hold == 0)
-    { break; }
+    if (hold == 0) {
+      break;
+    }
 
     *p++ = hold;
   }
@@ -385,12 +401,14 @@ int makedir(char *newdir)
 
 int matchname(int arg, int argc, char **argv, char *fname)
 {
-  if (arg == argc)      /* no arguments given (untgz tgzarchive) */
-  { return 1; }
+  if (arg == argc) {    /* no arguments given (untgz tgzarchive) */
+    return 1;
+  }
 
   while (arg < argc)
-    if (ExprMatch(fname, argv[arg++]))
-    { return 1; }
+    if (ExprMatch(fname, argv[arg++])) {
+      return 1;
+    }
 
   return 0; /* ignore this for the moment being */
 }
@@ -418,8 +436,9 @@ int tar(gzFile in, int action, int arg, int argc, char **argv)
   while (1) {
     len = gzread(in, &buffer, BLOCKSIZE);
 
-    if (len < 0)
-    { error(gzerror(in, &err)); }
+    if (len < 0) {
+      error(gzerror(in, &err));
+    }
 
     /*
      * Always expect complete blocks to process
@@ -439,8 +458,9 @@ int tar(gzFile in, int action, int arg, int argc, char **argv)
        * or the end-of-tar block,
        * we are done
        */
-      if (len == 0 || buffer.header.name[0] == 0)
-      { break; }
+      if (len == 0 || buffer.header.name[0] == 0) {
+        break;
+      }
 
       tarmode = getoct(buffer.header.mode, 8);
       tartime = (time_t)getoct(buffer.header.mtime, 12);
@@ -453,14 +473,16 @@ int tar(gzFile in, int action, int arg, int argc, char **argv)
       if (getheader == 1) {
         strncpy(fname, buffer.header.name, SHORTNAMESIZE);
 
-        if (fname[SHORTNAMESIZE - 1] != 0)
-        { fname[SHORTNAMESIZE] = 0; }
+        if (fname[SHORTNAMESIZE - 1] != 0) {
+          fname[SHORTNAMESIZE] = 0;
+        }
       } else {
         /*
          * The file name is longer than SHORTNAMESIZE
          */
-        if (strncmp(fname, buffer.header.name, SHORTNAMESIZE - 1) != 0)
-        { error("bad long name"); }
+        if (strncmp(fname, buffer.header.name, SHORTNAMESIZE - 1) != 0) {
+          error("bad long name");
+        }
 
         getheader = 1;
       }
@@ -470,8 +492,9 @@ int tar(gzFile in, int action, int arg, int argc, char **argv)
        */
       switch (buffer.header.typeflag) {
       case DIRTYPE:
-        if (action == TGZ_LIST)
-        { printf(" %s     <dir> %s\n", strtime(&tartime), fname); }
+        if (action == TGZ_LIST) {
+          printf(" %s     <dir> %s\n", strtime(&tartime), fname);
+        }
 
         if (action == TGZ_EXTRACT) {
           makedir(fname);
@@ -489,9 +512,9 @@ int tar(gzFile in, int action, int arg, int argc, char **argv)
           break;
         }
 
-        if (action == TGZ_LIST)
-        { printf(" %s %9d %s\n", strtime(&tartime), remaining, fname); }
-        else if (action == TGZ_EXTRACT) {
+        if (action == TGZ_LIST) {
+          printf(" %s %9d %s\n", strtime(&tartime), remaining, fname);
+        } else if (action == TGZ_EXTRACT) {
           if (matchname(arg, argc, argv, fname)) {
             outfile = fopen(fname, "wb");
 
@@ -507,12 +530,14 @@ int tar(gzFile in, int action, int arg, int argc, char **argv)
               }
             }
 
-            if (outfile != NULL)
-            { printf("Extracting %s\n", fname); }
-            else
-            { fprintf(stderr, "%s: Couldn't create %s", prog, fname); }
-          } else
-          { outfile = NULL; }
+            if (outfile != NULL) {
+              printf("Extracting %s\n", fname);
+            } else {
+              fprintf(stderr, "%s: Couldn't create %s", prog, fname);
+            }
+          } else {
+            outfile = NULL;
+          }
         }
 
         getheader = 0;
@@ -529,8 +554,9 @@ int tar(gzFile in, int action, int arg, int argc, char **argv)
 
         len = gzread(in, fname, BLOCKSIZE);
 
-        if (len < 0)
-        { error(gzerror(in, &err)); }
+        if (len < 0) {
+          error(gzerror(in, &err));
+        }
 
         if (fname[BLOCKSIZE - 1] != 0 || (int)strlen(fname) > remaining) {
           action = TGZ_INVALID;
@@ -541,8 +567,9 @@ int tar(gzFile in, int action, int arg, int argc, char **argv)
         break;
 
       default:
-        if (action == TGZ_LIST)
-        { printf(" %s     <---> %s\n", strtime(&tartime), fname); }
+        if (action == TGZ_LIST) {
+          printf(" %s     <---> %s\n", strtime(&tartime), fname);
+        }
 
         break;
       }
@@ -569,8 +596,9 @@ int tar(gzFile in, int action, int arg, int argc, char **argv)
         fclose(outfile);
         outfile = NULL;
 
-        if (action != TGZ_INVALID)
-        { push_attr(&attributes, fname, tarmode, tartime); }
+        if (action != TGZ_INVALID) {
+          push_attr(&attributes, fname, tarmode, tartime);
+        }
       }
     }
 
@@ -588,8 +616,9 @@ int tar(gzFile in, int action, int arg, int argc, char **argv)
    */
   restore_attr(&attributes);
 
-  if (gzclose(in) != Z_OK)
-  { error("failed gzclose"); }
+  if (gzclose(in) != Z_OK) {
+    error("failed gzclose");
+  }
 
   return 0;
 }
@@ -637,34 +666,41 @@ int main(int argc, char **argv)
     if (prog == NULL) {
       prog = strrchr(argv[0], ':');
 
-      if (prog == NULL)
-      { prog = argv[0]; }
-      else
-      { prog++; }
-    } else
-    { prog++; }
-  } else
-  { prog++; }
+      if (prog == NULL) {
+        prog = argv[0];
+      } else {
+        prog++;
+      }
+    } else {
+      prog++;
+    }
+  } else {
+    prog++;
+  }
 
-  if (argc == 1)
-  { help(0); }
+  if (argc == 1) {
+    help(0);
+  }
 
   if (strcmp(argv[arg], "-l") == 0) {
     action = TGZ_LIST;
 
-    if (argc == ++arg)
-    { help(0); }
+    if (argc == ++arg) {
+      help(0);
+    }
   } else if (strcmp(argv[arg], "-h") == 0) {
     help(0);
   }
 
-  if ((TGZfile = TGZfname(argv[arg])) == NULL)
-  { TGZnotfound(argv[arg]); }
+  if ((TGZfile = TGZfname(argv[arg])) == NULL) {
+    TGZnotfound(argv[arg]);
+  }
 
   ++arg;
 
-  if ((action == TGZ_LIST) && (arg != argc))
-  { help(1); }
+  if ((action == TGZ_LIST) && (arg != argc)) {
+    help(1);
+  }
 
   /*
    *  Process the TGZ file
